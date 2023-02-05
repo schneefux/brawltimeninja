@@ -1,32 +1,33 @@
 <template>
-  <b-page :title="$t('player.meta.title', { name: player.name })">
+  <b-page
+    v-if="player != undefined"
+    :title="$t('player.meta.title', { name: player.name })"
+  >
     <ad
       ad-slot="9429125351"
       first
     ></ad>
 
     <b-split-dashboard class="mt-8 lg:mt-0">
-      <div
-        slot="aside"
-        class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8"
-      >
-        <player-aside
-          :player="player"
-          v-observe-visibility="{
-            callback: makeVisibilityCallback('aside'),
-            once: true,
-          }"
-          class="!h-auto"
-          @refresh="refresh()"
-        ></player-aside>
+      <template v-slot:aside>
+        <div class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8">
+          <player-aside
+            :player="player"
+            v-observe-visibility="{
+              callback: makeVisibilityCallback('aside'),
+              once: true,
+            }"
+            class="!h-auto"
+          ></player-aside>
 
-        <b-scroll-spy
-          :sections="sections"
-          nav-class="top-14 lg:top-0"
-          toc-class="hidden lg:block"
-          class="lg:mt-8 lg:overflow-y-auto"
-        ></b-scroll-spy>
-      </div>
+          <b-scroll-spy
+            :sections="sections"
+            nav-class="top-14 lg:top-0"
+            toc-class="hidden lg:block"
+            class="lg:mt-8 lg:overflow-y-auto"
+          ></b-scroll-spy>
+        </div>
+      </template>
 
       <b-page-section
         ref="timeSection"
@@ -86,7 +87,7 @@
           callback: makeVisibilityCallback('brawlers'),
           once: true,
         }"
-        :title="$tc('brawler', 2)"
+        :title="$t('brawler', 2)"
         lazy
       >
         <p class="prose dark:prose-invert">
@@ -98,6 +99,21 @@
           class="mt-4"
           @interact="trackInteraction('brawlers')"
         ></player-brawlers>
+      </b-page-section>
+
+      <b-page-section
+        ref="sharepicSection"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('sharepic'),
+          once: true,
+        }"
+        :title="$t('player.sharepic.title')"
+        lazy
+      >
+        <player-sharepic-editor
+          :player="player"
+          @interact="trackInteraction('sharepic')"
+        ></player-sharepic-editor>
       </b-page-section>
 
       <b-page-section
@@ -128,22 +144,12 @@
           callback: makeVisibilityCallback('battles'),
           once: true,
         }"
-        :title="$tc('battle-log', 1)"
+        :title="$t('battle-log', 1)"
         lazy
       >
         <p class="mt-4 prose dark:prose-invert w-full">
           {{ $t('player.battle-log.description') }}
-          {{ $t('player.updating-in', { minutes: Math.floor(refreshSecondsLeft / 60), seconds: refreshSecondsLeft % 60 }) }}
         </p>
-
-        <b-button
-          class="mt-2"
-          xs
-          primary
-          @click="refresh"
-        >
-          {{ $t('action.refresh') }}
-        </b-button>
 
         <player-battles
           :player="player"
@@ -158,7 +164,7 @@
           callback: makeVisibilityCallback('gamemodes'),
           once: true,
         }"
-        :title="$tc('mode', 2)"
+        :title="$t('mode', 2)"
         lazy
       >
         <p class="prose dark:prose-invert">
@@ -202,14 +208,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref, useContext, useMeta, useRoute, useStore, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref } from 'vue'
+import { useCacheHeaders, useMeta, useSelfOrigin } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { Player } from '~/model/Brawlstars'
-import { PlayerTotals } from '~/store'
 import { useTrackScroll } from '~/composables/gtag'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
-import { tagPattern } from '~/lib/util'
-import { TRPCClientError } from '@trpc/client'
+import { useBrawlstarsStore } from '@/stores/brawlstars'
+import { useI18n } from 'vue-i18n'
+import { useLoadAndValidatePlayer, usePlayerRender } from '@/composables/player'
 
 export default defineComponent({
   directives: {
@@ -219,53 +225,32 @@ export default defineComponent({
     BSplitDashboard,
     BScrollSpy,
   },
-  head: {},
-  setup() {
-    const { i18n, $config, $sentry } = useContext()
+  async setup() {
+    const i18n = useI18n()
 
-    const route = useRoute()
+    const store = useBrawlstarsStore()
 
-    const timer = ref<undefined|number>()
-    const refreshSecondsLeft = ref(180)
-    const refreshTimer = async () => {
-      refreshSecondsLeft.value -= 15
-      if (refreshSecondsLeft.value <= 0) {
-        await refresh()
-      }
-      timer.value = window.setTimeout(() => refreshTimer(), 15 * 1000)
-    }
-    const refresh = async () => {
-      try {
-        await store.dispatch('loadPlayer', route.value.params.tag)
-      } catch (err: any) {
-        if (err.response?.status != 404) {
-          console.error(err)
-          $sentry.captureException(err)
-        }
-      }
-      refreshSecondsLeft.value = 180
-    }
+    const player = computed(() => store.player!)
+    const playerTotals = computed(() => store.playerTotals!)
 
-    onMounted(() => timer.value = window.setTimeout(() => refreshTimer(), 15 * 1000))
-    onUnmounted(() => window.clearTimeout(timer.value))
+    const { playerRenderUrl } = usePlayerRender(player)
 
-    const store = useStore<any>()
-    const player = computed(() => store.state.player as Player)
-    const playerTotals = computed(() => store.state.playerTotals as PlayerTotals|undefined)
+    const origin = useSelfOrigin()
 
+    useCacheHeaders()
     useMeta(() => {
-      const description = i18n.t('player.meta.description', { name: player.value.name }) as string
+      if (player.value == undefined) {
+        return {}
+      }
+
       const name = player.value.name
-      const tag = route.value.params.tag
       return {
-        title: i18n.t('player.meta.title', { name }) as string,
+        title: i18n.t('player.meta.title', { name }),
         meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-          { hid: 'og:image', property: 'og:image', content: $config.renderUrl + `/embed/profile/${tag}` },
+          { hid: 'description', name: 'description', content: i18n.t('player.meta.description', { name: player.value.name }) },
+          { hid: 'og:image', property: 'og:image', content: origin + playerRenderUrl.value },
           { hid: 'og:image:alt', property: 'og:image:alt', content: `${name} Brawl Stars Profile share image` },
           { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
-          // 2x the .sharepic size
           { hid: 'og:image:width', property: 'og:image:width', content: '1200' },
           { hid: 'og:image:height', property: 'og:image:height', content: '630' },
         ]
@@ -277,6 +262,7 @@ export default defineComponent({
     const sectionRefs = {
       timeSection: ref<InstanceType<typeof BPageSection>>(),
       trophySection: ref<InstanceType<typeof BPageSection>>(),
+      sharepicSection: ref<InstanceType<typeof BPageSection>>(),
       quizSection: ref<InstanceType<typeof BPageSection>>(),
       recordsSection: ref<InstanceType<typeof BPageSection>>(),
       battlesSection: ref<InstanceType<typeof BPageSection>>(),
@@ -287,80 +273,46 @@ export default defineComponent({
     const sections = computed(() => [{
       id: 'time',
       title: i18n.t('player.time-statistics'),
-      element: sectionRefs.timeSection.value,
+      element: sectionRefs.timeSection.value?.$el,
     }, {
       id: 'trophy',
       title: i18n.t('player.trophy-statistics'),
-      element: sectionRefs.trophySection.value,
+      element: sectionRefs.trophySection.value?.$el,
     }, {
       id: 'brawlers',
-      title: i18n.tc('brawler', 2),
-      element: sectionRefs.brawlersSection.value,
+      title: i18n.t('brawler', 2),
+      element: sectionRefs.brawlersSection.value?.$el,
+    }, {
+      id: 'sharepic',
+      title: i18n.t('player.sharepic.title'),
+      element: sectionRefs.sharepicSection.value?.$el,
     }, {
       id: 'quiz',
       title: i18n.t('player.quiz.title'),
-      element: sectionRefs.quizSection.value,
+      element: sectionRefs.quizSection.value?.$el,
     }, {
       id: 'battles',
       title: i18n.t('battle-log'),
-      element: sectionRefs.battlesSection.value,
+      element: sectionRefs.battlesSection.value?.$el,
     }, {
       id: 'modes',
-      title: i18n.tc('mode', 2),
-      element: sectionRefs.modesSection.value,
+      title: i18n.t('mode', 2),
+      element: sectionRefs.modesSection.value?.$el,
     }, {
       id: 'records',
       title: i18n.t('player.records.title'),
-      element: sectionRefs.recordsSection.value,
+      element: sectionRefs.recordsSection.value?.$el,
     }])
 
+    await useLoadAndValidatePlayer('/profile/')
+
     return {
-      refreshSecondsLeft,
-      refresh,
       player,
       playerTotals,
       makeVisibilityCallback,
       trackInteraction,
       sections,
       ...sectionRefs,
-    }
-  },
-  middleware: ['cached'],
-  async validate({ params, redirect }) {
-    const tag = params.tag.toUpperCase()
-    if (tag != params.tag) {
-      // fuck Bing for lowercasing all URLs
-      redirect(`/profile/${tag}`)
-      return false
-    }
-
-    return tagPattern.test(tag)
-  },
-  async asyncData({ store, params, error, i18n, $sentry }) {
-    if (store.state.player == undefined || store.state.player.tag != params.tag) {
-      try {
-        await store.dispatch('loadPlayer', params.tag)
-      } catch (err: any) {
-        if (err.response?.status == 404) {
-          return
-        }
-
-        if (err instanceof TRPCClientError) {
-          if (err.data?.httpStatus == 404) {
-            error({ statusCode: 404, message: i18n.tc('error.tag.not-found') })
-            return
-          }
-          if (err.data?.httpStatus >= 400) {
-            error({ statusCode: err.data.httpStatus, message: i18n.tc('error.api-unavailable') })
-            return
-          }
-        }
-
-        console.error(err)
-        $sentry.captureException(err)
-        error({ statusCode: 500, message: ' ' })
-        return
-      }
     }
   },
 })

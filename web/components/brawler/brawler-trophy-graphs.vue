@@ -38,7 +38,7 @@
     >
       <lazy-map-trend-chart
         :slices="{ powerplay: ['false'] }"
-        :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
+        :filter="filter"
         :dimensions="['trophyRange', 'brawler']"
         cube-id="map"
         sort="trophyRange"
@@ -50,12 +50,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "@nuxtjs/composition-api";
+import { computed, defineAsyncComponent, defineComponent } from "vue";
 import { BDashboardCell } from '@schneefux/klicker/components'
+import { MetaGridEntry } from "@schneefux/klicker/types";
 
 export default defineComponent({
   components: {
     BDashboardCell,
+    LazyMapTrendChart: defineAsyncComponent(() => import('~/components/map/map-trend-chart.vue'))
   },
   props: {
     brawlerName: {
@@ -69,7 +71,10 @@ export default defineComponent({
       powerplay: ['false'],
     }))
 
+    const filter = computed(() => (e: MetaGridEntry) => e.dimensionsRaw.brawler.brawler == props.brawlerName.toUpperCase())
+
     return {
+      filter,
       brawlerSlices,
     }
   }

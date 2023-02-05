@@ -9,18 +9,19 @@
     >
       <history-graph
         :player-tag="player.tag"
-        card
+        :card="{}"
       >
-        <b-card slot="empty">
-          <div
-            slot="content"
-            class="flex flex-col justify-center h-full"
-          >
-            <p class="italic text-center">
-              {{ $t('player.no-history') }}
-            </p>
-          </div>
-        </b-card>
+        <template v-slot:empty>
+          <b-card>
+            <template v-slot:content>
+              <div class="flex flex-col justify-center h-full">
+                <p class="italic text-center">
+                  {{ $t('player.no-history') }}
+                </p>
+              </div>
+            </template>
+          </b-card>
+        </template>
       </history-graph>
     </b-dashboard-cell>
 
@@ -43,8 +44,8 @@
       <b-bigstat
         v-if="hasPlayerTotals"
         :title="$t('metric.recentWinrate')"
-        :value="Math.floor(playerTotals.winRate * 100) + '%'"
-        :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals.picks })"
+        :value="Math.floor(playerTotals!.winRate * 100) + '%'"
+        :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals!.picks })"
       ></b-bigstat>
     </b-dashboard-cell>
 
@@ -53,9 +54,9 @@
       hide-empty
     >
       <b-bigstat
-        v-if="hasPlayerTotals"
+        v-if="hasPlayerTotals && !isNaN(playerTotals!.trophyChange)"
         :title="$t('metric.averageTrophies')"
-        :value="playerTotals.trophyChange.toFixed(2)"
+        :value="playerTotals!.trophyChange.toFixed(2)"
       ></b-bigstat>
     </b-dashboard-cell>
 
@@ -63,7 +64,7 @@
       <b-bigstat
         :title="$t('metric.accountRating')"
         :value="accountRating"
-        tooltip
+        tooltip=""
       >
         <template v-slot:tooltip>
           <p class="mt-2">{{ $t('metric.accountRating.description') }}</p>
@@ -84,7 +85,7 @@
       <b-bigstat
         v-if="hasPlayerTotals"
         :title="$t('metric.wins')"
-        :value="Math.floor(playerTotals.winRate * playerTotals.picks)"
+        :value="Math.floor(playerTotals!.winRate * playerTotals!.picks)"
       ></b-bigstat>
     </b-dashboard-cell>
 
@@ -95,7 +96,7 @@
       <b-bigstat
         v-if="hasPlayerTotals"
         :title="$t('metric.losses')"
-        :value="Math.floor((1 - playerTotals.winRate) * playerTotals.picks)"
+        :value="Math.floor((1 - playerTotals!.winRate) * playerTotals!.picks)"
       ></b-bigstat>
     </b-dashboard-cell>
   </b-scrolling-dashboard>
@@ -104,9 +105,10 @@
 <script lang="ts">
 import { Player } from '@/model/Api'
 import { ratingPercentiles } from '~/lib/util'
-import { PlayerTotals } from '~/store'
+import { PlayerTotals } from '@/stores/brawlstars'
 import { BBigstat, BScrollingDashboard, BDashboardCell } from '@schneefux/klicker/components'
-import { computed, defineComponent, PropType, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
+import { useBrawlstarsStore } from '@/stores/brawlstars'
 
 export default defineComponent({
   components: {
@@ -125,7 +127,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useStore<any>()
+    const store = useBrawlstarsStore()
 
     const brawlersUnlocked = computed(() => Object.keys(props.player.brawlers).length)
     const trophiesGoal = computed(() => {
@@ -133,21 +135,21 @@ export default defineComponent({
         .map(({ trophies }) => trophies)
       brawlerTrophies.sort()
       const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
-      return medBrawlerTrophies * store.state.totalBrawlers
+      return medBrawlerTrophies * store.totalBrawlers
     })
     const accountRating = computed(() => {
-      const medTrophies = trophiesGoal.value as number / store.state.totalBrawlers
+      const medTrophies = trophiesGoal.value as number / store.totalBrawlers
       // measured on 2020-11-01 with data from 2020-10-01
       // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
       for (const key in ratingPercentiles) {
-        if (medTrophies <= ratingPercentiles[key][1]) {
+        if (medTrophies <= ratingPercentiles[key as keyof typeof ratingPercentiles][1]) {
           return key
         }
       }
       return '?'
     })
 
-    const totalBrawlers = computed<number>(() => store.state.totalBrawlers)
+    const totalBrawlers = computed<number>(() => store.totalBrawlers)
 
     const hasPlayerTotals = computed(() => props.playerTotals != undefined && props.playerTotals.picks > 0)
 

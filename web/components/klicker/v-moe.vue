@@ -5,7 +5,7 @@
     component="v-moe"
     wrapper="b-bigstat"
   >
-    <p slot="content" class="flex items-center">
+    <template v-slot:content><p  class="flex items-center">
       <span
         class="text-xl"
         :class="{
@@ -28,15 +28,16 @@
           {{ $t('moe.poor') }}
         </template>
       </span>
-    </p>
+    </p></template>
   </v-card-wrapper>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from 'vue'
 import { CubeResponse } from '@schneefux/klicker/types'
 import { VCardWrapper } from '@schneefux/klicker/components'
 import { VisualisationProps } from '@schneefux/klicker/props'
+import { useBrawlstarsStore } from '@/stores/brawlstars'
 
 export default defineComponent({
   components: {
@@ -46,7 +47,7 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const store = useStore<any>()
+    const store = useBrawlstarsStore()
 
     const moe = computed((): number => {
       // margin of error
@@ -57,7 +58,7 @@ export default defineComponent({
       // best case, n = sample / brawlers
       // (assumes we are slicing Brawlers)
       const sample = (<CubeResponse>props.response).data.reduce((agg, c) => agg + (c.metricsRaw.picks as number), 0)
-      return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / store.state.totalBrawlers))
+      return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / store.totalBrawlers))
     })
     const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')
 

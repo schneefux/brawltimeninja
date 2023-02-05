@@ -23,7 +23,7 @@ export interface Brawler {
 export interface Player {
   tag: string;
   name: string;
-  nameColor: string;
+  nameColor: string|undefined;
   icon: {
     id: number;
   };
@@ -111,6 +111,7 @@ export interface ClubMember {
   name: string
   nameColor: string
   trophies: number
+  role: string
   icon: {
     id: number
   }

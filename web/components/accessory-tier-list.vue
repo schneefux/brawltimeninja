@@ -3,10 +3,10 @@
     <breadcrumbs
       :links="[{
         path: '/tier-list/brawler',
-        name: $tc('brawler', 2),
+        name: $t('brawler', 2),
       }, {
         path: `/tier-list/${plural}`,
-        name: $tc(singular, 2),
+        name: $t(singular, 2),
       }]"
       class="mt-4"
     ></breadcrumbs>
@@ -74,7 +74,7 @@
 
 <script lang="ts">
 import { CubeComparingQuery } from '@schneefux/klicker/types'
-import { defineComponent, computed, ref, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, computed, ref, PropType } from 'vue'
 import { CDashboard, CMetric, VTable, VBarplot, BCard, VTestInfo, BDashboardCell } from '@schneefux/klicker/components'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 
@@ -102,7 +102,7 @@ export default defineComponent({
     }
 
     const singular = computed(() => keys[props.kind])
-    const plural = props.kind
+    const plural = computed(() => props.kind)
 
     const query = ref<CubeComparingQuery>({
       cubeId: 'battle',
@@ -120,8 +120,7 @@ export default defineComponent({
         metricsIds: ['winRate'],
         slices: {
           season: [formatClickhouseDate(getMonthSeasonEnd())],
-          [singular.value + 'IdEq']: ['0'],
-          // TODO slice for number of gadgets/gears/starpowers = 0
+          [plural.value + 'Length']: ['0'], // exclude where no accessory identified
         },
         sortId: 'winRate',
       },

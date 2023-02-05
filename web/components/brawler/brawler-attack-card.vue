@@ -1,28 +1,30 @@
 <template>
   <b-card
-    :icon="require(`~/assets/images/${prop}-icon.png`)"
+    :icon="iconUrl"
     :icon-alt="`${prop} Icon`"
     :title="scrapedDataProp.name"
   >
-    <div
-      slot="content"
-      class="h-full flex flex-col justify-between gap-y-4"
-    >
-      <p>
-        <q class="italic">{{ scrapedDataProp.description }}</q>
-      </p>
-      <b-kv-table
-        :rows="kvTableRows"
-        :data="kvTableData"
-      ></b-kv-table>
-    </div>
+    <template v-slot:content>
+      <div class="h-full flex flex-col justify-between gap-y-4">
+        <p>
+          <q class="italic">{{ scrapedDataProp.description }}</q>
+        </p>
+        <b-kv-table
+          :rows="kvTableRows"
+          :data="kvTableData"
+        ></b-kv-table>
+      </div>
+    </template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BCard, BKvTable } from '@schneefux/klicker/components'
+import attackIconUrl from '~/assets/images/icon/attack-icon.png'
+import superIconUrl from '~/assets/images/icon/super-icon.png'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -35,7 +37,7 @@ export default defineComponent({
       required: true
     },
     prop: {
-      type: String,
+      type: String as PropType<'attack'|'super'>,
       required: true
     },
     level: {
@@ -44,7 +46,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
+    const iconUrl = computed(() => props.prop == 'attack' ? attackIconUrl : superIconUrl)
 
     const scrapedDataProp = computed(() => props.scrapedData[props.prop])
     const kvTableRows = computed(() => ([
@@ -63,6 +66,7 @@ export default defineComponent({
     }))
 
     return {
+      iconUrl,
       scrapedDataProp,
       kvTableRows,
       kvTableData,

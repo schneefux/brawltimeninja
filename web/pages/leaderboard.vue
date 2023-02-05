@@ -20,7 +20,7 @@
     </div>
 
     <div class="flex justify-center mt-8">
-      <nuxt-child></nuxt-child>
+      <router-view></router-view>
     </div>
 
     <ad
@@ -31,32 +31,31 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta, useContext, useRoute, computed } from '@nuxtjs/composition-api'
+import { useCacheHeaders, useMeta } from '@/composables/compat'
+import { defineComponent, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
-  head: {},
   setup() {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     const route = useRoute()
     const metric = computed(() => {
-      if (route.value.fullPath.endsWith('/trophies')) {
+      if (route.fullPath.endsWith('/trophies')) {
         return 'trophies'
       }
       // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return route.value.params.metric ?? ''
+      return route.params.metric ?? ''
     })
 
-    useMeta(() => {
-      const description = i18n.tc('leaderboard.meta.description', 1, { metric: i18n.t('metric.' + metric.value) })
-      return {
-        title: i18n.tc('leaderboard.meta.title', 1, { metric: i18n.t('metric.' + metric.value) }),
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ]
-      }
-    })
+    useCacheHeaders()
+    useMeta(() => ({
+      title: i18n.t('leaderboard.meta.title', { metric: i18n.t('metric.' + metric.value) }),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('leaderboard.meta.description', { metric: i18n.t('metric.' + metric.value) }) },
+      ]
+    }))
 
     const metrics = [
       'hours',
@@ -71,6 +70,5 @@ export default defineComponent({
       metrics,
     }
   },
-  middleware: ['cached'],
 })
 </script>

@@ -5,7 +5,7 @@
     }]"
     :title="$t('banner.install.title')"
   >
-    <div slot="content">
+    <template v-slot:content><div >
       <button
         class="absolute top-0 right-0 mr-3 mt-2"
         @click="dismissInstall"
@@ -15,30 +15,38 @@
       <p>
         {{ $t('banner.install.catchphrase') }}
       </p>
-    </div>
+    </div></template>
 
-    <b-button
-      slot="actions"
-      class="mx-auto"
-      md
-      primary
-      @click="clickInstall"
-    >
-      <font-awesome-icon
-        :icon="faDownload"
-        class="mr-1"
-      ></font-awesome-icon>
-      {{ $t('action.install') }}
-    </b-button>
+    <template v-slot:actions>
+      <b-button
+        class="mx-auto"
+        md
+        primary
+        @click="clickInstall"
+      >
+        <font-awesome-icon
+          :icon="faDownload"
+          class="mr-1"
+        ></font-awesome-icon>
+        {{ $t('action.install') }}
+      </b-button>
+    </template>
   </b-card>
 </template>
 
 <script lang="ts">
 import { faDownload, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
 import { useInstall } from '~/composables/app'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { BCard, BButton } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    FontAwesomeIcon,
+    BButton,
+    BCard,
+  },
   setup() {
     const { installable, clickInstall, dismissInstall, installDismissed } = useInstall('banner')
 

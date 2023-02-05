@@ -1,9 +1,9 @@
 <template>
-  <b-page class="max-w-md">
-    <b-card
-      v-if="club != undefined"
-      :title="club.name"
-    >
+  <b-page
+    v-if="club != undefined"
+    class="max-w-md"
+  >
+    <b-card :title="club.name">
       <template v-slot:content>
         <blockquote class="mt-2 italic">
           {{ club.description }}
@@ -33,7 +33,7 @@
                 <router-link
                   :to="localePath(`/profile/${member.tag}`)"
                   :title="member.name"
-                  @click.native.stop
+                  @click.stop
                 >
                   <media-img
                     :path="`/avatars/${member.icon.id}`"
@@ -58,37 +58,59 @@
 </template>
 
 <script lang="ts">
-import { capitalize } from '@/lib/util'
-import { Club } from '@/model/Brawlstars'
-import { defineComponent, ref, useContext, useFetch, useMeta, useRoute } from '@nuxtjs/composition-api'
+import { useApi, useBlockingAsync, useCacheHeaders, useMeta, useSentry } from '@/composables/compat'
+import { capitalize, tagPattern } from '@/lib/util'
+import { defineComponent } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { TRPCClientError } from '@trpc/client'
 
 export default defineComponent({
-  head: {},
-  middleware: ['cached'],
-  setup() {
-    const { app: { i18n }, $api, redirect } = useContext()
-    const route = useRoute()
+  async setup() {
+    const i18n = useI18n()
+    const $api = useApi()
+    const sentry = useSentry()
 
-    const club = ref<Club>()
-    useFetch(async () => {
-      const tag = route.value.params.tag.toUpperCase()
-      if (tag != route.value.params.tag) {
-        redirect(`/club/${tag}`)
-      } else {
-        club.value = await $api.query('club.byTag', tag)
-      }
-    })
+    useCacheHeaders()
 
     useMeta(() => {
-      const description = club.value != undefined ? i18n.tc('club.meta.description', 1, { club: club.value.name }) + ' ' + club.value.description : ''
       return {
-        title: club.value != undefined ? i18n.tc('club.meta.title', 1, { club: club.value.name }) : '',
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', name: 'og:description', content: description },
-        ],
+        title: club.value != undefined ? i18n.t('club.meta.title', { club: club.value.name }) : '',
+        meta: [ {
+          hid: 'description',
+          name: 'description',
+          content: club.value != undefined ? i18n.t('club.meta.description', { club: club.value.name }) + ' ' + club.value.description : '',
+        } ],
       }
     })
+
+    const club = await useBlockingAsync(async ({ params, redirect, error }) => {
+      const tag = (params.tag as string).toUpperCase()
+      if (tag != params.tag) {
+        // fuck Bing for lowercasing all URLs
+        redirect(301, `/club/${tag}`)
+        return
+      }
+
+      if (!tagPattern.test(tag)) {
+        return
+      }
+
+      try {
+        return await $api.club.byTag.query(tag)
+      } catch (err: any) {
+        if (err instanceof TRPCClientError) {
+          if (err.data?.httpStatus == 404) {
+            error({ statusCode: 404, message: i18n.t('error.tag.not-found') })
+          }
+          if (err.data?.httpStatus >= 400) {
+            error({ statusCode: err.data.httpStatus, message: i18n.t('error.api-unavailable') })
+          }
+        }
+
+        sentry.captureException(err)
+        error({ statusCode: 500, message: '' })
+      }
+    }, 'club')
 
     return {
       club,

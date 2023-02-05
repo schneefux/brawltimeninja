@@ -6,28 +6,20 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api'
-import { MetaInfo } from 'vue-meta'
+import { useCacheHeaders, useCspHeaders } from '@/composables/compat'
+import { computed, defineComponent } from 'vue'
+import { useRoute } from 'vue-router'
+import QuizResultSharepic from '@/components/quiz/quiz-result-sharepic.vue'
 import { QuizResult } from '~/components/quiz/quiz-result-card.vue'
 
 export default defineComponent({
-  head(): MetaInfo {
-    // block all requests except to subdomains (including ads/analytics)
-    const allowedOrigins = [this.$config.mediaUrl, this.$config.cubeUrl]
-    return {
-      meta: [ <any>{
-        // FIXME remove any after https://github.com/nuxt/vue-meta/issues/575
-        'http-equiv': 'Content-Security-Policy',
-        content: `default-src 'self' 'unsafe-inline' 'unsafe-eval' ${allowedOrigins.join(' ')}`,
-      } ]
-    }
+  components: {
+    QuizResultSharepic,
   },
-  layout: 'empty',
-  middleware: ['cached'],
   setup() {
     const route = useRoute()
     const testResult = computed<QuizResult>(() => {
-      const query = route.value.query as Record<string, string>
+      const query = route.query as Record<string, string>
 
       return {
         id: query.id,
@@ -42,6 +34,9 @@ export default defineComponent({
       }
     })
 
+    useCacheHeaders()
+    useCspHeaders()
+
     return {
       testResult,
     }
@@ -55,3 +50,11 @@ export default defineComponent({
   height: 315px;
 }
 </style>
+
+<route>
+{
+  meta: {
+    layout: 'empty',
+  },
+}
+</route>

@@ -1,51 +1,59 @@
 <template>
   <event-card :mode="mode">
-    <div slot="content">
-      <b-card
-        :elevation="0"
-        dense
-      >
-        <b-kv-table
-          slot="content"
-          :rows="kvTableRows"
-          :data="kvTableData"
-          id-key="tag"
-        ></b-kv-table>
-      </b-card>
+    <template v-slot:content>
+      <div>
+        <b-card
+          :elevation="0"
+          dense
+        >
+          <template v-slot:content>
+            <b-kv-table
+              :rows="kvTableRows"
+              :data="kvTableData"
+              id-key="tag"
+            ></b-kv-table>
+          </template>
+        </b-card>
 
-      <b-card
-        v-if="activeMap != undefined"
-        :title="$t('player.tips-for.map', { map: mapName })"
-        :elevation="0"
-        class="mt-2"
-        dense
-      >
-        <map-img
-          slot="preview"
-          :id="activeMap.id"
-          :map="activeMap.map"
-          clazz="h-10"
-        ></map-img>
-        <player-map-tip-roll
-          slot="content"
-          :map="activeMap.map"
-          :mode="mode"
-          :player-brawlers="playerBrawlers"
-          class="mx-auto"
-        ></player-map-tip-roll>
-      </b-card>
-    </div>
+        <b-card
+          v-if="activeMap != undefined"
+          :title="$t('player.tips-for.map', { map: mapName })"
+          :elevation="0"
+          class="mt-2"
+          dense
+        >
+          <template v-slot:preview>
+            <map-img
+              :id="activeMap.id"
+              :map="activeMap.map"
+              clazz="h-10"
+            ></map-img>
+          </template>
+          <template v-slot:content>
+            <player-map-tip-roll
+              :map="activeMap.map"
+              :mode="mode"
+              :player-brawlers="playerBrawlers"
+              class="mx-auto"
+            ></player-map-tip-roll>
+          </template>
+        </b-card>
+      </div>
+    </template>
   </event-card>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useAsync, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
 import { Player, Battle } from '~/model/Api'
 import { camelToKebab, slugify, tagToId } from '@/lib/util'
-import { EventMetadata } from '~/plugins/klicker'
+import { EventMetadata } from '~/plugins/klicker.service'
 import { winRateMetric } from '~/lib/klicker.cubes'
 import { BKvTable } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
+import { useAsync } from '~/composables/compat'
+import { useKlicker } from '@schneefux/klicker/composables'
+import { useI18n } from 'vue-i18n'
 
 interface Stats {
   winRate: number
@@ -81,7 +89,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
+    const $klicker = useKlicker()
 
     const updateData = async () => {
       const data = await $klicker.query({
@@ -98,7 +106,7 @@ export default defineComponent({
       return data.data[0]
     }
 
-    const data = useAsync(updateData, `player-${props.playerTag}-mode-${props.mode}`)
+    const data = useAsync(updateData, computed(() => `player-${props.playerTag}-mode-${props.mode}`))
 
     const activeMap = computed(() => {
       // TODO there might be a second one when Power Play or competition entry is online
@@ -142,10 +150,10 @@ export default defineComponent({
 
     const winRate = computed(() => stats.value.picks > 5 ? $klicker.format(winRateMetric, stats.value.winRate) : '?')
 
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const mapName = computed(() => {
       if (activeMap.value != undefined) {
-        return getMapName(i18n, activeMap.value.id, activeMap.value.map)
+        return getMapName(activeMap.value.id, activeMap.value.map)
       }
     })
 

@@ -4,35 +4,40 @@
     :map="map"
     :id="id"
   >
-    <div
+    <template
       v-if="powerplay || endDate != undefined || startDate != undefined"
-      slot="infobar"
-      class="flex justify-end"
+      v-slot:infobar
     >
-      <span v-if="powerplay">
-        {{ $tc('power-play', 1) }}
-      </span>
-      <span v-else-if="endDate != undefined">
-        {{ endDateString }}
-      </span>
-      <span v-else-if="startDate != undefined">
-        {{ startDateString }}
-      </span>
-    </div>
+      <div class="flex justify-end">
+        <span v-if="powerplay">
+          {{ $t('power-play') }}
+        </span>
+        <span v-else-if="endDate != undefined">
+          <client-only>
+            {{ endDateString }}
+          </client-only>
+        </span>
+        <span v-else-if="startDate != undefined">
+          {{ startDateString }}
+        </span>
+      </div>
+    </template>
 
-    <map-best-brawlers
-      slot="content"
-      :slices="slices"
-      :card="{ elevation: 0, dense: true }"
-    ></map-best-brawlers>
+    <template v-slot:content>
+      <map-best-brawlers
+        :slices="slices"
+        :card="{ elevation: 0, dense: true }"
+      ></map-best-brawlers>
+    </template>
   </event-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, useContext } from '@nuxtjs/composition-api'
+import { defineComponent, PropType, computed } from 'vue'
 import { parseISO, formatDistanceToNow } from 'date-fns'
 import { SliceValue } from '@schneefux/klicker/types'
 import { useDateFnLocale } from '~/composables/date-fns'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   props: {
@@ -58,7 +63,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const { locale } = useDateFnLocale()
 
     const mode = computed(() => props.slices.mode?.[0])
@@ -73,7 +78,7 @@ export default defineComponent({
         locale: locale.value,
       })
 
-      return i18n.t('time.ends-in', { time: dist }) as string
+      return i18n.t('time.ends-in', { time: dist })
     })
     const startDateString = computed(() => {
       if (props.startDate == undefined) {

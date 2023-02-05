@@ -6,14 +6,16 @@
     component="v-last-update"
     wrapper="b-bigstat"
   >
-    <p slot="content">
-      {{ lastUpdate }}
-    </p>
+    <template v-slot:content>
+      <p>
+        {{ lastUpdate }}
+      </p>
+    </template>
   </v-card-wrapper>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from 'vue'
 import { formatDistanceToNow, parseISO } from 'date-fns'
 import { VCardWrapper } from '@schneefux/klicker/components'
 import { VisualisationProps } from '@schneefux/klicker/props'

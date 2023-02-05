@@ -7,9 +7,11 @@
       :title="$t('draft-tool.subtitle')"
       class="mt-3"
     >
-      <p slot="content" class="prose dark:prose-invert">
-        {{ $t('draft-tool.description') }}
-      </p>
+      <template v-slot:content>
+        <p class="prose dark:prose-invert">
+          {{ $t('draft-tool.description') }}
+        </p>
+      </template>
     </b-card>
 
     <c-slicer
@@ -28,16 +30,15 @@
       class="mt-8"
     >
       <template v-slot="totals">
-        <b-dashboard
-          slot="brawlers"
-          responsive
-        >
+        <b-dashboard responsive>
           <b-dashboard-cell
             :rows="2"
             :columns="3"
           >
             <b-card :title="$t('about-metric', { metric: $t('metric.winRate') })">
-              <p slot="content">{{ $t('brawler.disclaimer') }}</p>
+              <template v-slot:content>
+                <p>{{ $t('brawler.disclaimer') }}</p>
+              </template>
             </b-card>
           </b-dashboard-cell>
           <b-dashboard-cell
@@ -46,7 +47,7 @@
           >
             <v-sample-size
               v-bind="totals"
-              card
+              :card="{}"
             ></v-sample-size>
           </b-dashboard-cell>
         </b-dashboard>
@@ -60,8 +61,12 @@ import { CubeQuery } from '@schneefux/klicker/types'
 import { BCard, BDashboard, CSlicer, BDashboardCell } from '@schneefux/klicker/components'
 import DraftGrid from '~/components/draft-grid.vue'
 import { formatClickhouseDate, getSeasonEnd } from '~/lib/util'
-import { defineComponent, ref, useRoute } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from 'vue'
 import { useKlicker } from '@schneefux/klicker/composables/klicker'
+import { useRoute } from 'vue-router'
+import { mapRouteQuery } from '~/composables/link'
+import { useCacheHeaders, useMeta } from '@/composables/compat'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -71,20 +76,9 @@ export default defineComponent({
     BCard,
     CSlicer,
   },
-  head() {
-    const description = this.$t('draft-tool.meta.description') as string
-    return {
-      title: this.$t('draft-tool.meta.title') as string,
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ]
-    }
-  },
-  middleware: ['cached'],
   setup() {
     const route = useRoute()
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
 
     const season = new Date()
     season.setDate(season.getDate() - 7*4)
@@ -94,12 +88,22 @@ export default defineComponent({
       dimensionsIds: [],
       metricsIds: ['picks'],
       sortId: 'picks',
-      slices: $klicker.convertLocationToSlices(route.value, {
+      slices: $klicker.convertLocationToSlices(mapRouteQuery(route), {
         season: [formatClickhouseDate(getSeasonEnd(season))],
         trophyRangeGte: ['0'],
         mode: [],
       }),
     })
+
+    useCacheHeaders()
+
+    const i18n = useI18n()
+    useMeta(() => ({
+      title: i18n.t('draft-tool.meta.title'),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('draft-tool.meta.description') },
+      ]
+    }))
 
     return {
       query,

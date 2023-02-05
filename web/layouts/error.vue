@@ -1,32 +1,28 @@
 <template>
-  <div class="container text-center mx-auto py-4 px-2">
-    <h1 class="text-3xl">
-      {{ $t('error.oops') }}
-    </h1>
-    <h2 class="text-2xl">
-      {{ error.message }}
-    </h2>
-    <h3
-      v-if="error.statusCode == 429 || error.statusCode >= 500"
-      class="text-2xl mt-2"
-    >
-      {{ $t('error.misc') }}
-    </h3>
-    <p class="mt-4">
-      <b-button
-        :to="localePath('/')"
-        primary
-        md
-      >
-        {{ $t('action.home') }}
-      </b-button>
-    </p>
+  <div
+    ref="container"
+    class="flex flex-col justify-between min-h-screen bg-background text-text"
+  >
+    <nav class="light bg-primary-400 text-text p-6 flex justify-between items-center flex-wrap gap-y-3 z-40 sticky top-0 lg:static">
+      <a
+        href="/"
+        class="font-semibold text-xl tracking-tight leading-tight"
+      >Brawl Time Ninja</a>
+    </nav>
+
+    <slot></slot>
+
+    <footer></footer>
   </div>
 </template>
 
-<script>
-export default {
-  layout: 'default',
-  props: ['error'],
-}
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  setup() {
+    return {
+    }
+  },
+})
 </script>

@@ -16,13 +16,13 @@
         <b-dashboard-cell :columns="2">
           <v-sample-size
             v-bind="data"
-            card
+            :card="{}"
           ></v-sample-size>
         </b-dashboard-cell>
         <b-dashboard-cell :columns="2">
           <v-last-update
             v-bind="data"
-            card
+            :card="{}"
           ></v-last-update>
         </b-dashboard-cell>
       </template>
@@ -30,7 +30,7 @@
       <template v-slot:data="data">
         <v-auto
           v-bind="data"
-          card
+          :card="{}"
           for-grid
           all
         ></v-auto>
@@ -45,7 +45,9 @@
 import { CubeQuery, CubeComparingQuery } from '@schneefux/klicker/types'
 import { CDashboard, VAuto, BDashboardCell } from '@schneefux/klicker/components'
 import { useSyncQueryAndRoute } from '~/composables/link'
-import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from 'vue'
+import { useCacheHeaders } from '@/composables/compat'
+import { useKlicker } from '@schneefux/klicker/composables'
 
 export default defineComponent({
   components: {
@@ -54,7 +56,7 @@ export default defineComponent({
     VAuto,
   },
   setup() {
-    const { $klicker } = useContext()
+    const $klicker = useKlicker()
     const urlQuery = useSyncQueryAndRoute($klicker.config, 'map')
     const query = computed<CubeQuery|CubeComparingQuery>({
       get() {
@@ -63,15 +65,16 @@ export default defineComponent({
           confidenceInterval: true,
         }
       },
-      set(value) {
+      set(value: CubeQuery|CubeComparingQuery) {
         urlQuery.value = value
       },
     })
+
+    useCacheHeaders()
 
     return {
       query,
     }
   },
-  middleware: ['cached'],
 })
 </script>

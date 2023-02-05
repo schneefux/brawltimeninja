@@ -13,7 +13,7 @@
 <script lang="ts">
 import { CQuery, VTable } from '@schneefux/klicker/components'
 import { SliceValue, CubeQuery } from '@schneefux/klicker/types'
-import { defineComponent, PropType, computed, toRefs } from '@nuxtjs/composition-api'
+import { defineComponent, PropType, computed, toRefs } from 'vue'
 import useTopNTitle from '~/composables/top-n-title'
 
 export default defineComponent({

@@ -6,45 +6,50 @@
     <web-nav class="hidden lg:flex"></web-nav>
     <app-head-nav class="lg:hidden"></app-head-nav>
 
+    <loading-indicator></loading-indicator>
+
     <ad
-      :ad-region="$route != undefined ? $route.fullPath : undefined"
+      :ad-region="route.fullPath"
       ad-slot="6848221017"
       class="fixed left-4 inset-y-0 flex flex-col justify-center"
       scraper
     ></ad>
     <ad
-      :ad-region="$route != undefined ? $route.fullPath : undefined"
+      :ad-region="route.fullPath"
       ad-slot="8127026559"
       class="fixed right-4 inset-y-0 flex flex-col justify-center"
       scraper
     ></ad>
 
-    <nuxt />
+    <slot></slot>
 
-    <install-prompt-capture></install-prompt-capture>
-    <b-cookie-consent
-      v-if="consentPopupVisible"
-      @enable-none="disableCookies"
-      @enable-cookies="enableCookies"
-      @enable-all="enableCookiesAndAds"
-    >
-      <nuxt-link
-        slot="link"
-        class="underline"
-        to="/about"
-      >link</nuxt-link>
-    </b-cookie-consent>
+    <client-only>
+      <b-cookie-consent
+        v-if="consentPopupVisible"
+        @enable-none="disableCookies"
+        @enable-cookies="enableCookies"
+        @enable-all="enableCookiesAndAds"
+      >
+        <template v-slot:link>
+          <router-link
+            :to="localePath('/about')"
+            class="underline"
+          >link</router-link>
+        </template>
+      </b-cookie-consent>
+    </client-only>
 
     <app-bottom-nav class="lg:hidden"></app-bottom-nav>
     <b-web-footer
       :links="links"
-      tag="nuxt-link"
+      tag="router-link"
       class="hidden lg:block"
     >
-      <copyright
-        slot="below"
-        class="mt-4 text-sm"
-      ></copyright>
+      <template v-slot:below>
+        <copyright
+          class="mt-4 text-sm"
+        ></copyright>
+      </template>
     </b-web-footer>
 
     <adblock-bait></adblock-bait>
@@ -52,144 +57,81 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext, useMeta, useStore, watch, wrapProperty, ref, onMounted, useRoute } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref } from 'vue'
 import { useMutationObserver } from '@vueuse/core'
 import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
-import { setIsPwa, setIsTwa } from '~/composables/app'
-import { getCurrentInstance } from 'vue'
+import { useInstallPromptListeners } from '~/composables/app'
+import { useI18n } from 'vue-i18n'
+import { useConfig, useLocaleCookieRedirect, useLocalePath } from '@/composables/compat'
+import { useRoute } from 'vue-router'
+import { usePreferencesStore } from '@/stores/preferences'
+import { usePlaywireRamp } from '@/composables/playwire-ramp'
+import { useAdsense } from '@/composables/adsense'
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   components: {
     BWebFooter,
     BCookieConsent,
   },
-  head: {},
-  setup(props) {
-    const root = getCurrentInstance()!.proxy.$root
+  setup() {
     const container = ref<HTMLElement>()
 
-    const { localePath, i18n } = useContext()
-
-    useMeta(() => {
-      // https://i18n.nuxtjs.org/seo/#improving-performance
-      // will also add rel=canonical without query params
-      return root.$nuxtI18nHead({ addSeoAttributes: true, addDirAttribute: true })
-    })
+    const config = useConfig()
+    const i18n = useI18n()
+    const localePath = useLocalePath()
 
     const links = computed(() => [ {
       name: i18n.t('nav.Leaderboards'),
       target: localePath('/leaderboard/hours'),
     }, {
       name: i18n.t('nav.Guides'),
-      target: '/blog/guides',
+      target: localePath('/blog/guides'),
     }, {
       name: i18n.t('nav.Status'),
       target: localePath('/status'),
     }, {
       name: i18n.t('nav.Privacy'),
-      target: '/about',
+      target: localePath('/about'),
     }])
 
-    const store = useStore<any>()
-    const version = computed(() => store.state.version as number)
-    const adsAllowed = computed(() => store.state.adsAllowed as undefined|boolean)
-    const cookiesAllowed = computed(() => store.state.cookiesAllowed as undefined|boolean)
-    const consentPopupVisible = computed(() => store.state.consentPopupVisible as boolean)
+    const store = usePreferencesStore()
+    const consentPopupVisible = computed(() => store.consentPopupVisible)
 
     const disableCookies = () => {
-      store.commit('hideConsentPopup')
-      store.commit('setCookiesAllowed', false)
-      store.commit('setAdsAllowed', false)
-      hideAds()
+      store.cookiesAllowed = false
+      store.adsAllowed = false
     }
     const enableCookies = () => {
-      store.commit('hideConsentPopup')
-      store.commit('setCookiesAllowed', true)
-      store.commit('setAdsAllowed', false)
-      hideAds()
+      store.cookiesAllowed = true
+      store.adsAllowed = false
     }
     const enableCookiesAndAds = () => {
-      store.commit('hideConsentPopup')
-      store.commit('setCookiesAllowed', true)
-      store.commit('setAdsAllowed', true)
-      enableAds()
+      store.cookiesAllowed = true
+      store.adsAllowed = true
     }
 
-    const gtag = useGtag()
-    const enableAds = () => {
-      if (adsAllowed.value && process.client) {
-        // update consent preferences
-        if ('adsbygoogle' in window) {
-          (<any>window).adsbygoogle.pauseAdRequests = 0
-        }
-        gtag.optIn()
+    const route = useRoute()
 
-        // track some meta data
-        // play store allows only 1 ad/page - TWA is detected via referrer
-        const isPwa = window.matchMedia('(display-mode: standalone)').matches
-        const isTwa = document.referrer.startsWith('android-app')
-
-        setIsPwa(isPwa)
-        setIsTwa(isTwa)
-
-        gtag.event('branch_dimension', {
-          'branch': process.env.branch || '',
-          'non_interaction': true,
-        })
-        gtag.event('is_pwa_dimension', {
-          'is_pwa': isPwa,
-          'non_interaction': true,
-        })
-        gtag.event('is_twa_dimension', {
-          'is_twa': isTwa,
-          'non_interaction': true,
-        })
-      }
-    }
-    const hideAds = () => {
-      if (process.client) {
-        (<any>window).adsbygoogle.pauseAdRequests = 1
-        const sheet = document.createElement('style')
-        sheet.type = 'text/css'
-        sheet.innerText = '.adswrapper { display: none; }'
-        document.head.appendChild(sheet)
-      }
-    }
-
-    // called after vuex-persist has loaded
-    watch(version, () => {
-      if (cookiesAllowed.value == undefined || cookiesAllowed.value == false) {
-        store.commit('showConsentPopup')
-      } else {
-        if (adsAllowed.value) {
-          enableAds()
-        } else {
-          hideAds()
-        }
-      }
-    })
-
-    // TODO the fix for https://github.com/vueuse/vueuse/issues/685
-    // and/or importing vueuse as peer dependency breaks this ref type
-    useMutationObserver(container as any, () => {
+    useMutationObserver(container, () => {
       // workaround for AdSense overriding min-height: 0px
       // https://weblog.west-wind.com/posts/2020/May/25/Fixing-Adsense-Injecting-height-auto-important-into-scrolled-Containers
       // wtf Google
-      container.value!.style['min-height'] = ''
+      container.value!.style.minHeight = ''
     }, {
       attributes: true,
       attributeFilter: ['style'],
     })
 
-    const route = useRoute()
-    onMounted(() => {
-      if ('light' in route.value.query) {
-        document.getElementById('__nuxt')!.classList.add('light')
-      }
-    })
+    useInstallPromptListeners()
+    useLocaleCookieRedirect()
+    if (config.playwireRampPublisherId == '') {
+      useAdsense(config.adsensePubid)
+    } else {
+      usePlaywireRamp(config.playwireRampPublisherId, config.playwireRampSiteId)
+    }
 
     return {
+      route,
       links,
       disableCookies,
       enableCookies,

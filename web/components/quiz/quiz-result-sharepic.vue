@@ -4,13 +4,12 @@
       <span class="mt-1 font-semibold">{{ result.name }}</span>
       <span class="whitespace-nowrap">{{ Math.round(result.similarity * 100) }}% match</span>
       <media-img
-        clazz="h-48 m-2"
         :path="`/brawlers/${result.id}/model`"
+        clazz="h-48 m-2"
       ></media-img>
     </div>
 
     <oejts-table
-      slot="content"
       :oejts="result.score"
       class="w-80"
     ></oejts-table>
@@ -18,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from 'vue'
 import { QuizResult } from './quiz-result-card.vue'
 
 export default defineComponent({

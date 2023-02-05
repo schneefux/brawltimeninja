@@ -3,7 +3,7 @@
     :is="link != undefined ? 'router-link' : 'div'"
     :to="link"
     class="flex items-center"
-    @click.native.stop
+    @click.stop
   >
     <media-img
       v-if="icon != undefined"
@@ -19,7 +19,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, useContext } from '@nuxtjs/composition-api'
+import { useLocalePath } from '@/composables/compat'
+import { defineComponent, computed } from 'vue'
 import { idToTag } from '~/lib/util'
 
 export default defineComponent({
@@ -33,7 +34,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { localePath } = useContext()
+    const localePath = useLocalePath()
     const icon = computed(() => props.row.dimensionsRaw.player?.playerIcon != undefined ? `/avatars/${props.row.dimensionsRaw.player.playerIcon}` : undefined)
     const link = computed(() => props.row.dimensionsRaw.player?.player != undefined ? localePath(`/profile/${idToTag(props.row.dimensionsRaw.player.player).substring(1)}`) : undefined)
 

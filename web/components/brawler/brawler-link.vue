@@ -2,7 +2,7 @@
   <router-link
     :to="link"
     :title="title"
-    @click.native.stop
+    @click.stop
   >
     <figure class="inline-flex items-center">
       <span
@@ -51,7 +51,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, computed } from '@nuxtjs/composition-api'
+import { useLocalePath } from '@/composables/compat'
+import { defineComponent, computed } from 'vue'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 
 export default defineComponent({
@@ -88,7 +89,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { localePath } = useContext()
+    const localePath = useLocalePath()
     const brawlerBrawlerId = computed(() => brawlerId({ name: props.brawler }))
     const brawlerBrawlerName = computed(() => capitalizeWords(props.brawler.toLowerCase()))
     const brawlerAllyId = computed(() => props.ally != undefined ? brawlerId({ name: props.ally }) : undefined)

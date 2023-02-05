@@ -3,8 +3,8 @@
     :elevation="0"
     dense
   >
-    <div
-      slot="content"
+    <template v-slot:content><div
+
       class="h-full flex items-center gap-x-4"
     >
       <media-img
@@ -15,7 +15,7 @@
       ></media-img>
       <c-query
         :query="query"
-        :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
+        :filter="(e: any) => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
       >
         <template v-slot="data">
           <v-kv-table
@@ -24,12 +24,12 @@
           ></v-kv-table>
         </template>
       </c-query>
-    </div>
+    </div></template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
 import { CQuery, VKvTable } from '@schneefux/klicker/components'
 import { SliceValue } from '@schneefux/klicker/types'
 import { brawlerId as getBrawlerId } from '@/lib/util'

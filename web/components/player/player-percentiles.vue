@@ -16,10 +16,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, useContext } from '@nuxtjs/composition-api'
+import { defineComponent, PropType, computed } from 'vue'
 import { Player } from '~/model/Api'
+// @ts-ignore
 import ztable from 'ztable'
 import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
+import { useI18n } from 'vue-i18n'
 
 interface Achievement {
   metric: string
@@ -38,7 +40,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     const achievements = computed<Achievement[]>(() => {
       // 2020-08-08 highest trophies
@@ -71,22 +73,22 @@ export default defineComponent({
 
       // TODO create an endpoint?
       const allAchievements = [{
-        metric: i18n.tc('metric.highestTrophies'),
+        metric: i18n.t('metric.highestTrophies'),
         percentile: ztable(trophiesZ),
       }, {
-        metric: i18n.tc('metric.highestBrawlerTrophies'),
+        metric: i18n.t('metric.highestBrawlerTrophies'),
         percentile: ztable(brawlerZ),
       }, {
-        metric: i18n.tc('metric.isQualifiedFromChampionshipChallenge'),
+        metric: i18n.t('metric.isQualifiedFromChampionshipChallenge'),
         percentile: ccPercentile,
       }, {
-        metric: i18n.tc('metric.victories'),
+        metric: i18n.t('metric.victories'),
         percentile: ztable(victoryZ),
       }, {
-        metric: i18n.tc('metric.soloVictories'),
+        metric: i18n.t('metric.soloVictories'),
         percentile: ztable(soloZ),
       }, {
-        metric: i18n.tc('metric.duoVictories'),
+        metric: i18n.t('metric.duoVictories'),
         percentile: ztable(duoZ),
       }].sort((a1, a2) => a2.percentile - a1.percentile)
 
@@ -108,9 +110,9 @@ export default defineComponent({
 
         p = Math.floor(p * base) / base
         if (p == 0.5) {
-          return i18n.t('rating.above-average') as string
+          return i18n.t('rating.above-average')
         }
-        return i18n.t('rating.percentile-of', { part: p * base, total: base }) as string
+        return i18n.t('rating.percentile-of', { part: p * base, total: base })
       }
 
       return achievements.map(a => ({

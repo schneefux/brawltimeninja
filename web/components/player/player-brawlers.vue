@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
 import { Player } from '~/model/Api'
 import { BScrollingList } from '@schneefux/klicker/components'
 

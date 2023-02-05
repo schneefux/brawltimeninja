@@ -1,7 +1,7 @@
 <template>
   <div class="inline-flex items-center">
     <media-img
-      :path="`/gears/${row.dimensionsRaw.gear.gearName.toLowerCase()}_1`"
+      :path="`/gears/${row.dimensionsRaw.gear.gearName.toLowerCase().replace(/ /g, '_')}_1`"
       :alt="row.dimensions.gear"
       size="80"
       clazz="h-8"
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from 'vue'
 import { MetaGridEntry } from '@schneefux/klicker/types'
 
 export default defineComponent({

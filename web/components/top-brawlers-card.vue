@@ -3,36 +3,34 @@
     :title="$t('best.brawlers.long')"
     :elevation="elevation"
   >
-    <div
-      slot="actions"
-      class="flex flex-wrap justify-end gap-2"
-    >
-      <b-button
-        :to="localePath(`/team-builder`)"
-        primary
-        sm
-      >
-        {{ $t('action.open.draft-tool') }}
-      </b-button>
+    <template v-slot:actions>
+      <div class="flex flex-wrap justify-end gap-2">
+        <b-button
+          :to="localePath(`/team-builder`)"
+          primary
+          sm
+        >
+          {{ $t('action.open.draft-tool') }}
+        </b-button>
 
-      <b-button
-        :to="localePath(`/tier-list/brawler`)"
-        primary
-        sm
-      >
-        {{ $t('action.open.tier-list.brawler') }}
-      </b-button>
-    </div>
+        <b-button
+          :to="localePath(`/tier-list/brawler`)"
+          primary
+          sm
+        >
+          {{ $t('action.open.tier-list.brawler') }}
+        </b-button>
+      </div>
+    </template>
 
-    <map-best-brawlers
-      slot="content"
-      :limit="limit"
-    ></map-best-brawlers>
+    <template v-slot:content>
+      <map-best-brawlers :limit="limit"></map-best-brawlers>
+    </template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
 import { BButton, CQuery } from '@schneefux/klicker/components'
 
 export default defineComponent({

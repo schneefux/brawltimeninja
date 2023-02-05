@@ -1,7 +1,7 @@
 <template>
   <b-card>
-    <b-scrolling-list
-      slot="content"
+    <template v-slot:content><b-scrolling-list
+
       :items="scrapedData != undefined ? scrapedData.voicelines : []"
       :cell-columns="1"
       :render-at-least="5"
@@ -28,15 +28,17 @@
           >{{ voiceline.description.replace(/&quot;/g, '') }}</q>
         </div>
       </template>
-    </b-scrolling-list>
+    </b-scrolling-list></template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, useContext } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BScrollingList, BDashboardCell, BCard, BButton } from '@schneefux/klicker/components'
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
+import { useConfig } from '~/composables/compat'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default defineComponent({
   components: {
@@ -44,6 +46,7 @@ export default defineComponent({
     BDashboardCell,
     BButton,
     BCard,
+    FontAwesomeIcon,
   },
   props: {
     scrapedData: {
@@ -52,7 +55,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { $config } = useContext()
+    const $config = useConfig()
 
     const play = (voiceline: ScrapedBrawler['voicelines'][0]) => {
       const audio = new Audio($config.mediaUrl + voiceline.path)

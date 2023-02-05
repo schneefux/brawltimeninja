@@ -3,7 +3,7 @@
     <b-textbox
       v-if="events.length >= 20"
       v-model="nameFilter"
-      :placeholder="$tc('map', 1)"
+      :placeholder="$t('map', 1)"
       class="mt-8"
     ></b-textbox>
 
@@ -55,11 +55,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref } from 'vue'
 import { camelToKebab } from '~/lib/util'
 import { BScrollingList, BTextbox } from '@schneefux/klicker/components'
-import { EventMetadata } from '~/plugins/klicker'
+import { EventMetadata } from '~/plugins/klicker.service'
 import { getMapName } from '~/composables/map'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -83,14 +84,14 @@ export default defineComponent({
   setup(props) {
     const nameFilter = ref('')
 
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const filteredEvents = computed(() =>
       props.events.filter(e => {
         if (nameFilter.value == '') {
           return true
         }
 
-        const mapName = getMapName(i18n, e.id, e.map) ?? ''
+        const mapName = getMapName(e.id, e.map) ?? ''
         return mapName.toLowerCase().includes(nameFilter.value.toLowerCase())
       })
       .map(e => ({
@@ -120,12 +121,12 @@ export default defineComponent({
           }
           if (a.mode == b.mode) {
             // same mode: sort by map name
-            return getMapName(i18n, a.id, a.map)!.localeCompare(getMapName(i18n, b.id, b.map)!)
+            return getMapName(a.id, a.map)!.localeCompare(getMapName(b.id, b.map)!)
           }
         }
 
         // sort by mode name
-        return (i18n.t('mode.' + a.mode) as string).localeCompare(i18n.t('mode.' + b.mode) as string)
+        return (i18n.t('mode.' + a.mode)).localeCompare(i18n.t('mode.' + b.mode))
       })
     )
 

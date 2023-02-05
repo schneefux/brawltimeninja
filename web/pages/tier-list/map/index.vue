@@ -10,13 +10,14 @@
     ></ad>
 
     <b-split-dashboard>
-      <b-scroll-spy
-        slot="aside"
-        :sections="sections"
-        nav-class="top-14 lg:top-0"
-        toc-class="hidden lg:block"
-        class="lg:mt-8 lg:overflow-y-auto hide-scrollbar"
-      ></b-scroll-spy>
+      <template v-slot:aside>
+        <b-scroll-spy
+          :sections="sections"
+          nav-class="top-14 lg:top-0"
+          toc-class="hidden lg:block"
+          class="lg:mt-8 lg:overflow-y-auto hide-scrollbar"
+        ></b-scroll-spy>
+      </template>
 
       <b-page-section
         ref="activeSection"
@@ -27,7 +28,7 @@
         }"
       >
         <events-roll
-          :events="currentEvents"
+          :events="current"
           with-data
         ></events-roll>
       </b-page-section>
@@ -62,7 +63,7 @@
         lazy
       >
         <events-roll
-          :events="upcomingEvents"
+          :events="upcoming"
           with-data
         ></events-roll>
       </b-page-section>
@@ -77,7 +78,7 @@
         lazy
       >
         <events-roll
-          :events="allEvents || []"
+          :events="allEvents"
         ></events-roll>
       </b-page-section>
 
@@ -102,13 +103,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useAsync, useContext, useMeta } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref } from 'vue'
+import { useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, unformatMode } from '@/lib/util'
 import { ActiveEvent } from '@/model/Api'
 import { useTrackScroll } from '~/composables/gtag'
-import { EventMetadata } from '~/plugins/klicker'
 import { BPageSection, BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
+import { useAllEvents } from '@/composables/dimension-values'
+import { useCurrentAndUpcomingEvents } from '@/composables/events'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   directives: {
@@ -119,52 +123,35 @@ export default defineComponent({
     BSplitDashboard,
     BScrollSpy,
   },
-  head: {},
   setup() {
-    const { $config, i18n, $klicker, $api } = useContext()
-    const events = useAsync(() => $api.query('events.active').catch(() => null), 'events')
-    const currentEvents = computed<EventMetadata[]>(() => (events.value?.current ?? []).map(e => ({
-      id: parseInt(e.id),
-      map: e.map,
-      mode: unformatMode(e.mode),
-      key: `${e.id}-${e.mode}-${e.map}`,
-      metrics: {},
-      powerplay: false,
-    })).filter((event, index, all) => all.findIndex(e => e.key == event.key) == index))
-    const upcomingEvents = computed<EventMetadata[]>(() => (events.value?.upcoming ?? []).map(e => ({
-      id: parseInt(e.id),
-      map: e.map,
-      mode: unformatMode(e.mode),
-      key: `${e.id}-${e.mode}-${e.map}`,
-      metrics: {},
-      powerplay: false,
-    })).filter((event, index, all) => all.findIndex(e => e.key == event.key) == index))
+    const i18n = useI18n()
+    const $config = useConfig()
+    const { current, upcoming } = useCurrentAndUpcomingEvents()
 
-    const allEvents = useAsync(() => $klicker.queryAllEvents({}), 'all-events')
+    const allEvents = useAllEvents()
 
-    const allPowerLeagueEvents = useAsync(() => $klicker.queryAllEvents({
+    const allPowerLeagueEvents = useAllEvents({
       powerplay: ['1'],
-    }), 'powerleague-events')
+    })
 
+    useCacheHeaders()
     useMeta(() => {
-      const description = i18n.tc('tier-list.maps.meta.description', 1)
-      const structuredData = (<ActiveEvent[]>[]).concat(events.value?.current ?? [], events.value?.upcoming ?? [])
+      const structuredData = (<ActiveEvent[]>[]).concat(current.value, upcoming.value)
         .map((event) => ({
           type: 'application/ld+json',
-          json: formatAsJsonLd({
+          innerHTML: formatAsJsonLd({
             id: event.id,
-            map: (i18n.te(`map.${event.id}`) && i18n.t(`map.${event.id}`) || event.map) as string,
-            mode: i18n.t('mode.' + event.mode) as string,
+            map: (i18n.te(`map.${event.id}`) && i18n.t(`map.${event.id}`) || event.map),
+            mode: i18n.t('mode.' + event.mode),
             start: event.start,
             end: event.end,
           }, $config.mediaUrl),
         }))
 
       return {
-        title: i18n.tc('tier-list.maps.meta.title', 1),
+        title: i18n.t('tier-list.maps.meta.title'),
         meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
+          { hid: 'description', name: 'description', content: i18n.t('tier-list.maps.meta.description') },
         ],
         script: structuredData,
       }
@@ -183,36 +170,35 @@ export default defineComponent({
     const sections = computed(() => [{
       id: 'active',
       title: i18n.t('events.active.title'),
-      element: sectionRefs.activeSection.value,
+      element: sectionRefs.activeSection.value?.$el,
     }, {
       id: 'powerleague',
       title: i18n.t('events.powerleague.title'),
-      element: sectionRefs.powerleagueSection.value,
+      element: sectionRefs.powerleagueSection.value?.$el,
     }, {
       id: 'upcoming',
       title: i18n.t('events.upcoming.title'),
-      element: sectionRefs.upcomingSection.value,
+      element: sectionRefs.upcomingSection.value?.$el,
     }, {
       id: 'season',
       title: i18n.t('events.season.title'),
-      element: sectionRefs.seasonSection.value,
+      element: sectionRefs.seasonSection.value?.$el,
     }, {
       id: 'competition-winners',
       title: i18n.t('tier-list.competition-winners.title'),
-      element: sectionRefs.competitionWinnersSection.value,
+      element: sectionRefs.competitionWinnersSection.value?.$el,
     }])
 
     return {
       ...sectionRefs,
       sections,
       allEvents,
-      currentEvents,
-      upcomingEvents,
+      current,
+      upcoming,
       allPowerLeagueEvents,
       unformatMode,
       makeVisibilityCallback,
     }
   },
-  middleware: ['cached'],
 })
 </script>

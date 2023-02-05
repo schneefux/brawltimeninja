@@ -21,12 +21,11 @@
         once: true,
       }"
     >
-      <p
-        slot="description"
-        class="mt-4 prose dark:prose-invert"
-      >
-        {{ $t('tier-list.open-map') }}
-      </p>
+      <template v-slot:description>
+        <p class="mt-4 prose dark:prose-invert">
+          {{ $t('tier-list.open-map') }}
+        </p>
+      </template>
 
       <events-roll :events="events"></events-roll>
     </b-page-section>
@@ -54,8 +53,12 @@
 import { camelToKebab, kebabToCamel } from '@/lib/util'
 import { BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { defineComponent, useAsync, computed, useRoute, useContext, useMeta } from '@nuxtjs/composition-api'
+import { defineComponent, computed } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
+import { useMeta, useCacheHeaders } from '~/composables/compat'
+import { useActiveEvents } from '@/composables/dimension-values'
+import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   directives: {
@@ -65,33 +68,28 @@ export default defineComponent({
     BTextbox,
     BDashboardCell,
   },
-  head: {},
-  middleware: ['cached'],
   setup() {
-    const { i18n, $klicker } = useContext()
+    const i18n = useI18n()
 
     const route = useRoute()
 
     const mode = computed(() => {
       // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return kebabToCamel(route.value.params.mode ?? '')
+      return kebabToCamel(route.params.mode as string ?? '')
     })
-    const events = useAsync(() => $klicker.queryActiveEvents([], {
+    const events = useActiveEvents([], {
       mode: [mode.value],
-    }, null), `mode-${route.value.params.mode}`)
+    }, null)
 
     const modePath = computed(() => `/tier-list/mode/${camelToKebab(mode.value)}`)
 
-    useMeta(() => {
-      const description = i18n.tc('tier-list.mode.meta.description', 1, { mode: i18n.t('mode.' + mode.value) as string })
-      return {
-        title: i18n.tc('tier-list.mode.meta.title', 1, { mode: i18n.t('mode.' + mode.value) as string }),
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ]
-      }
-    })
+    useCacheHeaders()
+    useMeta(() => ({
+      title: i18n.t('tier-list.mode.meta.title', { mode: i18n.t('mode.' + mode.value) }),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('tier-list.mode.meta.description', { mode: i18n.t('mode.' + mode.value) }) },
+      ]
+    }))
 
     const { makeVisibilityCallback } = useTrackScroll('mode_meta')
 

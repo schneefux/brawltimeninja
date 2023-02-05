@@ -1,6 +1,6 @@
 <template>
   <b-card
-    :title="$attrs.title || (mode != undefined ? $t('mode.' + mode) : undefined)"
+    :title="mode != undefined ? $t('mode.' + mode) : undefined"
     :link="mapLink || modeLink"
     :title-link="modeLink"
     :subtitle="mapName"
@@ -10,23 +10,30 @@
     :text-color="mode != undefined ? 'text-gray-200' : undefined"
     :icon="mode != undefined ? '/modes/' + camelToKebab(mode) + '/icon' : undefined"
     :icon-alt="$t('mode.' + mode)"
-    v-bind="$attrs"
-    v-on="$listeners"
   >
     <template v-slot:icon="data">
       <media-img-icon v-bind="data"></media-img-icon>
     </template>
 
-    <map-img
-      v-if="id != undefined"
-      slot="preview"
-      :id="id"
-      :map="map"
-      clazz="h-12 w-12 object-contain"
-    ></map-img>
+    <template v-slot:preview>
+      <map-img
+        v-if="id != undefined && map != undefined"
+        :id="id"
+        :map="map"
+        clazz="h-12 w-12 object-contain"
+      ></map-img>
+    </template>
 
+    <template v-if="'infobar' in $slots" v-slot:infobar>
+      <slot name="infobar"></slot>
+    </template>
+    <template v-if="'content' in $slots" v-slot:content>
+      <slot name="content"></slot>
+    </template>
+
+    <!-- TODO: causes hydration error, see https://github.com/vuejs/core/issues/7095
     <template
-      v-for="(_, slot) of $scopedSlots"
+      v-for="(_, slot) of $slots"
       v-slot:[slot]="slotProps"
     >
       <slot
@@ -34,16 +41,18 @@
         :name="slot"
       ></slot>
     </template>
+    -->
   </b-card>
 </template>
 
 <script lang="ts">
 import { camelToKebab, slugify } from '@/lib/util'
-import { defineComponent, computed, useContext, toRefs } from '@nuxtjs/composition-api'
+import { defineComponent, computed, toRefs } from 'vue'
 import { useMapName } from '~/composables/map'
+import { useConfig, useLocalePath } from '~/composables/compat'
+import { useSupportsWebp } from '@/composables/webp'
 
 export default defineComponent({
-  inheritAttrs: false,
   props: {
     mode: {
       // camel case
@@ -61,7 +70,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $config, $supportsWebp, localePath } = useContext()
+    const $config = useConfig()
+    const localePath = useLocalePath()
+    const supportsWebp = useSupportsWebp()
 
     const background = computed(() => {
       if (props.nobackground) {
@@ -69,7 +80,7 @@ export default defineComponent({
       }
       const path = '/modes/' + camelToKebab(props.mode!) + '/background'
       const query = '?size=800'
-      const url = $config.mediaUrl + path + ($supportsWebp ? '.webp' : '.jpg') + query
+      const url = $config.mediaUrl + path + (supportsWebp.value ? '.webp' : '.jpg') + query
       return url
     })
 

@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { BScrollingDashboard, BDashboardCell } from '@schneefux/klicker/components'
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   components: {

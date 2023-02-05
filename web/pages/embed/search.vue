@@ -11,16 +11,14 @@
         :placeholder="$t('action.enter-tag')"
         type="text"
         autocomplete="off"
-        class="w-48 uppercase placeholder:normal-case font-semibold appearance-none focus:outline-none ml-3 mr-2"
+        class="w-48 text-black uppercase placeholder:normal-case font-semibold appearance-none focus:outline-none ml-3 mr-2"
       >
       <b-button
-        tag="input"
         type="submit"
         class="mr-3"
-        value="Search"
         primary
         lg
-      ></b-button>
+      >{{ $t('action.search') }}</b-button>
     </div>
     <p
       v-show="!tagValid"
@@ -31,48 +29,58 @@
   </form>
 </template>
 
-<script>
+<script lang="ts">
+import { useCacheHeaders } from '@/composables/compat'
+import { defineComponent, ref, computed } from 'vue'
 import { tagPattern } from '~/lib/util'
+import { event } from 'vue-gtag'
+import { BButton } from '@schneefux/klicker/components'
 
-export default {
-  layout: 'empty',
-  middleware: ['cached'],
-  data() {
-    return {
-      tag: undefined,
-      tagValid: true,
-    }
+export default defineComponent({
+  components: {
+    BButton,
   },
-  computed: {
-    cleanedTag() {
-      return (this.tag || '')
+  setup() {
+    useCacheHeaders()
+
+    const tagValid = ref(true)
+    const tag = ref<string>()
+
+    const cleanedTag = computed(() =>
+      (tag.value || '')
         .trim()
         .replace('#', '')
         .toUpperCase()
         .replace(/O/g, '0')
-    },
-  },
-  methods: {
-    search(event) {
-      this.tagValid = tagPattern.test(this.cleanedTag)
+    )
 
-      if (this.tagValid) {
-        this.$gtag.event('search', {
+    function search(e: Event) {
+      tagValid.value = tagPattern.test(cleanedTag.value)
+
+      if (tagValid.value) {
+        event('search', {
           'event_category': 'embed',
           'event_label': 'success',
         })
       } else {
-        event.preventDefault()
-        this.$gtag.event('search', {
+        e.preventDefault()
+        event('search', {
           'event_category': 'embed',
           'event_label': 'error_invalid',
         })
       }
 
-      return this.tagValid
-    },
+      return tagValid.value
+    }
+
+    return {
+      tag,
+      search,
+      tagValid,
+      cleanedTag,
+    }
   },
-}
+})
 </script>
 
 <style>
@@ -80,3 +88,11 @@ export default {
   @apply normal-case;
 }
 </style>
+
+<route>
+{
+  meta: {
+    layout: 'empty',
+  },
+}
+</route>

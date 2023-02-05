@@ -1,15 +1,16 @@
 <template>
   <event-card :mode="mode">
-    <brawler-kv-card
-      slot="content"
-      :brawler-name="brawlerName"
-      :slices="slices"
-    ></brawler-kv-card>
+    <template v-slot:content>
+      <brawler-kv-card
+        :brawler-name="brawlerName"
+        :slices="slices"
+      ></brawler-kv-card>
+    </template>
   </event-card>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from 'vue'
 
 export default defineComponent({
   props: {

@@ -5,24 +5,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta, useContext } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
+import { useMeta, useCacheHeaders } from '@/composables/compat'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
-  middleware: ['cached'],
-  head: {},
   setup() {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
-    useMeta(() => {
-      const description = i18n.t('tier-list.gear.meta.description') as string
-      return {
-        title: i18n.t('tier-list.gear.meta.title') as string,
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ]
-      }
-    })
+    useCacheHeaders()
+    useMeta(() => ({
+      title: i18n.t('tier-list.gear.meta.title'),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('tier-list.gear.meta.description') },
+      ]
+    }))
   }
 })
 </script>

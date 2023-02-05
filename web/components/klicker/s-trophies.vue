@@ -1,17 +1,17 @@
 <template>
   <trophy-slider-select
     v-model="model"
-    :name="(value.powerplay || [])[0] == 'true' ? 'playerLeague' : 'playerTrophies'"
+    :name="(modelValue.powerplay || [])[0] == 'true' ? 'playerLeague' : 'playerTrophies'"
   ></trophy-slider-select>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useRoute } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },
@@ -24,8 +24,8 @@ export default defineComponent({
     const model = computed({
       get() {
         return {
-          gte: parseInt(props.value.trophyRangeGte?.[0] as string) || undefined,
-          lt: parseInt(props.value.trophyRangeLt?.[0] as string) || undefined,
+          gte: parseInt(props.modelValue.trophyRangeGte?.[0] as string) || undefined,
+          lt: parseInt(props.modelValue.trophyRangeLt?.[0] as string) || undefined,
         }
       },
       set(v: { gte?: number, lt?: number }) {

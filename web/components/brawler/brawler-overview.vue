@@ -14,30 +14,30 @@
           <media-img-icon v-bind="data"></media-img-icon>
         </template>
 
-        <div
-          slot="content"
-          class="h-full flex flex-col justify-between gap-y-4"
-        >
-          <p>
-            <q class="italic">{{ scrapedData.description }}</q>
-          </p>
-          <b-kv-table
-            :rows="overviewKvRows"
-            :data="overviewKvData"
-          >
-            <b-select
-              slot="level"
-              v-model="level"
-              class="!py-px !pr-8 leading-tight mx-1 my-[2px]"
+        <template v-slot:content>
+          <div class="h-full flex flex-col justify-between gap-y-4">
+            <p>
+              <q class="italic">{{ scrapedData.description }}</q>
+            </p>
+            <b-kv-table
+              :rows="overviewKvRows"
+              :data="overviewKvData"
             >
-              <option
-                v-for="i in 11"
-                :key="i"
-                :value="i"
-              >{{ i }}</option>
-            </b-select>
-          </b-kv-table>
-        </div>
+              <template v-slot:level>
+                <b-select
+                  v-model="level"
+                  class="!py-px !pr-8 leading-tight mx-1 my-[2px]"
+                >
+                  <option
+                    v-for="i in 11"
+                    :key="i"
+                    :value="i"
+                  >{{ i }}</option>
+                </b-select>
+              </template>
+            </b-kv-table>
+          </div>
+        </template>
       </b-card>
     </b-dashboard-cell>
 
@@ -50,7 +50,7 @@
       <brawler-attack-card
         v-if="scrapedData != undefined"
         :scraped-data="scrapedData"
-        :prop="prop"
+        :prop="prop as 'attack' | 'super'"
         :level="level"
       ></brawler-attack-card>
     </b-dashboard-cell>
@@ -58,9 +58,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BScrollingDashboard, BDashboardCell, BCard, BKvTable, BSelect } from '@schneefux/klicker/components'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -83,7 +84,7 @@ export default defineComponent({
   setup(props) {
     const level = ref('1')
 
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const overviewKvRows = computed(() => props.scrapedData == undefined ? [] : [{
       title: i18n.t('metric.level'),
       key: 'level',

@@ -1,11 +1,14 @@
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { useCacheHeaders, useValidate } from '@/composables/compat'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  async validate({ redirect }) {
-    redirect(301, '/leaderboard/hours')
-    return true
+  setup() {
+    useCacheHeaders()
+    useValidate(async ({ redirect }) => {
+      redirect(301, '/leaderboard/hours')
+      return true
+    })
   },
-  middleware: ['cached'],
 })
 </script>

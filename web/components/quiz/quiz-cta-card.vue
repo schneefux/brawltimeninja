@@ -3,18 +3,25 @@
     v-if="result == undefined"
     class="max-w-md"
   >
-    <div slot="content" class="relative mt-4">
-      <p class="text-center">{{ $t('oejts.cta-question') }}</p>
-      <img class="absolute top-[10px] left-0 w-10" src="~/assets/images/organized.png">
-      <quiz-likert
-        slot="content"
-        :value="{}"
-        :start="0"
-        :end="1"
-        @input="onTrigger"
-      ></quiz-likert>
-      <img class="absolute top-[7px] right-0 w-10" src="~/assets/images/chaotic.png">
-    </div>
+    <template v-slot:content>
+      <div class="relative mt-4">
+        <p class="text-center">{{ $t('oejts.cta-question') }}</p>
+        <img
+          :src="organizedImage"
+          class="absolute top-[10px] left-0 w-10"
+        >
+        <quiz-likert
+          :model-value="{}"
+          :start="0"
+          :end="1"
+          @update:modelValue="onTrigger"
+        ></quiz-likert>
+        <img
+          :src="chaoticImage"
+          class="absolute top-[7px] right-0 w-10"
+        >
+      </div>
+    </template>
   </b-card>
 
   <b-card
@@ -23,32 +30,37 @@
     :subtitle="$t('oejts.result.short', { brawler: resultName })"
     class="max-w-md"
   >
-    <media-img
-      slot="preview"
-      :path="`/brawlers/${result}/model`"
-      size="256"
-      clazz="h-24 md:h-16 my-2"
-    ></media-img>
-    <b-button
-      slot="actions"
-      class="mx-auto"
-      primary
-      md
-      @click="onRestart"
-    >{{ $t('action.restart') }}</b-button>
+    <template v-slot:preview>
+      <media-img
+        :path="`/brawlers/${result}/model`"
+        size="256"
+        clazz="h-24 md:h-16 my-2"
+      ></media-img>
+    </template>
+    <template v-slot:actions>
+      <b-button
+        class="mx-auto"
+        primary
+        md
+        @click="onRestart"
+      >{{ $t('action.restart') }}</b-button>
+    </template>
   </b-card>
 </template>
 
 <script lang="ts">
 import { oejtsScores } from '~/lib/oejts'
 import { brawlerId } from '~/lib/util'
-import { computed, defineComponent, useStore, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from 'vue'
+import { event } from 'vue-gtag'
+import organizedImage from '~/assets/images/icon/organized.png'
+import chaoticImage from '~/assets/images/icon/chaotic.png'
+import { usePreferencesStore } from '@/stores/preferences'
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   setup(props, { emit }) {
-    const store = useStore<any>()
-    const resultName = computed(() => store.state['personalityTestResult'])
+    const store = usePreferencesStore()
+    const resultName = computed(() => store.personalityTestResult)
     const result = computed(() => {
       if (resultName.value == undefined) {
         return undefined
@@ -57,17 +69,16 @@ export default defineComponent({
       }
     })
 
-    const gtag = useGtag()
     const onTrigger = (m: Record<string, number>) => {
-      emit('input', m)
-      gtag.event('click', {
+      emit('update:modelValue', m)
+      event('click', {
         'event_category': 'quiz',
         'event_label': 'start',
       })
     }
     const onRestart = () => {
-      emit('input', {})
-      gtag.event('click', {
+      emit('update:modelValue', {})
+      event('click', {
         'event_category': 'quiz',
         'event_label': 'restart_cta',
       })
@@ -79,6 +90,8 @@ export default defineComponent({
       onTrigger,
       onRestart,
       oejtsScores,
+      organizedImage,
+      chaoticImage,
     }
   },
 })

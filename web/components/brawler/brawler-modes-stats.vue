@@ -23,10 +23,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useAsync, computed } from '@nuxtjs/composition-api'
+import { defineComponent, computed } from 'vue'
 import { scaleInto } from '~/lib/util'
 import { MetaGridEntry } from '@schneefux/klicker/types'
 import { BScrollingList } from '@schneefux/klicker/components'
+import { useAsync } from '@/composables/compat'
+import { useKlicker } from '@schneefux/klicker/composables'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -39,7 +42,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker, i18n } = useContext()
+    const $klicker = useKlicker()
+    const i18n = useI18n()
 
     async function fetch() {
       return (await $klicker.query({
@@ -53,7 +57,7 @@ export default defineComponent({
       })).data as MetaGridEntry[]
     }
 
-    const data = useAsync(() => fetch(), `brawler-modes-${props.brawlerName}`)
+    const data = useAsync(() => fetch(), computed(() => `brawler-modes-${props.brawlerName}`))
 
     const description = computed(() => {
       if (data.value == undefined) {
@@ -69,7 +73,7 @@ export default defineComponent({
         brawler: props.brawlerName,
         amount: i18n.t('rating.amount.' + viability),
         bestMode,
-      }) as string
+      })
     })
 
     return {

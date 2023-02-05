@@ -1,271 +1,67 @@
-import Vue from 'vue'
-import cubes from '~/lib/klicker.cubes'
-import { Context } from "@nuxt/types"
-import { Config, SlicerSpec, SliceValue, StaticWidgetSpec, ValueType, VisualisationSpec, DimensionRendererSpec, MetricRendererSpec } from "@schneefux/klicker/types"
-import { differenceInMinutes, parseISO, subWeeks, format as formatDate } from "date-fns"
-import { formatClickhouseDate, formatMode, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd, idToTag } from "~/lib/util"
-import KlickerService from '@schneefux/klicker/service'
-import { CQuery } from '@schneefux/klicker/components'
-import visualisations from '~/lib/klicker.visualisations.conf'
-import slicers from '~/lib/klicker.slicers.conf'
-import staticWidgets from '~/lib/klicker.widgets.conf'
-import { defineNuxtPlugin } from '@nuxtjs/composition-api'
-import { BShimmer, BButton, BCard, BSelect, BLightbox, BCheckbox, BRadio, BPage, BPageSection, BScrollingDashboard } from '@schneefux/klicker/components'
-import { dimensionRenderers, metricRenderers } from '~/lib/klicker.renderers'
+import { BButton, BCard, BCheckbox, BLightbox, BPage, BPageSection, BRadio, BScrollingDashboard, BSelect, BShimmer, CQuery } from '@schneefux/klicker/components'
+import { KlickerConfigInjectionKey } from '@schneefux/klicker/composables/klicker'
+import { App, Ref, onServerPrefetch } from 'vue'
+import { useQuery } from '@tanstack/vue-query'
+import config from '@/lib/klicker.cubes'
+import { BrawltimeKlickerService } from './klicker.service'
+import visualisations from '@/lib/klicker.visualisations.conf'
+import staticWidgets from '@/lib/klicker.widgets.conf'
+import slicers from '@/lib/klicker.slicers.conf'
+import { dimensionRenderers, metricRenderers } from '@/lib/klicker.renderers'
+import { Router } from 'vue-router'
+import { useSentry } from '@/composables/compat'
 
-export interface EventMetadata {
-  key: string
-  id: number
-  map: string
-  mode: string
-  start?: string
-  end?: string
-  powerplay: boolean
-  metrics: Record<string, string|number>
+export default { install }
+export { createClient }
+
+interface Options {
+  cubeUrl: string
+  managerUrl: string
+  translate: (key: string, args: any) => string
+  router: Router
 }
 
-
-declare module 'vue/types/vue' {
-  interface Vue {
-    $klicker: CustomKlicker
-    $managerUrl: string
-  }
+function createClient(options: Options) {
+  return new BrawltimeKlickerService(options.cubeUrl, config, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers)
 }
 
-declare module '@nuxt/types' {
-  interface NuxtAppOptions {
-    $klicker: CustomKlicker
-  }
-  interface Context {
-    $klicker: CustomKlicker
-  }
-}
+function install(app: App, options: Options) {
+  app.component('c-query', CQuery)
+  app.component('b-shimmer', BShimmer)
+  app.component('b-card', BCard)
+  app.component('b-button', BButton)
+  app.component('b-select', BSelect)
+  app.component('b-lightbox', BLightbox)
+  app.component('b-checkbox', BCheckbox)
+  app.component('b-radio', BRadio)
+  app.component('b-page', BPage)
+  app.component('b-page-section', BPageSection)
+  app.component('b-scrolling-dashboard', BScrollingDashboard)
 
-declare module 'vuex/types/index' {
-  interface Store<S> {
-    $klicker: CustomKlicker
-  }
-}
+  const service = createClient(options)
 
-class CustomKlicker extends KlickerService {
-  constructor(cubeUrl: string,
-      config: Config,
-      visualisations: VisualisationSpec[],
-      staticWidgets: StaticWidgetSpec[],
-      slicers: SlicerSpec[],
-      dimensionRenderers: DimensionRendererSpec[],
-      metricRenderers: MetricRendererSpec[],
-      private context: Context) {
-    super(cubeUrl, config, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers)
-  }
-
-  // override Klicker.$t
-  public $te(key: string) {
-    return this.context.i18n.t(key) != key
-  }
-
-  // override Klicker.$t
-  public $t(key: string, args?: any) {
-    if (this.$te(key)) {
-      return this.context.i18n.t(key, args) as string
-    }
-    return super.$t(key, args)
-  }
-
-  // override Klicker.format
-  public format(spec: { type: ValueType, formatter?: string }, value: number|string|string[]): string {
-    if (spec.type == 'nominal' && typeof value == 'string') {
-      if (spec.formatter == 'formatMode') {
-        // TODO remove for i18n
-        return formatMode(value)
-      }
-      if (spec.formatter == 'idToTag') {
-        return idToTag(value)
-      }
-    }
-    if (spec.type == 'ordinal' && typeof value == 'number') {
-      if (spec.formatter == 'trophyRange') {
-        // TODO format leagues
-        return (value * 100) as any as string // TODO allow format to return numbers
-      }
-    }
-    return super.format(spec, value)
-  }
-
-  async queryActiveEvents(metricsIds: string[] = [], slices: SliceValue = {}, maxage: number|null = 60): Promise<EventMetadata[]> {
-    const events = await this.query({
-      cubeId: 'map',
-      dimensionsIds: ['mode', 'map', 'powerplay'],
-      metricsIds: ['eventId', 'timestamp', ...metricsIds],
-      slices: {
-        season: [formatClickhouseDate(getTodaySeasonEnd())],
-        ...slices,
-      },
-      sortId: 'timestamp',
-      limit: 20,
-    }).catch(() => ({
-      data: [],
-    }))
-
-    const lastEvents = events.data
-      .map(e => ({
-        key: `${e.metricsRaw.eventId}-${e.dimensionsRaw.mode.mode}-${e.dimensionsRaw.map.map}-${e.dimensionsRaw.powerplay.powerplay}`,
-        id: parseInt(e.metricsRaw.eventId as string),
-        map: e.dimensionsRaw.map.map as string,
-        mode: e.dimensionsRaw.mode.mode as string,
-        powerplay: e.dimensionsRaw.powerplay.powerplay == '1',
-        start: undefined as undefined|string,
-        end: undefined as undefined|string,
-        metrics: e.metricsRaw,
-      }))
-      .filter(e => maxage == null || differenceInMinutes(new Date(), parseISO(e.metrics.timestamp as string)) <= maxage)
-
-    const starlistData = await this.context.$api.query('events.active').catch(() => null)
-    starlistData?.current.forEach(s => {
-      const match = lastEvents.find(e => e.id.toString() == s.id)
-      if (match) {
-        match.start = s.start
-        match.end = s.end
-      }
-    })
-
-    return lastEvents
-  }
-
-  async queryAllEvents(slices: SliceValue = {}): Promise<EventMetadata[]> {
-    const events = await this.query({
-      cubeId: 'map',
-      dimensionsIds: ['mode', 'map'],
-      metricsIds: ['eventId'],
-      slices: {
-        season: [formatClickhouseDate(getMonthSeasonEnd())],
-        mapNotLike: ['Competition'],
-        ...slices,
-      },
-      sortId: 'map',
-    }).catch(() => ({
-      data: [],
-    }))
-
-    return events.data
-      .map(e => ({
-        key: `${e.metricsRaw.eventId}-${e.dimensionsRaw.mode.mode}-${e.dimensionsRaw.map.map}`,
-        id: parseInt(e.metricsRaw.eventId as string),
-        map: e.dimensionsRaw.map.map as string,
-        mode: e.dimensionsRaw.mode.mode as string,
-        powerplay: false,
-        metrics: {},
-      }))
-      .sort((a, b) => {
-        const sortMode = this.$t('mode.' + a.mode).localeCompare(this.$t('mode.' + b.mode))
-        if (sortMode != 0) {
-          return sortMode
-        }
-        return this.$t('map.' + a.id).localeCompare(this.$t('map.' + b.id))
+  app.provide(KlickerConfigInjectionKey, {
+    klicker: service,
+    managerUrl: options.managerUrl,
+    translate: options.translate,
+    useQuery: function<T, E>(key: Ref<string>, handler: () => Promise<T>) {
+      const sentry = useSentry()
+      const query = useQuery<T, E>([key], handler, {
+        keepPreviousData: true,
+        onError(err) {
+          sentry.captureException(err)
+        },
       })
-  }
+      onServerPrefetch(query.suspense)
 
-  async queryAllSeasons(limitWeeks: number = 8): Promise<{ id: string, name: string }[]> {
-    const limit = subWeeks(new Date(), limitWeeks)
-
-    const data = await this.query({
-      cubeId: 'map',
-      dimensionsIds: ['season'],
-      metricsIds: [],
-      slices: {
-        season: [formatClickhouseDate(getSeasonEnd(limit))],
-      },
-      sortId: 'season',
-    }).catch(() => ({
-      data: [],
-    }))
-
-    return data.data
-      .map(e => {
-        const d = parseISO(e.dimensionsRaw.season.season)
-        return {
-          id: formatClickhouseDate(d),
-          name: formatDate(subWeeks(d, 2), 'PP') // seasons last 2 weeks
-        }
-      })
-      .sort((e1, e2) => e1.id.localeCompare(e2.id))
-      .reverse()
-  }
-
-  async queryAllModes(): Promise<string[]> {
-    const modes = await this.query({
-      cubeId: 'map',
-      dimensionsIds: ['mode'],
-      metricsIds: [],
-      slices: {
-        season: [formatClickhouseDate(getMonthSeasonEnd())],
-      },
-      sortId: 'mode',
-    }).catch(() => ({
-      data: [],
-    }))
-    return modes.data
-      .map(row => row.dimensionsRaw.mode.mode)
-      .sort((a, b) => this.$t('mode.' + a).localeCompare(this.$t('mode.' + b)))
-  }
-
-  async queryAllMaps(mode?: string): Promise<{ battle_event_map: string, battle_event_id: number }[]> {
-    const maps = await this.query({
-      cubeId: 'map',
-      dimensionsIds: ['map'],
-      metricsIds: ['eventId'],
-      slices: {
-        season: [formatClickhouseDate(getMonthSeasonEnd())],
-        ...(mode != undefined ? {
-          mode: [mode],
-        } : {}),
-      },
-      sortId: 'picks',
-    }).catch(() => ({
-      data: [],
-    }))
-    return maps.data.map(e => ({
-      battle_event_id: e.metricsRaw.eventId as number,
-      battle_event_map: e.dimensionsRaw.map.map as string,
-    }))
-  }
-
-  async queryAllBrawlers(): Promise<string[]> {
-    const brawlers = await this.query({
-      cubeId: 'map',
-      dimensionsIds: ['brawler'],
-      metricsIds: [],
-      slices: {
-        season: [formatClickhouseDate(getTodaySeasonEnd())],
-      },
-      sortId: 'picks',
-    }).catch(() => ({
-      data: [],
-    }))
-    return brawlers.data
-      .map(b => b.dimensionsRaw.brawler.brawler)
-      .sort((a, b) => a.localeCompare(b))
-  }
+      return {
+        loading: query.isFetching,
+        data: query.data as Ref<T|null>,
+        error: query.error as Ref<E|null>,
+        refresh: async () => { await query.refetch() },
+      }
+    },
+    navigate: (to) => options.router.push(to),
+    linkComponent: 'router-link',
+  })
 }
-
-export default defineNuxtPlugin((context, inject) => {
-  Vue.component('c-query', CQuery)
-  Vue.component('b-shimmer', BShimmer)
-  Vue.component('b-card', BCard)
-  Vue.component('b-button', BButton)
-  Vue.component('b-select', BSelect)
-  Vue.component('b-lightbox', BLightbox)
-  Vue.component('b-checkbox', BCheckbox)
-  Vue.component('b-radio', BRadio)
-  Vue.component('b-page', BPage)
-  Vue.component('b-page-section', BPageSection)
-  Vue.component('b-scrolling-dashboard', BScrollingDashboard)
-
-  const service = new CustomKlicker(context.$config.cubeUrl, cubes, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers, context)
-
-  // onGlobalSetup(() => {
-  // })
-
-  inject('klicker', service)
-  inject('managerUrl', context.$config.managerUrl)
-})

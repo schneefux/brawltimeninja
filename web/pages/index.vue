@@ -8,7 +8,7 @@
 
     <div class="mx-auto relative">
       <img
-        src="~/assets/images/logo_with_crown_min.svg"
+        :src="logoWithCrownUrl"
         class="mx-auto mt-2 h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 object-contain"
       >
       <span
@@ -34,8 +34,6 @@
         once: true,
       }"
       :action="`/profile/${cleanedTag}`"
-      :target="isInIframe ? '_parent' : ''"
-      :onSubmit="isInIframe ? '' : 'return false;'"
       class="mt-4 mx-4 flex flex-wrap justify-center"
       @submit="search"
     >
@@ -49,14 +47,12 @@
             class="transition duration-100 ease-in-out form-input w-40 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent focus:ring-0 border-none ml-3 mr-2 py-4 !rounded-full"
           >
           <b-button
-            tag="input"
-            :value="$t('action.search')"
             type="submit"
             class="shrink-0 mr-3"
             secondary
             round
             lg
-          ></b-button>
+          >{{ $t('action.search') }}</b-button>
         </div>
       </div>
       <p
@@ -86,21 +82,23 @@
             :title="$t('tag-help.title')"
             class="mt-6 text-left"
           >
-            <div slot="content">
-              <p>{{ $t('tag-help.step.1') }}</p>
-              <p>{{ $t('tag-help.step.2') }}</p>
-              <img
-                loading="lazy"
-                src="~/assets/images/tag/tag-1.jpg"
-                class="px-8 mt-1 w-80 max-w-full"
-              >
-              <p class="mt-3">{{ $t('tag-help.step.3') }}</p>
-              <img
-                loading="lazy"
-                src="~/assets/images/tag/tag-2.jpg"
-                class="px-8 mt-1 w-80 max-w-full"
-              >
-            </div>
+            <template v-slot:content>
+              <div>
+                <p>{{ $t('tag-help.step.1') }}</p>
+                <p>{{ $t('tag-help.step.2') }}</p>
+                <img
+                  loading="lazy"
+                  :src="tag1Url"
+                  class="px-8 mt-1 w-80 max-w-full"
+                >
+                <p class="mt-3">{{ $t('tag-help.step.3') }}</p>
+                <img
+                  loading="lazy"
+                  :src="tag2Url"
+                  class="px-8 mt-1 w-80 max-w-full"
+                >
+              </div>
+            </template>
           </b-card>
         </details>
       </div>
@@ -111,19 +109,19 @@
         <template v-if="lastPlayers.length === 0">
           {{ $t('index.recommended') }}
         </template>
-        <template v-else-if="playerLinks.length > 0">
+        <template v-else-if="featuredPlayers.length > 0">
           {{ $t('index.recents') }}
         </template>
       </div>
       <div class="ml-2">
         <b-button
-          v-for="player in playerLinks"
+          v-for="player in (lastPlayers.length > 0 ? lastPlayers : featuredPlayers)"
           :key="player.tag"
-          :to="localePath(player.link)"
-          @click.native.passive="addLastPlayer(player)"
+          :to="player.link"
+          class="ml-2 mt-1"
           xs
           primary
-          class="ml-2 mt-1"
+          @click.passive="addLastPlayer(player)"
         >
           {{ player.name }}
         </b-button>
@@ -169,7 +167,7 @@
       v-if="events != undefined && events.length > 0"
       :title="$t('index.events.title')"
       v-observe-visibility="{
-        callback: makeVisibilityCallback('maps', 'live_events'),
+        callback: makeVisibilityCallback('live_events'),
         once: true,
       }"
       lazy
@@ -188,12 +186,21 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, useAsync, useContext, useMeta, useRouter, useStore } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref } from 'vue'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, tagPattern } from '@/lib/util'
-import { Player } from '../model/Brawlstars'
 import { useTrackScroll } from '~/composables/gtag'
 import { TRPCClientError } from '@trpc/client'
+import { useMeta, useCacheHeaders, useLocalePath, useConfig, useSentry } from '@/composables/compat'
+import { useActiveEvents } from '@/composables/dimension-values'
+import { useBrawlstarsStore } from '@/stores/brawlstars'
+import { event } from 'vue-gtag'
+import logoWithCrownUrl from '~/assets/images/logo_with_crown_min.svg'
+import tag1Url from '~/assets/images/tag/tag-1.jpg'
+import tag2Url from '~/assets/images/tag/tag-2.jpg'
+import { useRouter } from 'vue-router'
+import { usePreferencesStore } from '@/stores/preferences'
+import { useI18n } from 'vue-i18n'
 
 interface PlayerLink {
   name: string
@@ -205,14 +212,16 @@ export default defineComponent({
   directives: {
     ObserveVisibility,
   },
-  head: {},
   setup() {
-    const { i18n, $config, $klicker, $sentry, localePath } = useContext()
+    const i18n = useI18n()
+    const $config = useConfig()
+    const localePath = useLocalePath()
+    const sentry = useSentry()
 
     const tag = ref<string|undefined>()
-    const events = useAsync(() => $klicker.queryActiveEvents([], {
+    const events = useActiveEvents([], {
       powerplay: ['0'],
-    }))
+    })
 
     const cleanedTag = computed(() =>
       (tag.value || '')
@@ -222,37 +231,28 @@ export default defineComponent({
         .replace(/O/g, '0')
     )
 
-    const playerLinks = computed(() => {
-      const players = lastPlayers.value.length == 0 ? featuredPlayers.value : lastPlayers.value
-      return players
-        .slice().sort(() => 0.5 - Math.random())
-        .slice(0, 3)
-        .map(p => (<PlayerLink>{
-          tag: p.tag,
-          name: p.name,
-          link: `/profile/${p.tag.replace(/^#/, '')}`,
-        }))
+    const mapToPlayerLink = (p: { tag: string, name: string }) => ({
+      tag: p.tag,
+      name: p.name,
+      link: localePath(`/profile/${p.tag.replace(/^#/, '')}`),
     })
 
-    const isInIframe = ref(false)
-    onMounted(() => {
-      try {
-        isInIframe.value = (<any>global).window === undefined || (<any>global).window.self !== (<any>global).window.top
-      } catch (e) {
-        isInIframe.value = true
-      }
-    })
+    const preferencesStore = usePreferencesStore()
 
-    const { makeVisibilityCallback, gtag } = useTrackScroll('home')
+    const lastPlayers = computed(() => preferencesStore.lastPlayers
+      .slice(0, 3)
+      .map(mapToPlayerLink))
 
-    const store = useStore<any>()
-    const player = computed(() => store.state.player as Player|undefined)
-    const lastPlayers = computed(() => store.state.lastPlayers)
-    const featuredPlayers = computed(() => store.state.featuredPlayers)
+    const brawlstarsStore = useBrawlstarsStore()
+    const featuredPlayers = computed(() => brawlstarsStore.featuredPlayers
+      .slice(0, 3)
+      .map(mapToPlayerLink))
+
+    const { makeVisibilityCallback } = useTrackScroll('home')
 
     const helpDropdown = ref<HTMLElement>()
 
-    const addLastPlayer = (player: any) => store.commit('addLastPlayer', player)
+    const addLastPlayer = (player: PlayerLink) => preferencesStore.addLastPlayer(player)
 
     const router = useRouter()
     const loading = ref(false)
@@ -261,11 +261,11 @@ export default defineComponent({
       error.value = undefined
 
       if (!tagPattern.test(cleanedTag.value)) {
-        gtag.event('search', {
+        event('search', {
           'event_category': 'player',
           'event_label': 'error_invalid',
         })
-        error.value = i18n.tc('error.tag.invalid')
+        error.value = i18n.t('error.tag.invalid')
         const dropdown = helpDropdown.value!
         dropdown.setAttribute('open', '')
         dropdown.scrollIntoView({ behavior: 'smooth' })
@@ -274,21 +274,21 @@ export default defineComponent({
 
       try {
         loading.value = true
-        await store.dispatch('loadPlayer', cleanedTag.value)
-        store.commit('addLastPlayer', player.value)
+        await brawlstarsStore.loadPlayer(cleanedTag.value)
+        preferencesStore.addLastPlayer(brawlstarsStore.player!)
       } catch (err) {
         if (err instanceof TRPCClientError) {
           if (err.data?.httpStatus == 404) {
-            error.value = i18n.tc('error.tag.not-found')
-            gtag.event('search', {
+            error.value = i18n.t('error.tag.not-found')
+            event('search', {
               'event_category': 'player',
               'event_label': 'error_notfound',
             })
             return
           }
           if (err.data?.httpStatus >= 400) {
-            error.value = i18n.tc('error.api-unavailable')
-            gtag.event('search', {
+            error.value = i18n.t('error.api-unavailable')
+            event('search', {
               'event_category': 'player',
               'event_label': 'error_timeout',
             })
@@ -296,9 +296,9 @@ export default defineComponent({
           }
         }
 
-        error.value = i18n.tc('error.api-unavailable')
-        $sentry.captureException(err)
-        gtag.event('search', {
+        error.value = i18n.t('error.api-unavailable')
+        sentry.captureException(err)
+        event('search', {
           'event_category': 'player',
           'event_label': 'error_api',
         })
@@ -307,35 +307,34 @@ export default defineComponent({
         loading.value = false
       }
 
-      gtag.event('search', {
+      event('search', {
         'event_category': 'player',
         'event_label': 'success',
       })
 
-      store.commit('setUserTag', cleanedTag.value)
+      preferencesStore.userTag = cleanedTag.value
 
       router.push(localePath(`/profile/${cleanedTag.value}`))
     }
 
+    useCacheHeaders()
     useMeta(() => {
-      const description = i18n.tc('index.meta.description')
       const structuredData = (events.value || [])
         .map((event) => ({
           type: 'application/ld+json',
-          json: formatAsJsonLd({
+          innerHTML: formatAsJsonLd({
             id: event.id.toString(),
-            map: (i18n.te(`map.${event.id}`) && i18n.t(`map.${event.id}`) || event.map) as string,
-            mode: i18n.t('mode.' + event.mode) as string,
+            map: (i18n.te(`map.${event.id}`) && i18n.t(`map.${event.id}`) || event.map),
+            mode: i18n.t('mode.' + event.mode),
             start: event.start,
             end: event.end,
           }, $config.mediaUrl),
         }))
 
       return {
-        title: i18n.tc('index.meta.title'),
+        title: i18n.t('index.meta.title'),
         meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
+          { hid: 'description', name: 'description', content: i18n.t('index.meta.description') },
         ],
         script: structuredData,
       }
@@ -343,9 +342,8 @@ export default defineComponent({
 
     return {
       lastPlayers,
+      featuredPlayers,
       addLastPlayer,
-      playerLinks,
-      isInIframe,
       helpDropdown,
       makeVisibilityCallback,
       search,
@@ -354,9 +352,11 @@ export default defineComponent({
       cleanedTag,
       events,
       loading,
+      logoWithCrownUrl,
+      tag1Url,
+      tag2Url,
     }
   },
-  middleware: ['cached'],
 })
 </script>
 

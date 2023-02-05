@@ -1,6 +1,5 @@
 <template>
   <media-img
-    slot="preview"
     :path="path"
     :alt="mapName"
     :clazz="clazz"
@@ -10,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from '@nuxtjs/composition-api'
+import { computed, defineComponent, toRefs } from 'vue'
 import { useMapName } from '~/composables/map'
 
 export default defineComponent({

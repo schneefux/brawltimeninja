@@ -1,41 +1,30 @@
 {
   "compilerOptions": {
-    "target": "es2019",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "lib": [
-      "esnext",
-      "esnext.asynciterable",
-      "dom"
-    ],
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "allowJs": true,
-    "sourceMap": true,
     "strict": true,
-    "noImplicitAny": false,
-    "noEmit": true,
-    "baseUrl": ".",
-    "jsx": "preserve",
-    "paths": {
-      "~/*": [
-        "./*"
-      ],
-      "@/*": [
-        "./*"
-      ]
-    },
+    "module": "ES2022",
+    "target": "ES2020",
+    "moduleResolution": "node",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": [
-      "@types/node",
-      "@nuxt/types",
-      "@nuxt/http",
-      "@nuxtjs/sentry",
-      "@nuxtjs/i18n",
+      "vite/client",
       "@types/jest"
-    ]
+    ],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./*"],
+      "~/*": ["./*"]
+    }
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "esm": true,
+    "compilerOptions": {
+      "moduleResolution": "node16"
+    }
   },
   "exclude": [
-    "node_modules",
-    ".nuxt"
+    "../klicker"
   ]
 }

@@ -1,4 +1,3 @@
-import { ProfileTrackingStatus } from "~/server-middleware/api/services/ProfileUpdaterService";
 import { Player as BrawlstarsPlayer } from "./Brawlstars"
 
 export interface StarPower {
@@ -9,6 +8,10 @@ export interface StarPower {
 export interface Gadget extends StarPower {
 }
 
+export interface Gear extends StarPower {
+  level: number
+}
+
 export interface Brawler {
   name: string;
   trophies: number;
@@ -17,6 +20,7 @@ export interface Brawler {
   rank: number;
   starPowers: StarPower[];
   gadgets: Gadget[];
+  gears: Gear[];
 }
 
 export interface Battle {

@@ -1,22 +1,25 @@
 <template>
   <b-button
-    v-bind="$attrs"
     :href="renderUrl"
     target="_blank"
     tag="a"
-    @click.once="share($event)"
+    @click.once.prevent="share($event)"
   >{{ buttonText || $t('action.share') }}</b-button>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+import { useConfig } from '@/composables/compat'
+import { computed, defineComponent } from 'vue'
 
 export default defineComponent({
-  inheritAttrs: false,
   props: {
     embedUrl: {
       type: String,
-      required: true
+      required: false
+    },
+    renderUrl: {
+      type: String,
+      required: false
     },
     filename: {
       type: String,
@@ -40,19 +43,21 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { $http, $config } = useContext()
+    const $config = useConfig()
 
     const renderUrl = computed(() => {
+      if (props.renderUrl) {
+        return props.renderUrl
+      }
+
       const url = new URL($config.renderUrl + props.embedUrl)
       url.searchParams.append('download', '')
       return url.toString()
     })
 
     const share = async (event: Event) => {
-      event.preventDefault()
-
       // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
-      const response = await $http.get(renderUrl.value)
+      const response = await fetch(renderUrl.value)
       const blob = await response.blob()
       const files = [new File([blob], props.filename, { type: blob.type })]
 

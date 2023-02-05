@@ -1,9 +1,8 @@
 <template>
   <b-select
-    :value="(value.starpowerIdNeq || ['0'])[0] == '0' ? '1' : '0'"
+    v-model="value"
     dark
     sm
-    @input="v => onInput({ starpowerIdNeq: v == '0' ? [] : ['0'], starpowerIdEq: v == '0' ? ['0'] : [] })"
   >
     <option value="0">{{ $t('filter.starpowers.0') }}</option>
     <option value="1">{{ $t('filter.starpowers.1') }}</option>
@@ -11,12 +10,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType, computed } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },
@@ -25,5 +24,19 @@ export default defineComponent({
       required: true
     },
   },
+  setup(props) {
+    const value = computed({
+      get() {
+        return (props.modelValue.starpowerIdNeq || ['0'])[0] == '0' ? '1' : '0'
+      },
+      set(v: string) {
+        props.onInput({ starpowerIdNeq: v == '0' ? [] : ['0'], starpowerIdEq: v == '0' ? ['0'] : [] })
+      }
+    })
+
+    return {
+      value,
+    }
+  }
 })
 </script>

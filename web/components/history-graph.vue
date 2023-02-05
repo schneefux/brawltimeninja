@@ -2,7 +2,7 @@
   <c-query :query="query">
     <template v-slot="data">
       <v-lineplot
-        v-bind="data"
+        v-bind="{ ...$attrs, ...data }"
         :card="card"
       ></v-lineplot>
     </template>
@@ -17,9 +17,11 @@
 import { formatClickhouse, getSeasonEnd, tagToId } from '~/lib/util'
 import { subMonths } from 'date-fns'
 import { VLineplot } from '@schneefux/klicker/components'
-import { computed, defineComponent } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from 'vue'
+import { CubeQuery } from '@schneefux/klicker/types'
 
 export default defineComponent({
+  inheritAttrs: false, // can render an empty node, then Vue would complain about leftover attributes
   components: {
     VLineplot,
   },
@@ -45,7 +47,7 @@ export default defineComponent({
 
     const playerId = computed(() => tagToId(props.playerTag))
 
-    const query = computed(() => ({
+    const query = computed<CubeQuery>(() => ({
       cubeId: 'brawler',
       dimensionsIds: ['day'],
       metricsIds: props.brawler != undefined ? ['trophies'] : ['playerTrophies'],

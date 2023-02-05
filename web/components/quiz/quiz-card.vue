@@ -1,16 +1,17 @@
 <template>
   <transition name="slide-fade" mode="out-in">
-    <quiz-cta-card
-      v-if="!triggered"
-      @input="onTrigger"
-    ></quiz-cta-card>
+    <div v-if="!triggered">
+      <quiz-cta-card
+        @update:modelValue="onTrigger"
+      ></quiz-cta-card>
+    </div>
 
     <div v-else>
       <transition name="slide-fade" mode="out-in">
         <quiz-likert-card
           v-if="result == undefined"
           :initial-answers="answers"
-          @input="onResult"
+          @update:modelValue="onResult"
         ></quiz-likert-card>
 
         <quiz-result-card
@@ -24,17 +25,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, wrapProperty } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from 'vue'
 import { OEJTSEntry } from '~/lib/oejts'
+import { event } from 'vue-gtag'
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   setup(props, { emit }) {
     const triggered = ref(false)
     const answers = ref<Record<string, number>>()
     const result = ref<OEJTSEntry>()
-
-    const gtag = useGtag()
 
     const onTrigger = (a: Record<string, number>) => {
       emit('interact')
@@ -45,7 +44,7 @@ export default defineComponent({
     const onResult = (r: OEJTSEntry) => {
       triggered.value = true
       result.value = r
-      gtag.event('click', {
+      event('click', {
         'event_category': 'quiz',
         'event_label': 'end',
       })
@@ -54,7 +53,7 @@ export default defineComponent({
     const onRestart = () => {
       answers.value = undefined
       result.value = undefined
-      gtag.event('click', {
+      event('click', {
         'event_category': 'quiz',
         'event_label': 'restart',
       })

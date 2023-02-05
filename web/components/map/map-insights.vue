@@ -5,7 +5,6 @@
       :key="t.title"
       :columns="4"
       :rows="2"
-      :ssr-key="`map-insights-${t.title}`"
       hide-empty
       lazy
     >
@@ -25,12 +24,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, toRefs } from 'vue'
 import useTopNTitle from '~/composables/top-n-title'
 import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { VRoll, BShimmer, CQuery, BButton, BDashboardCell } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
 import { getMapName } from '~/composables/map'
+import { useI18n } from 'vue-i18n'
 
 interface Template {
   tab: string
@@ -68,7 +68,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n, localePath } = useContext()
+    const i18n = useI18n()
 
     const { id, slices } = toRefs(props)
     const title = useTopNTitle('map.insights.title', slices, id)
@@ -83,15 +83,15 @@ export default defineComponent({
       }
 
       const mode = props.slices.mode[0] as string
-      const title = i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + mode) }) as string
-      const testName = getMapName(i18n, props.id, props.slices.map[0])
-      const referenceName = i18n.t('mode.' + mode) as string
+      const title = i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + mode) })
+      const testName = getMapName(props.id, props.slices.map[0])
+      const referenceName = i18n.t('mode.' + mode)
 
       templates.push({
         tab: 'brawlers',
         title,
-        link: localePath(`/tier-list/mode/${camelToKebab(mode)}`),
-        linkText: i18n.t('action.open.tier-list.mode', { mode: i18n.t('mode.' + mode) }) as string,
+        link: `/tier-list/mode/${camelToKebab(mode)}`,
+        linkText: i18n.t('action.open.tier-list.mode', { mode: i18n.t('mode.' + mode) }),
         query: <CubeComparingQuery>{
           name: testName,
           comparing: true,
@@ -118,8 +118,8 @@ export default defineComponent({
       templates.push({
         tab: 'gadgets',
         title,
-        link: localePath(`/tier-list/gadgets`),
-        linkText: i18n.t('action.open.tier-list.gadget') as string,
+        link: `/tier-list/gadgets`,
+        linkText: i18n.t('action.open.tier-list.gadget'),
         query: <CubeComparingQuery>{
           name: testName,
           comparing: true,
@@ -150,8 +150,8 @@ export default defineComponent({
       templates.push({
         tab: 'starpowers',
         title,
-        link: localePath(`/tier-list/starpowers`),
-        linkText: i18n.t('action.open.tier-list.starpower') as string,
+        link: `/tier-list/starpowers`,
+        linkText: i18n.t('action.open.tier-list.starpower'),
         query: <CubeComparingQuery>{
           name: testName,
           comparing: true,
@@ -182,8 +182,8 @@ export default defineComponent({
       templates.push({
         tab: 'gears',
         title,
-        link: localePath(`/tier-list/gears`),
-        linkText: i18n.t('action.open.tier-list.gear') as string,
+        link: `/tier-list/gears`,
+        linkText: i18n.t('action.open.tier-list.gear'),
         long: true,
         query: <CubeComparingQuery>{
           name: testName,

@@ -4,15 +4,15 @@
     :title="$t('about-metric', { metric: $t('metric.' + metric.id) })"
     v-bind="$attrs"
   >
-    <p slot="content">
+    <template v-slot:content><p >
       {{ $t('brawler.disclaimer') }}
       {{ metric.description }}
-    </p>
+    </p></template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from 'vue'
 import { Metric } from '@schneefux/klicker/types'
 
 export default defineComponent({

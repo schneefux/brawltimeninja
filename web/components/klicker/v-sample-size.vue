@@ -5,24 +5,22 @@
     component="v-sample-size"
     wrapper="b-bigstat"
   >
-    <p
-      v-if="sample == 0"
-      slot="content"
-      class="text-red-400"
-    >
-      {{ $t('no-data.please-change-filter') }}
-    </p>
-    <p
-      v-else
-      slot="content"
-    >
-      {{ $t('sample-size', { count: sampleFormatted }) }}
-    </p>
+    <template v-slot:content>
+      <p
+        v-if="sample == 0"
+        class="text-red-400"
+      >
+        {{ $t('no-data.please-change-filter') }}
+      </p>
+      <p v-else>
+        {{ $t('sample-size', { count: sampleFormatted }) }}
+      </p>
+    </template>
   </v-card-wrapper>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from 'vue'
 import { CubeResponse } from '@schneefux/klicker/types'
 import { formatSI } from '~/lib/util'
 import { VCardWrapper } from '@schneefux/klicker/components'

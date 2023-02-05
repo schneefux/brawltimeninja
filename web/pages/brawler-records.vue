@@ -16,7 +16,7 @@
           <b-dashboard-cell :columns="2">
             <v-last-update
               v-bind="data"
-              card
+              :card="{}"
             ></v-last-update>
           </b-dashboard-cell>
         </template>
@@ -25,13 +25,13 @@
           <b-dashboard-cell :rows="8" :columns="3">
             <v-table
               v-bind="data"
-              card
+              :card="{}"
             ></v-table>
           </b-dashboard-cell>
           <b-dashboard-cell :rows="2" :columns="3">
             <v-csv
               v-bind="data"
-              card
+              :card="{}"
             ></v-csv>
           </b-dashboard-cell>
         </template>
@@ -41,10 +41,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, useContext, useMeta } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from 'vue'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, BCard, CMetric, VTable, VCsv, BPageSection, BDashboardCell } from '@schneefux/klicker/components'
 import { formatClickhouseDate, getTodaySeasonEnd } from '~/lib/util'
+import { useI18n } from 'vue-i18n'
+import { useCacheHeaders, useMeta } from '@/composables/compat'
 
 export default defineComponent({
   components: {
@@ -56,8 +58,6 @@ export default defineComponent({
     VTable,
     VCsv,
   },
-  head: {},
-  middleware: ['cached'],
   setup() {
     const query = ref<CubeQuery>({
       cubeId: 'brawler',
@@ -74,18 +74,15 @@ export default defineComponent({
       limit: 100,
     })
 
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
-    useMeta(() => {
-      const description = i18n.t('brawler-records.meta.description') as string
-      return {
-        title: i18n.t('brawler-records.meta.title') as string,
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ]
-      }
-    })
+    useCacheHeaders()
+    useMeta(() => ({
+      title: i18n.t('brawler-records.meta.title'),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('brawler-records.meta.description') },
+      ]
+    }))
 
     return {
       query,

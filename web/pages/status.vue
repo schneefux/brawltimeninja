@@ -25,36 +25,41 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { MetaInfo } from 'vue-meta'
-import { Timeline } from 'vue-tweet-embed'
+import { defineComponent, ref, onMounted } from 'vue'
+// @ts-ignore
+import { Timeline } from '@jacksongross/vue-tweet-embed'
+import { useApi, useCacheHeaders, useMeta } from '@/composables/compat'
+import { useI18n } from 'vue-i18n'
 
-export default Vue.extend({
-  head(): MetaInfo {
-    const description = this.$tc('status.meta.description')
-    return {
-      title: this.$tc('status.meta.title'),
-      meta: [
-        { hid: 'description', name: 'description', content: description },
-        { hid: 'og:description', property: 'og:description', content: description },
-      ]
-    }
-  },
-  middleware: ['cached'],
+export default defineComponent({
   components: {
     Timeline,
   },
-  data() {
+  setup() {
+    const i18n = useI18n()
+
+    useCacheHeaders()
+    useMeta(() => ({
+      title: i18n.t('status.meta.title'),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('status.meta.description') },
+      ]
+    }))
+
+    const $api = useApi()
+
+    const status = ref<undefined|string>()
+    onMounted(async () => {
+      try {
+        await $api.player.byTag.query('V8LLPPC')
+        status.value = 'up'
+      } catch {
+        status.value = 'down'
+      }
+    })
+
     return {
-      status: undefined as undefined|string,
-    }
-  },
-  async created() {
-    try {
-      await this.$api.query('player.byTag', 'V8LLPPC')
-      this.status = 'up'
-    } catch {
-      this.status = 'down'
+      status,
     }
   },
 })

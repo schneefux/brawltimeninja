@@ -26,27 +26,29 @@
         :id="event.id"
         :map="event.map"
         clazz="h-full object-contain"
-        class="contents"
         size=""
       ></map-img>
     </b-lightbox>
 
     <b-page-section>
       <b-split-dashboard>
-        <event-picture-card
+        <template
           v-if="showImage"
-          slot="aside"
-          :mode="event.mode"
-          :map="event.map"
-          :id="event.id"
-          class="relative"
-          @click="lightboxOpen = true"
+          v-slot:aside
         >
-          <font-awesome-icon
-            :icon="faExpand"
-            class="absolute bottom-4 right-6"
-          ></font-awesome-icon>
-        </event-picture-card>
+          <event-picture-card
+            :mode="event.mode"
+            :map="event.map"
+            :id="event.id"
+            class="relative"
+            @click.capture.prevent="lightboxOpen = true"
+          >
+            <font-awesome-icon
+              :icon="faExpand"
+              class="absolute bottom-4 right-6"
+            ></font-awesome-icon>
+          </event-picture-card>
+        </template>
 
         <map-views
           :mode="event.mode"
@@ -65,12 +67,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useMeta, computed, useAsync, useRoute, ref } from '@nuxtjs/composition-api'
+import { defineComponent, computed, ref } from 'vue'
 import { deslugify, kebabToCamel } from '~/lib/util'
 import { BSplitDashboard, BCard, BLightbox } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
 import MapViews from '~/components/map/map-views.vue'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
+import { useAsync, useCacheHeaders, useConfig, useMeta, useValidate } from '@/composables/compat'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { useRoute } from 'vue-router'
+import { useKlicker } from '@schneefux/klicker/composables'
+import { useI18n } from 'vue-i18n'
 
 interface Map {
   id: string
@@ -80,19 +87,25 @@ interface Map {
 
 export default defineComponent({
   components: {
+    FontAwesomeIcon,
     BSplitDashboard,
     BLightbox,
     BCard,
     MapViews,
   },
-  head: {},
-  setup() {
-    const { i18n, $config, $klicker } = useContext()
-
+  async setup() {
+    const $klicker = useKlicker()
+    const $config = useConfig()
+    const i18n = useI18n()
     const route = useRoute()
+
     const event = useAsync(async () => {
-      const mode = kebabToCamel(route.value.params.mode)
-      const map = deslugify(route.value.params.map)
+      if (route.params.mode == undefined || route.params.map == undefined) {
+        return null
+      }
+
+      const mode = kebabToCamel(route.params.mode as string)
+      const map = deslugify(route.params.map as string)
       const events = await $klicker.query({
         cubeId: 'map',
         slices: {
@@ -111,24 +124,24 @@ export default defineComponent({
         map,
         mode,
       } as Map
-    }, `map-${route.value.params.mode}-${route.value.params.map}`)
+    }, computed(() => `map-${route.params.mode}-${route.params.map}`))
 
+    useCacheHeaders()
     useMeta(() => {
       if (event.value == undefined) {
         return {}
       }
 
-      const description = i18n.tc('tier-list.map.meta.description', 1, {
+      const description = i18n.t('tier-list.map.meta.description', {
         map: i18n.t('map.' + event.value.id),
         mode: i18n.t('mode.' + event.value.mode),
       })
       return {
-        title: i18n.tc('tier-list.map.meta.title', 1, {
+        title: i18n.t('tier-list.map.meta.title', {
           map: i18n.t('map.' + event.value.id),
         }),
         meta: [
           { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
           ...(event.value.id != undefined && event.value.id != '0' ? [{ hid: 'og:image', property: 'og:image', content: $config.mediaUrl + '/maps/' + event.value.id + '.png' }] : []),
         ]
       }
@@ -138,11 +151,33 @@ export default defineComponent({
 
     const mapName = computed(() => {
       if (event.value != undefined) {
-        return getMapName(i18n, event.value.id, event.value.map)
+        return getMapName(event.value.id, event.value.map)
       }
     })
 
     const lightboxOpen = ref(false)
+
+    await useValidate(async ({ params }) => {
+      const mode = kebabToCamel(params.mode as string)
+      const map = deslugify(params.map as string)
+      if (map.startsWith('Competition')) {
+        return true
+      }
+
+      const events = await $klicker.query({
+        cubeId: 'map',
+        slices: {
+          mode: [mode],
+          map: [map],
+        },
+        dimensionsIds: [],
+        metricsIds: ['eventId'],
+        sortId: 'eventId',
+        limit: 1,
+      })
+
+      return events.data[0].metricsRaw.eventId != '0'
+    })
 
     return {
       event,
@@ -151,27 +186,6 @@ export default defineComponent({
       showImage,
       lightboxOpen,
     }
-  },
-  middleware: ['cached'],
-  async validate({ params, $klicker }) {
-    const mode = kebabToCamel(params.mode)
-    const map = deslugify(params.map)
-    if (map.startsWith('Competition')) {
-      return true
-    }
-
-    const events = await $klicker.query({
-      cubeId: 'map',
-      slices: {
-        mode: [mode],
-        map: [map],
-      },
-      dimensionsIds: [],
-      metricsIds: ['eventId'],
-      sortId: 'eventId',
-      limit: 1,
-    })
-    return events.data[0].metricsRaw.eventId != '0'
   },
 })
 </script>

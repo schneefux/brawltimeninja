@@ -8,22 +8,21 @@
 </template>
 
 <script lang="ts">
-import { ref, wrapProperty, defineComponent, onMounted } from '@nuxtjs/composition-api'
+import { ref, defineComponent, onMounted } from 'vue'
+import { event } from 'vue-gtag'
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   setup() {
-    const gtag = useGtag()
     const adblockBait = ref<HTMLElement>()
 
     onMounted(() => {
-      const adsBlocked =adblockBait.value!.clientHeight === 0
-      gtag.event('ads_blocked_dimension', {
+      const adsBlocked = adblockBait.value!.clientHeight === 0
+      event('ads_blocked_dimension', {
         'ads_blocked': adsBlocked,
         'non_interaction': true,
       })
 
-      gtag.event('blocked', {
+      event('blocked', {
         'event_category': 'ads',
         'event_label': adsBlocked.toString(),
         'value': adsBlocked ? 1 : 0,

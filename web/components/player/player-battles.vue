@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from 'vue'
 import { Player } from '~/model/Api'
 import { BScrollingList } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'

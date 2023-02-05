@@ -7,7 +7,7 @@
       :class="[height, width, {
         [snug]: index < brawlers.length - 1,
       }]"
-      @click.native.stop
+      @click.stop
     >
       <media-img
         :path="`/brawlers/${brawlerId({ name: brawler })}/avatar`"
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from 'vue'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 
 export default defineComponent({

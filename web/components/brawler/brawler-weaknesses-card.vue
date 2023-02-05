@@ -3,9 +3,9 @@
     :query="query"
     :filter="filter"
   >
-    <p slot="empty" class="text-center">
+    <template v-slot:empty><p  class="text-center">
       {{ $t('state.no-data') }}
-    </p>
+    </p></template>
     <template v-slot="data">
       <v-roll
         v-bind="data"
@@ -18,9 +18,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
 import { CubeComparingQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { CQuery, VRoll } from '@schneefux/klicker/components'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -34,10 +35,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
     const query: CubeComparingQuery = {
-      name: i18n.t('metric.team') as string,
+      name: i18n.t('metric.team'),
       comparing: true,
       cubeId: 'brawlerEnemies',
       slices: {

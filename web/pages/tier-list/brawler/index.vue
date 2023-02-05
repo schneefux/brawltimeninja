@@ -40,28 +40,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useMeta } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
+import { useCacheHeaders, useMeta } from '~/composables/compat'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   directives: {
     ObserveVisibility,
   },
-  head: {},
   setup() {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
-    useMeta(() => {
-      const description = i18n.t('brawlers.meta.description') as string
-      return {
-        title: i18n.t('brawlers.meta.title') as string,
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ]
-      }
-    })
+    useCacheHeaders()
+    useMeta(() => ({
+      title: i18n.t('brawlers.meta.title'),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('brawlers.meta.description') },
+      ]
+    }))
 
     const { makeVisibilityCallback } = useTrackScroll('brawler_meta')
 
@@ -69,6 +67,5 @@ export default defineComponent({
       makeVisibilityCallback,
     }
   },
-  middleware: ['cached'],
 })
 </script>

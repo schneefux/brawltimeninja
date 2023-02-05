@@ -1,23 +1,24 @@
 <template>
   <b-card
-    :title="$tc('best.' + kind, 1)"
+    :title="$t('best.' + kind, 1)"
     :elevation="elevation"
     :link="localePath(`/tier-list/${kind}`)"
   >
-    <c-query
-      slot="content"
-      :query="query"
-      :filter="filter"
-    >
-      <template v-slot="data">
-        <v-roll v-bind="data"></v-roll>
-      </template>
-    </c-query>
+    <template v-slot:content>
+      <c-query
+        :query="query"
+        :filter="filter"
+      >
+        <template v-slot="data">
+          <v-roll v-bind="data"></v-roll>
+        </template>
+      </c-query>
+    </template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
 import { SliceValue, CubeComparingQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { VRoll, BShimmer, CQuery, BButton } from '@schneefux/klicker/components'
 
@@ -70,7 +71,7 @@ export default defineComponent({
         metricsIds: ['winRate'],
         slices: {
           ...props.slices,
-          [keys[props.kind] + 'IdEq']: ['0'],
+          [props.kind + 'Length']: ['0'],
         },
         sortId: 'difference',
       },

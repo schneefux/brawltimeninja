@@ -6,19 +6,22 @@
       hide-empty
       lazy
     >
-      <adsense
+      <div
         v-if="!isApp"
-        :data-ad-slot="adSlot"
-        data-ad-client="ca-pub-6856963757796636"
-        data-full-width-responsive="yes"
         class="text-center self-center"
-      ></adsense>
+      >
+        <adsense
+          :data-ad-slot="adSlot"
+          data-ad-client="ca-pub-6856963757796636"
+          data-full-width-responsive
+        ></adsense>
+      </div>
     </b-dashboard-cell>
   </client-only>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
 import { BDashboardCell } from '@schneefux/klicker/components'
 import { isApp } from '~/composables/app'
 

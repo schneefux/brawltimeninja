@@ -10,9 +10,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, wrapProperty } from '@nuxtjs/composition-api'
+import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { event } from 'vue-gtag'
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   props: {
     experimentId: {
@@ -27,26 +27,25 @@ export default defineComponent({
     const activeVariant = ref(props.debug || '0')
     let callback: ((v: string) => void)|undefined = undefined
 
-    const gtag = useGtag()
     onMounted(() => {
       callback = (value) => {
         value ??= '0' // deactivated -> undefined
         console.log('enabling variant ' + value + ' for experiment ' + props.experimentId)
         activeVariant.value = value
       }
-      gtag.event('optimize.callback', {
+      event('optimize.callback', {
         name: props.experimentId,
         callback,
       })
       // https://support.google.com/optimize/answer/7008840
-      gtag.event('optimize.activate', {
+      event('optimize.activate', {
         non_interaction: true,
       })
     })
 
     onUnmounted(() => {
-      if (process.client && callback != undefined) {
-        gtag.event('optimize.callback', {
+      if (!import.meta.env.SSR && callback != undefined) {
+        event('optimize.callback', {
           name: props.experimentId,
           callback,
           remove: true,

@@ -8,33 +8,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta, useRoute } from '@nuxtjs/composition-api'
-import { useContent } from '~/composables/content'
+import { useCacheHeaders, useMeta } from '@/composables/compat'
+import { defineComponent } from 'vue'
+import { usePost } from '~/composables/content'
 
 export default defineComponent({
-  head: {},
-  nuxtI18n: {
-    locales: ['en'],
-  },
-  middleware: ['cached'],
-  setup() {
-    const route = useRoute()
-    const { post } = useContent('guides/' + route.value.params.post)
-
+  async setup() {
+    useCacheHeaders()
     useMeta(() => {
       if (post.value == undefined) {
         return {}
       }
-      const description = `Brawl Stars Guides written by ${post.value.author}. ${post.value.description}`
       return {
         title: post.value.title,
         meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
+          { hid: 'description', name: 'description', content: `Brawl Stars Guides written by ${post.value.author}. ${post.value.description}` },
         ]
       }
     })
 
+    const post = await usePost('guides')
 
     return {
       post,

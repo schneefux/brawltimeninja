@@ -8,7 +8,7 @@
 
     <div class="flex items-center gap-x-4">
       <s-mode-map
-        :value="slices"
+        :model-value="slices"
         :on-input="jumpToModeMap"
         class="my-4"
       ></s-mode-map>
@@ -17,10 +17,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs, useContext, useRouter } from '@nuxtjs/composition-api'
+import { computed, defineComponent, toRefs } from 'vue'
 import { SliceValue } from '@schneefux/klicker/types'
 import { useMapName } from '~/composables/map'
 import { camelToKebab, slugify } from '~/lib/util'
+import { useLocalePath } from '@/composables/compat'
+import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   props: {
@@ -45,8 +48,8 @@ export default defineComponent({
     const mapName = useMapName(id, map)
 
     const router = useRouter()
-    const { localePath } = useContext()
-    const jumpToModeMap = (slices: SliceValue) => {
+    const localePath = useLocalePath()
+    const jumpToModeMap = (slices: Partial<SliceValue>) => {
       const mode = (slices.mode ?? [])[0]
       const map = (slices.map ?? [])[0]
 
@@ -63,11 +66,11 @@ export default defineComponent({
       router.push(localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`))
     }
 
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const links = computed(() => ([
       {
         path: '/tier-list/map',
-        name: i18n.tc('map', 2),
+        name: i18n.t('map', 2),
       },
       ...(props.mode != undefined ? [{
         path: modePath.value,

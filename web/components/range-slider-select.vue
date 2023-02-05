@@ -1,52 +1,47 @@
 <template>
   <b-fake-select>
-    <span
-      slot="preview"
-      class="w-full text-left"
-    >
-      {{ format(value[0]) }}-{{ format(value[1]) }}
-      {{ name }}
-    </span>
+    <template v-slot:preview>
+      <span class="w-full text-left">
+        {{ format(modelValue[0]) }}-{{ format(modelValue[1]) }}
+        {{ name }}
+      </span>
+    </template>
 
     <client-only>
       <div class="mt-8 w-56 px-4 pt-1">
-        <vue-range-slider
-          v-if="isClient"
+        <b-range-slider
+          v-model="value"
           :min="min"
           :max="max"
           :step="1"
           :min-range="minRange"
-          :value="value"
           :bg-style="bgStyle"
           :process-style="processStyle"
           tooltip-dir="top"
           lazy
-          @input="e => onInput(e)"
         >
           <template v-slot:tooltip="{ value }">
             <span class="slider-tooltip !bg-gray-600 !border-gray-600">
               {{ Array.isArray(value) ? `${format(value[0])} - ${format(value[1])}` : format(value) }}
             </span>
           </template>
-        </vue-range-slider>
+        </b-range-slider>
       </div>
     </client-only>
   </b-fake-select>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
-import { BFakeSelect } from '@schneefux/klicker/components'
-import 'vue-range-component/dist/vue-range-slider.min.css'
+import { computed, defineComponent, PropType } from 'vue'
+import { BFakeSelect, BRangeSlider } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
-    // does not support SSR
-    VueRangeSlider: () => import('vue-range-component'),
+    BRangeSlider,
     BFakeSelect,
   },
   props: {
-    value: {
+    modelValue: {
       type: Array as PropType<number[]>,
       required: true,
     },
@@ -72,11 +67,16 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const onInput = (e: number[]) => {
-      if (JSON.stringify(e) != JSON.stringify(props.value)) {
-        emit('input', e)
+    const value = computed({
+      get() {
+        return props.modelValue
+      },
+      set(e: number[]) {
+        if (JSON.stringify(e) != JSON.stringify(props.modelValue)) {
+          emit('update:modelValue', e)
+        }
       }
-    }
+    })
 
     const bgStyle = {
       backgroundColor: 'rgb(253, 230, 138)', // yellow-200
@@ -85,10 +85,10 @@ export default defineComponent({
       backgroundColor: 'rgb(251, 191, 36)', // yellow-400
     }
 
-    const isClient = process.client
+    const isClient = !import.meta.env.SSR
 
     return {
-      onInput,
+      value,
       bgStyle,
       processStyle,
       isClient,

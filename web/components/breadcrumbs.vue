@@ -12,7 +12,7 @@
       itemscope
     >
       {{ index > 0 ? '/' : '' }}
-      <nuxt-link
+      <router-link
         :to="localePath(l.path)"
         :itemid="l.path"
         itemtype="https://schema.org/WebPage"
@@ -21,19 +21,19 @@
         itemscope
       >
         <span itemprop="name">{{ l.name }}</span>
-      </nuxt-link>
-      <meta itemprop="position" :content="index + 1" />
+      </router-link>
+      <meta itemprop="position" :content="`${index + 1}`" />
     </li>
   </ol>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from 'vue'
 import { BButton } from '@schneefux/klicker/components'
 
 export interface BreadcrumbLink {
   path: string
-  name: string
+  name?: string
 }
 
 export default defineComponent({
@@ -43,6 +43,7 @@ export default defineComponent({
   props: {
     links: {
       type: Array as PropType<BreadcrumbLink[]>,
+      required: true
     }
   },
 })

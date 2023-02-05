@@ -24,7 +24,7 @@
       </label>
       <b-textbox
         :id="`${prefix}-editor`"
-        :value="editorUrl"
+        :model-value="editorUrl"
         readonly
         dark
       ></b-textbox>
@@ -34,7 +34,7 @@
       </label>
       <b-textbox
         :id="`${prefix}-viewer`"
-        :value="viewerUrl"
+        :model-value="viewerUrl"
         readonly
         dark
       ></b-textbox>
@@ -47,12 +47,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composition-api"
+import { defineComponent, computed, onMounted } from "vue"
 import { CGrid, BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { Grid, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useUniqueId } from '@schneefux/klicker/composables'
+import { useRoute } from "vue-router"
+import { useSelfOrigin } from "@/composables/compat"
 
 export default defineComponent({
   components: {
@@ -70,25 +72,20 @@ export default defineComponent({
 
     const route = useRoute()
     onMounted(async () => {
-      if (route.value.query['id'] != undefined) {
-        await update(parseInt(route.value.query['id'] as string))
+      if (route.query['id'] != undefined) {
+        await update(parseInt(route.query['id'] as string))
       }
     })
 
     const editorUrl = computed<string>(() => {
-      if (process.client) {
+      if (!import.meta.env.SSR) {
         return window.location.href + '?id=' + grid.value.id
       } else {
         return ''
       }
     })
-    const viewerUrl = computed<string>(() => {
-      if (process.client) {
-        return window.location.origin + '/embed/dashboard?id=' + grid.value.id
-      } else {
-        return ''
-      }
-    })
+    const origin = useSelfOrigin()
+    const viewerUrl = computed<string>(() => origin + '/embed/dashboard?id=' + grid.value.id)
 
     const defaultQuery: CubeQuery = {
       cubeId: 'battle',

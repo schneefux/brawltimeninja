@@ -1,18 +1,20 @@
 <template>
   <v-card-wrapper
     v-bind="$props"
+    :loading="false"
     :card="card != undefined && { ...card, title }"
     component="v-media-img"
   >
-    <media-img
-      slot="content"
-      :path="path"
-    ></media-img>
+    <template v-slot:content>
+      <media-img
+        :path="path"
+      ></media-img>
+    </template>
   </v-card-wrapper>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
 import { VCardWrapper } from '@schneefux/klicker/components'
 import { StaticProps } from '@schneefux/klicker/props'
 

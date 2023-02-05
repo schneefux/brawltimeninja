@@ -1,17 +1,14 @@
-<template functional>
+<template>
   <span
     class="w-16 md:w-24"
-    :class="['w-16 md:w-24', data.class, data.staticClass]"
-    :style="data.staticStyle"
-  >{{ props.formatDate(props.row.dimensions.season) }}</span>
+  >{{ dateFormatted }}</span>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { format, parseISO } from 'date-fns'
+import { defineComponent, computed } from 'vue';
 
-export default Vue.extend({
-  functional: true,
+export default defineComponent({
   props: {
     row: {
       type: Object,
@@ -20,10 +17,13 @@ export default Vue.extend({
     captioned: {
       type: Boolean
     },
-    formatDate: {
-      type: Function,
-      default: (d: string) => format(parseISO(d), 'PP')
-    },
+  },
+  setup(props) {
+    const dateFormatted = computed(() => format(parseISO(props.row.dimensions.season), 'PP'))
+
+    return {
+      dateFormatted,
+    }
   },
 })
 </script>

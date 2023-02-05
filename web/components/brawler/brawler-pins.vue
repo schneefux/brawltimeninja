@@ -1,6 +1,6 @@
 <template>
   <b-card>
-    <b-scrolling-dashboard slot="content">
+    <template v-slot:content><b-scrolling-dashboard >
       <template v-if="scrapedData != undefined">
         <b-dashboard-cell
           v-for="pin in scrapedData.pins"
@@ -27,12 +27,12 @@
         :rows="1"
         :columns="1"
       ></b-dashboard-cell>
-    </b-scrolling-dashboard>
+    </b-scrolling-dashboard></template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BScrollingDashboard, BDashboardCell, BCard, BButton } from '@schneefux/klicker/components'
 

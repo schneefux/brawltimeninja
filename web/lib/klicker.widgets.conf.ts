@@ -1,9 +1,10 @@
 import { StaticWidgetSpec } from '@schneefux/klicker/types'
+import { defineAsyncComponent } from 'vue'
 
 const staticWidgets: StaticWidgetSpec[] = [{
   name: 'Image',
   component: 'v-media-img',
-  import: () => import('~/components/klicker/v-media-img.vue'),
+  import: defineAsyncComponent(() => import('~/components/klicker/v-media-img.vue')),
   initialDimensions: {
     rows: 2,
     columns: 2,
@@ -13,7 +14,7 @@ const staticWidgets: StaticWidgetSpec[] = [{
     path: {
       name: 'Path',
       component: 'b-textbox',
-      import: () => import('@schneefux/klicker/components/ui/b-textbox.vue'),
+      import: defineAsyncComponent(() => import('@schneefux/klicker/components/ui/b-textbox.vue')),
       props: {
         dark: true,
       },

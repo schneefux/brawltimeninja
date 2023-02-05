@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
 import { SliceValue } from '@schneefux/klicker/types'
 import { VRoll, BShimmer, CQuery } from '@schneefux/klicker/components'
 

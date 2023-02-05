@@ -1,7 +1,8 @@
 <template>
   <figure class="flex items-center">
+    <!-- TODO fix types, cube returns string[] -->
     <brawler-team
-      :brawlers="row.dimensionsRaw.team.team"
+      :brawlers="row.dimensionsRaw.team.team as unknown as string[]"
       class="shrink-0 w-20"
     ></brawler-team>
     <figcaption
@@ -11,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from 'vue'
 import { MetaGridEntry } from '@schneefux/klicker/types'
 import BrawlerTeam from '~/components/brawler/brawler-team.vue'
 

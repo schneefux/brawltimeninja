@@ -13,9 +13,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, computed } from '@nuxtjs/composition-api'
+import { defineComponent, computed } from 'vue'
 import { formatClickhouseDate, getTodaySeasonEnd } from '@/lib/util'
 import { CQuery, VTable } from '@schneefux/klicker/components'
+import { useRoute } from 'vue-router'
+import { useCacheHeaders } from '@/composables/compat'
+import { CubeQuery } from '@schneefux/klicker/types'
 
 export default defineComponent({
   components: {
@@ -26,11 +29,11 @@ export default defineComponent({
     const route = useRoute()
     const metric = computed(() => {
       // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return route.value.params.metric ?? ''
+      return route.params.metric as string ?? ''
     })
 
     const currentSeason = formatClickhouseDate(getTodaySeasonEnd())
-    const query = computed(() => ({
+    const query = computed<CubeQuery>(() => ({
       cubeId: 'battle',
       dimensionsIds: ['player'],
       metricsIds: [metric.value],
@@ -41,11 +44,12 @@ export default defineComponent({
       limit: 100,
     }))
 
+    useCacheHeaders()
+
     return {
       query,
       metric,
     }
   },
-  middleware: ['cached'],
 })
 </script>

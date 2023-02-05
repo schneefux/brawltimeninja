@@ -16,14 +16,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useAsync, computed } from '@nuxtjs/composition-api'
+import { useApi, useAsync, useCacheHeaders } from '@/composables/compat'
+import { defineComponent, computed } from 'vue'
 import { PlayerRankTableRow } from '~/components/player/player-rank-table.vue'
 
 export default defineComponent({
   setup() {
-    const { $api } = useContext()
+    const $api = useApi()
 
-    const leaderboard = useAsync(() => $api.query('rankings.playersByCountry', {
+    const leaderboard = useAsync(() => $api.rankings.playersByCountry.query({
       country: 'global',
     }).catch(() => []), 'leaderboard-trophies')
 
@@ -36,10 +37,11 @@ export default defineComponent({
       })) ?? []
     })
 
+    useCacheHeaders()
+
     return {
       rows,
     }
   },
-  middleware: ['cached'],
 })
 </script>

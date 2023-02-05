@@ -31,8 +31,14 @@ export function zip<T>(arr1: T[], arr2: T[]) {
   return arr1.map((value, index) => [value, arr2[index]])
 }
 
+export function hoursSinceDate(date: string) {
+  const then = Date.parse(date)
+  const now = (new Date()).getTime()
+  return Math.floor((now - then) / 1000 / 3600)
+}
+
 export const brawlerId = (entry: { name: string }) =>
-  entry.name.replace(/\.|\s/g, '_').toLowerCase()
+  entry.name.replace(/\.| /g, '_').toLowerCase()
 
 export function formatMode(mode: string) {
   return camelToSnakeCase(mode)
@@ -247,6 +253,14 @@ export function getCompetitionMapDayStart(timestamp: Date) {
   const daysSince = Math.ceil(diff/1000/60/60/24)
   dayStart.setUTCDate(dayStart.getUTCDate() + daysSince - 1)
   return dayStart
+}
+
+export function getCompetitionWinnerMode(timestamp: Date) {
+  const order = ['duoShowdown', 'siege', 'hotZone', 'soloShowdown', 'brawlBall', 'bounty', 'heist', 'gemGrab']
+  const dayStart = new Date(Date.parse('2021-04-24T09:30:00Z'))
+  const diff = timestamp.getTime() - dayStart.getTime()
+  const daysSince = Math.floor(diff/1000/60/60/24)
+  return order[daysSince % order.length]
 }
 
 /**

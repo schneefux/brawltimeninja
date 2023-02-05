@@ -5,58 +5,49 @@
       class="flex flex-wrap justify-center"
     >
       <div
-        v-for="(post, index) in posts"
+        v-for="post in posts"
         :key="post.title"
         class="contents"
       >
-        <!--
-        <client-only>
-          <in-feed-adsense
-            v-if="index == 3"
-            data-ad-layout-key="-6f+dk+1s-h+2d"
-            data-ad-client="ca-pub-6856963757796636"
-            data-ad-slot="6887845661"
-            class="w-full"
-          ></in-feed-adsense>
-        </client-only>
-        -->
-
         <b-card
           :title="post.title"
-          :link="`/blog/guides/${post.slug}`"
+          :link="localePath(`/blog/guides/${post.slug}`)"
           class="mx-4 my-4 w-full max-w-md"
           itemscope
           itemtype="http://schema.org/AnalysisNewsArticle"
           light
         >
-          <span
-            slot="preview"
-            class="text-gray-400 text-sm"
-          >{{ post.createdAt }}</span>
-          <div
-            slot="infobar"
+          <template v-slot:preview>
+            <span class="text-gray-400 text-sm" >{{ post.createdAt }}</span>
+          </template>
+
+          <template
             v-if="'image' in post"
-            :style="'image' in post ? `background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')` : ''"
-            class="h-48 bg-cover bg-center"
-            itemprop="thumbnailUrl"
-          ></div>
-
-          <p
-            slot="content"
-            itemprop="abstract"
+            v-slot:infobar
           >
-            {{ post.description }}
-          </p>
+            <div
+              :style="'image' in post ? `background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${post.image}')` : ''"
+              class="h-48 bg-cover bg-center"
+              itemprop="thumbnailUrl"
+            ></div>
+          </template>
 
-          <b-button
-            slot="actions"
-            :to="`/blog/guides/${post.slug}`"
-            itemprop="url"
-            primary
-            md
-          >
-            Read
-          </b-button>
+          <template v-slot:content>
+            <p itemprop="abstract">
+              {{ post.description }}
+            </p>
+          </template>
+
+          <template v-slot:actions>
+            <b-button
+              :to="`/blog/guides/${post.slug}`"
+              itemprop="url"
+              primary
+              md
+            >
+              Read
+            </b-button>
+          </template>
         </b-card>
       </div>
     </div>
@@ -64,29 +55,27 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useAsync } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from 'vue'
 import { format, parseISO } from 'date-fns'
-import { requestStatic } from '~/composables/content'
 import { TocEntry } from '~/model/Web'
+import { useAsync, useCacheHeaders } from '@/composables/compat'
 
 export default defineComponent({
-  nuxtI18n: {
-    locales: ['en'],
-  },
-  middleware: ['cached'],
   setup() {
-    const toc = useAsync<TocEntry[]>(() => requestStatic('/content/guides/toc.json').then(r => JSON.parse(r)), 'toc-guides')
+    const toc = useAsync<{ default: TocEntry[] }>(() => import('~/assets/content/guides/toc.json'), 'toc-guides')
 
     const posts = computed(() => {
       if (toc.value == undefined) {
         return undefined
       }
 
-      return toc.value.map(p => ({
+      return toc.value.default.map(p => ({
         ...p,
         createdAt: format(parseISO(p.createdAt), 'PP'),
       }))
     })
+
+    useCacheHeaders()
 
     return {
       posts,

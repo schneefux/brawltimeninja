@@ -1,12 +1,12 @@
 <template>
   <b-app-head-nav>
-    <nuxt-link to="/">
+    <router-link :to="localePath('/')">
       <img
-        src="~/assets/images/logo_with_crown_min.svg"
+        :src="crownUrl"
         alt="Logo"
         class="h-6 w-6 object-contain"
       >
-    </nuxt-link>
+    </router-link>
 
     <navigator
       class="mr-auto dark"
@@ -18,7 +18,7 @@
     ></install-button>
 
     <b-button
-      to="/about"
+      :to="localePath('/about')"
       :label="$t('nav.About')"
       class="w-6 text-center h-6"
       primary
@@ -35,17 +35,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
 import { faInfo } from '@fortawesome/free-solid-svg-icons'
 import { BAppHeadNav } from '@schneefux/klicker/components'
+import crownUrl from '~/assets/images/logo_with_crown_min.svg'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default defineComponent({
   components: {
     BAppHeadNav,
+    FontAwesomeIcon,
   },
   setup() {
     return {
       faInfo,
+      crownUrl,
     }
   },
 })

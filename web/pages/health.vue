@@ -3,9 +3,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
-export default Vue.extend({
-  layout: 'empty',
+export default defineComponent({
 })
 </script>
+
+<route>
+{
+  meta: {
+    layout: 'empty',
+  },
+}
+</route>

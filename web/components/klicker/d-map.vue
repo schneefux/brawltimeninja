@@ -1,30 +1,29 @@
-<template functional>
+<template>
   <router-link
-    :to="parent.localePath(`/tier-list/mode/${props.camelToKebab(props.row.dimensionsRaw.map.mode || '')}/map/${props.row.dimensionsRaw.map.map}`)"
-    :class="['flex items-center', data.class, data.staticClass]"
-    :style="data.staticStyle"
-    @click.native.stop
+    :to="to"
+    class="flex items-center"
+    @click.stop
   >
     <div class="mr-2 w-10 sm:w-12 md:w-14">
       <map-img
-        :id="props.row.dimensionsRaw.map.eventId"
-        :map="props.row.dimensionsRaw.map.map"
+        :id="row.dimensionsRaw.map.eventId"
+        :map="row.dimensionsRaw.map.map"
         clazz="h-6 sm:h-8 md:h-10"
       ></map-img>
     </div>
     <span
-      v-if="props.captioned"
+      v-if="captioned"
       class="w-16 md:w-24"
-    >{{ props.row.dimensions.map }}</span>
+    >{{ row.dimensions.map }}</span>
   </router-link>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { useLocalePath } from '@/composables/compat'
+import { computed, defineComponent } from 'vue'
 import { camelToKebab } from '~/lib/util'
 
-export default Vue.extend({
-  functional: true,
+export default defineComponent({
   props: {
     row: {
       type: Object,
@@ -33,10 +32,14 @@ export default Vue.extend({
     captioned: {
       type: Boolean
     },
-    camelToKebab: {
-      type: Function,
-      default: camelToKebab
-    },
+  },
+  setup(props) {
+    const localePath = useLocalePath()
+    const to = computed(() => localePath(`/tier-list/mode/${camelToKebab(props.row.dimensionsRaw.map.mode || '')}/map/${props.row.dimensionsRaw.map.map}`))
+
+    return {
+      to,
+    }
   },
 })
 </script>

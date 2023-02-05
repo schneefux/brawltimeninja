@@ -15,7 +15,9 @@
 import { MetaGridEntry, CubeResponse } from '@schneefux/klicker/types'
 import { Player } from '~/model/Api'
 import { VRoll, BShimmer } from '@schneefux/klicker/components'
-import { computed, defineComponent, PropType, useAsync, useContext, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
+import { useAsync } from '~/composables/compat'
+import { useKlicker } from '@schneefux/klicker/composables'
 
 export default defineComponent({
   components: {
@@ -41,7 +43,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
+    const $klicker = useKlicker()
 
     const response = useAsync<CubeResponse>(() => $klicker.query({
       cubeId: 'map',

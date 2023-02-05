@@ -1,34 +1,35 @@
-<template functional>
-  <picture :class="props.wrapperClass">
+<template>
+  <picture :class="wrapperClass">
     <source
-      v-if="!props.animated"
-      :srcset="props.genUrl(parent, 'webp', props)"
+      v-if="!animated"
+      :srcset="webpSrc"
       type="image/webp"
     >
     <img
-      :src="props.genUrl(parent, props.animated ? 'gif' : (props.transparent ? 'png' : 'jpg'), props)"
-      :class="props.clazz"
-      :style="props.ztyle"
-      v-bind="data.attrs"
+      :src="src"
+      :class="clazz"
+      :style="ztyle"
+      v-bind="$attrs"
     >
   </picture>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useConfig } from "@/composables/compat";
 
-function genUrl(parent: any, format: string, props: any, factor: number = 1.0): string {
+function genUrl(mediaUrl: string, format: string, props: any, factor: number = 1.0): string {
   let query = ''
 
   if (props.size) {
     query += `?size=${props.size * factor}`
   }
 
-  return `${parent.$config.mediaUrl}${props.path}.${format}${query}`
+  return `${mediaUrl}${props.path}.${format}${query}`
 }
 
-export default Vue.extend({
-  functional: true,
+export default defineComponent({
+  inheritAttrs: false,
   props: {
     clazz: {
       type: [String, Object],
@@ -58,9 +59,15 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
-    genUrl: {
-      type: Function,
-      default: genUrl,
+  },
+  setup(props) {
+    const $config = useConfig()
+    const webpSrc = computed(() => genUrl($config.mediaUrl, 'webp', props))
+    const src = computed(() => genUrl($config.mediaUrl, props.animated ? 'gif' : (props.transparent ? 'png' : 'jpg'), props))
+
+    return {
+      webpSrc,
+      src,
     }
   },
 })

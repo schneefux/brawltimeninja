@@ -41,7 +41,7 @@
           <router-link
             :to="localePath(`/profile/${row.player_tag.startsWith('#') ? row.player_tag.slice(1) : row.player_tag}`)"
             class="flex items-center"
-            @click.native.stop
+            @click.stop
           >
             <media-img
               :path="`/avatars/${row.player_icon_id}`"
@@ -59,7 +59,7 @@
           :key="column"
           class="text-center pt-1"
         >
-          {{ row[column] }}
+          {{ (row as any)[column] }}
         </td>
       </tr>
     </tbody>
@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from 'vue'
 
 export interface PlayerRankTableRow {
   player_name: string

@@ -1,4 +1,4 @@
-FROM node:18 AS builder
+FROM node:19 AS builder
 ARG SENTRY_DSN=''
 ENV SENTRY_DSN=$SENTRY_DSN
 ARG SENTRY_ORG=''
@@ -8,11 +8,9 @@ ENV SENTRY_PROJECT=$SENTRY_PROJECT
 ARG SENTRY_AUTH_TOKEN=''
 ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
 ARG GIT_REV=''
-ENV GIT_REV=$GIT_REV
+ENV VITE_GIT_REV=$GIT_REV
 ARG BRANCH=''
-ENV BRANCH=$BRANCH
-# Node 17+ workaround
-ENV NODE_OPTIONS=--openssl-legacy-provider
+ENV VITE_BRANCH=$BRANCH
 WORKDIR /app
 COPY ./.npmrc ./package.json ./yarn.lock .
 RUN yarn add @schneefux/klicker
@@ -20,7 +18,7 @@ RUN yarn install --frozen-lockfile
 COPY . .
 RUN yarn run build
 
-FROM node:18
+FROM node:19
 ENV NODE_ENV=production
 ARG SENTRY_DSN=''
 ENV SENTRY_DSN=$SENTRY_DSN
@@ -31,17 +29,15 @@ ENV SENTRY_PROJECT=$SENTRY_PROJECT
 ARG SENTRY_AUTH_TOKEN=''
 ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
 ARG GIT_REV=''
-ENV GIT_REV=$GIT_REV
+ENV VITE_GIT_REV=$GIT_REV
 ARG BRANCH=''
-ENV BRANCH=$BRANCH
+ENV VITE_BRANCH=$BRANCH
 ARG GIT_REV=''
-ENV GIT_REV=$GIT_REV
-# Node 17+ workaround
-ENV NODE_OPTIONS=--openssl-legacy-provider
+ENV VITE_GIT_REV=$GIT_REV
 WORKDIR /app
 COPY --from=builder /app ./
 RUN rm ./.npmrc
 ENV PORT=80
 EXPOSE 80
 USER node
-CMD [ "node", "--experimental-fetch", "./node_modules/.bin/nuxt", "start" ]
+CMD [ "node", "--experimental-fetch", "./node_modules/.bin/ts-node", "--swc", "./server/index.ts" ]

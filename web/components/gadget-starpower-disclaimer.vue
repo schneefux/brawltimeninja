@@ -3,14 +3,16 @@
     :is="card ? 'b-card' : 'div'"
     :title="$t('starpower-gadget-data.disclaimer.title')"
   >
-    <p slot="content">
-      {{ $t('starpower-gadget-data.disclaimer.description') }}
-    </p>
+    <template v-slot:content>
+      <p>
+        {{ $t('starpower-gadget-data.disclaimer.description') }}
+      </p>
+    </template>
    </component>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
 import { BCard } from '@schneefux/klicker/components'
 
 export default defineComponent({

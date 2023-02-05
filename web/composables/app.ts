@@ -1,5 +1,8 @@
-import { computed, ref, useRouter, useStore } from '@nuxtjs/composition-api'
-import { useGtag } from './gtag'
+import { computed, ref } from 'vue'
+import { event } from 'vue-gtag'
+import { useRouter } from 'vue-router'
+import { useLocalePath } from './compat'
+import { usePreferencesStore } from '@/stores/preferences'
 
 const isPwa = ref<boolean>()
 const isTwa = ref<boolean>()
@@ -32,15 +35,14 @@ function detectIOS() {
 }
 
 export function useInstall(source: string) {
-  const gtag = useGtag()
-  const router = useRouter()
-  const store = useStore<any>()
+  const store = usePreferencesStore()
+  const localePath = useLocalePath()
 
   const installable = computed(() => {
     if (isApp.value) {
       return false
     }
-    if (!process.client) {
+    if (import.meta.env.SSR) {
       return false
     }
     if (installPrompt.value !== undefined) {
@@ -54,7 +56,7 @@ export function useInstall(source: string) {
     if (pwaSupported) {
       installPrompt.value.prompt()
       const choice = await installPrompt.value.userChoice
-      gtag.event('prompt', {
+      event('prompt', {
         'event_category': 'app',
         'event_label': choice.outcome,
       })
@@ -64,7 +66,7 @@ export function useInstall(source: string) {
 
     if (detectAndroid()) {
       const referrer = '&referrer=utm_source%3Dwebsite%26utm_medium%3Dfallback'
-      gtag.event('redirect_store', {
+      event('redirect_store', {
         'event_category': 'app',
         'event_label': 'fallback',
       })
@@ -73,32 +75,33 @@ export function useInstall(source: string) {
     }
 
     if (detectIOS()) {
-      gtag.event('redirect_guide', {
+      const router = useRouter()
+      event('redirect_guide', {
         'event_category': 'app',
         'event_label': 'ios',
       })
-      router.push('/install/ios')
+      router.push(localePath('/install/ios'))
       return
     }
   }
 
   const dismissInstall = () => {
-    gtag.event('dismiss', {
+    event('dismiss', {
       'event_category': 'app',
       'event_label': `install_${source}`,
     })
-    store.commit('dismissInstallBanner')
+    store.installBannerDismissed = true
     clearInstallPrompt()
   }
   const clickInstall = async () => {
-    gtag.event('click', {
+    event('click', {
       'event_category': 'app',
       'event_label': `install_${source}`,
     })
     await install()
   }
 
-  const installDismissed = computed(() => store.state.installBannerDismissed)
+  const installDismissed = computed(() => store.installBannerDismissed)
 
   return {
     install,
@@ -113,6 +116,21 @@ const installPrompt = ref<any>()
 
 export function setInstallPrompt(prompt: any) {
   installPrompt.value = prompt
+}
+
+export function useInstallPromptListeners() {
+  if (!import.meta.env.SSR) {
+    const installed = () => event('install', {
+      'event_category': 'app',
+      'event_label': 'install',
+    })
+
+    window.addEventListener('appinstalled', installed)
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault()
+      setInstallPrompt(e)
+    })
+  }
 }
 
 export function clearInstallPrompt() {

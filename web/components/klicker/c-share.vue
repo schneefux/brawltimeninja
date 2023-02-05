@@ -10,31 +10,29 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from 'vue'
 import { BButton } from '@schneefux/klicker/components'
+import { event } from 'vue-gtag'
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   components: {
     BButton,
   },
   setup() {
-    const gtag = useGtag()
-
-    const supportsShareApi = computed(() => process.client && 'share' in navigator)
+    const supportsShareApi = computed(() => !import.meta.env.SSR && 'share' in navigator)
 
     const share = async () => {
       try {
         await navigator.share({
           url: window.location.href,
         })
-        gtag.event('click', {
+        event('click', {
           'event_category': 'dashboard',
           'event_label': 'share',
         })
       } catch (err) {
         console.error(err);
-        gtag.event('click', {
+        event('click', {
           'event_category': 'dashboard',
           'event_label': 'share_error',
         })

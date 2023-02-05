@@ -1,6 +1,7 @@
-import { asSlice, Cube, MetaGridEntry, Dimension, Metric } from "@schneefux/klicker/types"
+import { asSlice, Cube, MetaGridEntry, Dimension, Metric } from "@schneefux/klicker/types.js"
+// @ts-ignore
 import { ChiSquared } from 'sampson' // TODO does not treeshake - unfortunately, sampson is written in Flow
-import { formatClickhouseDate } from "./util"
+import { formatClickhouseDate } from "./util.js"
 
 /* c&p from util */
 export function getSeasonEnd(timestamp: Date) {
@@ -287,7 +288,7 @@ const gearDimension: Dimension = {
   name: 'Gear',
   naturalIdAttribute: 'gearName',
   formatter: 'capitalizeWords',
-  additionalMetrics: ['gearName'],
+  additionalMetrics: ['gearName', 'brawler'],
   type: 'nominal',
   config: {
     sql: 'brawler_gear_id',
@@ -1791,6 +1792,32 @@ const gadgetCube: Cube = {
   },
 }
 
+const gearCube: Cube = {
+  id: 'gear',
+  table: 'gear_meta',
+  name: 'Gear',
+  dimensions: [
+    ...brawlerBattleDimensions,
+    brawlerIdDimension,
+    gearDimension,
+  ],
+  defaultDimensionsIds: ['brawler', 'gear'],
+  metrics: [
+    ...brawlerBattleMetrics,
+    gearNameMetric,
+  ],
+  defaultMetricIds: ['winRateAdj'],
+  metaMetrics: ['picks', 'timestamp'],
+  slices: [
+    ...brawlerBattleSlices,
+    commonSlices.gearIdEq,
+    commonSlices.gearIdNeq,
+  ],
+  defaultSliceValues: {
+    season: [monthAgoSeason],
+  },
+}
+
 const brawlerAlliesCube: Cube = {
   id: 'brawlerAllies',
   table: 'brawler_allies_mv',
@@ -1943,6 +1970,7 @@ const cubes: Record<string, Cube> = {
   map: mapCube, // takes allies into account for the statistics
   gadget: gadgetCube, // excludes 0 gadgets
   starpower: starpowerCube, // excludes 0 starpowers
+  gear: gearCube, // excludes 0 gears
   brawlerAllies: brawlerAlliesCube, // joins allies
   brawlerEnemies: brawlerEnemiesCube, // joins enemies
 }

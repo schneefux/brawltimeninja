@@ -24,16 +24,18 @@
       :cell-columns="2"
       :render-at-least="5"
       key-id="date"
+      class="mt-4"
       render-placeholder
     >
       <template v-slot:item="date">
         <b-card :title="date.date">
-          <media-img
-            slot="content"
-            :path="`/maps/competition-winners/${date.date}`"
-            :alt="date"
-            size="512"
-          ></media-img>
+          <template v-slot:content>
+            <media-img
+              :path="`/maps/competition-winners/${date.date}`"
+              :alt="date"
+              size="512"
+            ></media-img>
+          </template>
         </b-card>
       </template>
     </b-scrolling-list>
@@ -41,24 +43,26 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref } from 'vue'
 import { BScrollingList, BTextbox } from '@schneefux/klicker/components'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default defineComponent({
   components: {
     BScrollingList,
     BTextbox,
+    FontAwesomeIcon,
   },
   setup() {
-    const dateFilter = ref<string>(new Date().toISOString().slice(0, 10))
+    const dateFilter = ref<string|undefined>(new Date().toISOString().slice(0, 10))
 
     const datesShown = computed(() => {
       const dates: {
         date: string,
       }[] = []
 
-      const start = new Date(dateFilter.value) ?? new Date()
+      const start = dateFilter.value ? new Date(dateFilter.value) : new Date()
       const end = new Date(start.valueOf())
       end.setDate(end.getDate() - 3*31)
 

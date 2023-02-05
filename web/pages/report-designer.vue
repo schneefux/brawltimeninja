@@ -25,7 +25,7 @@
         </label>
         <b-textbox
           :id="`${prefix}-editor`"
-          :value="editorUrl"
+          :model-value="editorUrl"
           readonly
           dark
         ></b-textbox>
@@ -35,7 +35,7 @@
         </label>
         <b-textbox
           :id="`${prefix}-viewer`"
-          :value="viewerUrl"
+          :model-value="viewerUrl"
           readonly
           dark
         ></b-textbox>
@@ -56,12 +56,14 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, computed, onMounted, useRoute } from "@nuxtjs/composition-api"
+import { defineComponent, computed, onMounted } from "vue"
 import { CCanvas, BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { Report, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useUniqueId } from '@schneefux/klicker/composables'
+import { useRoute } from "vue-router"
+import { useSelfOrigin } from "@/composables/compat"
 
 export default defineComponent({
   components: {
@@ -80,8 +82,8 @@ export default defineComponent({
 
     const route = useRoute()
     onMounted(async () => {
-      if (route.value.query['id'] != undefined) {
-        await update(parseInt(route.value.query['id'] as string))
+      if (route.query['id'] != undefined) {
+        await update(parseInt(route.query['id'] as string))
       }
     })
 
@@ -93,15 +95,16 @@ export default defineComponent({
       }
     })
     const editorUrl = computed<string>(() => {
-      if (process.client && report.value.id != undefined) {
+      if (!import.meta.env.SSR && report.value.id != undefined) {
         return window.location.href.replace(location.search, '') + '?id=' + report.value.id
       } else {
         return ''
       }
     })
+    const origin = useSelfOrigin()
     const viewerUrl = computed<string>(() => {
-      if (process.client && embedUrl.value != undefined) {
-        return window.location.origin + embedUrl.value
+      if (embedUrl.value != undefined) {
+        return origin + embedUrl.value
       } else {
         return ''
       }

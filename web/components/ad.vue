@@ -4,20 +4,20 @@
     class="mt-4"
   >
     <client-only v-if="allowed">
-      <adsense
-        :data-ad-slot="adSlot"
-        :data-ad-region="adRegion"
-        data-ad-format=""
-        data-ad-client="ca-pub-6856963757796636"
-        data-full-width-responsive="true"
-        ins-class="banner-ad"
-        class="flex justify-center -mx-4"
-      ></adsense>
+      <div class="flex justify-center -mx-4">
+        <adsense
+          :data-ad-slot="adSlot"
+          :data-ad-region="adRegion"
+          data-ad-format=""
+          data-ad-client="ca-pub-6856963757796636"
+          class="banner-ad"
+          data-full-width-responsive
+        ></adsense>
+      </div>
 
-      <div
-        slot="placeholder"
-        class="adswrapper ad-section banner-ad"
-      ></div>
+      <template v-slot:placeholder>
+        <div class="adswrapper ad-section banner-ad"></div>
+      </template>
     </client-only>
   </div>
   <div v-else-if="scraper">
@@ -27,13 +27,12 @@
         :data-ad-region="adRegion"
         data-ad-format=""
         data-ad-client="ca-pub-6856963757796636"
-        ins-class="scraper-ad"
+        class="scraper-ad"
       ></adsense>
 
-      <div
-        slot="placeholder"
-        class="adswrapper ad-section scraper-ad"
-      ></div>
+      <template v-slot:placeholder>
+        <div class="adswrapper ad-section scraper-ad"></div>
+      </template>
     </client-only>
   </div>
   <b-page-section
@@ -46,23 +45,25 @@
         :data-ad-region="adRegion"
         data-ad-format="auto"
         data-ad-client="ca-pub-6856963757796636"
-        data-full-width-responsive="yes"
         class="text-center"
+        data-full-width-responsive
       ></adsense>
 
-      <div
-        slot="placeholder"
-        class="adswrapper ad-section w-full"
-        style="height: 300px;"
-      ></div>
+      <template v-slot:placeholder>
+        <div
+          class="adswrapper ad-section w-full"
+          style="height: 300px;"
+        ></div>
+      </template>
     </client-only>
   </b-page-section>
 </template>
 
 <script lang="ts">
-import { defineComponent, useStore, computed, ref } from '@nuxtjs/composition-api'
+import { defineComponent, computed, ref } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 import { isApp } from '~/composables/app'
+import { usePreferencesStore } from '@/stores/preferences'
 
 export default defineComponent({
   props: {
@@ -92,19 +93,17 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useStore<any>()
+    const store = usePreferencesStore()
     const ad = ref<HTMLElement>()
     const visible = ref(!props.lazy || props.first)
 
     // default to "allow" on SSR to render placeholders
-    const userAllowed = computed(() => store.state.adsAllowed == undefined || store.state.adsAllowed == true)
+    const userAllowed = computed(() => store.adsAllowed == undefined || store.adsAllowed == true)
     const policyAllowed = computed(() => props.first || isApp.value == undefined || isApp.value == false)
     const allowed = computed(() => policyAllowed.value && userAllowed.value)
 
-    if (process.client) {
-      // TODO the fix for https://github.com/vueuse/vueuse/issues/685
-      // and/or importing vueuse as peer dependency breaks this ref type
-      const { isSupported, stop } = useIntersectionObserver(ad as any, ([{ isIntersecting }]) => {
+    if (!import.meta.env.SSR) {
+      const { isSupported, stop } = useIntersectionObserver(ad, ([{ isIntersecting }]) => {
         if (isIntersecting && allowed.value) {
           visible.value = true
           stop()

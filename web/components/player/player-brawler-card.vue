@@ -3,98 +3,103 @@
     :title="title"
     :link="localePath(`/tier-list/brawler/${brawlerId}`)"
   >
-    <div
-      slot="content"
-      class="flex flex-col"
-    >
-      <div class="flex items-center gap-x-8">
-        <media-img
-          :path="`/brawlers/${brawlerId}/avatar`"
-          :alt="brawler.name"
-          size="160"
-          clazz="w-20 h-20 rounded object-contain"
-        ></media-img>
+    <template v-slot:content>
+      <div class="flex flex-col">
+        <div class="flex items-center gap-x-8">
+          <media-img
+            :path="`/brawlers/${brawlerId}/avatar`"
+            :alt="brawler.name"
+            size="160"
+            clazz="w-20 h-20 rounded object-contain"
+          ></media-img>
 
-        <div class="w-full grid grid-cols-[repeat(auto-fit,2rem)] justify-items-center items-center gap-4">
-          <media-img
-            v-for="starpower in brawler.starPowers"
-            :key="starpower.id"
-            :path="`/starpowers/${starpower.id}`"
-            :alt="capitalizeWords(starpower.name.toLowerCase())"
-            size="80"
-          ></media-img>
-          <media-img
-            v-for="gadget in brawler.gadgets"
-            :key="gadget.id"
-            :path="`/gadgets/${gadget.id}`"
-            :alt="capitalizeWords(gadget.name.toLowerCase())"
-            size="80"
-          ></media-img>
-          <media-img
-            v-for="gear in brawler.gears"
-            :key="gear.id"
-            :path="`/gears/${gear.name.toLowerCase()}_${gear.level}`"
-            :alt="capitalizeWords(gear.name.toLowerCase())"
-            size="80"
-          ></media-img>
+          <div class="w-full grid grid-cols-[repeat(auto-fit,2rem)] justify-items-center items-center gap-4">
+            <media-img
+              v-for="starpower in brawler.starPowers"
+              :key="starpower.id"
+              :path="`/starpowers/${starpower.id}`"
+              :alt="capitalizeWords(starpower.name.toLowerCase())"
+              size="80"
+            ></media-img>
+            <media-img
+              v-for="gadget in brawler.gadgets"
+              :key="gadget.id"
+              :path="`/gadgets/${gadget.id}`"
+              :alt="capitalizeWords(gadget.name.toLowerCase())"
+              size="80"
+            ></media-img>
+            <media-img
+              v-for="gear in brawler.gears"
+              :key="gear.id"
+              :path="`/gears/${gear.name.toLowerCase()}_${gear.level}`"
+              :alt="capitalizeWords(gear.name.toLowerCase())"
+              size="80"
+            ></media-img>
+          </div>
         </div>
+
+        <history-graph
+          :brawler="brawler.name"
+          :player-tag="playerTag"
+          class="h-32 mt-6"
+        ></history-graph>
+
+        <b-kv-table
+          :rows="kvTableRows"
+          :data="kvTableData"
+          id-key="id"
+          class="mt-4"
+        >
+          <template v-slot:rank="{ value }">
+            <img
+              :src="leaderboardsIcon"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
+          <template v-slot:trophies="{ value }">
+            <img
+              :src="trophyIcon"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
+          <template v-slot:power="{ value }">
+            <img
+              :src="value < 10 ? powerpointIcon : starpowerIcon"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
+          <template v-slot:wins="{ value }">
+            <span class="text-green-400">
+              {{ value }}
+            </span>
+          </template>
+          <template v-slot:losses="{ value }">
+            <span class="text-red-400">
+              {{ value }}
+            </span>
+          </template>
+        </b-kv-table>
       </div>
-
-      <history-graph
-        :brawler="brawler.name"
-        :player-tag="playerTag"
-        class="h-32 mt-6"
-      ></history-graph>
-
-      <b-kv-table
-        :rows="kvTableRows"
-        :data="kvTableData"
-        id-key="id"
-        class="mt-4"
-      >
-        <template v-slot:rank="{ value }">
-          <img
-            src="~/assets/images/icon/leaderboards_optimized.png"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
-        <template v-slot:trophies="{ value }">
-          <img
-            src="~/assets/images/icon/trophy_optimized.png"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
-        <template v-slot:power="{ value }">
-          <img
-            :src="value < 10 ? require('~/assets/images/icon/powerpoint_optimized.png') : require('~/assets/images/icon/starpower_optimized.png')"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
-        <template v-slot:wins="{ value }">
-          <span class="text-green-400">
-            {{ value }}
-          </span>
-        </template>
-        <template v-slot:losses="{ value }">
-          <span class="text-red-400">
-            {{ value }}
-          </span>
-        </template>
-      </b-kv-table>
-    </div>
+    </template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useAsync, useContext, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType } from 'vue'
 import { Brawler } from '~/model/Api'
 import { brawlerId as getBrawlerId, capitalizeWords, formatClickhouse, getSeasonEnd, tagToId } from '~/lib/util'
 import { subWeeks } from 'date-fns'
 import { BKvTable } from '@schneefux/klicker/components'
 import { useKlicker } from '@schneefux/klicker/composables'
+import { useAsync } from '~/composables/compat'
+import leaderboardsIcon from '~/assets/images/icon/leaderboards_optimized.png'
+import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
+import powerpointIcon from '~/assets/images/icon/powerpoint_optimized.png'
+import starpowerIcon from '~/assets/images/icon/starpower_optimized.png'
+import { useI18n } from 'vue-i18n'
 
 interface BrawlerWithId extends Brawler {
   id: string
@@ -115,7 +120,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useKlicker()
+    const $klicker = useKlicker()
     const season = formatClickhouse(getSeasonEnd(subWeeks(new Date(), 12)))
 
     const fetchData = async () => {
@@ -136,16 +141,16 @@ export default defineComponent({
           picks: response.data[0].metricsRaw.picks as number,
         }
       } else {
-        return undefined
+        return null
       }
     }
 
-    const data = useAsync(() => fetchData(), `player-brawler-${props.playerTag}-${props.brawler.name}`)
+    const data = useAsync(() => fetchData(), computed(() => `player-brawler-${props.playerTag}-${props.brawler.name}`))
 
     const brawlerId = computed(() => getBrawlerId({ name: props.brawler.name }))
     const title = computed(() => capitalizeWords(props.brawler.name.toLowerCase()))
 
-    const { i18n } = useContext()
+    const i18n = useI18n()
     const kvTableRows = computed(() => ([{
       title: i18n.t('metric.rank'),
       key: 'rank',
@@ -196,6 +201,10 @@ export default defineComponent({
       capitalizeWords,
       kvTableRows,
       kvTableData,
+      leaderboardsIcon,
+      trophyIcon,
+      powerpointIcon,
+      starpowerIcon,
     }
   },
 })

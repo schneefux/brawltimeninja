@@ -21,7 +21,7 @@
       <player-mode-card
         :mode="mode.id"
         :battles="battles"
-        :active-events="events"
+        :active-events="events!"
         :player-brawlers="player.brawlers"
         :player-tag="player.tag"
       ></player-mode-card>
@@ -30,10 +30,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, useContext, useAsync, computed } from '@nuxtjs/composition-api'
+import { defineComponent, PropType, computed } from 'vue'
 import { Player, Battle } from '~/model/Api'
 import { BScrollingList } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
+import { useActiveEvents, useAllModes } from '@/composables/dimension-values'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -49,11 +51,11 @@ export default defineComponent({
       default: []
     },
   },
-  setup(props) {
-    const { $klicker, i18n } = useContext()
-    const events = useAsync(() => $klicker.queryActiveEvents(), `player-mode-winrates-events-${props.player.tag}`)
+  setup() {
+    const i18n = useI18n()
+    const events = useActiveEvents()
 
-    const modesIds = useAsync(() => $klicker.queryAllModes(), `player-mode-winrates-modes-${props.player.tag}`)
+    const modesIds = useAllModes()
     const modes = computed(() => {
       return modesIds.value?.map(m => ({
         id: m,
@@ -69,7 +71,7 @@ export default defineComponent({
           return +1
         }
 
-        return (i18n.t('mode.' + a.id) as string).localeCompare(i18n.t('mode.' + b.id) as string)
+        return (i18n.t('mode.' + a.id)).localeCompare(i18n.t('mode.' + b.id))
       })
     })
 

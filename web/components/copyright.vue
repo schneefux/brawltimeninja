@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>
-      &#169; 2018 - 2022 Brawl Time Ninja
+      &#169; 2018 - 2023 Brawl Time Ninja
       ({{ releaseVersion }})
     </p>
     <p v-if="$i18n.locale != 'en'">
@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from 'vue'
 import { isApp } from '~/composables/app'
 
 export default defineComponent({
@@ -52,7 +52,7 @@ export default defineComponent({
   setup() {
     return {
       isApp,
-      releaseVersion: process.env.release!,
+      releaseVersion: import.meta.env.VITE_GIT_REV.substring(0, 7)
     }
   },
 })

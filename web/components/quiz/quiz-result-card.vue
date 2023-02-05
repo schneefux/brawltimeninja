@@ -3,73 +3,72 @@
     :title="$t('oejts.result.title')"
     class="max-w-lg"
   >
-    <div
-      slot="content"
-      class="flex flex-col gap-y-4"
-    >
-      <b-card
-        :elevation="2"
-        dense
-      >
-        <div
-          slot="content"
-          class="flex flex-col items-center"
+    <template v-slot:content>
+      <div class="flex flex-col gap-y-4">
+        <b-card
+          :elevation="2"
+          dense
         >
-          <span class="mt-1">{{ mostSimilarBrawler.name }}</span>
-          <span class="whitespace-nowrap">{{ $t('oejts.result.percent-match', { percent: Math.round(mostSimilarBrawler.similarity * 100) }) }}</span>
-          <media-img
-            clazz="h-48 m-2"
-            :path="`/brawlers/${mostSimilarBrawler.id}/model`"
-          ></media-img>
-        </div>
-      </b-card>
+          <template v-slot:content>
+            <div class="flex flex-col items-center">
+              <span class="mt-1">{{ mostSimilarBrawler.name }}</span>
+              <span class="whitespace-nowrap">{{ $t('oejts.result.percent-match', { percent: Math.round(mostSimilarBrawler.similarity * 100) }) }}</span>
+              <media-img
+                clazz="h-48 m-2"
+                :path="`/brawlers/${mostSimilarBrawler.id}/model`"
+              ></media-img>
+            </div>
+          </template>
+        </b-card>
 
-      <b-card
-        :elevation="2"
-        dense
-      >
-        <oejts-table
-          slot="content"
-          :oejts="mostSimilarBrawler.score"
-        ></oejts-table>
-      </b-card>
+        <b-card
+          :elevation="2"
+          dense
+        >
+          <template v-slot:content>
+            <oejts-table
+              :oejts="mostSimilarBrawler.score"
+            ></oejts-table>
+          </template>
+        </b-card>
 
-      <p class="mt-2 text-left text-sm">
-        The Open Extended Jungian Type Scales is a psychological test based on theories by Carl Jung.
-        The OEJTS measures four scales to calculate an overall type.
-        There is no best type, all types are considered equal.
-        Read more about the theory <b-button tag="a" xs dark href="https://simple.wikipedia.org/wiki/Myers-Briggs_Type_Indicator" target="_blank">on Wikipedia</b-button> and more about the OEJTS <b-button tag="a" xs dark href="https://openpsychometrics.org/tests/OJTS/development/" target="_blank">here</b-button>.
-        Brawler personalities have been voted by the community.
-      </p>
-    </div>
-    <div
-      slot="actions"
-      class="mx-auto"
-    >
-      <share-render-button
-        :embed-url="sharepicEmbedUrl"
-        :url="quizRootUrl"
-        :title="$t('player.quiz.result.title', { brawler: mostSimilarBrawler.name })"
-        :text="$t('player.quiz.result.description', { brawler: mostSimilarBrawler.name })"
-        class="inline-block mr-2"
-        primary
-        md
-        @share="sharepicTriggered"
-      ></share-render-button>
-      <b-button
-        slot="actions"
-        primary
-        md
-        @click="$emit('restart')"
-      >{{ $t('action.restart') }}</b-button>
-    </div>
+        <p class="mt-2 text-left text-sm">
+          The Open Extended Jungian Type Scales is a psychological test based on theories by Carl Jung.
+          The OEJTS measures four scales to calculate an overall type.
+          There is no best type, all types are considered equal.
+          Read more about the theory <b-button tag="a" xs dark href="https://simple.wikipedia.org/wiki/Myers-Briggs_Type_Indicator" target="_blank">on Wikipedia</b-button> and more about the OEJTS <b-button tag="a" xs dark href="https://openpsychometrics.org/tests/OJTS/development/" target="_blank">here</b-button>.
+          Brawler personalities have been voted by the community.
+        </p>
+      </div>
+    </template>
+    <template v-slot:actions>
+      <div class="mx-auto">
+        <share-render-button
+          :embed-url="sharepicEmbedUrl"
+          :url="quizRootUrl"
+          :title="$t('player.quiz.result.title', { brawler: mostSimilarBrawler.name })"
+          :text="$t('player.quiz.result.description', { brawler: mostSimilarBrawler.name })"
+          class="inline-block mr-2"
+          primary
+          md
+          @share="sharepicTriggered"
+        ></share-render-button>
+        <b-button
+          primary
+          md
+          @click="$emit('restart')"
+        >{{ $t('action.restart') }}</b-button>
+      </div>
+    </template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, onMounted, useStore, useContext, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, onMounted } from 'vue'
 import { brawlerScores, OEJTSEntry } from '~/lib/oejts'
 import { brawlerId, capitalizeWords } from '~/lib/util'
+import { event } from 'vue-gtag'
+import { usePreferencesStore } from '@/stores/preferences'
 
 export interface QuizResult {
   score: OEJTSEntry
@@ -83,7 +82,6 @@ function similarity(o1: OEJTSEntry, o2: OEJTSEntry) {
   return (o1.ie * o2.ie + o1.sn * o2.sn + o1.ft * o2.ft + o1.jp * o2.jp) / 4
 }
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   props: {
     result: {
@@ -92,8 +90,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { localePath } = useContext()
-    const store = useStore()
+    const store = usePreferencesStore()
 
     const mostSimilarBrawler = computed<QuizResult>(() => {
       const scores = Object.entries(brawlerScores)
@@ -110,10 +107,10 @@ export default defineComponent({
         score: props.result,
       }
     })
-    onMounted(() => store.commit('setPersonalityTestResult', mostSimilarBrawler.value?.name))
+    onMounted(() => store.personalityTestResult = mostSimilarBrawler.value?.name)
 
-    const quizRootUrl = computed(() => (process.client ? window.location.origin : '')
-      + localePath('/quiz')
+    const quizRootUrl = computed(() => (!import.meta.env.SSR ? window.location.origin : '')
+      + '/quiz'
       + '?utm_source=share&utm_medium=image&utm_campaign=quiz')
     const sharepicEmbedUrl = computed(() => {
       const params = new URLSearchParams({
@@ -126,8 +123,7 @@ export default defineComponent({
       return `/embed/quiz?${params.toString()}`
     })
 
-    const gtag = useGtag()
-    const sharepicTriggered = () => gtag.event('click', {
+    const sharepicTriggered = () => event('click', {
       'event_category': 'quiz',
       'event_label': 'share',
     })

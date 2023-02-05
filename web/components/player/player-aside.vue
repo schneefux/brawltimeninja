@@ -3,132 +3,133 @@
     :title="player.name"
     :loading="loading"
   >
-    <div
-      slot="content"
-      class="flex flex-col items-center"
-    >
-      <media-img
-        :path="`/avatars/${player.icon.id}`"
-        :alt="player.name"
-        size="200"
-        clazz="w-32 h-32"
-      ></media-img>
+    <template v-slot:content>
+      <div class="flex flex-col items-center">
+        <media-img
+          :path="`/avatars/${player.icon.id}`"
+          :alt="player.name"
+          size="200"
+          clazz="w-32 h-32"
+        ></media-img>
 
-      <b-kv-table
-        :rows="rows"
-        :data="playerWithTrackingStatus"
-        id-key="tag"
-        class="mt-8 w-full"
-      >
-        <template v-slot:name="{ row }">
-          <span
-            :style="{
-              color: '#' + (row.nameColor != undefined ? row.nameColor.slice('0x'.length) : 'ffffff'),
-            }"
-            class="font-semibold"
-          >{{ row.name }}</span>
-        </template>
+        <b-kv-table
+          :rows="rows"
+          :data="playerWithTrackingStatus"
+          id-key="tag"
+          class="mt-8 w-full"
+        >
+          <template v-slot:name="{ row }">
+            <span
+              :style="{
+                color: '#' + (row.nameColor != undefined ? row.nameColor.slice('0x'.length) : 'ffffff'),
+              }"
+              class="font-semibold"
+            >{{ row.name }}</span>
+          </template>
 
-        <template v-slot:tag="{ value }">
-          <span>{{ value }}</span>
-          <span
-            v-if="value == 'V8LLPPC'"
-            class="ml-1 text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
-          >
-            DEV
-          </span>
-        </template>
+          <template v-slot:tag="{ value }">
+            <span>{{ value }}</span>
+            <span
+              v-if="value == 'V8LLPPC'"
+              class="ml-1 text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
+            >
+              DEV
+            </span>
+          </template>
 
-        <template v-slot:club="{ row }">
-          <nuxt-link :to="localePath(`/club/${row.club.tag}`)">
+          <template v-slot:club="{ row }">
+            <router-link
+              :to="localePath(`/club/${row.club.tag.substring(1)}`)"
+              @click.stop
+            >
+              <img
+                :src="clubIcon"
+                alt="Club"
+                class="inline h-4 mr-1"
+              >
+              <span class="underline">{{ row.club.name }}</span>
+            </router-link>
+          </template>
+
+          <template v-slot:trophies="{ value }">
             <img
-              src="~/assets/images/icon/club.png"
-              alt="Club"
+              :src="trophyIcon"
+              alt="Trophies"
               class="inline h-4 mr-1"
             >
-            <span class="underline">{{ row.club.name }}</span>
-          </nuxt-link>
-        </template>
+            {{ value }}
+          </template>
 
-        <template v-slot:trophies="{ value }">
-          <img
-            src="~/assets/images/icon/trophy_optimized.png"
-            alt="Trophies"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
+          <template v-slot:victories="{ value }">
+            <img
+              :src="victoryIcon"
+              alt="3v3 Victories"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
 
-        <template v-slot:victories="{ value }">
-          <img
-            src="~/assets/images/icon/victories.png"
-            alt="3v3 Victories"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
+          <template v-slot:expLevel="{ value }">
+            <img
+              :src="levelIcon"
+              alt="EXP Level"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
 
-        <template v-slot:expLevel="{ value }">
-          <img
-            src="~/assets/images/icon/level.png"
-            alt="EXP Level"
-            class="inline h-4 mr-1"
-          >
-          {{ value }}
-        </template>
+          <template v-slot:soloVictories="{ value }">
+            <media-img
+              path="/modes/solo-showdown/icon"
+              alt="Solo Victories"
+              size="160"
+              clazz="inline h-4 mr-1"
+            ></media-img>
+            {{ value }}
+          </template>
 
-        <template v-slot:soloVictories="{ value }">
-          <media-img
-            path="/modes/solo-showdown/icon"
-            alt="Solo Victories"
-            size="160"
-            clazz="inline h-4 mr-1"
-          ></media-img>
-          {{ value }}
-        </template>
+          <template v-slot:duoVictories="{ value }">
+            <media-img
+              path="/modes/duo-showdown/icon"
+              alt="Duo Victories"
+              size="160"
+              clazz="inline h-4 mr-1"
+            ></media-img>
+            {{ value }}
+          </template>
 
-        <template v-slot:duoVictories="{ value }">
-          <media-img
-            path="/modes/duo-showdown/icon"
-            alt="Duo Victories"
-            size="160"
-            clazz="inline h-4 mr-1"
-          ></media-img>
-          {{ value }}
-        </template>
+          <template v-slot:tracking="{ value }">
+            {{ $t('profile.tracking.status.' + value) }}
+          </template>
+        </b-kv-table>
+      </div>
+    </template>
 
-        <template v-slot:tracking="{ value }">
-          {{ $t('profile.tracking.status.' + value) }}
-        </template>
-      </b-kv-table>
-    </div>
-
-    <div slot="actions" class="flex flex-wrap gap-2">
-      <b-button
-        v-if="canEnableTracking"
-        primary
-        sm
-        @click="enableTracking()"
-      >{{ $t('profile.tracking.enable') }}</b-button>
-
-      <share-render-button
-        :embed-url="`/embed/profile/${player.tag.replace('#', '')}`"
-        :url="playerUrl"
-        primary
-        sm
-        @share="sharepicTriggered"
-      ></share-render-button>
-    </div>
+    <template v-slot:actions>
+      <div class="flex flex-wrap gap-2">
+        <b-button
+          v-if="canEnableTracking"
+          primary
+          sm
+          @click="enableTracking()"
+        >{{ $t('profile.tracking.enable') }}</b-button>
+      </div>
+    </template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useAsync, useContext, wrapProperty } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, ref } from 'vue'
 import { BKvTable } from '@schneefux/klicker/components'
 import { Player } from "~/model/Api"
 import { Row } from "@schneefux/klicker/components/ui/b-kv-table.vue"
+import { useAsync, useApi } from '~/composables/compat'
+import clubIcon from '~/assets/images/icon/club.png'
+import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
+import victoryIcon from '~/assets/images/icon/victories.png'
+import levelIcon from '~/assets/images/icon/level.png'
+import { useI18n } from 'vue-i18n'
 
-const useGtag = wrapProperty('$gtag', false)
 export default defineComponent({
   components: {
     BKvTable,
@@ -140,19 +141,26 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { localePath, i18n } = useContext()
+    const i18n = useI18n()
 
-    const { $api } = useContext()
+    const $api = useApi()
     const loading = ref(false)
     const trackingStatus = useAsync(
-      () => $api.query('player.getTrackingStatus', props.player.tag.substring(1)).catch(() => 'inactive'),
-      `player-tracking-status-${props.player.tag.substring(1)}`)
+      async () => {
+        try {
+          return await $api.player.getTrackingStatus.query(props.player.tag.substring(1)) ?? null
+        } catch (e) {
+          return 'inactive'
+        }
+      },
+      computed(() => `player-tracking-status-${props.player.tag.substring(1)}`))
+
     const enableTracking = async () => {
       if (props.player == undefined) {
         return
       }
       loading.value = true
-      trackingStatus.value = await $api.mutation('player.trackTag', props.player.tag.substring(1))
+      trackingStatus.value = await $api.player.trackTag.mutate(props.player.tag.substring(1))
       loading.value = false
     }
 
@@ -164,75 +172,68 @@ export default defineComponent({
       rows.push({
         slot: 'name',
         key: 'name',
-        title: i18n.t('metric.name') as string,
+        title: i18n.t('metric.name'),
       })
 
       rows.push({
         slot: 'tag',
         key: 'tag',
-        title: i18n.t('metric.tag') as string,
+        title: i18n.t('metric.tag'),
       })
 
       if (props.player.club?.tag != undefined) {
         rows.push({
           slot: 'club',
           key: 'club.name',
-          title: i18n.t('club') as string,
+          title: i18n.t('club'),
         })
       }
 
       rows.push({
         slot: 'trophies',
         key: 'trophies',
-        title: i18n.t('metric.trophies') as string,
+        title: i18n.t('metric.trophies'),
       })
 
       rows.push({
         slot: 'trophies',
         key: 'highestTrophies',
-        title: i18n.t('metric.highestTrophies') as string,
+        title: i18n.t('metric.highestTrophies'),
       })
 
       rows.push({
         slot: 'expLevel',
         key: 'expLevel',
-        title: i18n.t('metric.expLevel') as string,
+        title: i18n.t('metric.expLevel'),
       })
 
       rows.push({
         slot: 'victories',
         key: '3vs3Victories',
-        title: i18n.t('metric.victories') as string,
+        title: i18n.t('metric.victories'),
       })
 
       rows.push({
         slot: 'soloVictories',
         key: 'soloVictories',
-        title: i18n.t('metric.soloVictories') as string,
+        title: i18n.t('metric.soloVictories'),
       })
 
       rows.push({
         slot: 'duoVictories',
         key: 'duoVictories',
-        title: i18n.t('metric.duoVictories') as string,
+        title: i18n.t('metric.duoVictories'),
       })
 
       if (trackingStatus.value != undefined) {
         rows.push({
           slot: 'tracking',
           key: 'tracking',
-          title: i18n.t('profile.tracking.label') as string,
+          title: i18n.t('profile.tracking.label'),
         })
       }
 
       return rows
-    })
-
-    const playerUrl = computed(() => `${process.client ? window.location.origin : ''}${localePath('/player/' + props.player.tag)}?utm_source=share&utm_medium=image&utm_campaign=hype-stats`)
-    const gtag = useGtag()
-    const sharepicTriggered = () => gtag.event('click', {
-      'event_category': 'profile',
-      'event_label': 'share',
     })
 
     const playerWithTrackingStatus = computed(() => ({
@@ -242,13 +243,15 @@ export default defineComponent({
 
     return {
       rows,
-      playerUrl,
       loading,
       enableTracking,
       trackingStatus,
-      sharepicTriggered,
       canEnableTracking,
       playerWithTrackingStatus,
+      clubIcon,
+      trophyIcon,
+      victoryIcon,
+      levelIcon,
     }
   },
 })

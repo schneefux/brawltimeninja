@@ -19,25 +19,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useMeta } from '@nuxtjs/composition-api'
+import { useCacheHeaders, useMeta } from '@/composables/compat'
+import { defineComponent } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
-  head: {},
-  middleware: ['cached'],
   setup() {
-    const { i18n } = useContext()
+    const i18n = useI18n()
 
-    useMeta(() => {
-      const description = i18n.tc('oejts.meta.description')
-
-      return {
-        title: i18n.tc('oejts.meta.title'),
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ],
-      }
-    })
+    useCacheHeaders()
+    useMeta(() => ({
+      title: i18n.t('oejts.meta.title'),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('oejts.meta.description') },
+      ],
+    }))
 
     return {}
   },

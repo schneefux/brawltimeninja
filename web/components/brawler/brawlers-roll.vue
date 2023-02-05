@@ -22,27 +22,27 @@
         :title="brawler.name"
         :link="localePath(`/tier-list/brawler/${brawler.id}`)"
       >
-        <div
-          slot="content"
-          class="h-full flex flex-col items-center justify-between"
-        >
-          <media-img
-            :path="'/brawlers/' + brawler.id + '/model'"
-            :alt="brawler.name"
-            clazz="h-48 object-contain"
-            size="400"
-            loading="lazy"
-          ></media-img>
-        </div>
+        <template v-slot:content>
+          <div class="h-full flex flex-col items-center justify-between">
+            <media-img
+              :path="'/brawlers/' + brawler.id + '/model'"
+              :alt="brawler.name"
+              clazz="h-48 object-contain"
+              size="400"
+              loading="lazy"
+            ></media-img>
+          </div>
+        </template>
       </b-card>
     </template>
   </b-scrolling-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, useAsync, useContext } from '@nuxtjs/composition-api'
-import { brawlerId, capitalizeWords } from '~/lib/util'
+import { defineComponent, computed } from 'vue'
+import { brawlerId } from '~/lib/util'
 import { BScrollingList, BCard } from '@schneefux/klicker/components'
+import { useAllBrawlers } from '@/composables/dimension-values'
 
 export default defineComponent({
   components: {
@@ -50,17 +50,15 @@ export default defineComponent({
     BCard,
   },
   setup() {
-    const { $klicker } = useContext()
-
-    const allBrawlers = useAsync(() => $klicker.queryAllBrawlers(), 'all-brawlers')
+    const allBrawlers = useAllBrawlers()
     const brawlers = computed(() => {
       if (allBrawlers.value == undefined) {
         return undefined
       }
 
       return allBrawlers.value.map(b => ({
-        id: brawlerId({ name: b }),
-        name: capitalizeWords(b.toLowerCase()),
+        id: brawlerId({ name: b.id }),
+        name: b.name,
       }))
     })
 

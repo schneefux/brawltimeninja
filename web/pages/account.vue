@@ -1,6 +1,9 @@
 <template>
   <b-page title="Account">
-    <b-page-section v-if="user != undefined" title="Your Reports">
+    <b-page-section
+      v-if="user != undefined"
+      title="Your Reports"
+    >
       <b-button
         to="/report-designer"
         class="mt-4"
@@ -14,30 +17,34 @@
           :title="report.title"
           class="w-full max-w-xs"
         >
-          <img
-            slot="content"
-            :src="`${renderUrl}/embed/report?id=${report.id}&t=${report.updated_at}`"
-          >
-          <div
-            slot="actions"
-            class="w-full flex justify-between"
-          >
-            <b-button
-              dark
-              sm
-              @click="deleteReport(report)"
-            >Delete</b-button>
-            <b-button
-              :to="`/report-designer?id=${report.id}`"
-              primary
-              sm
-            >Open</b-button>
-          </div>
+          <template v-slot:content>
+            <img
+              :src="`${renderUrl}/embed/report?id=${report.id}&t=${report.updated_at}`"
+            >
+          </template>
+
+          <template v-slot:actions>
+            <div class="w-full flex justify-between">
+              <b-button
+                dark
+                sm
+                @click="deleteReport(report)"
+              >Delete</b-button>
+              <b-button
+                :to="`/report-designer?id=${report.id}`"
+                primary
+                sm
+              >Open</b-button>
+            </div>
+          </template>
         </b-card>
       </div>
     </b-page-section>
 
-    <b-page-section v-if="user != undefined" title="Your Dashboards">
+    <b-page-section
+      v-if="user != undefined"
+      title="Your Dashboards"
+    >
       <b-button
         to="/dashboard-designer"
         class="mt-4"
@@ -51,25 +58,26 @@
           :title="grid.title"
           class="w-full max-w-xs"
         >
-          <img
-            slot="content"
-            :src="`${renderUrl}/embed/dashboard?id=${grid.id}&t=${grid.updated_at}`"
-          >
-          <div
-            slot="actions"
-            class="w-full flex justify-between"
-          >
-            <b-button
-              dark
-              sm
-              @click="deleteGrid(grid)"
-            >Delete</b-button>
-            <b-button
-              :to="`/dashboard-designer?id=${grid.id}`"
-              primary
-              sm
-            >Open</b-button>
-          </div>
+          <template v-slot:content>
+            <img
+              :src="`${renderUrl}/embed/dashboard?id=${grid.id}&t=${grid.updated_at}`"
+            >
+          </template>
+
+          <template v-slot:actions>
+            <div class="w-full flex justify-between">
+              <b-button
+                dark
+                sm
+                @click="deleteGrid(grid)"
+              >Delete</b-button>
+              <b-button
+                :to="`/dashboard-designer?id=${grid.id}`"
+                primary
+                sm
+              >Open</b-button>
+            </div>
+          </template>
         </b-card>
       </div>
     </b-page-section>
@@ -81,13 +89,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, useContext, watch } from "@nuxtjs/composition-api"
+import { defineComponent, onMounted, ref, watch } from "vue"
 import useFeathers from '@schneefux/klicker/composables/feathers'
 import { Grid, Report, User } from "@schneefux/klicker/types"
+import { useConfig } from "@/composables/compat"
 
 export default defineComponent({
   setup() {
-    const { $config } = useContext()
+    const $config = useConfig()
     const { isLoggedIn, client } = useFeathers()
 
     onMounted(async () => {

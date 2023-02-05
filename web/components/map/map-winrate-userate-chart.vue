@@ -12,7 +12,7 @@
 <script lang="ts">
 import { CQuery, VScatterplot } from '@schneefux/klicker/components'
 import { SliceValue, CubeQuery } from '@schneefux/klicker/types'
-import { computed, defineComponent, PropType, toRefs } from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, toRefs } from 'vue'
 import useTopNTitle from '~/composables/top-n-title'
 
 export default defineComponent({

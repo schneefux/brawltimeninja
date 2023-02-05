@@ -35,7 +35,7 @@
       lazy
     >
       <lazy-map-trend-chart
-        :filter="e => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
+        :filter="(e: any) => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
         :dimensions="['day', 'brawler']"
         sort="day"
         metric="useRate"
@@ -46,12 +46,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "@nuxtjs/composition-api"
+import { computed, defineAsyncComponent, defineComponent } from "vue"
 import { BDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
     BDashboardCell,
+    LazyMapTrendChart: defineAsyncComponent(() => import('~/components/map/map-trend-chart.vue'))
   },
   props: {
     brawlerName: {

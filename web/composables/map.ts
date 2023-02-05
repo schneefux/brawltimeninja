@@ -1,7 +1,9 @@
-import { computed, useContext, Ref } from '@nuxtjs/composition-api'
-import { NuxtI18nInstance } from '@nuxtjs/i18n'
+import { computed, Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-export const getMapName = (i18n: NuxtI18nInstance, id: string|number|undefined, name: string|undefined) => {
+export const getMapName = (id: string|number|undefined, name: string|undefined) => {
+  const i18n = useI18n()
+
   if (id == undefined) {
     return name
   }
@@ -11,8 +13,8 @@ export const getMapName = (i18n: NuxtI18nInstance, id: string|number|undefined, 
     return name
   }
 
-  if (i18n.te(`map.${id}`)) {
-    return i18n.t(`map.${id}`) as string
+  if (i18n.t(`map.${id}`) != `map.${id}`) {
+    return i18n.t(`map.${id}`)
   }
 
   // no translation available, fall back to English name from database
@@ -20,7 +22,5 @@ export const getMapName = (i18n: NuxtI18nInstance, id: string|number|undefined, 
 }
 
 export const useMapName = (id: Ref<string|number|undefined>|undefined, name: Ref<string|undefined>|undefined) => {
-  const { i18n } = useContext()
-
-  return computed(() => getMapName(i18n, id?.value, name?.value))
+  return computed(() => getMapName(id?.value, name?.value))
 }

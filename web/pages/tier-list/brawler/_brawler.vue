@@ -3,7 +3,7 @@
     <breadcrumbs
       :links="[{
         path: '/tier-list/brawler',
-        name: $tc('brawler', 2),
+        name: $t('brawler', 2),
       }, {
         path: `/tier-list/brawler/${brawlerId}`,
         name: brawlerName,
@@ -17,23 +17,22 @@
     ></ad>
 
     <b-split-dashboard>
-      <div
-        slot="aside"
-        class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8"
-      >
-        <brawler-aside
-          :brawler-id="brawlerId"
-          :brawler-name="brawlerName"
-          class="!h-auto"
-        ></brawler-aside>
+      <template v-slot:aside>
+        <div class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8">
+          <brawler-aside
+            :brawler-id="brawlerId"
+            :brawler-name="brawlerName"
+            class="!h-auto"
+          ></brawler-aside>
 
-        <b-scroll-spy
-          :sections="sections"
-          nav-class="top-14 lg:top-0"
-          toc-class="hidden lg:block"
-          class="lg:mt-8 lg:overflow-y-auto hide-scrollbar"
-        ></b-scroll-spy>
-      </div>
+          <b-scroll-spy
+            :sections="sections"
+            nav-class="top-14 lg:top-0"
+            toc-class="hidden lg:block"
+            class="lg:mt-8 lg:overflow-y-auto hide-scrollbar"
+          ></b-scroll-spy>
+        </div>
+      </template>
 
       <b-page-section
         ref="overviewSection"
@@ -59,6 +58,7 @@
         lazy
       >
         <brawler-accessories
+          :brawler-name="brawlerName"
           :scraped-data="scrapedData"
         ></brawler-accessories>
       </b-page-section>
@@ -118,12 +118,13 @@
         }"
         lazy
       >
-        <p
-          slot="description"
-          class="mt-4 prose dark:prose-invert text-text/75"
-        >
-          {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
-        </p>
+        <template v-slot:description>
+          <p
+            class="mt-4 prose dark:prose-invert text-text/75"
+          >
+            {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
+          </p>
+        </template>
 
         <brawler-trends-card
           :brawler-name="brawlerName"
@@ -156,7 +157,7 @@
       <b-page-section
         v-if="scrapedData == undefined || (scrapedData.skins != undefined && scrapedData.skins.length > 0)"
         ref="skinsSection"
-        :title="$tc('skin', 2)"
+        :title="$t('skin', 2)"
         v-observe-visibility="{
           callback: makeVisibilityCallback('skins'),
           once: true,
@@ -171,7 +172,7 @@
       <b-page-section
         v-if="scrapedData == undefined || (scrapedData.pins != undefined && scrapedData.pins.length > 0)"
         ref="pinsSection"
-        :title="$tc('pin', 2)"
+        :title="$t('pin', 2)"
         v-observe-visibility="{
           callback: makeVisibilityCallback('pins'),
           once: true,
@@ -186,7 +187,7 @@
       <b-page-section
         v-if="scrapedData == undefined || (scrapedData.voicelines != undefined && scrapedData.voicelines.length > 0)"
         ref="voicelineSection"
-        :title="$tc('voiceline', 2)"
+        :title="$t('voiceline', 2)"
         v-observe-visibility="{
           callback: makeVisibilityCallback('voicelines'),
           once: true,
@@ -234,11 +235,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useAsync, useContext, useMeta, useRoute } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref } from 'vue'
+import { useAsync, useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { capitalizeWords } from '@/lib/util'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
+import { ScrapedBrawler } from '@/model/Web'
+import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   directives: {
@@ -249,33 +254,32 @@ export default defineComponent({
     BSplitDashboard,
     BPageSection,
   },
-  head: {},
   setup() {
-    const { i18n, $config, $http } = useContext()
+    const i18n = useI18n()
+    const $config = useConfig()
 
     const route = useRoute()
     const brawlerId = computed(() => {
       // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return route.value.params.brawler ?? ''
+      return route.params.brawler as string ?? ''
     })
 
     // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)
     const brawlerName = computed(() => capitalizeWords(brawlerId.value.replace(/__/g, '. ').replace(/_/g, ' ')))
 
-    useMeta(() => {
-      const description = i18n.t('tier-list.brawler.meta.description', { brawler: brawlerName.value }) as string
-      return {
-        title: i18n.t('tier-list.brawler.meta.title', { brawler: brawlerName.value }) as string,
-        meta: [
-          { hid: 'description', name: 'description', content: description },
-          { hid: 'og:description', property: 'og:description', content: description },
-        ]
-      }
-    })
+    useCacheHeaders()
+    useMeta(() => ({
+      title: i18n.t('tier-list.brawler.meta.title', { brawler: brawlerName.value }),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('tier-list.brawler.meta.description', { brawler: brawlerName.value }) },
+      ]
+    }))
 
     const { makeVisibilityCallback } = useTrackScroll('brawler')
 
-    const scrapedData = useAsync(() => $http.$get(`${$config.mediaUrl}/brawlers/${brawlerId.value}/data.json`), `scraped-data-${brawlerId.value}`)
+    const scrapedData = useAsync<ScrapedBrawler>(() =>
+      fetch(`${$config.mediaUrl}/brawlers/${brawlerId.value}/data.json`)
+        .then(r => r.json()), `scraped-data-${brawlerId.value}`)
 
     const sectionRefs = {
       overviewSection: ref<InstanceType<typeof BPageSection>>(),
@@ -294,47 +298,47 @@ export default defineComponent({
     const sections = computed(() => [{
       id: 'overview',
       title: i18n.t('brawler.overview'),
-      element: sectionRefs.overviewSection.value,
+      element: sectionRefs.overviewSection.value?.$el,
     }, {
       id: 'accessory',
       title: i18n.t('brawler.accessories'),
-      element: sectionRefs.accessorySection.value,
+      element: sectionRefs.accessorySection.value?.$el,
     }, {
       id: 'synergy',
       title: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName.value }),
-      element: sectionRefs.synergySection.value,
+      element: sectionRefs.synergySection.value?.$el,
     }, {
       id: 'maps',
       title: i18n.t('brawler.current-maps.title', { brawler: brawlerName.value }),
-      element: sectionRefs.mapsSection.value,
+      element: sectionRefs.mapsSection.value?.$el,
     }, {
       id: 'modes',
       title: i18n.t('brawler.modes.title', { brawler: brawlerName.value }),
-      element: sectionRefs.modesSection.value,
+      element: sectionRefs.modesSection.value?.$el,
     }, {
       id: 'trends',
       title: i18n.t('brawler.trends', { brawler: brawlerName.value }),
-      element: sectionRefs.trendsSection.value,
+      element: sectionRefs.trendsSection.value?.$el,
     }, {
       id: 'trophies',
       title: i18n.t('brawler.by-trophies', { brawler: brawlerName.value }),
-      element: sectionRefs.trophiesSection.value,
+      element: sectionRefs.trophiesSection.value?.$el,
     }, {
       id: 'skins',
-      title: i18n.tc('skin', 2),
-      element: sectionRefs.skinsSection.value,
+      title: i18n.t('skin', 2),
+      element: sectionRefs.skinsSection.value?.$el,
     }, {
       id: 'pins',
-      title: i18n.tc('pin', 2),
-      element: sectionRefs.pinsSection.value,
+      title: i18n.t('pin', 2),
+      element: sectionRefs.pinsSection.value?.$el,
     }, {
       id: 'voicelines',
-      title: i18n.tc('voiceline', 2),
-      element: sectionRefs.voicelineSection.value,
+      title: i18n.t('voiceline', 2),
+      element: sectionRefs.voicelineSection.value?.$el,
     }, {
       id: 'balance',
       title: i18n.t('balance-changes'),
-      element: sectionRefs.balanceChangesSection.value,
+      element: sectionRefs.balanceChangesSection.value?.$el,
     }])
 
     return {
@@ -345,23 +349,6 @@ export default defineComponent({
       sections,
       ...sectionRefs,
     }
-  },
-  middleware: ['cached'],
-  async validate({ params, $klicker }) {
-    const brawlerName = capitalizeWords(params.brawler.replace(/__/g, '. ').replace(/_/g, ' '))
-
-    const brawler = await $klicker.query({
-      cubeId: 'map',
-      slices: {
-        brawler: [brawlerName.toUpperCase()],
-      },
-      dimensionsIds: [],
-      metricsIds: ['picks'],
-      sortId: 'picks',
-      limit: 1,
-    })
-
-    return brawler.data[0].metricsRaw.picks > 0
   },
 })
 </script>

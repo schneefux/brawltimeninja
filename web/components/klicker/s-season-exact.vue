@@ -1,14 +1,11 @@
 <template>
   <b-select
-    v-if="seasons != undefined"
-    :value="(value.seasonExact || [])[0]"
+    v-if="seasons.length > 0"
+    v-model="value"
     dark
     sm
-    @input="v => onInput({ seasonExact: [v] })"
   >
-    <option
-      value=""
-    >
+    <option value="">
       {{ $t('option.any-season') }}
     </option>
     <option
@@ -22,12 +19,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, useAsync, useContext, watch } from '@nuxtjs/composition-api'
+import { defineComponent, PropType, computed } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
+import { useAllSeasons } from '@/composables/dimension-values'
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Object as PropType<SliceValue>,
       required: true
     },
@@ -41,17 +39,19 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $klicker } = useContext()
+    const seasons = useAllSeasons(props.limit)
 
-    async function getSeasons(): Promise<{ id: string, name: string }[]> {
-      return await $klicker.queryAllSeasons(props.limit)
-    }
-
-    const seasons = useAsync(() => getSeasons())
-
-    watch(() => props.limit, async () => seasons.value = await getSeasons())
+    const value = computed({
+      get() {
+        return (props.modelValue.seasonExact || [])[0] ?? ''
+      },
+      set(v: string) {
+        props.onInput({ seasonExact: [v] })
+      }
+    })
 
     return {
+      value,
       seasons,
     }
   },
