@@ -35,7 +35,7 @@
       }"
       :action="`/profile/${cleanedTag}`"
       class="mt-4 mx-4 flex flex-wrap justify-center"
-      @submit="search"
+      @submit.prevent="search"
     >
       <div class="w-full flex justify-center">
         <div class="py-2 border-4 rounded-full border-yellow-400 bg-contrast/10 whitespace-nowrap">
