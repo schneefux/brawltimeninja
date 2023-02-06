@@ -39,7 +39,8 @@ app.use(
     router: appRouter,
     createContext,
     batching: {
-      enabled: false, // improve caching
+      // TODO enabled for backwards compatibility
+      enabled: true, // improve caching
     },
     responseMeta({ data, ctx, paths, type, errors }) {
       const allPublic =
