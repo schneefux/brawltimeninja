@@ -28,7 +28,8 @@ function createRouter(i18n: AppI18n, pageContext: PageContext, head: VueHeadClie
     }
 
     if (!i18n.availableLocales.includes(locale.code)) {
-      pageContext.localeMessages[locale.code] = await loadLocaleWithFallback(locale.code, i18n.fallbackLocale.value as LocaleCode, config)
+      pageContext.localeMessages[locale.code] = pageContext.localeMessages[locale.code]
+        ?? await loadLocaleWithFallback(locale.code, i18n.fallbackLocale.value as LocaleCode, config)
       i18n.setLocaleMessage(locale.code, pageContext.localeMessages[locale.code]!)
     }
 
