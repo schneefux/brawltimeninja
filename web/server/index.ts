@@ -1,9 +1,4 @@
 import 'dotenv/config'
-import { withCache } from 'ultrafetch'
-import WeakLRUCacheMaplike from './lru-cache.js'
-global.fetch = await withCache(global.fetch, {
-  cache: new WeakLRUCacheMaplike<string, string>(),
-})
 import express from 'express'
 import compression from 'compression'
 import { renderPage } from 'vite-plugin-ssr'

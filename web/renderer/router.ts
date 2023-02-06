@@ -1,4 +1,4 @@
-import { defaultLocale, loadLocale, locales } from '@/locales'
+import { defaultLocale, loadLocale, locales, LocaleCode } from '@/locales'
 import { MergeHead, VueHeadClient } from '@unhead/vue'
 import { createMemoryHistory, createRouter as _createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 // @ts-ignore
@@ -25,7 +25,7 @@ function createRouter(i18n: AppI18n, head: VueHeadClient<MergeHead>, config: Con
 
     const fallbackLocaleCode = i18n.fallbackLocale.value as string
     if (!i18n.availableLocales.includes(fallbackLocaleCode)) {
-      const messages = await loadLocale(fallbackLocaleCode, config)
+      const messages = await loadLocale(fallbackLocaleCode as LocaleCode, config)
       i18n.setLocaleMessage(fallbackLocaleCode, messages)
     }
 

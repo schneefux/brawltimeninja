@@ -1,4 +1,4 @@
-import { fetch, Agent } from 'undici' // use undici for keepalive support & to not spam the cache
+import { fetch, Agent } from 'undici' // for keepalive support
 import { URLSearchParams, URL } from 'url'
 import StatsD from 'hot-shots'
 import { TRPCError } from '@trpc/server'

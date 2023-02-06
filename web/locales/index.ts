@@ -81,11 +81,11 @@ export async function getTraduoraToken(
   }
 }
 
-const traduoraCache = new Map<string, {
+const traduoraCache = new Map<LocaleCode, {
   strings: Record<string, string>,
   expirationDate: Date
 }>()
-async function getTraduoraStrings(localeCode: string, traduoraConfig: NonNullable<Config['traduora']>) {
+async function getTraduoraStrings(localeCode: LocaleCode, traduoraConfig: NonNullable<Config['traduora']>) {
   const cache = traduoraCache.get(localeCode)
   if (cache == undefined || cache.expirationDate <= new Date()) {
     const strings = await fetch(`${traduoraConfig.url}/api/v1/projects/${traduoraConfig.projectId}/exports?locale=${localeCode}&format=jsonflat`, {
@@ -103,7 +103,7 @@ async function getTraduoraStrings(localeCode: string, traduoraConfig: NonNullabl
   return traduoraCache.get(localeCode)!.strings
 }
 
-export async function loadLocale(locale: string, config: Config) {
+export async function loadLocale(locale: LocaleCode, config: Config) {
   const localStrings = await import(`../locales/${locale}.json`)
     .catch(() => ({ default: {} })) as { default: Record<string, string> }
   const mediaStrings = await fetch(config.mediaUrl + '/translations/' + locale + '.json')
