@@ -38,6 +38,9 @@ app.use(
   createExpressMiddleware({
     router: appRouter,
     createContext,
+    batching: {
+      enabled: false, // improve caching
+    },
     responseMeta({ data, ctx, paths, type, errors }) {
       const allPublic =
         paths && paths.every((path) => !path.startsWith('user.'));

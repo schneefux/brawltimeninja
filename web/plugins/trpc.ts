@@ -1,5 +1,5 @@
 import type { AppRouter } from '~/api'
-import { CreateTRPCProxyClient, createTRPCProxyClient, httpBatchLink } from '@trpc/client'
+import { CreateTRPCProxyClient, createTRPCProxyClient, httpLink } from '@trpc/client'
 import superjson from 'superjson'
 import { App, InjectionKey } from 'vue'
 import { PageContext } from '@/renderer/types'
@@ -14,7 +14,7 @@ function createClient(serverOptions: PageContext['server'] | undefined) {
   return createTRPCProxyClient<AppRouter>({
     transformer: superjson,
     links: [
-      httpBatchLink({
+      httpLink({
         url: `${baseUrl}/api`,
         headers() {
           if (serverOptions != undefined) {
