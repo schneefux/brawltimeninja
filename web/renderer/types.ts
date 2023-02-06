@@ -9,7 +9,7 @@ import * as SentryTypes from '@sentry/core'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
 import type { ComponentPublicInstance } from 'vue'
-import { LocaleCode } from '@/locales'
+import { LocaleIso } from '@/locales'
 
 type PageProps = Record<string, unknown>
 
@@ -57,7 +57,7 @@ export type PageContextCustom = {
     port: number
     requestHeaders: Record<string, string>
   }
-  localeMessages: Partial<Record<LocaleCode, Record<string, string>>>
+  localeMessages: Partial<Record<LocaleIso, Record<string, string>>>
 }
 
 type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom

@@ -121,12 +121,12 @@ export default defineComponent({
           }
           if (a.mode == b.mode) {
             // same mode: sort by map name
-            return getMapName(a.id, a.map)!.localeCompare(getMapName(b.id, b.map)!)
+            return getMapName(a.id, a.map)!.localeCompare(getMapName(b.id, b.map)!, i18n.locale.value)
           }
         }
 
         // sort by mode name
-        return (i18n.t('mode.' + a.mode)).localeCompare(i18n.t('mode.' + b.mode))
+        return (i18n.t('mode.' + a.mode)).localeCompare(i18n.t('mode.' + b.mode), i18n.locale.value)
       })
     )
 

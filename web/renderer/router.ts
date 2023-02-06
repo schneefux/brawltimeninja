@@ -1,4 +1,4 @@
-import { defaultLocale, loadLocaleWithFallback, locales, LocaleCode } from '@/locales'
+import { defaultLocale, loadLocaleWithFallback, locales } from '@/locales'
 import { MergeHead, VueHeadClient } from '@unhead/vue'
 import { createMemoryHistory, createRouter as _createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 // @ts-ignore
@@ -16,7 +16,7 @@ function createRouter(i18n: AppI18n, pageContext: PageContext, head: VueHeadClie
       },
       meta: [
         { property: 'og:locale', content: locale.iso },
-        ...(locales.filter(l => l.show && l.code != locale.code).map(l => ({
+        ...(locales.filter(l => l.show && l.iso != locale.iso).map(l => ({
           property: 'og:locale:alternate',
           content: l.iso,
         }))),
@@ -27,13 +27,14 @@ function createRouter(i18n: AppI18n, pageContext: PageContext, head: VueHeadClie
       pageContext.localeMessages = {}
     }
 
-    if (!i18n.availableLocales.includes(locale.code)) {
-      pageContext.localeMessages[locale.code] = pageContext.localeMessages[locale.code]
-        ?? await loadLocaleWithFallback(locale.code, i18n.fallbackLocale.value as LocaleCode, config)
-      i18n.setLocaleMessage(locale.code, pageContext.localeMessages[locale.code]!)
+    if (!i18n.availableLocales.includes(locale.iso)) {
+      const fallbackLocale = locales.find(l => l.iso == i18n.fallbackLocale.value)!
+      pageContext.localeMessages[locale.iso] = pageContext.localeMessages[locale.iso]
+        ?? await loadLocaleWithFallback(locale, fallbackLocale, config)
+      i18n.setLocaleMessage(locale.iso, pageContext.localeMessages[locale.iso]!)
     }
 
-    i18n.locale.value = locale.code
+    i18n.locale.value = locale.iso
     return
   }
 

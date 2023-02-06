@@ -6,5 +6,5 @@ export { render }
 
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
   const params = createApp(pageContext)
-  params.app.mount('#app', true)
+  params.app.mount('#app')
 }

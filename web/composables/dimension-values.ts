@@ -34,11 +34,11 @@ export function useAllEvents(slices: SliceValue = {}) {
       metrics: {},
     }))
     .sort((a, b) => {
-      const sortMode = i18n.t('mode.' + a.mode).localeCompare(i18n.t('mode.' + b.mode))
+      const sortMode = i18n.t('mode.' + a.mode).localeCompare(i18n.t('mode.' + b.mode), i18n.locale.value)
       if (sortMode != 0) {
         return sortMode
       }
-      return i18n.t('map.' + a.id).localeCompare(i18n.t('map.' + b.id))
+      return i18n.t('map.' + a.id).localeCompare(i18n.t('map.' + b.id), i18n.locale.value)
     })
   )
 
@@ -95,6 +95,7 @@ export function useActiveEvents(metricsIds: string[] = [], slices: SliceValue = 
 
 export function useAllSeasons(limitWeeks: number = 8) {
   const limit = subWeeks(new Date(), limitWeeks)
+  const i18n = useI18n()
   const $klicker = useKlicker()
   const key = `all-seasons-${limitWeeks}`
 
@@ -116,7 +117,7 @@ export function useAllSeasons(limitWeeks: number = 8) {
         name: format(subWeeks(d, 2), 'PP') // seasons last 2 weeks
       }
     })
-    .sort((e1, e2) => e1.id.localeCompare(e2.id))
+    .sort((e1, e2) => e1.id.localeCompare(e2.id, i18n.locale.value))
     .reverse() ?? []
   )
 
@@ -139,7 +140,7 @@ export function useAllModes() {
 
   const modesMapped = computed<string[]>(() => modes.value?.data
     .map(row => row.dimensionsRaw.mode.mode)
-    .sort((a, b) => i18n.t('mode.' + a).localeCompare(i18n.t('mode.' + b))) ?? []
+    .sort((a, b) => i18n.t('mode.' + a).localeCompare(i18n.t('mode.' + b), i18n.locale.value)) ?? []
   )
 
   return modesMapped
@@ -173,6 +174,7 @@ export function useAllMaps(mode?: string) {
 
 export function useAllBrawlers() {
   const $klicker = useKlicker()
+  const i18n = useI18n()
 
   const brawlers = useAsync(() => $klicker.query({
     cubeId: 'map',
@@ -186,7 +188,7 @@ export function useAllBrawlers() {
 
   const brawlersMapped = computed<{ id: string, name: string }[]>(() => brawlers.value?.data
     .map(b => b.dimensionsRaw.brawler.brawler)
-    .sort((b1, b2) => b1.localeCompare(b2))
+    .sort((b1, b2) => b1.localeCompare(b2, i18n.locale.value))
     .map(b => ({
       id: b,
       name: capitalizeWords(b.toLowerCase()),

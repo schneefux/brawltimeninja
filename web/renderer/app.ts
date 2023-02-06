@@ -46,9 +46,9 @@ function createApp(pageContext: PageContext) {
 
   const i18n = createI18n({
     legacy: false,
-    locale: defaultLocale.code, // set by router
-    fallbackLocale: defaultLocale.code,
-    availableLocales: locales.map(l => l.code),
+    locale: defaultLocale.iso, // set by router
+    fallbackLocale: defaultLocale.iso,
+    availableLocales: locales.map(l => l.iso),
     messages: {} as Record<string, Record<string, string>>,
   })
   app.use(i18n)

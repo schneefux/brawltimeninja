@@ -6,8 +6,8 @@
   >
     <option
       v-for="l in locales"
-      :key="l.code"
-      :value="l.code"
+      :key="l.iso"
+      :value="l.iso"
     >
       {{ l.emoji }}
     </option>
@@ -16,6 +16,7 @@
 
 <script lang="ts">
 import { useSwitchToLocale } from '@/composables/compat'
+import { LocaleIso } from '@/locales'
 import { computed, defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -25,10 +26,11 @@ export default defineComponent({
     const i18n = useI18n()
     const locale = computed({
       get() {
-        return i18n.locale.value
+        return i18n.locale.value as LocaleIso
       },
-      set(code: string) {
-        switchToLocale(code)
+      set(iso: LocaleIso) {
+        const locale = locales.find(l => l.iso == iso)!
+        switchToLocale(locale)
       }
     })
 

@@ -68,11 +68,12 @@ export function useSwitchToLocale() {
   const router = useRouter()
   const i18n = useI18n()
 
-  const switchToLocale = (code: string) => {
+  const switchToLocale = (locale: Locale) => {
     const urlPaths = route.fullPath.split('/')
     const firstPath = urlPaths[1]
-    const urlWithoutLocale = (firstPath == i18n.locale.value) ? '/' + urlPaths.slice(2).join('/') : route.fullPath
-    const newPath = `${code == i18n.fallbackLocale.value ? '' : '/' + code}` + urlWithoutLocale
+    const currentCode = locales.find(l => l.iso == i18n.locale.value)!.code
+    const urlWithoutLocale = (firstPath == currentCode) ? '/' + urlPaths.slice(2).join('/') : route.fullPath
+    const newPath = `${locale.code == i18n.fallbackLocale.value ? '' : '/' + locale.code}` + urlWithoutLocale
     router.push(newPath)
   }
 
@@ -92,11 +93,13 @@ export function useLocaleCookieRedirect() {
   const i18nCookieName = 'i18n_redirected'
   if (route.fullPath == '/' && !import.meta.env.SSR) {
     const userLanguage = navigator.languages[0] ?? navigator.language
-    const userLocaleCode = locales.find(l => userLanguage.startsWith(l.iso))?.code
-    const cookieLocaleCode = Cookies.get(i18nCookieName)
-    const localeCode = cookieLocaleCode ?? userLocaleCode ?? 'en'
-    if (locales.some(l => l.code == localeCode)) {
-      switchToLocale(localeCode!)
+
+    const cookieLocale = locales.find(l => Cookies.get(i18nCookieName) == l.code)
+    const userLocale = locales.find(l => userLanguage.startsWith(l.iso))
+
+    const locale = cookieLocale ?? userLocale
+    if (locale != undefined && locale.iso != i18n.locale.value) {
+      switchToLocale(locale)
     }
   }
 

@@ -37,5 +37,5 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
   hydrate(params.queryClient, pageContext.vueQueryState)
   params.pinia.state.value = SuperJSON.parse(pageContext.piniaState)
   await params.router.isReady()
-  params.app.mount('#app', true)
+  params.app.mount('#app')
 }

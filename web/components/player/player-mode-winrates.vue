@@ -71,7 +71,7 @@ export default defineComponent({
           return +1
         }
 
-        return (i18n.t('mode.' + a.id)).localeCompare(i18n.t('mode.' + b.id))
+        return (i18n.t('mode.' + a.id)).localeCompare(i18n.t('mode.' + b.id), i18n.locale.value)
       })
     })
 

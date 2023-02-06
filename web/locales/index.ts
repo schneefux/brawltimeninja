@@ -1,10 +1,11 @@
 import { Config } from "@/renderer/types"
 
 export type LocaleCode = 'en' | 'de' | 'es' | 'ua' | 'it' | 'ru'
+export type LocaleIso = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru'
 
 export interface Locale {
   code: LocaleCode
-  iso: string // 2 letter ISO code, equal to or prefix of navigator.language
+  iso: LocaleIso // 2 letter ISO code, equal to or prefix of navigator.language
   file: string
   emoji: string
   show: boolean
@@ -86,6 +87,7 @@ const traduoraCache = new Map<LocaleCode, {
   expirationDate: Date
 }>()
 async function getTraduoraStrings(localeCode: LocaleCode, traduoraConfig: NonNullable<Config['traduora']>) {
+  // in Traduora, Ukrainian is uk (not ua)
   const cache = traduoraCache.get(localeCode)
   if (cache == undefined || cache.expirationDate <= new Date()) {
     const strings = await fetch(`${traduoraConfig.url}/api/v1/projects/${traduoraConfig.projectId}/exports?locale=${localeCode}&format=jsonflat`, {
@@ -103,13 +105,13 @@ async function getTraduoraStrings(localeCode: LocaleCode, traduoraConfig: NonNul
   return traduoraCache.get(localeCode)!.strings
 }
 
-async function loadLocale(locale: LocaleCode, config: Config) {
-  const localStrings = await import(`../locales/${locale}.json`)
+async function loadLocale(locale: Locale, config: Config) {
+  const localStrings = await import(`../locales/${locale.code}.json`)
     .catch(() => ({ default: {} })) as { default: Record<string, string> }
-  const mediaStrings = await fetch(config.mediaUrl + '/translations/' + locale + '.json')
+  const mediaStrings = await fetch(config.mediaUrl + '/translations/' + locale.iso + '.json')
     .then(r => r.json())
     .catch(() => ({})) as Record<string, string>
-  const traduoraStrings = config.traduora != undefined ? await getTraduoraStrings(locale, config.traduora).catch(() => ({})) : {}
+  const traduoraStrings = config.traduora != undefined ? await getTraduoraStrings(locale.code, config.traduora).catch(() => ({})) : {}
   const strings = Object.assign({}, localStrings.default, mediaStrings, traduoraStrings)
   const filteredStrings = Object.fromEntries(
     Object.entries(strings).filter(([key, value]) => value != '')
@@ -118,9 +120,9 @@ async function loadLocale(locale: LocaleCode, config: Config) {
 }
 
 // merge both locale maps to send fewer strings to the client
-export async function loadLocaleWithFallback(locale: LocaleCode, fallbackLocale: LocaleCode, config: Config) {
+export async function loadLocaleWithFallback(locale: Locale, fallbackLocale: Locale, config: Config) {
   const localeStrings = await loadLocale(locale, config)
-  const fallbackLocaleStrings = locale == fallbackLocale ? localeStrings : await loadLocale(fallbackLocale, config)
+  const fallbackLocaleStrings = locale.iso == fallbackLocale.iso ? localeStrings : await loadLocale(fallbackLocale, config)
 
   return Object.assign({}, fallbackLocaleStrings, localeStrings)
 }
