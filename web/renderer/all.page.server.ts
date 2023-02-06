@@ -22,6 +22,7 @@ const passToClient = [
   'statusCode',
   'redirectTo',
   'refs',
+  'localeMessages',
 ]
 
 let cachedTraduoraToken: TraduoraToken | undefined = undefined

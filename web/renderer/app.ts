@@ -91,7 +91,7 @@ function createApp(pageContext: PageContext) {
   })
   app.use(head)
 
-  const router = createRouter(i18n.global, head, pageContext.config)
+  const router = createRouter(i18n.global, pageContext, head, pageContext.config)
   app.use(router)
 
   const klickerOptions = {

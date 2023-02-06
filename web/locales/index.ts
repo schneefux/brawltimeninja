@@ -103,7 +103,7 @@ async function getTraduoraStrings(localeCode: LocaleCode, traduoraConfig: NonNul
   return traduoraCache.get(localeCode)!.strings
 }
 
-export async function loadLocale(locale: LocaleCode, config: Config) {
+async function loadLocale(locale: LocaleCode, config: Config) {
   const localStrings = await import(`../locales/${locale}.json`)
     .catch(() => ({ default: {} })) as { default: Record<string, string> }
   const mediaStrings = await fetch(config.mediaUrl + '/translations/' + locale + '.json')
@@ -115,4 +115,12 @@ export async function loadLocale(locale: LocaleCode, config: Config) {
     Object.entries(strings).filter(([key, value]) => value != '')
   )
   return filteredStrings
+}
+
+// merge both locale maps to send fewer strings to the client
+export async function loadLocaleWithFallback(locale: LocaleCode, fallbackLocale: LocaleCode, config: Config) {
+  const localeStrings = await loadLocale(locale, config)
+  const fallbackLocaleStrings = locale == fallbackLocale ? localeStrings : await loadLocale(fallbackLocale, config)
+
+  return Object.assign({}, fallbackLocaleStrings, localeStrings)
 }
