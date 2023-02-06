@@ -60,7 +60,7 @@ export default defineComponent({
     const data = useAsync(() => fetch(), computed(() => `brawler-modes-${props.brawlerName}`))
 
     const description = computed(() => {
-      if (data.value == undefined) {
+      if (data.value == undefined || data.value.length == 0) {
         return ''
       }
       const bestModes = data.value.slice().sort((e1, e2) => (e2.metricsRaw.winRateAdj as number) - (e1.metricsRaw.winRateAdj as number))
