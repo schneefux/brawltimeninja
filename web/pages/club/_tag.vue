@@ -72,17 +72,6 @@ export default defineComponent({
 
     useCacheHeaders()
 
-    useMeta(() => {
-      return {
-        title: club.value != undefined ? i18n.t('club.meta.title', { club: club.value.name }) : '',
-        meta: [ {
-          hid: 'description',
-          name: 'description',
-          content: club.value != undefined ? i18n.t('club.meta.description', { club: club.value.name }) + ' ' + club.value.description : '',
-        } ],
-      }
-    })
-
     const club = await useBlockingAsync(async ({ params, redirect, error }) => {
       const tag = (params.tag as string).toUpperCase()
       if (tag != params.tag) {
@@ -111,6 +100,17 @@ export default defineComponent({
         error({ statusCode: 500, message: '' })
       }
     }, 'club')
+
+    useMeta(() => {
+      return {
+        title: club.value != undefined ? i18n.t('club.meta.title', { club: club.value.name }) : '',
+        meta: [ {
+          hid: 'description',
+          name: 'description',
+          content: club.value != undefined ? i18n.t('club.meta.description', { club: club.value.name }) + ' ' + club.value.description : '',
+        } ],
+      }
+    })
 
     return {
       club,
