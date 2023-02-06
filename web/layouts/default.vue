@@ -127,7 +127,7 @@ export default defineComponent({
     if (config.playwireRampPublisherId == '') {
       useAdsense(config.adsensePubid)
     } else {
-      usePlaywireRamp(config.playwireRampPublisherId, config.playwireRampSiteId)
+      usePlaywireRamp(config.playwireRampPublisherId, config.playwireRampSiteId, config.playwireRampGa4Id)
     }
 
     return {

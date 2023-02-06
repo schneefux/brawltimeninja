@@ -34,7 +34,7 @@ declare global {
   }
 }
 
-export function usePlaywireRamp(publisherId: string, siteId: string) {
+export function usePlaywireRamp(publisherId: string, siteId: string, playwireRampGa4Id: string) {
   const outOfPageUnits = taglessTypes.map(unit => ({ type: unit }))
 
   useMeta(() => ({
@@ -63,12 +63,12 @@ window.gtag = window.gtag || function () {
   dataLayer.push(arguments);
 };
 gtag('js', new Date());
-gtag('config', '${import.meta.env.PLAYWIRE_RAMP_GA4_ID}', { 'send_page_view': false });
+gtag('config', '${playwireRampGa4Id}', { 'send_page_view': false });
 gtag(
   'event',
   'ramp_js',
   {
-    'send_to': '${import.meta.env.PLAYWIRE_RAMP_GA4_ID}',
+    'send_to': '${playwireRampGa4Id}',
     'pageview_id': window._pwGA4PageviewId
   }
 );`
