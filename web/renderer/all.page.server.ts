@@ -86,6 +86,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 
   let string = await renderToString(app)
   if (firstError) {
+    queryClient.unmount() // fixes memory leak
     throw firstError
   }
 
