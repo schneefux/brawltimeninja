@@ -16,6 +16,7 @@
     <LazyHydrationWrapper
       v-if="lazy"
       when-visible
+      when-idle
     >
       <div
         :class="{
