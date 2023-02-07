@@ -95,7 +95,6 @@ export default defineComponent({
     }])
 
     const store = usePreferencesStore()
-    const consentPopupVisible = computed(() => store.consentPopupVisible)
 
     const disableCookies = () => {
       store.cookiesAllowed = false
@@ -124,11 +123,13 @@ export default defineComponent({
 
     useInstallPromptListeners()
     useLocaleCookieRedirect()
-    if (config.playwireRampPublisherId == '') {
-      useAdsense(config.adsensePubid)
-    } else {
+    const enablePlaywire = config.playwireRampPublisherId != ''
+    if (enablePlaywire) {
       usePlaywireRamp(config.playwireRampPublisherId, config.playwireRampSiteId, config.playwireRampGa4Id)
+    } else {
+      useAdsense(config.adsensePubid)
     }
+    const consentPopupVisible = computed(() => store.consentPopupVisible && !enablePlaywire)
 
     return {
       route,
