@@ -102,12 +102,15 @@ function createApp(pageContext: PageContext) {
   }
   app.use(KlickerPlugin, klickerOptions)
 
-  // TODO share cache between requests to the same URL?
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 1000 * 60 * 5, // reuse data without firing a new request if it is less than 5 minutes old
+        refetchInterval: 1000 * 60 * 5, // refetch data every 5 minutes
         cacheTime: !import.meta.env.SSR ? undefined : 1000 * 60 * 1, // remove data from cache if unused for 1 minute
+        //refetchOnMount: false, // workaround for hydration errors due to QueryClients hanging around
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
       },
     },
   })
