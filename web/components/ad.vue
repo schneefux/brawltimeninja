@@ -6,7 +6,7 @@
     <client-only v-if="allowed">
       <div class="flex justify-center -mx-4">
         <playwire-ramp
-          v-if="usePlaywire"
+          v-if="playwire"
           :ad-id="adSlot"
           type="leaderboard_atf"
           class="adsbygoogle banner-ad"
@@ -29,7 +29,7 @@
   <div v-else-if="scraper">
     <client-only v-if="allowed">
       <playwire-ramp
-        v-if="usePlaywire"
+        v-if="playwire"
         :ad-id="adSlot"
         type="sky_atf"
         class="adsbygoogle scraper-ad"
@@ -54,7 +54,7 @@
   >
     <client-only v-if="allowed && visible">
       <playwire-ramp
-        v-if="usePlaywire"
+        v-if="playwire"
         :ad-id="adSlot"
         :type="first ? 'med_rect_atf' : 'med_rect_btf'"
         class="adsbygoogle text-center"
@@ -138,13 +138,13 @@ export default defineComponent({
     }
 
     const config = useConfig()
-    const usePlaywire = computed(() => config.playwireRampPublisherId != '')
+    const playwire = config.playwireRampPublisherId != ''
 
     return {
       ad,
       visible,
       allowed,
-      usePlaywire,
+      playwire,
     }
   },
 })

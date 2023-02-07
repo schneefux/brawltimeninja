@@ -150,7 +150,8 @@ function createApp(pageContext: PageContext) {
     },
   }
   app.use(VueGtagPlugin, {
-    enabled: false, // defer until localstorage is loaded in layouts/default.vue
+    // defer until localstorage is loaded in layouts/default.vue (unless consent is managed by playwire)
+    enabled: pageContext.config.playwireRampPublisherId != '',
     config: {
       id: pageContext.config.ga4Id,
       params: gtagParams,

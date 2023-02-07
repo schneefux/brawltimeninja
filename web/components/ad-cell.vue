@@ -11,7 +11,7 @@
         class="text-center self-center"
       >
         <playwire-ramp
-          v-if="usePlaywire"
+          v-if="playwire"
           :ad-id="adSlot"
           type="med_rect_btf"
           class="adsbygoogle"
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent } from 'vue'
 import { BDashboardCell } from '@schneefux/klicker/components'
 import { isApp } from '~/composables/app'
 import { useConfig } from '@/composables/compat'
@@ -53,11 +53,11 @@ export default defineComponent({
   },
   setup() {
     const config = useConfig()
-    const usePlaywire = computed(() => config.playwireRampPublisherId != '')
+    const playwire = config.playwireRampPublisherId
 
     return {
       isApp,
-      usePlaywire,
+      playwire,
     }
   },
 })
