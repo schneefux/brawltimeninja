@@ -5,13 +5,19 @@
   >
     <client-only v-if="allowed">
       <div class="flex justify-center -mx-4">
+        <playwire-ramp
+          v-if="usePlaywire"
+          :ad-id="adSlot"
+          type="leaderboard_atf"
+          class="adsbygoogle banner-ad"
+        ></playwire-ramp>
         <adsense
+          v-else
           :data-ad-slot="adSlot"
           :data-ad-region="adRegion"
           data-ad-format=""
           data-ad-client="ca-pub-6856963757796636"
           class="banner-ad"
-          data-full-width-responsive
         ></adsense>
       </div>
 
@@ -22,7 +28,14 @@
   </div>
   <div v-else-if="scraper">
     <client-only v-if="allowed">
+      <playwire-ramp
+        v-if="usePlaywire"
+        :ad-id="adSlot"
+        type="sky_atf"
+        class="adsbygoogle scraper-ad"
+      ></playwire-ramp>
       <adsense
+        v-else
         :data-ad-slot="adSlot"
         :data-ad-region="adRegion"
         data-ad-format=""
@@ -40,13 +53,19 @@
     ref="ad"
   >
     <client-only v-if="allowed && visible">
+      <playwire-ramp
+        v-if="usePlaywire"
+        :ad-id="adSlot"
+        :type="first ? 'med_rect_atf' : 'med_rect_btf'"
+        class="adsbygoogle text-center"
+      ></playwire-ramp>
       <adsense
+        v-else
         :data-ad-slot="adSlot"
         :data-ad-region="adRegion"
         data-ad-format="auto"
         data-ad-client="ca-pub-6856963757796636"
         class="text-center"
-        data-full-width-responsive
       ></adsense>
 
       <template v-slot:placeholder>
@@ -64,6 +83,7 @@ import { defineComponent, computed, ref } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 import { isApp } from '~/composables/app'
 import { usePreferencesStore } from '@/stores/preferences'
+import { useConfig } from '@/composables/compat'
 
 export default defineComponent({
   props: {
@@ -117,10 +137,14 @@ export default defineComponent({
       }
     }
 
+    const config = useConfig()
+    const usePlaywire = computed(() => config.playwireRampPublisherId != '')
+
     return {
       ad,
       visible,
       allowed,
+      usePlaywire,
     }
   },
 })

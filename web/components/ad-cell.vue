@@ -10,7 +10,14 @@
         v-if="!isApp"
         class="text-center self-center"
       >
+        <playwire-ramp
+          v-if="usePlaywire"
+          :ad-id="adSlot"
+          type="med_rect_btf"
+          class="adsbygoogle"
+        ></playwire-ramp>
         <adsense
+          v-else
           :data-ad-slot="adSlot"
           data-ad-client="ca-pub-6856963757796636"
           data-full-width-responsive
@@ -21,9 +28,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { BDashboardCell } from '@schneefux/klicker/components'
 import { isApp } from '~/composables/app'
+import { useConfig } from '@/composables/compat'
 
 export default defineComponent({
   components: {
@@ -44,8 +52,12 @@ export default defineComponent({
     },
   },
   setup() {
+    const config = useConfig()
+    const usePlaywire = computed(() => config.playwireRampPublisherId != '')
+
     return {
       isApp,
+      usePlaywire,
     }
   },
 })

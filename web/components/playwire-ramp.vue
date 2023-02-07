@@ -9,7 +9,7 @@ import { TaggedType } from '~/composables/playwire-ramp'
 
 export default defineComponent({
   props: {
-    selectorId: {
+    adId: {
       type: String,
       required: true
     },
@@ -19,7 +19,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const id = `pw-${props.selectorId}`
+    const id = `pw-${props.adId}`
 
     onMounted(() => {
       window.ramp.que.push(() => {
