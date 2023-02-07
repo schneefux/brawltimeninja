@@ -172,13 +172,13 @@ const config: UserConfig = {
   ],
   assetsInclude: ['assets/content/**/*.md'],
   optimizeDeps: {
-    include: ['@schneefux/klicker'],
-    exclude: [],
+    // on GitHub CI, klicker is installed prebundled
+    include: process.env.NODE_ENV == 'production' ? undefined : ['@schneefux/klicker'],
   },
   build: {
     sourcemap: true, // for Sentry
     commonjsOptions: {
-      include: [/@schneefux\/klicker/, /node_modules/],
+      include: process.env.NODE_ENV == 'production' ? undefined : [/@schneefux\/klicker/, /node_modules/],
     },
   },
   resolve: {
