@@ -167,7 +167,7 @@ export default defineComponent({
         const sectionElement = '$el' in section.element ? section.element.$el as HTMLElement : section.element
 
         const { stop: stop1 } = useIntersectionObserver(sectionElement, ([{ isIntersecting }]) => {
-          if (isIntersecting) {
+          if (isIntersecting && activeSectionId.value != section.id) {
             activeSectionTitle.value = section.title
             activeSectionId.value = section.id
             window.history.replaceState(null, '', '#' + section.id)
@@ -190,7 +190,7 @@ export default defineComponent({
             scrollTocLinkIntoView(section.id)
           }
 
-          if (!isIntersecting && !Object.values(visibleSections.value).some(Boolean)) {
+          if (!isIntersecting && !Object.values(visibleSections.value).some(Boolean) && location.hash != '') {
             // no section visible: clear hash
             window.history.replaceState(null, '', ' ')
           }
@@ -205,7 +205,9 @@ export default defineComponent({
     }
 
     onMounted(updateObservers)
-    watch(validSections, () => nextTick(updateObservers))
+    watch(validSections, updateObservers, {
+      flush: 'post',
+    })
 
     let attempts = 0
     const scrollToSectionId = (id: string) => {
