@@ -1,3 +1,5 @@
+import { useRoute } from "vue-router";
+import { watch } from "vue"
 import { useMeta } from "./compat";
 
 export type TaggedType = 'leaderboard_atf' | 'leaderboard_btf' | 'med_rect_atf' | 'med_rect_btf' | 'sky_atf' | 'sky_btf'
@@ -20,10 +22,10 @@ declare global {
     ramp: {
       passiveMode: boolean;
       addUnits: (units: Unit[]) => Promise<void>;
-      settings: Record<string, unknown>;
+      settings: Record<string, any>;
       displayUnits: () => void;
       getUnits: () => Unit[];
-      destroyUnits: (units: 'all'|string|Unit[]) => void;
+      destroyUnits: (units: 'all'|string|string[]) => Promise<void>;
       setPath: (path?: string) => void;
       triggerRefresh: () => void;
       showCmpModal: () => void;
@@ -36,6 +38,12 @@ declare global {
 
 export function usePlaywireRamp(publisherId: string, siteId: string, playwireRampGa4Id: string) {
   const outOfPageUnits = taglessTypes.map(unit => ({ type: unit }))
+
+  const route = useRoute()
+
+  watch(route, () => {
+    window.ramp.setPath(route.path)
+  }, { flush: 'post' })
 
   useMeta(() => ({
     script: [ {

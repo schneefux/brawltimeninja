@@ -3,8 +3,7 @@
 </template>
 
 <script lang="ts">
-import { id } from 'vega'
-import { defineComponent, onMounted, onUnmounted, PropType } from 'vue'
+import { ref, defineComponent, onMounted, onUnmounted, PropType } from 'vue'
 import { TaggedType } from '~/composables/playwire-ramp'
 
 export default defineComponent({
@@ -20,35 +19,54 @@ export default defineComponent({
   },
   setup(props) {
     const id = `pw-${props.adId}`
+    const activeSlot = ref<string>()
+
+    const addAdFun = () => {
+      window.ramp
+        .addUnits([{
+          type: props.type,
+          selectorId: id,
+        }])
+        .then(() => {
+          for (const slotName in window.ramp.settings.slots) {
+            const slot = window.ramp.settings.slots[slotName]
+            if (slot.element && slot.element.parentElement && slot.element.parentElement.id == id) {
+              activeSlot.value = slotName
+            }
+          }
+        })
+        .catch((e: any) => console.warn(e))
+        .finally(() => window.ramp.displayUnits())
+    }
+
+    const removeAdFun = () => {
+      if (activeSlot.value) {
+        window.ramp.destroyUnits(activeSlot.value)
+          .then(() => activeSlot.value = undefined)
+          .catch((e: any) => console.warn(e))
+      }
+    }
 
     onMounted(() => {
-      window.ramp.que.push(() => {
-        window.ramp
-          .addUnits([{
-            type: props.type,
-            selectorId: id,
-          }])
-          .catch((e: any) => console.warn(e))
-          .finally(() => window.ramp.displayUnits())
-      });
+      if (window.ramp.que.includes(removeAdFun)) {
+        // see below
+        window.ramp.que = window.ramp.que.filter((f) => f != removeAdFun)
+      } else {
+        if (!window.ramp.que.includes(addAdFun)) {
+          window.ramp.que.push(addAdFun);
+        }
+      }
     })
 
     onUnmounted(() => {
-      window.ramp.que.push(() => {
-        // possible that component was removed before first ad was created
-        if (!window.ramp.settings || !window.ramp.settings.slots) return
-
-        let slotToRemove = null
-        Object.entries(window.ramp.settings.slots).forEach(([slotName, slot]: any[]) => {
-          if (slot.element && slot.element.parentElement && slot.element.parentElement.id === id) {
-            slotToRemove = slotName;
-          }
-        })
-
-        if (slotToRemove) {
-          window.ramp.destroyUnits(slotToRemove)
+      if (window.ramp.que.includes(addAdFun)) {
+        // insert & remove does not work due to async issue, so skip both
+        window.ramp.que = window.ramp.que.filter((f) => f != addAdFun)
+      } else {
+        if (!window.ramp.que.includes(removeAdFun)) {
+          window.ramp.que.push(removeAdFun)
         }
-      })
+      }
     })
 
     return {
