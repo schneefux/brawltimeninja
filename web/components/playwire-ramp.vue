@@ -85,3 +85,10 @@ ins {
   display: block;
 }
 </style>
+
+<style lang="postcss">
+/* push above sticky footer (global style) */
+#pw-oop-bottom_rail {
+  @apply bottom-14 lg:bottom-0 !important;
+}
+</style>
