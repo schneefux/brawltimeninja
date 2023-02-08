@@ -1,0 +1,42 @@
+{
+  "packageId": "xyz.schneefux.brawltimeninja",
+  "host": "brawltime.ninja",
+  "name": "Brawl Time Ninja",
+  "launcherName": "Brawl Time",
+  "display": "standalone",
+  "themeColor": "#FACC15",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#FFFFFF",
+  "enableNotifications": true,
+  "startUrl": "/?standalone=true",
+  "iconUrl": "https://brawltime.ninja/icons/icon_x512.png",
+  "maskableIconUrl": "https://brawltime.ninja/icons/maskable_icon_x512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "brawltimeninja.jks",
+    "alias": "brawltimeninja"
+  },
+  "appVersionName": "6",
+  "appVersionCode": 6,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://brawltime.ninja/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://brawltime.ninja/",
+  "minSdkVersion": 19,
+  "orientation": "default",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "appVersion": "6"
+}
