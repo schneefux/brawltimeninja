@@ -7,18 +7,10 @@
       lazy
     >
       <div
-        v-if="!isApp"
+        v-if="!isApp && !playwire"
         class="text-center self-center"
       >
-        <playwire-ramp
-          v-if="playwire"
-          :ad-id="adSlot"
-          :instance="instance"
-          type="med_rect_btf"
-          class="adsbygoogle cell-ad"
-        ></playwire-ramp>
         <adsense
-          v-else
           :data-ad-slot="adSlot"
           data-ad-client="ca-pub-6856963757796636"
           data-full-width-responsive
@@ -66,12 +58,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.cell-ad {
-  width: calc(var(--columns) * var(--cell-size) + (var(--columns) - 1) * var(--cell-gap));
-  max-width: calc(var(--columns) * var(--cell-size) + (var(--columns) - 1) * var(--cell-gap));
-  height: calc(var(--rows) * var(--cell-size) + (var(--rows) - 1) * var(--cell-gap));
-  max-height: calc(var(--rows) * var(--cell-size) + (var(--rows) - 1) * var(--cell-gap));
-}
-</style>

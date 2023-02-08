@@ -3,17 +3,9 @@
     v-if="banner"
     class="mt-4"
   >
-    <client-only v-if="allowed">
+    <client-only v-if="allowed && !playwire">
       <div class="flex justify-center -mx-4">
-        <playwire-ramp
-          v-if="playwire"
-          :ad-id="adSlot"
-          :instance="instance"
-          type="leaderboard_atf"
-          class="adsbygoogle banner-ad"
-        ></playwire-ramp>
         <adsense
-          v-else
           :data-ad-slot="adSlot"
           :data-ad-region="adRegion"
           data-ad-format=""
@@ -28,16 +20,8 @@
     </client-only>
   </div>
   <div v-else-if="scraper">
-    <client-only v-if="allowed && scraperFits">
-      <playwire-ramp
-        v-if="playwire"
-        :ad-id="adSlot"
-        :instance="instance"
-        type="sky_atf"
-        class="adsbygoogle scraper-ad"
-      ></playwire-ramp>
+    <client-only v-if="allowed && scraperFits && !playwire">
       <adsense
-        v-else
         :data-ad-slot="adSlot"
         :data-ad-region="adRegion"
         data-ad-format=""
@@ -175,15 +159,12 @@ export default defineComponent({
 
 .banner-ad {
   width: 320px;
-  max-width: 320px;
   height: 100px;
-  max-height: 100px;
 }
 
 @media(min-width: 468px) {
   .banner-ad {
     width: 468px;
-    max-width: 468px;
   }
 }
 
@@ -197,14 +178,12 @@ export default defineComponent({
 @media(min-width: 728px) {
   .banner-ad {
     width: 728px;
-    max-width: 728px;
   }
 }
 
 @media(min-width: 750px) {
   .banner-ad {
     width: 750px;
-    max-width: 750px;
   }
 }
 
@@ -212,18 +191,14 @@ export default defineComponent({
 @media(min-width: 970px) {
   .banner-ad {
     width: 970px;
-    max-width: 970px;
     height: 180px;
-    max-height: 180px;
   }
 }
 
 @media(min-width: 980px) {
   .banner-ad {
     width: 980px;
-    max-width: 980px;
     height: 180px;
-    max-height: 180px;
   }
 }
 
@@ -234,21 +209,18 @@ export default defineComponent({
  */
 .scraper-ad {
   height: 600px;
-  max-height: 600px;
 }
 
 /* fill container margins */
 @media(min-width: 1900px) {
   .scraper-ad {
     width: 160px;
-    max-width: 160px;
   }
 }
 
 @media(min-width: 2200px) {
   .scraper-ad {
     width: 300px;
-    max-width: 300px;
   }
 }
 
@@ -264,31 +236,25 @@ export default defineComponent({
  */
 .section-ad {
   height: 250px;
-  max-height: 250px;
   width: 320px;
-  max-width: 320px;
 }
 
 @media(min-width: 468px) {
   .section-ad {
     width: 468px;
-    max-width: 468px;
   }
 }
 
 @media(min-width: 728px) {
   .section-ad {
     height: 280px;
-    max-height: 280px;
     width: 728px;
-    max-width: 728px;
   }
 }
 
 @media(min-width: 970px) {
   .section-ad {
     width: 970px;
-    max-width: 970px;
   }
 }
 </style>
