@@ -8,6 +8,7 @@
         <playwire-ramp
           v-if="playwire"
           :ad-id="adSlot"
+          :instance="instance"
           type="leaderboard_atf"
           class="adsbygoogle banner-ad"
         ></playwire-ramp>
@@ -27,10 +28,11 @@
     </client-only>
   </div>
   <div v-else-if="scraper">
-    <client-only v-if="allowed">
+    <client-only v-if="allowed && scraperFits">
       <playwire-ramp
         v-if="playwire"
         :ad-id="adSlot"
+        :instance="instance"
         type="sky_atf"
         class="adsbygoogle scraper-ad"
       ></playwire-ramp>
@@ -51,13 +53,15 @@
   <b-page-section
     v-else
     ref="ad"
+    class="flex justify-center"
   >
     <client-only v-if="allowed && visible">
       <playwire-ramp
         v-if="playwire"
         :ad-id="adSlot"
-        :type="first ? 'med_rect_atf' : 'med_rect_btf'"
-        class="adsbygoogle text-center"
+        :instance="instance"
+        :type="`${leaderboardFits ? 'leaderboard' : 'med_rect'}_${first ? 'atf' : 'btf'}`"
+        class="adsbygoogle section-ad"
       ></playwire-ramp>
       <adsense
         v-else
@@ -65,7 +69,6 @@
         :data-ad-region="adRegion"
         data-ad-format="auto"
         data-ad-client="ca-pub-6856963757796636"
-        class="text-center"
       ></adsense>
 
       <template v-slot:placeholder>
@@ -80,10 +83,11 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
-import { useIntersectionObserver } from '@vueuse/core'
+import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
 import { isApp } from '~/composables/app'
 import { usePreferencesStore } from '@/stores/preferences'
 import { useConfig } from '@/composables/compat'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   props: {
@@ -91,9 +95,8 @@ export default defineComponent({
       type: String,
       required: true
     },
-    adRegion: {
-      type: String,
-      required: false
+    instance: {
+      type: String
     },
     first: {
       type: Boolean,
@@ -140,57 +143,152 @@ export default defineComponent({
     const config = useConfig()
     const playwire = config.playwireRampPublisherId != ''
 
+    const breakpoints = useBreakpoints({
+      leaderboard: 728,
+      scraper: 1900,
+    })
+    const leaderboardFits = breakpoints.greaterOrEqual('leaderboard')
+    const scraperFits = breakpoints.greaterOrEqual('scraper')
+
+    const route = useRoute()
+    const adRegion = computed(() => route.fullPath)
+
     return {
       ad,
+      adRegion,
       visible,
       allowed,
       playwire,
+      scraperFits,
+      leaderboardFits,
     }
   },
 })
 </script>
 
 <style lang="postcss">
+/*
+ * Playwire mobile leaderboard:
+ *  - 320x50
+ *  - 320x100
+ */
+
 .banner-ad {
   width: 320px;
+  max-width: 320px;
   height: 100px;
+  max-height: 100px;
 }
 
 @media(min-width: 468px) {
   .banner-ad {
     width: 468px;
+    max-width: 468px;
+  }
+}
+
+/*
+ * Playwire desktop leaderboard:
+ *  - 728x90
+ *  - 970x250 (billboard; too tall)
+ *  - 970x90
+ */
+
+@media(min-width: 728px) {
+  .banner-ad {
+    width: 728px;
+    max-width: 728px;
   }
 }
 
 @media(min-width: 750px) {
   .banner-ad {
     width: 750px;
+    max-width: 750px;
+  }
+}
+
+
+@media(min-width: 970px) {
+  .banner-ad {
+    width: 970px;
+    max-width: 970px;
+    height: 180px;
+    max-height: 180px;
   }
 }
 
 @media(min-width: 980px) {
   .banner-ad {
     width: 980px;
+    max-width: 980px;
     height: 180px;
+    max-height: 180px;
   }
 }
 
+/*
+ * Playwire desktop skyscraper:
+ *  - 160x600
+ *  - 300x600
+ */
 .scraper-ad {
-  display: none;
   height: 600px;
+  max-height: 600px;
 }
 
 /* fill container margins */
 @media(min-width: 1900px) {
   .scraper-ad {
-    display: block;
     width: 160px;
+    max-width: 160px;
   }
 }
 
 @media(min-width: 2200px) {
   .scraper-ad {
     width: 300px;
+    max-width: 300px;
+  }
+}
+
+/*
+ * Playwire medium rectangle:
+ *  - 300x250
+ *  - 300x600 (half page)
+ *  - 320x50
+ */
+
+/*
+ * Section ad: Large rectangle on mobile, Billboard on desktop
+ */
+.section-ad {
+  height: 250px;
+  max-height: 250px;
+  width: 320px;
+  max-width: 320px;
+}
+
+@media(min-width: 468px) {
+  .section-ad {
+    width: 468px;
+    max-width: 468px;
+  }
+}
+
+@media(min-width: 728px) {
+  .section-ad {
+    height: 280px;
+    max-height: 280px;
+    width: 728px;
+    max-width: 728px;
+  }
+}
+
+@media(min-width: 970px) {
+  .section-ad {
+    width: 970px;
+    max-width: 970px;
   }
 }
 </style>

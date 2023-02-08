@@ -13,8 +13,9 @@
         <playwire-ramp
           v-if="playwire"
           :ad-id="adSlot"
+          :instance="instance"
           type="med_rect_btf"
-          class="adsbygoogle"
+          class="adsbygoogle cell-ad"
         ></playwire-ramp>
         <adsense
           v-else
@@ -50,6 +51,9 @@ export default defineComponent({
       type: String,
       required: true
     },
+    instance: {
+      type: String
+    },
   },
   setup() {
     const config = useConfig()
@@ -62,3 +66,12 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="postcss" scoped>
+.cell-ad {
+  width: calc(var(--columns) * var(--cell-size) + (var(--columns) - 1) * var(--cell-gap));
+  max-width: calc(var(--columns) * var(--cell-size) + (var(--columns) - 1) * var(--cell-gap));
+  height: calc(var(--rows) * var(--cell-size) + (var(--rows) - 1) * var(--cell-gap));
+  max-height: calc(var(--rows) * var(--cell-size) + (var(--rows) - 1) * var(--cell-gap));
+}
+</style>

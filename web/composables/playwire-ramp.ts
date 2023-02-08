@@ -3,8 +3,7 @@ import { watch } from "vue"
 import { useMeta } from "./compat";
 
 export type TaggedType = 'leaderboard_atf' | 'leaderboard_btf' | 'med_rect_atf' | 'med_rect_btf' | 'sky_atf' | 'sky_btf'
-const taglessTypes = ['trendi_slideshow', 'trendi_video', 'site_skin', 'flex_leaderboard', 'top_rail', 'right_rail', 'bottom_rail', 'left_rail'] as const
-export type TaglessType = typeof taglessTypes[number]
+export type TaglessType = 'trendi_slideshow' | 'trendi_video' | 'site_skin' | 'flex_leaderboard' | 'top_rail' | 'right_rail' | 'bottom_rail' | 'left_rail'
 
 interface TaggedUnit {
   type: TaggedType
@@ -37,7 +36,16 @@ declare global {
 }
 
 export function usePlaywireRamp(publisherId: string, siteId: string, playwireRampGa4Id: string) {
-  const outOfPageUnits = taglessTypes.map(unit => ({ type: unit }))
+  const outOfPageUnits = [
+    'trendi_slideshow',
+    'trendi_video',
+    'site_skin',
+    'flex_leaderboard',
+    'top_rail',
+    //'right_rail', // layout has its own scrapers instead
+    'bottom_rail',
+    //'left_rail',
+  ].map(unit => ({ type: unit }))
 
   const route = useRoute()
 

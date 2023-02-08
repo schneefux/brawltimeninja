@@ -74,6 +74,7 @@
             <ad-cell
               :columns="3"
               :rows="2"
+              instance="brawlers"
               ad-slot="4623162753"
             ></ad-cell>
 
@@ -150,6 +151,7 @@
             <ad-cell
               :columns="8"
               :rows="3"
+              instance="leaderboard"
               ad-slot="4623162753"
             ></ad-cell>
           </b-dashboard>
@@ -197,6 +199,7 @@
             <ad-cell
               :columns="5"
               :rows="3"
+              instance="starpowers"
               ad-slot="4623162753"
             ></ad-cell>
           </b-dashboard>
@@ -244,6 +247,7 @@
             <ad-cell
               :columns="5"
               :rows="3"
+              instance="gadgets"
               ad-slot="4623162753"
             ></ad-cell>
           </b-dashboard>
@@ -291,6 +295,7 @@
             <ad-cell
               :columns="5"
               :rows="3"
+              instance="gears"
               ad-slot="4623162753"
             ></ad-cell>
           </b-dashboard>

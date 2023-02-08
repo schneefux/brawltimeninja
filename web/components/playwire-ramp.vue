@@ -12,13 +12,17 @@ export default defineComponent({
       type: String,
       required: true
     },
+    instance: {
+      type: String,
+      default: '1'
+    },
     type: {
       type: String as PropType<TaggedType>,
       required: true
     },
   },
   setup(props) {
-    const id = `pw-${props.adId}`
+    const id = `pw-${props.adId}-${props.instance}`
     const activeSlot = ref<string>()
 
     const addAdFun = () => {
@@ -75,3 +79,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped>
+ins {
+  display: block;
+}
+</style>
