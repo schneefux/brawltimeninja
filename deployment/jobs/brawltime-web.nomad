@@ -176,7 +176,7 @@ job "brawltime-web" {
 
       resources {
         cpu = 1280
-        memory = 512
+        memory = 768
         memory_max = 1536
       }
     }
