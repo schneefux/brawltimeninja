@@ -1,6 +1,5 @@
 import { asSlice, Cube, MetaGridEntry, Dimension, Metric } from "@schneefux/klicker/types.js"
-// @ts-ignore
-import { ChiSquared } from 'sampson' // TODO does not treeshake - unfortunately, sampson is written in Flow
+import ChiSquaredPdf from "@stdlib/stats-base-dists-chisquare-pdf"
 import { formatClickhouseDate } from "./util.js"
 
 /* c&p from util */
@@ -80,11 +79,8 @@ function binomialTest(getK: (d: MetaGridEntry['metricsRaw']) => number, getN: (d
       [expectedSuccessesR, expectedFailuresR, expectedSuccessesT, expectedFailuresT],
       [observedSuccessesR, observedFailuresR, observedSuccessesT, observedFailuresT])
 
-    // @ts-ignore
-    return ChiSquared.pdf(g, {
-      // df: (rows - 1) * (columns - 1)
-      df: 1
-    })
+    // df: (rows - 1) * (columns - 1)
+    return ChiSquaredPdf(g, 1)
   }
 }
 
