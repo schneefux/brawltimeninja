@@ -123,6 +123,21 @@ export default class BrawlstarsService {
         })
       })
 
+      if (b.battle.starPlayer != undefined) {
+        // FIXME API bug 2022-07-11, brawler trophies may be -1
+        if (b.battle.starPlayer.brawler.trophies == -1) {
+          b.battle.starPlayer.brawler.trophies = undefined
+        }
+
+        // FIXME API bug 2022-12-20, brawler power may be -1
+        if (b.battle.starPlayer.brawler.power == -1) {
+          b.battle.starPlayer.brawler.power = 0 // probably not correct
+        }
+
+        // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
+        b.battle.starPlayer.brawler.name = b.battle.starPlayer.brawler.name.replace(/\s/g, ' ')
+      }
+
       b.battle.players?.forEach((p: BattlePlayer | BattlePlayerMultiple) => {
         if ('brawler' in p) {
           // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
