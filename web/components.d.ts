@@ -83,6 +83,7 @@ declare module '@vue/runtime-core' {
     MetricInfo: typeof import('./components/metric-info.vue')['default']
     ModeMapJumper: typeof import('./components/mode-map-jumper.vue')['default']
     Navigator: typeof import('./components/navigator.vue')['default']
+    NavigatorPopup: typeof import('./components/navigator-popup.vue')['default']
     OejtsTable: typeof import('./components/quiz/oejts-table.vue')['default']
     PlayerAside: typeof import('./components/player/player-aside.vue')['default']
     PlayerBattle: typeof import('./components/player/player-battle.vue')['default']
