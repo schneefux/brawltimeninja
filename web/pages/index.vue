@@ -1,130 +1,132 @@
 <template>
-  <b-page class="flex flex-col justify-center">
+  <b-page>
     <ad
       class="-mt-6 mb-6 mx-auto"
       ad-slot="2812773083"
       banner
     ></ad>
 
-    <div class="mx-auto relative">
-      <img
-        :src="logoWithCrownUrl"
-        class="mx-auto mt-2 h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 object-contain"
-      >
-      <span
-        v-if="$i18n.locale != 'en'"
-        class="absolute bottom-0 right-0 transform -rotate-12 -mr-10 -mb-3 font-bold text-lg md:text-xl"
-      >
-        {{ $t('index.now-in-language') }}
-      </span>
-    </div>
+    <div class="flex flex-col justify-center">
+      <div class="mx-auto relative">
+        <img
+          :src="logoWithCrownUrl"
+          class="mx-auto mt-2 h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 object-contain"
+        >
+        <span
+          v-if="$i18n.locale != 'en'"
+          class="absolute bottom-0 right-0 transform -rotate-12 -mr-10 -mb-3 font-bold text-lg md:text-xl"
+        >
+          {{ $t('index.now-in-language') }}
+        </span>
+      </div>
 
-    <b-page-section class="text-center">
-      <h1 class="text-4xl font-bold">
-        {{ $t('index.title') }}
-      </h1>
-      <p class="mt-3 text-center text-lg mx-2">
-        {{ $t('index.subtitle') }}
-      </p>
-    </b-page-section>
+      <b-page-section class="text-center">
+        <h1 class="text-4xl font-bold">
+          {{ $t('index.title') }}
+        </h1>
+        <p class="mt-3 text-center text-lg mx-2">
+          {{ $t('index.subtitle') }}
+        </p>
+      </b-page-section>
 
-    <form
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('section'),
-        once: true,
-      }"
-      :action="`/profile/${cleanedTag}`"
-      class="mt-4 mx-4 flex flex-wrap justify-center"
-      @submit.prevent="search"
-    >
-      <div class="w-full flex justify-center">
-        <div class="py-2 border-4 rounded-full border-yellow-400 bg-contrast/10 whitespace-nowrap">
-          <input
-            v-model="tag"
-            :placeholder="$t('action.enter-tag')"
-            type="text"
-            autocomplete="off"
-            class="transition duration-100 ease-in-out form-input w-40 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent focus:ring-0 border-none ml-3 mr-2 py-4 !rounded-full"
+      <form
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('section'),
+          once: true,
+        }"
+        :action="`/profile/${cleanedTag}`"
+        class="mt-4 mx-4 flex flex-wrap justify-center"
+        @submit.prevent="search"
+      >
+        <div class="w-full flex justify-center">
+          <div class="py-2 border-4 rounded-full border-yellow-400 bg-contrast/10 whitespace-nowrap">
+            <input
+              v-model="tag"
+              :placeholder="$t('action.enter-tag')"
+              type="text"
+              autocomplete="off"
+              class="transition duration-100 ease-in-out form-input w-40 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent focus:ring-0 border-none ml-3 mr-2 py-4 !rounded-full"
+            >
+            <b-button
+              type="submit"
+              class="shrink-0 mr-3"
+              secondary
+              round
+              lg
+            >{{ $t('action.search') }}</b-button>
+          </div>
+        </div>
+        <p
+          v-show="loading"
+          class="mt-4 text-red-400"
+        >
+          {{ $t('state.searching') }}…
+        </p>
+        <p
+          v-show="error"
+          class="mt-4 text-red-400"
+        >
+          {{ error }}
+        </p>
+      </form>
+
+      <div class="mt-4 mx-6 flex justify-center">
+        <div class="flex justify-center">
+          <details
+            ref="helpDropdown"
+            class="mx-6"
           >
-          <b-button
-            type="submit"
-            class="shrink-0 mr-3"
-            secondary
-            round
-            lg
-          >{{ $t('action.search') }}</b-button>
+            <summary>
+              {{ $t('tag-help.title') }}
+            </summary>
+            <b-card
+              :title="$t('tag-help.title')"
+              class="mt-6 text-left"
+            >
+              <template v-slot:content>
+                <div>
+                  <p>{{ $t('tag-help.step.1') }}</p>
+                  <p>{{ $t('tag-help.step.2') }}</p>
+                  <img
+                    loading="lazy"
+                    :src="tag1Url"
+                    class="px-8 mt-1 w-80 max-w-full"
+                  >
+                  <p class="mt-3">{{ $t('tag-help.step.3') }}</p>
+                  <img
+                    loading="lazy"
+                    :src="tag2Url"
+                    class="px-8 mt-1 w-80 max-w-full"
+                  >
+                </div>
+              </template>
+            </b-card>
+          </details>
         </div>
       </div>
-      <p
-        v-show="loading"
-        class="mt-4 text-red-400"
-      >
-        {{ $t('state.searching') }}…
-      </p>
-      <p
-        v-show="error"
-        class="mt-4 text-red-400"
-      >
-        {{ error }}
-      </p>
-    </form>
 
-    <div class="mt-4 mx-6 text-center">
-      <div class="flex justify-center">
-        <details
-          ref="helpDropdown"
-          class="mx-6"
-        >
-          <summary>
-            {{ $t('tag-help.title') }}
-          </summary>
-          <b-card
-            :title="$t('tag-help.title')"
-            class="mt-6 text-left"
+      <div class="mt-2 mx-6 flex flex-wrap justify-center">
+        <div class="mt-2">
+          <template v-if="lastPlayers.length === 0">
+            {{ $t('index.recommended') }}
+          </template>
+          <template v-else-if="featuredPlayers.length > 0">
+            {{ $t('index.recents') }}
+          </template>
+        </div>
+        <div class="ml-2">
+          <b-button
+            v-for="player in (lastPlayers.length > 0 ? lastPlayers : featuredPlayers)"
+            :key="player.tag"
+            :to="player.link"
+            class="ml-2 mt-1"
+            xs
+            primary
+            @click.passive="addLastPlayer(player)"
           >
-            <template v-slot:content>
-              <div>
-                <p>{{ $t('tag-help.step.1') }}</p>
-                <p>{{ $t('tag-help.step.2') }}</p>
-                <img
-                  loading="lazy"
-                  :src="tag1Url"
-                  class="px-8 mt-1 w-80 max-w-full"
-                >
-                <p class="mt-3">{{ $t('tag-help.step.3') }}</p>
-                <img
-                  loading="lazy"
-                  :src="tag2Url"
-                  class="px-8 mt-1 w-80 max-w-full"
-                >
-              </div>
-            </template>
-          </b-card>
-        </details>
-      </div>
-    </div>
-
-    <div class="mt-2 mx-6 flex flex-wrap justify-center">
-      <div class="mt-2">
-        <template v-if="lastPlayers.length === 0">
-          {{ $t('index.recommended') }}
-        </template>
-        <template v-else-if="featuredPlayers.length > 0">
-          {{ $t('index.recents') }}
-        </template>
-      </div>
-      <div class="ml-2">
-        <b-button
-          v-for="player in (lastPlayers.length > 0 ? lastPlayers : featuredPlayers)"
-          :key="player.tag"
-          :to="player.link"
-          class="ml-2 mt-1"
-          xs
-          primary
-          @click.passive="addLastPlayer(player)"
-        >
-          {{ player.name }}
-        </b-button>
+            {{ player.name }}
+          </b-button>
+        </div>
       </div>
     </div>
 
