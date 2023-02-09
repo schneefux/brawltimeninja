@@ -37,12 +37,10 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v3
       -
         name: Set up Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '19.x'
           cache: yarn
