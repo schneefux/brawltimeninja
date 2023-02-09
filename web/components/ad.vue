@@ -37,7 +37,6 @@
   <b-page-section
     v-else
     ref="ad"
-    class="flex justify-center"
   >
     <client-only v-if="allowed && visible">
       <playwire-ramp
