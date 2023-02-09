@@ -171,14 +171,8 @@ const config: UserConfig = {
     visualizer(),
   ],
   assetsInclude: ['assets/content/**/*.md'],
-  optimizeDeps: {
-    include: ['@schneefux/klicker'],
-  },
   build: {
     sourcemap: true, // for Sentry
-    commonjsOptions: {
-      include: [/@schneefux\/klicker/, /node_modules/],
-    },
   },
   resolve: {
     dedupe: ['vue', 'vue3-lazy-hydration'], // https://github.com/vitejs/vite/issues/7454#issuecomment-1079830994

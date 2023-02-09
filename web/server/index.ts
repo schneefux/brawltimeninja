@@ -85,10 +85,8 @@ app.get('*', async (req, res, next) => {
   }
   const { statusCode, contentType, earlyHints, body } = httpResponse
   if (res.writeEarlyHints) {
-    const hints = earlyHints
-      .map((e) => e.earlyHintLink.replace('; crossorigin', '')) // FIXME crashes node
     res.writeEarlyHints({
-      link: hints,
+      link: earlyHints.map(e => e.earlyHintLink),
     })
   }
   res.status(pageContext.statusCode ?? statusCode).type(contentType).send(body)
