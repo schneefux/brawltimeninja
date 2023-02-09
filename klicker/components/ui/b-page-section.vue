@@ -1,5 +1,8 @@
 <template>
-  <section :aria-labelledby="title != undefined ? id : undefined">
+  <section
+    ref="section"
+    :aria-labelledby="title != undefined ? id : undefined"
+  >
     <div
       v-if="title != undefined"
       class="mt-16"
@@ -13,10 +16,9 @@
       <slot name="description"></slot>
     </div>
 
-    <LazyHydrationWrapper
+    <lazy-hydration
       v-if="lazy"
-      when-visible
-      when-idle
+      :hydrate-when-visible="section"
     >
       <div
         :class="{
@@ -26,7 +28,7 @@
       >
         <slot></slot>
       </div>
-    </LazyHydrationWrapper>
+    </lazy-hydration>
 
     <div
       v-else
@@ -41,13 +43,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { ref, defineComponent } from 'vue'
 import { useUniqueId } from '../../composables/id'
-import { LazyHydrationWrapper } from 'vue3-lazy-hydration'
+import LazyHydration from './lazy-hydration.vue'
 
 export default defineComponent({
   components: {
-    LazyHydrationWrapper,
+    LazyHydration,
   },
   props: {
     title: {
@@ -59,11 +61,13 @@ export default defineComponent({
       default: false
     },
   },
-  setup(props) {
+  setup() {
+    const section = ref<HTMLElement>()
     const { id } = useUniqueId()
 
     return {
       id,
+      section,
     }
   },
 })
