@@ -1,27 +1,5 @@
 variable "cloudflare_zone_id" {}
 
-resource "cloudflare_page_rule" "domain_cache_all" {
-  priority = 1
-  status = "active"
-  target = "brawltime.ninja/*"
-  actions {
-    cache_level = "cache_everything"
-    ssl = "full"
-  }
-  zone_id = var.cloudflare_zone_id
-}
-
-resource "cloudflare_page_rule" "subdomains_cache_all" {
-  priority = 2
-  status = "active"
-  target = "*.brawltime.ninja/*"
-  actions {
-    cache_level = "cache_everything"
-    ssl = "full"
-  }
-  zone_id = var.cloudflare_zone_id
-}
-
 resource "cloudflare_record" "ahrefs" {
   name = "brawltime.ninja"
   proxied = false
