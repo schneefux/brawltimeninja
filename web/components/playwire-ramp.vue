@@ -94,6 +94,6 @@ ins {
 
 /* add padding to bottom of page so that the rail does not overlap any content */
 main {
-  margin-bottom: 138px !important; /* 106px for the rail + 32px (mb-8) as usual */
+  @apply mb-[138px] lg:mb-8 !important; /* 106px for the rail + 32px (mb-8) as usual */
 }
 </style>
