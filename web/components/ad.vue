@@ -45,7 +45,7 @@
         :ad-id="adSlot"
         :instance="instance"
         :type="`${leaderboardFits ? 'leaderboard' : 'med_rect'}_${first ? 'atf' : 'btf'}`"
-        class="adsbygoogle section-ad"
+        class="adsbygoogle"
       ></playwire-ramp>
       <adsense
         v-else
