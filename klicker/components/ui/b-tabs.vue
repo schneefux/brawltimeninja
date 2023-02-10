@@ -27,7 +27,7 @@
             :aria-selected="activeTab == tab.slot ? 'true' : 'false'"
             :aria-controls="`${prefix}-tab-${tab.slot}`"
             class="block px-8 py-2 whitespace-nowrap transition duration-100 ease-in-out border-b-2"
-            @click="scrollToTab(tab)"
+            @click.prevent="scrollToTab(tab)"
           >{{ tab.title }}</a>
         </li>
       </ul>
