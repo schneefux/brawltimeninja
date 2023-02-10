@@ -1,6 +1,7 @@
 <template>
   <div
     :class="containerClass"
+    ref="container"
     class="ml-4 inline-flex items-center"
   >
     <font-awesome-icon
