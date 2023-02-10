@@ -1,7 +1,7 @@
 <template>
   <section
     ref="section"
-    v-bind-once="{ 'aria-labelledby': id }"
+    v-bind-once="title != undefined ? { 'aria-labelledby': id } : {}"
   >
     <div
       v-if="title != undefined"

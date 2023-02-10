@@ -1,7 +1,7 @@
 <template>
   <component
     :is="tag"
-    v-bind-once="{ 'aria-labelledby': id }"
+    v-bind-once="title != undefined ? { 'aria-labelledby': id } : {}"
     class="h-full"
   >
     <div
