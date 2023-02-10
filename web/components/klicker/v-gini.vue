@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
-    v-bind="$props"
     :card="card != undefined ? { ...card, title: $t('metric.balance-rating'), tooltipLink: '/faq/measuring-map-quality' } : undefined"
+    :loading="loading"
     component="v-gini"
     wrapper="b-bigstat"
   >

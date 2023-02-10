@@ -1,34 +1,36 @@
 <template>
   <v-card-wrapper
-    v-bind="$props"
     :card="card != undefined && { ...card, title: $t('metric.margin-of-error') }"
+    :loading="loading"
     component="v-moe"
     wrapper="b-bigstat"
   >
-    <template v-slot:content><p  class="flex items-center">
-      <span
-        class="text-xl"
-        :class="{
-          'text-green-400': moe <= 0.01,
-          'text-orange-400': moe > 0.01 && moe <= 0.025,
-          'text-red-400': moe > 0.025,
-        }"
-      >{{ moePercent }}</span>
-      <span class="ml-2 text-base">
-        <template v-if="moe <= 0.005">
-          {{ $t('moe.perfect') }}
-        </template>
-        <template v-if="moe > 0.005 && moe <= 0.01">
-          {{ $t('moe.good') }}
-        </template>
-        <template v-if="moe > 0.01 && moe <= 0.025">
-          {{ $t('moe.mediocre') }}
-        </template>
-        <template v-if="moe > 0.025">
-          {{ $t('moe.poor') }}
-        </template>
-      </span>
-    </p></template>
+    <template v-slot:content>
+      <p class="flex items-center">
+        <span
+          class="text-xl"
+          :class="{
+            'text-green-400': moe <= 0.01,
+            'text-orange-400': moe > 0.01 && moe <= 0.025,
+            'text-red-400': moe > 0.025,
+          }"
+        >{{ moePercent }}</span>
+        <span class="ml-2 text-base">
+          <template v-if="moe <= 0.005">
+            {{ $t('moe.perfect') }}
+          </template>
+          <template v-if="moe > 0.005 && moe <= 0.01">
+            {{ $t('moe.good') }}
+          </template>
+          <template v-if="moe > 0.01 && moe <= 0.025">
+            {{ $t('moe.mediocre') }}
+          </template>
+          <template v-if="moe > 0.025">
+            {{ $t('moe.poor') }}
+          </template>
+        </span>
+      </p>
+    </template>
   </v-card-wrapper>
 </template>
 

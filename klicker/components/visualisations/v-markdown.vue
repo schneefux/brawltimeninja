@@ -1,6 +1,5 @@
 <template>
   <v-card-wrapper
-    v-bind="$props"
     :loading="false"
     :card="card && { ...card, title }"
     component="v-markdown"

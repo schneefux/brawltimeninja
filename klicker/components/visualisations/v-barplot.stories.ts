@@ -79,6 +79,9 @@ export const NoWrapper: Story = {
     </c-query>
     `,
   }),
+  args: {
+    card: undefined,
+  },
 }
 
 const comparingQuery = JSON.stringify({

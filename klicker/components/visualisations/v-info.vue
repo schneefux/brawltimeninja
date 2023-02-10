@@ -1,8 +1,8 @@
 <template>
   <v-card-wrapper
     v-if="description != undefined"
-    v-bind="$props"
     :card="card && { ...card, title }"
+    :loading="loading"
     component="v-info"
   >
     <template v-slot:content>

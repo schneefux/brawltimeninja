@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
-    v-bind="$props"
     :card="card && { ...card, title: translate('comparison.test.info.title') }"
+    :loading="false"
     component="v-test-info"
   >
     <template v-slot:content>

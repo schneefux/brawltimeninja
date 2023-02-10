@@ -1,6 +1,5 @@
 <template>
   <v-card-wrapper
-    v-bind="$props"
     :loading="false"
     :card="card != undefined && { ...card, title }"
     component="v-media-img"

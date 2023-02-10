@@ -1,6 +1,7 @@
 <template>
   <v-card-wrapper
-    v-bind="$props"
+    :card="card"
+    :loading="loading"
     component="v-roll"
   >
     <template v-slot:content>

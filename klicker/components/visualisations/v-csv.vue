@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
-    v-bind="$props"
     :card="card && { ...card, title: translate('dashboard.export-data') }"
+    :loading="loading"
     component="v-csv"
   >
     <template v-slot:actions>

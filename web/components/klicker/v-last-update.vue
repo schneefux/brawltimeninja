@@ -1,7 +1,7 @@
 <template>
   <v-card-wrapper
-    v-bind="$props"
     :card="card != undefined && { ...card, title: $t('metric.last-update') }"
+    :loading="loading"
     :value="lastUpdate"
     component="v-last-update"
     wrapper="b-bigstat"

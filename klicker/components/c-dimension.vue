@@ -64,7 +64,7 @@ export default defineComponent({
     BButton,
   },
   directives: {
-    uid: BindOnce,
+    BindOnce,
   },
   props: {
     modelValue: {
