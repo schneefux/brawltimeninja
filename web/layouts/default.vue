@@ -1,7 +1,7 @@
 <template>
   <div
     ref="container"
-    class="flex flex-col justify-between min-h-screen bg-background text-text"
+    class="min-h-screen bg-background text-text"
   >
     <web-nav class="hidden lg:flex"></web-nav>
     <app-head-nav class="lg:hidden"></app-head-nav>
@@ -19,7 +19,9 @@
       scraper
     ></ad>
 
-    <slot></slot>
+    <div class="fill-height">
+      <slot></slot>
+    </div>
 
     <client-only>
       <b-cookie-consent
@@ -141,3 +143,17 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="postcss" scoped>
+/* main content size = 100vh - header - footer */
+
+.fill-height {
+  min-height: calc(100vh - 56px - 56px);
+}
+
+@media screen(lg) {
+  .fill-height {
+    min-height: calc(100vh - 76px - 160px);
+  }
+}
+</style>

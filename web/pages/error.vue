@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col justify-center items-center container text-center py-4 px-2">
+  <main class="text-center pt-[20vh] pb-4 px-2">
     <h1 class="mt-8 text-3xl">
       Oops!
     </h1>

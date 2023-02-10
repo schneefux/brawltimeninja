@@ -3,9 +3,9 @@
     <p>
       &#169; 2018 - 2023 Brawl Time Ninja
       ({{ releaseVersion }})
-    </p>
-    <p v-if="$i18n.locale != 'en'">
-      {{ $t('footer.translated-by') }} {{ $t('translators') }}
+      <span v-if="$i18n.locale != 'en'">
+        &mdash; {{ $t('footer.translated-by') }} {{ $t('translators') }}
+      </span>
     </p>
     <div class="mt-2 flex justify-center items-center gap-x-2">
       <span class="my-1">{{ $t('footer.support-me') }}</span>
