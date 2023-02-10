@@ -43,7 +43,7 @@
     v-else
     v-bind="$attrs"
     ref="ad"
-    class="text-center"
+    class="text-center -mx-4 lg:mx-0"
   >
     <client-only>
       <playwire-ramp
