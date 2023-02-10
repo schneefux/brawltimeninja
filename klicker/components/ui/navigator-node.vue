@@ -13,7 +13,7 @@
     >
       <button
         v-if="link.children != undefined && link.children.length > 0"
-        :aria-controls="nodeRefs[link.id]?.$el.id"
+        v-bind-once="{ 'aria-controls': `${prefix}-${link.id}` }"
         class="col-start-1"
         @click="toggleLink(link)"
       >
@@ -40,11 +40,10 @@
       </span>
       <navigator-node
         v-if="link.children != undefined && link.children.length > 0"
+        v-bind-once="{ id: `${prefix}-${link.id}` }"
         :links="expandedLinks[link.id] ? link.children : []"
         :expand-by-default="expandByDefault"
-        :ref="(el: any) => setNodeRef(link.id, el)"
         class="ml-8 col-span-full"
-        v-uid
       >
         <template v-slot:link="{ to, title }">
           <slot
@@ -59,11 +58,11 @@
 </template>
 
 <script lang="ts">
-import { ComponentPublicInstance, defineComponent, PropType, ref, watchEffect } from 'vue'
+import { defineComponent, PropType, ref, watchEffect } from 'vue'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Link } from './b-navigator.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { Uid } from '../../directives/uid'
+import { generateId, BindOnce } from '../../directives/bind-once'
 
 export default defineComponent({
   name: 'navigator-node',
@@ -71,7 +70,7 @@ export default defineComponent({
     FontAwesomeIcon,
   },
   directives: {
-    Uid,
+    BindOnce,
   },
   props: {
     links: {
@@ -100,16 +99,14 @@ export default defineComponent({
       }), {})
     })
 
-    const nodeRefs = ref<Record<string, ComponentPublicInstance|null>>({}) // typeof self
-    const setNodeRef = (id: string, el: ComponentPublicInstance|null) => nodeRefs.value[id] = el
+    const prefix = generateId()
 
     return {
       toggleLink,
       expandedLinks,
       faMinus,
       faPlus,
-      nodeRefs,
-      setNodeRef,
+      prefix,
     }
   },
 })

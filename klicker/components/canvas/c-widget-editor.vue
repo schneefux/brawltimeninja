@@ -12,27 +12,25 @@
 
           <b-radio
             v-model="withQuery"
-            ref="staticRef"
+            v-bind-once="{ id: `${prefix}-static` }"
             :value="false"
             name="withQuery"
-            v-uid
             required
             primary
           ></b-radio>
-          <label :for="staticRef?.$el.id">
+          <label v-bind-once="{ for: `${prefix}-static` }">
             Static Widget
           </label>
 
           <b-radio
             v-model="withQuery"
-            ref="dataRef"
+            v-bind-once="{ id: `${prefix}-dynamic` }"
             :value="true"
             name="withQuery"
-            v-uid
             required
             primary
           ></b-radio>
-          <label :for="dataRef?.$el.id">
+          <label v-bind-once="{ for: `${prefix}-dynamic` }">
             Widget with Data
           </label>
         </div>
@@ -97,7 +95,7 @@ import CDashboard from '../c-dashboard.vue'
 import BCard from '../ui/b-card.vue'
 import BRadio from '../ui/b-radio.vue'
 import BButton from '../ui/b-button.vue'
-import { Uid } from '../../directives/uid'
+import { BindOnce, generateId } from '../../directives/bind-once'
 
 /**
  * Form to edit a widget.
@@ -111,7 +109,7 @@ export default defineComponent({
     CVisualisationSelector,
   },
   directives: {
-    Uid,
+    BindOnce,
   },
   props: {
     modelValue: {
@@ -169,14 +167,12 @@ export default defineComponent({
       }
     })
 
-    const staticRef = ref<InstanceType<typeof BRadio>>()
-    const dataRef = ref<InstanceType<typeof BRadio>>()
+    const prefix = generateId()
 
     return {
       query,
       withQuery,
-      staticRef,
-      dataRef,
+      prefix,
     }
   },
 })

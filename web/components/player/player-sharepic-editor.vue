@@ -16,15 +16,14 @@
         "
       >
         <label
-          :for="brawlerRef?.$el.id"
+          v-bind-once="{ for: `${prefix}-brawler` }"
           class="mt-4 md:mt-0"
         >
           Brawler
         </label>
         <b-select
           v-model="selectedBrawlerId"
-          ref="brawlerRef"
-          v-uid
+          v-bind-once="{ id: `${prefix}-brawler` }"
           dark
           sm
         >
@@ -36,19 +35,18 @@
         </b-select>
 
         <label
-          :for="backgroundRef?.$el.id"
+          v-bind-once="{ for: `${prefix}-background` }"
           class="mt-4 md:mt-0"
         >
           Background
         </label>
         <b-scrolling-list
+          v-bind-once="{ id: `${prefix}-background` }"
           :items="backgrounds"
           :cell-rows="1"
           :cell-columns="2"
           :render-at-least="1"
-          ref="backgroundRef"
           key-id="id"
-          v-uid
           render-placeholder
         >
           <template v-slot:item="{ id, path }">
@@ -157,7 +155,7 @@ import { BCard, BSelect, BButton, BScrollingList, BLightbox } from '@schneefux/k
 import { usePlayerRender } from '@/composables/player'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCheck, faExpand } from '@fortawesome/free-solid-svg-icons'
-import { Uid } from '@schneefux/klicker/directives'
+import { BindOnce, generateId } from '@schneefux/klicker/directives'
 import { useI18n } from 'vue-i18n'
 
 const backgroundIds = [
@@ -208,7 +206,7 @@ export default defineComponent({
     FontAwesomeIcon,
   },
   directives: {
-    Uid,
+    BindOnce,
   },
   props: {
     player: {
@@ -279,8 +277,7 @@ export default defineComponent({
     const editing = ref(false)
     const lightboxOpen = ref(false)
 
-    const brawlerRef = ref<InstanceType<typeof BSelect>>()
-    const backgroundRef = ref<InstanceType<typeof BSelect>>()
+    const prefix = generateId()
 
     return {
       lightboxOpen,
@@ -300,8 +297,7 @@ export default defineComponent({
       brawlers,
       faCheck,
       faExpand,
-      backgroundRef,
-      brawlerRef,
+      prefix,
     }
   },
 })

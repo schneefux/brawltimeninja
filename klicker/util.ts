@@ -53,3 +53,17 @@ export function compare(entry1: MetaGridEntry, entry2: MetaGridEntry, m: Metric)
 export function compare1(m: Metric) {
   return (entry1: MetaGridEntry, entry2: MetaGridEntry) => compare(entry1, entry2, m)
 }
+
+export function hashCode(s: string) {
+  if (s.length === 0) {
+    return 0
+  }
+
+  let hash = 0;
+  for (let i = 0; i < s.length; i++) {
+    const chr = s.charCodeAt(i)
+    hash = ((hash << 5) - hash) + chr
+    hash |= 0
+  }
+  return hash
+}

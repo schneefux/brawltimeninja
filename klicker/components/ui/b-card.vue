@@ -1,7 +1,7 @@
 <template>
   <component
     :is="tag"
-    :aria-labelledby="titleRef?.id"
+    v-bind-once="{ 'aria-labelledby': id }"
     class="h-full"
   >
     <div
@@ -63,12 +63,11 @@
 
         <div v-if="title != undefined">
           <h1
-            ref="titleRef"
             :class="{
               'text-lg leading-snug': !dense,
               'text-sm leading-tight': dense,
             }"
-            v-uid
+            v-bind-once="{ id }"
           >
             <template v-if="titleLink != undefined || link != undefined">
               <component
@@ -89,7 +88,6 @@
               'leading-snug': !dense,
               'leading-tight': dense,
             }]"
-            v-uid
           >
             <template v-if="subtitleLink != undefined">
               <component
@@ -144,11 +142,11 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
 import { useKlickerConfig } from '../../composables/klicker'
-import { Uid } from '../../directives/uid'
+import { generateId, BindOnce } from '../../directives/bind-once'
 
 export default defineComponent({
   directives: {
-    Uid,
+    BindOnce,
   },
   props: {
     tag: {
@@ -241,7 +239,7 @@ export default defineComponent({
       }
     }
 
-    const titleRef = ref<HTMLHeadingElement>()
+    const id = generateId()
 
     return {
       onClick,
@@ -250,7 +248,7 @@ export default defineComponent({
       renderTitle,
       navigate,
       linkComponent,
-      titleRef,
+      id,
     }
   },
 })

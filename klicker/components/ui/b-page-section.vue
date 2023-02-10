@@ -1,16 +1,15 @@
 <template>
   <section
     ref="section"
-    :aria-labelledby="titleRef?.id"
+    v-bind-once="{ 'aria-labelledby': id }"
   >
     <div
       v-if="title != undefined"
       class="mt-16"
     >
       <h1
-        ref="titleRef"
         class="text-2xl"
-        v-uid
+        v-bind-once="{ id }"
       >
         {{ title }}
       </h1>
@@ -46,14 +45,14 @@
 <script lang="ts">
 import { ref, defineComponent } from 'vue'
 import LazyHydration from './lazy-hydration.vue'
-import { Uid } from '../../directives/uid'
+import { generateId, BindOnce } from '../../directives/bind-once'
 
 export default defineComponent({
   components: {
     LazyHydration,
   },
   directives: {
-    Uid,
+    BindOnce,
   },
   props: {
     title: {
@@ -67,10 +66,10 @@ export default defineComponent({
   },
   setup() {
     const section = ref<HTMLElement>()
-    const titleRef = ref<HTMLElement>()
+    const id = generateId()
 
     return {
-      titleRef,
+      id,
       section,
     }
   },

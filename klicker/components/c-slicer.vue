@@ -14,7 +14,7 @@
       <button
         :selected="showFilters"
         :aria-label="showFilters ? translate('action.collapse') : translate('action.expand')"
-        :aria-controls="filtersRef?.id"
+        v-bind-once="{ 'aria-controls': id }"
         class="md:hidden w-10"
         @click.stop="toggleFilters"
       >
@@ -26,14 +26,13 @@
 
     <template v-slot:content>
       <div
-        ref="filtersRef"
         :class="{
           'hidden md:flex': !showFilters,
           'flex': showFilters,
         }"
         :aria-expanded="showFilters"
         class="flex-col md:flex-row flex-wrap gap-4"
-        v-uid
+        v-bind-once="{ id: id }"
       >
         <component
           v-for="spec in specs"
@@ -55,7 +54,7 @@ import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
 import BCard from './ui/b-card.vue'
 import { useCheckSlicerApplicable } from '../composables/check-slicer-applicable'
 import { useKlickerConfig } from '../composables/klicker'
-import { Uid } from '../directives/uid'
+import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
@@ -63,7 +62,7 @@ export default defineComponent({
     BCard,
   },
   directives: {
-    Uid,
+    BindOnce,
   },
   props: {
     modelValue: {
@@ -230,7 +229,7 @@ export default defineComponent({
 
     const toggleFilters = () => showFilters.value = !showFilters.value
 
-    const filtersRef = ref<HTMLElement>()
+    const id = generateId()
 
     return {
       title,
@@ -242,7 +241,7 @@ export default defineComponent({
       specs,
       translate,
       toggleFilters,
-      filtersRef,
+      id,
     }
   },
 })

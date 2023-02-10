@@ -19,24 +19,23 @@
       v-if="canSave"
       class="mt-8 grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center"
     >
-      <label :for="editorRef?.$el.id">
+      <label v-bind-once="{ for: `${prefix}-editor-url` }">
         {{ $t('action.editor-url') }}
       </label>
       <b-textbox
+        v-bind-once="{ id: `${prefix}-editor-url` }"
         :model-value="editorUrl"
-        ref="editorRef"
-        v-uid
         readonly
         dark
       ></b-textbox>
 
-      <label :for="viewerRef?.$el.id">
+      <label v-bind-once="{ for: `${prefix}-viewer-url` }">
         {{ $t('action.viewer-url') }}
       </label>
       <b-textbox
+        v-bind-once="{ id: `${prefix}-viewer-url` }"
         :model-value="viewerUrl"
         ref="viewerRef"
-        v-uid
         readonly
         dark
       ></b-textbox>
@@ -56,7 +55,7 @@ import { useStorage } from '@schneefux/klicker/composables'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useRoute } from "vue-router"
 import { useSelfOrigin } from "@/composables/compat"
-import { Uid } from "@schneefux/klicker/directives"
+import { BindOnce, generateId } from "@schneefux/klicker/directives"
 
 export default defineComponent({
   components: {
@@ -65,7 +64,7 @@ export default defineComponent({
     CGrid,
   },
   directives: {
-    Uid,
+    BindOnce,
   },
   setup() {
     const { storage: grid, update, canSave } = useStorage<Grid>('grids', {
@@ -106,8 +105,7 @@ export default defineComponent({
       sortId: 'winRate',
     }
 
-    const editorRef = ref<InstanceType<typeof BTextbox>>()
-    const viewerRef = ref<InstanceType<typeof BTextbox>>()
+    const prefix = generateId()
 
     return {
       grid,
@@ -115,8 +113,7 @@ export default defineComponent({
       editorUrl,
       viewerUrl,
       defaultQuery,
-      editorRef,
-      viewerRef,
+      prefix,
     }
   }
 })

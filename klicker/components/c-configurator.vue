@@ -8,7 +8,7 @@
         <div class="grid grid-cols-[auto,auto] gap-6 items-center">
           <label
             v-if="configureCube"
-            :for="cubeRef?.$el.id"
+            v-bind-once="{ for: id }"
             class="inline"
           >
             {{ translate('configurator.source') }}
@@ -17,8 +17,7 @@
           <div v-if="configureCube">
             <b-select
               :model-value="modelValue.cubeId"
-              ref="cubeRef"
-              v-uid
+              v-bind-once="{ id }"
               sm
               @update:modelValue="onInputCubeId"
             >
@@ -77,7 +76,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'
-import { Uid } from '../directives/uid'
+import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
@@ -89,7 +88,7 @@ export default defineComponent({
     BCard,
   },
   directives: {
-    Uid,
+    BindOnce,
   },
   props: {
     modelValue: {
@@ -190,7 +189,7 @@ export default defineComponent({
       return selectedMetrics.length == 1 && selectedMetrics[0].type == 'quantitative'
     })
 
-    const cubeRef = ref<InstanceType<typeof BSelect>>()
+    const id = generateId()
 
     return {
       cubes,
@@ -200,7 +199,7 @@ export default defineComponent({
       faPlus,
       faMinus,
       translate,
-      cubeRef,
+      id,
     }
   },
 })

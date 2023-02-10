@@ -1,6 +1,6 @@
 <template>
   <div class="contents">
-    <label :for="dimensionRefs[0]?.$el.id">
+    <label v-bind-once="{ for: `${prefix}-1` }">
       {{ title }}
     </label>
 
@@ -10,8 +10,7 @@
         :key="index"
         :model-value="modelValue.dimensionsIds[index - 1]"
         :disabled="!editable"
-        ref="dimensionRefs"
-        v-uid
+        v-bind-once="{ id: `${prefix}-${index}` }"
         @update:modelValue="v => onInputDimensionsIds(index - 1, v)"
       >
         <option
@@ -56,7 +55,7 @@ import { computed, defineComponent, PropType, ref, watch } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BButton from './ui/b-button.vue'
-import { Uid } from '../directives/uid'
+import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
@@ -65,7 +64,7 @@ export default defineComponent({
     BButton,
   },
   directives: {
-    uid: Uid,
+    uid: BindOnce,
   },
   props: {
     modelValue: {
@@ -170,7 +169,7 @@ export default defineComponent({
     })
     const editable = computed(() => !compareMode.value || props.comparing)
 
-    const dimensionRefs = ref<InstanceType<typeof BSelect>[]>([])
+    const prefix = generateId()
 
     return {
       title,
@@ -183,7 +182,7 @@ export default defineComponent({
       onDimensionRemove,
       faPlus,
       faMinus,
-      dimensionRefs,
+      prefix,
     }
   },
 })

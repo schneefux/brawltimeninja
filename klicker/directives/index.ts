@@ -1,1 +1,1 @@
-export { Uid } from './uid'
+export { BindOnce, generateId } from './bind-once'

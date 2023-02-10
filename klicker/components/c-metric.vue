@@ -1,6 +1,6 @@
 <template>
   <div class="contents">
-    <label :for="metricRefs[0]?.$el.id">
+    <label v-bind-once="{ for: `${prefix}-1` }">
       {{ translate('configurator.metric') }}
     </label>
 
@@ -9,8 +9,7 @@
         v-for="index in (showAllMetrics ? 1 : numMetrics)"
         :key="index"
         :model-value="showAllMetrics ? '' : modelValue.metricsIds[index - 1]"
-        ref="metricRefs"
-        v-uid
+        v-bind-once="{ id: `${prefix}-${index}` }"
         @update:modelValue="v => onInputMetricsIds(index - 1, v)"
       >
         <option
@@ -86,7 +85,7 @@ import { useKlickerConfig } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BLightbox from './ui/b-lightbox.vue'
 import BCard from './ui/b-card.vue'
-import { Uid } from '../directives/uid'
+import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
@@ -96,7 +95,7 @@ export default defineComponent({
     BCard,
   },
   directives: {
-    Uid,
+    BindOnce,
   },
   props: {
     modelValue: {
@@ -183,7 +182,7 @@ export default defineComponent({
 
     const tooltipOpen = ref(false)
 
-    const metricRefs = ref<InstanceType<typeof BSelect>[]>([])
+    const prefix = generateId()
 
     return {
       description,
@@ -197,7 +196,7 @@ export default defineComponent({
       faMinus,
       faQuestion,
       translate,
-      metricRefs,
+      prefix,
     }
   },
 })

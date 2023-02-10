@@ -1,37 +1,34 @@
 <template>
   <div>
     <div class="w-full grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center">
-      <label :for="titleRef?.$el.id">
+      <label v-bind-once="{ for: `${prefix}-title` }">
         Title
       </label>
       <b-textbox
         v-model="title"
-        ref="titleRef"
-        v-uid
+        v-bind-once="{ id: `${prefix}-title` }"
       ></b-textbox>
 
-      <label :for="widthRef?.$el.id">
+      <label v-bind-once="{ for: `${prefix}-description` }">
         Width
       </label>
       <b-number
         v-model="width"
-        ref="widthRef"
+        v-bind-once="{ id: `${prefix}-description` }"
         min="300"
         max="4096"
         step="64"
-        v-uid
       ></b-number>
 
-      <label :for="heightRef?.$el.id">
+      <label v-bind-once="{ for: `${prefix}-height` }">
         Height
       </label>
       <b-number
         v-model="height"
-        ref="heightRef"
+        v-bind-once="{ id: `${prefix}-height` }"
         min="300"
         max="16384"
         step="64"
-        v-uid
       ></b-number>
 
       <b-button
@@ -114,7 +111,7 @@ import Panzoom, { PanzoomObject } from '@panzoom/panzoom'
 import { useFullscreen } from '@vueuse/core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faSearchMinus, faSearchPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons'
-import { Uid } from '../../directives/uid'
+import { generateId, BindOnce } from '../../directives/bind-once'
 
 /**
  * Interactive canvas editor.
@@ -129,7 +126,7 @@ export default defineComponent({
     CMoveableWidget,
   },
   directives: {
-    Uid,
+    BindOnce,
   },
   props: {
     modelValue: {
@@ -246,9 +243,7 @@ export default defineComponent({
       bottom: props.modelValue.height,
     }))
 
-    const titleRef = ref<InstanceType<typeof BTextbox>>()
-    const widthRef = ref<InstanceType<typeof BNumber>>()
-    const heightRef = ref<InstanceType<typeof BNumber>>()
+    const prefix = generateId()
 
     return {
       bounds,
@@ -270,9 +265,7 @@ export default defineComponent({
       zoomOut,
       isFullscreen,
       toggleFullscreen,
-      titleRef,
-      widthRef,
-      heightRef,
+      prefix,
     }
   },
 })

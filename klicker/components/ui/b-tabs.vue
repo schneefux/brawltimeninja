@@ -17,17 +17,18 @@
         >
           <!-- same layout as b-scrolling-list preview -->
           <a
+            v-bind-once="{
+              id: `${prefix}-button-${tab.slot}`,
+              href: `#${prefix}-tab-${tab.slot}`,
+              'aria-controls': `${prefix}-tab-${tab.slot}`,
+            }"
             role="tab"
-            :ref="el => setButtonTabRef(tab.slot, el as HTMLElement|null)"
-            :href="`#${tabRefs[tab.slot]?.id}`"
             :class="{
               'border-primary-400 text-text': tabVisibility[tab.slot],
               'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !tabVisibility[tab.slot],
             }"
             :aria-selected="activeTab == tab.slot ? 'true' : 'false'"
-            :aria-controls="tabRefs[tab.slot]?.id"
             class="block px-8 py-2 whitespace-nowrap transition duration-100 ease-in-out border-b-2"
-            v-uid
             @click.prevent="scrollToTab(tab)"
           >{{ tab.title }}</a>
         </li>
@@ -40,6 +41,10 @@
     >
       <div
         v-for="tab in tabs"
+        v-bind-once="{
+          id: `${prefix}-button-${tab.slot}`,
+          'aria-labelledby': `${prefix}-button-${tab.slot}`,
+        }"
         :key="tab.slot"
         :ref="el => setTabRef(tab.slot, el as HTMLElement|null)"
         :class="{
@@ -49,8 +54,6 @@
           'snap-center snap-always': scrollSnap,
         }"
         role="tabpanel"
-        :aria-labelledby="tabButtonRefs[tab.slot]?.id"
-        v-uid
       >
         <slot :name="tab.slot"></slot>
       </div>
@@ -61,7 +64,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, PropType, ref } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
-import { Uid } from '../../directives/uid'
+import { generateId, BindOnce } from '../../directives/bind-once'
 
 interface Tab {
   slot: string
@@ -70,7 +73,7 @@ interface Tab {
 
 export default defineComponent({
   directives: {
-    Uid,
+    BindOnce,
   },
   props: {
     tabs: {
@@ -194,8 +197,7 @@ export default defineComponent({
       }
     })
 
-    const tabButtonRefs = ref<Record<string, HTMLElement|null>>({})
-    const setButtonTabRef = (id: string, el: HTMLElement|null) => tabButtonRefs.value[id] = el
+    const prefix = generateId()
 
     return {
       tabContainer,
@@ -208,8 +210,7 @@ export default defineComponent({
       setHeaderRef,
       tabRefs,
       setTabRef,
-      tabButtonRefs,
-      setButtonTabRef,
+      prefix,
     }
   },
 })

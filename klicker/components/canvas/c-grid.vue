@@ -1,44 +1,41 @@
 <template>
   <div>
     <div class="w-full grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center">
-      <label :for="titleRef?.$el.id">
+      <label v-bind-once="{ for: `${prefix}-title` }">
         Title
       </label>
       <b-textbox
         v-model="title"
-        ref="titleRef"
-        v-uid
+        v-bind-once="{ id: `${prefix}-title` }"
       ></b-textbox>
 
       <div class="col-span-full space-y-2">
         <div class="flex gap-x-2 items-center">
           <b-radio
+            v-bind-once="{ id: `${prefix}-responsive` }"
             :model-value="columns == undefined"
             :value="true"
-            ref="responsiveRef"
             name="responsive"
-            v-uid
             required
             primary
             @update:modelValue="() => columns = undefined"
           ></b-radio>
-          <label :for="responsiveRef?.$el.id">
+          <label v-bind-once="{ for: `${prefix}-responsive` }">
             Responsive layout
           </label>
         </div>
 
         <div class="flex gap-x-2 items-center">
           <b-radio
+            v-bind-once="{ id: `${prefix}-fixed` }"
             :model-value="columns != undefined"
             :value="true"
-            ref="fixedRef"
             name="responsive"
-            v-uid
             required
             primary
             @update:modelValue="(v: boolean) => columns = columns || 12"
           ></b-radio>
-          <label :for="fixedRef?.$el.id">
+          <label v-bind-once="{ for: `${prefix}-fixed` }">
             Fixed width layout
           </label>
         </div>
@@ -46,17 +43,16 @@
 
       <label
         v-if="columns != undefined"
-        :for="widthRef?.$el.id"
+        v-bind-once="{ for: `${prefix}-width` }"
       >
         Width in columns
       </label>
       <b-number
         v-if="columns != undefined"
         v-model="columns"
-        ref="widthRef"
+        v-bind-once="{ id: `${prefix}-width` }"
         min="1"
         max="24"
-        v-uid
         required
       ></b-number>
 
@@ -88,27 +84,25 @@
           >
             <template v-slot:content>
               <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
-                <label :for="widthRef?.$el.id">
+                <label v-bind-once="{ for: `${prefix}-columns` }">
                   Columns
                 </label>
                 <b-number
+                  v-bind-once="{ id: `${prefix}-columns` }"
                   :model-value="widgetsKeyed[selectedWidgetId].frame.columns"
-                  ref="widthRef"
                   min="1"
                   max="8"
-                  v-uid
                   @update:modelValue="c => updateWidgetFrame(selectedWidgetId!, { columns: c })"
                 ></b-number>
 
-                <label :for="rowsRef?.$el.id">
+                <label v-bind-once="{ for: `${prefix}-rows` }">
                   Rows
                 </label>
                 <b-number
+                  v-bind-once="{ id: `${prefix}-rows` }"
                   :model-value="widgetsKeyed[selectedWidgetId].frame.rows"
-                  ref="rowsRef"
                   min="1"
                   max="8"
-                  v-uid
                   @update:modelValue="r => updateWidgetFrame(selectedWidgetId!, { rows: r })"
                 ></b-number>
               </div>
@@ -153,7 +147,7 @@ import BRadio from '../ui/b-radio.vue'
 import { Grid, GridWidget, CubeQuery } from '../../types'
 import Draggable from 'vuedraggable'
 import BDashboardCell from '../ui/b-dashboard-cell.vue'
-import { Uid } from '../../directives/uid'
+import { BindOnce, generateId } from '../../directives/bind-once'
 
 /**
  * Interactive grid editor.
@@ -171,7 +165,7 @@ export default defineComponent({
     Draggable,
   },
   directives: {
-    Uid,
+    BindOnce,
   },
   props: {
     modelValue: {
@@ -269,12 +263,7 @@ export default defineComponent({
       }
     })
 
-    const titleRef = ref<InstanceType<typeof BTextbox>>()
-    const responsiveRef = ref<InstanceType<typeof BRadio>>()
-    const fixedRef = ref<InstanceType<typeof BRadio>>()
-    const widthRef = ref<InstanceType<typeof BNumber>>()
-    const rowsRef = ref<InstanceType<typeof BNumber>>()
-    const columnsRef = ref<InstanceType<typeof BNumber>>()
+    const prefix = generateId()
 
     return {
       title,
@@ -286,12 +275,7 @@ export default defineComponent({
       addWidget,
       deleteSelectedWidget,
       selectedWidgetId,
-      titleRef,
-      responsiveRef,
-      fixedRef,
-      widthRef,
-      rowsRef,
-      columnsRef,
+      prefix,
     }
   },
 })
