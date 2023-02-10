@@ -9,6 +9,7 @@ import { MaybeRef } from "@vueuse/shared";
 import Cookies from 'js-cookie'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
 import { AppI18n } from "@/renderer/app";
+import { Locale } from '~/locales';
 
 /*
  * Nuxt 2 backwards compatibility composables
@@ -63,17 +64,22 @@ export function useConfig() {
   return pageContext.config
 }
 
+const i18nCookieName = 'i18n_redirected'
 export function useSwitchToLocale() {
   const route = useRoute()
   const router = useRouter()
   const i18n = useI18n()
 
-  const switchToLocale = (locale: Locale) => {
+  const switchToLocale = (locale: Locale, userInitiated: boolean = false) => {
+    if (userInitiated) {
+      Cookies.set(i18nCookieName, locale.code)
+    }
+
     const urlPaths = route.fullPath.split('/')
     const firstPath = urlPaths[1]
     const currentCode = locales.find(l => l.iso == i18n.locale.value)!.code
     const urlWithoutLocale = (firstPath == currentCode) ? '/' + urlPaths.slice(2).join('/') : route.fullPath
-    const newPath = `${locale.code == i18n.fallbackLocale.value ? '' : '/' + locale.code}` + urlWithoutLocale
+    const newPath = `${locale.iso == i18n.fallbackLocale.value ? '' : '/' + locale.code}` + urlWithoutLocale
     router.push(newPath)
   }
 
@@ -90,7 +96,6 @@ export function useLocaleCookieRedirect() {
   const i18n = useI18n()
   const route = useRoute()
 
-  const i18nCookieName = 'i18n_redirected'
   if (route.fullPath == '/' && !import.meta.env.SSR) {
     const userLanguage = navigator.languages[0] ?? navigator.language
 
@@ -102,8 +107,6 @@ export function useLocaleCookieRedirect() {
       switchToLocale(locale)
     }
   }
-
-  watch(i18n.locale, () => Cookies.set(i18nCookieName, i18n.locale.value))
 }
 
 export function useMeta(fun: () => ReactiveHead) {

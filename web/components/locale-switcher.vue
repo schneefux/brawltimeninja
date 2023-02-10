@@ -30,7 +30,7 @@ export default defineComponent({
       },
       set(iso: LocaleIso) {
         const locale = locales.find(l => l.iso == iso)!
-        switchToLocale(locale)
+        switchToLocale(locale, true)
       }
     })
 
