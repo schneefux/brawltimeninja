@@ -67,6 +67,7 @@ import { useRoute } from 'vue-router'
 import { usePreferencesStore } from '@/stores/preferences'
 import { usePlaywireRamp } from '@/composables/playwire-ramp'
 import { useAdsense } from '@/composables/adsense'
+import { useAnalytics } from '@/composables/gtag'
 
 export default defineComponent({
   components: {
@@ -129,6 +130,7 @@ export default defineComponent({
     } else {
       useAdsense(config.adsensePubid)
     }
+    useAnalytics()
     const consentPopupVisible = computed(() => store.consentPopupVisible && !enablePlaywire)
 
     return {

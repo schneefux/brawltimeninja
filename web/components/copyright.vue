@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { isApp } from '~/composables/app'
+import { useIsApp } from '~/composables/app'
 
 export default defineComponent({
   props: {
@@ -50,6 +50,8 @@ export default defineComponent({
     },
   },
   setup() {
+    const { isApp } = useIsApp()
+
     return {
       isApp,
       releaseVersion: import.meta.env.VITE_GIT_REV.substring(0, 7)

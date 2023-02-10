@@ -67,7 +67,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
 import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
-import { isApp } from '~/composables/app'
+import { useIsApp } from '~/composables/app'
 import { usePreferencesStore } from '@/stores/preferences'
 import { useConfig } from '@/composables/compat'
 import { useRoute } from 'vue-router'
@@ -102,6 +102,7 @@ export default defineComponent({
     const store = usePreferencesStore()
     const ad = ref<HTMLElement>()
     const visible = ref(!props.lazy || props.first)
+    const { isApp } = useIsApp()
 
     // default to "allow" on SSR to render placeholders
     const userAllowed = computed(() => store.adsAllowed == undefined || store.adsAllowed == true)

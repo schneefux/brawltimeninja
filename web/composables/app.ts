@@ -1,21 +1,29 @@
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { event } from 'vue-gtag'
 import { useRouter } from 'vue-router'
 import { useLocalePath } from './compat'
 import { usePreferencesStore } from '@/stores/preferences'
 
-const isPwa = ref<boolean>()
-const isTwa = ref<boolean>()
+export function useIsApp() {
+  const isPwa = ref<boolean>()
+  const isTwa = ref<boolean>()
 
-export function setIsPwa(is: boolean) {
-  isPwa.value = is
+  onMounted(() => {
+    // track some meta data
+    // play store allows only 1 ad/page - TWA is detected via referrer
+    isPwa.value = window.matchMedia('(display-mode: standalone)').matches
+    isTwa.value = document.referrer.startsWith('android-app')
+  })
+
+  const isApp = computed(() => isPwa.value || isTwa.value)
+
+  return {
+    isApp,
+    isPwa,
+    isTwa,
+  }
 }
 
-export function setIsTwa(is: boolean) {
-  isTwa.value = is
-}
-
-export const isApp = computed(() => isPwa.value || isTwa.value)
 
 function detectAndroid() {
   return /android/i.test(navigator.userAgent)
@@ -37,6 +45,7 @@ function detectIOS() {
 export function useInstall(source: string) {
   const store = usePreferencesStore()
   const localePath = useLocalePath()
+  const { isApp } = useIsApp()
 
   const installable = computed(() => {
     if (isApp.value) {

@@ -10,7 +10,7 @@
   ></ins>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted } from 'vue'
 
 export default defineComponent({
   props: {
@@ -36,11 +36,7 @@ export default defineComponent({
     },
   },
   setup() {
-    onMounted(() => {
-      if ('adsbygoogle' in window) {
-        (<any> window.adsbygoogle).push({})
-      }
-    })
+    onMounted(() => window.adsbygoogle.push({}))
   },
 })
 </script>

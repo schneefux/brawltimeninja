@@ -1,6 +1,18 @@
+import { usePreferencesStore } from "@/stores/preferences";
 import { useMeta } from "./compat";
+import { watch } from "vue";
 
+declare global {
+  interface Window {
+    adsbygoogle: {
+      push: (args: any) => void;
+      pauseAdRequests: number;
+    };
+  }
+}
 export function useAdsense(publisherId: string) {
+  const store = usePreferencesStore()
+
   useMeta(() => ({
     script: [
       {
@@ -12,8 +24,22 @@ export function useAdsense(publisherId: string) {
       {
         key: 'adsense-init',
         innerHTML: '(adsbygoogle=window.adsbygoogle||[]).pauseAdRequests=1;',
-        async: false,
+      },
+    ],
+    style: [
+      !import.meta.env.SSR && store.adsAllowed ? { key: 'hide-adsense', innerHTML: '' } : {
+        key: 'hide-adsense',
+        innerHTML: '.adswrapper { display: none; }',
       },
     ],
   }))
+
+  const stop = watch(() => store.adsAllowed, (allowed) => {
+    if (allowed) {
+      window.adsbygoogle.pauseAdRequests = 0
+      stop()
+    }
+  }, {
+    immediate: true,
+  })
 }

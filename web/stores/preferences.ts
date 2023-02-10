@@ -1,7 +1,5 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { defineStore } from 'pinia'
-import { event, optIn } from 'vue-gtag'
-import { setIsPwa, setIsTwa } from '@/composables/app'
 
 interface StoredPlayer {
   tag: string
@@ -74,54 +72,6 @@ export const usePreferencesStore = defineStore('preferences', () => {
     localStorage.setItem('brawlstars-ninja', JSON.stringify(data))
   })
 
-  function hideAds() {
-    if (!import.meta.env.SSR && 'adsbygoogle' in window) {
-      (<any>window).adsbygoogle.pauseAdRequests = 1
-      const sheet = document.createElement('style')
-      sheet.type = 'text/css'
-      sheet.innerText = '.adswrapper { display: none; }'
-      document.head.appendChild(sheet)
-    }
-  }
-
-  async function enableAds() {
-    if (adsAllowed.value && !import.meta.env.SSR) {
-      // update consent preferences
-      if ('adsbygoogle' in window) {
-        (<any>window).adsbygoogle.pauseAdRequests = 0
-      }
-      optIn()
-
-      // track some meta data
-      // play store allows only 1 ad/page - TWA is detected via referrer
-      const isPwa = window.matchMedia('(display-mode: standalone)').matches
-      const isTwa = document.referrer.startsWith('android-app')
-
-      setIsPwa(isPwa)
-      setIsTwa(isTwa)
-
-      event('branch_dimension', {
-        'branch': import.meta.env.VITE_BRANCH || '',
-        'non_interaction': true,
-      })
-      event('is_pwa_dimension', {
-        'is_pwa': isPwa,
-        'non_interaction': true,
-      })
-      event('is_twa_dimension', {
-        'is_twa': isTwa,
-        'non_interaction': true,
-      })
-    }
-  }
-
-  watch(adsAllowed, (value) => {
-    if (value) {
-      enableAds()
-    } else {
-      hideAds()
-    }
-  })
 
   return {
     ...state,

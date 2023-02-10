@@ -23,7 +23,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { BDashboardCell } from '@schneefux/klicker/components'
-import { isApp } from '~/composables/app'
+import { useIsApp } from '~/composables/app'
 import { useConfig } from '@/composables/compat'
 
 export default defineComponent({
@@ -50,6 +50,7 @@ export default defineComponent({
   setup() {
     const config = useConfig()
     const playwire = config.playwireRampPublisherId
+    const { isApp } = useIsApp()
 
     return {
       isApp,
