@@ -4,8 +4,8 @@
     "dev": "nodemon --watch server --watch renderer --watch api -e ts -x node --inspect --loader ts-node/esm ./server/index.ts",
     "typecheck": "vue-tsc --noEmit",
     "build": "vite build",
-    "start": "cross-env NODE_ENV=development ts-node --swc ./server/index.ts",
-    "start:debug": "cross-env NODE_ENV=development node --inspect --loader ts-node/esm ./server/index.ts"
+    "start": "cross-env NODE_ENV=production ts-node --swc ./server/index.ts",
+    "start:debug": "cross-env NODE_ENV=production node --inspect --loader ts-node/esm ./server/index.ts"
   },
   "dependencies": {
     "@apla/clickhouse": "^1.6.4",

@@ -11,7 +11,6 @@ ARG GIT_REV=''
 ENV VITE_GIT_REV=$GIT_REV
 ARG BRANCH=''
 ENV VITE_BRANCH=$BRANCH
-ENV NODE_ENV=development
 WORKDIR /app
 COPY ./.npmrc ./package.json ./yarn.lock .
 RUN yarn add @schneefux/klicker
@@ -20,7 +19,7 @@ COPY . .
 RUN yarn run build
 
 FROM node:19
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 ARG SENTRY_DSN=''
 ENV SENTRY_DSN=$SENTRY_DSN
 ARG SENTRY_ORG=''
