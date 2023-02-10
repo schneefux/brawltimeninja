@@ -34,9 +34,10 @@
           class="w-10 h-10"
           @click="onMetricRemove()"
         >
-          <font-awesome-icon
+          <fa
             :icon="faMinus"
-          ></font-awesome-icon>
+            class="inline"
+          ></fa>
         </button>
 
         <button
@@ -44,9 +45,10 @@
           class="w-10 h-10"
           @click="numMetrics++"
         >
-          <font-awesome-icon
+          <fa
             :icon="faPlus"
-          ></font-awesome-icon>
+            class="inline"
+          ></fa>
         </button>
       </div>
 
@@ -55,9 +57,10 @@
         class="w-10 h-10"
         @click="tooltipOpen = !tooltipOpen"
       >
-        <font-awesome-icon
+        <fa
           :icon="faQuestion"
-        ></font-awesome-icon>
+          class="inline"
+        ></fa>
       </button>
     </div>
 
@@ -78,7 +81,7 @@
 
 <script lang="ts">
 import { CubeComparingQuery, CubeQuery } from '../types'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faMinus, faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'
@@ -89,7 +92,7 @@ import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     BSelect,
     BLightbox,
     BCard,

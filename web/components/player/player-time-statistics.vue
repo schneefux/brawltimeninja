@@ -5,10 +5,10 @@
     <b-dashboard-cell :columns="2">
       <b-bigstat :title="$t('metric.hours-spent')">
         <template v-slot:content><p >
-          <font-awesome-icon
+          <fa
             :icon="faClock"
-            class="mr-1"
-          ></font-awesome-icon>
+            class="mr-1 inline"
+          ></fa>
           <span ref="hourCounter">
             ...
           </span>
@@ -44,7 +44,7 @@ import { xpToHours } from '~/lib/util'
 import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
 import { ref, computed, defineComponent, onMounted, PropType } from 'vue'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { useI18n } from 'vue-i18n'
 
 interface FunStat {
@@ -56,7 +56,7 @@ export default defineComponent({
   components: {
     BBigstat,
     BDashboardCell,
-    FontAwesomeIcon,
+    Fa,
   },
   props: {
     player: {

@@ -18,9 +18,10 @@
         class="md:hidden w-10"
         @click.stop="toggleFilters"
       >
-        <font-awesome-icon
+        <fa
           :icon="showFilters ? faChevronUp : faChevronDown"
-        ></font-awesome-icon>
+          class="inline"
+        ></fa>
       </button>
     </template>
 
@@ -47,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
@@ -58,7 +59,7 @@ import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     BCard,
   },
   directives: {

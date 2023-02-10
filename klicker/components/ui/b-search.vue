@@ -4,10 +4,10 @@
     ref="container"
     class="ml-4 inline-flex items-center"
   >
-    <font-awesome-icon
+    <fa
       :icon="faSearch"
-      class="-mr-6"
-    ></font-awesome-icon>
+      class="-mr-6 inline"
+    ></fa>
     <b-textbox
       v-model="filter"
       ref="search"
@@ -32,13 +32,13 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import BTextbox from './b-textbox.vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { onKeyStroke, onClickOutside } from '@vueuse/core'
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     BTextbox,
   },
   props: {

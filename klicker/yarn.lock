@@ -1359,11 +1359,6 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "6.3.0"
 
-"@fortawesome/vue-fontawesome@^3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@fortawesome/vue-fontawesome/-/vue-fontawesome-3.0.3.tgz#633e2998d11f7d4ed41f0d5ea461a22ec9b9d034"
-  integrity sha512-KCPHi9QemVXGMrfuwf3nNnNo129resAIQWut9QTAMXmXqL2ErABC6ohd2yY5Ipq0CLWNbKHk8TMdTXL/Zf3ZhA==
-
 "@hapi/hoek@^9.0.0":
   version "9.3.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.3.0.tgz#8368869dcb735be2e7f5cb7647de78e167a251fb"
@@ -12188,6 +12183,11 @@ vue-docgen-api@^4.40.0:
     recast "0.22.0"
     ts-map "^1.0.3"
     vue-inbrowser-compiler-independent-utils "^4.56.2"
+
+vue-fa@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/vue-fa/-/vue-fa-4.0.1.tgz#c1bee1e7d38c2c2dae897a259ae02561d5d2175f"
+  integrity sha512-4kjFeRQR76g/CK+g9PWZfmaWjDgN4HcIz3u9c/ZRHsZ1KXA+NFY23g/okd0f03VukBf71cGyVwzvXEvA+16sSg==
 
 vue-inbrowser-compiler-independent-utils@^4.56.2:
   version "4.56.2"

@@ -58,19 +58,22 @@
     >
       <div class="panzoom-exclude absolute bottom-2 right-3 flex gap-x-2 z-10">
         <button @click="zoomOut">
-          <font-awesome-icon
+          <fa
             :icon="faSearchMinus"
-          ></font-awesome-icon>
+            class="inline"
+          ></fa>
         </button>
         <button @click="zoomIn">
-          <font-awesome-icon
+          <fa
             :icon="faSearchPlus"
-          ></font-awesome-icon>
+            class="inline"
+          ></fa>
         </button>
         <button @click="toggleFullscreen">
-          <font-awesome-icon
+          <fa
             :icon="isFullscreen ? faCompress : faExpand"
-          ></font-awesome-icon>
+            class="inline"
+          ></fa>
         </button>
       </div>
 
@@ -109,7 +112,7 @@ import BButton from '../ui/b-button.vue'
 import { Report, ReportWidget, CubeQuery } from '../../types'
 import Panzoom, { PanzoomObject } from '@panzoom/panzoom'
 import { useFullscreen } from '@vueuse/core'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faSearchMinus, faSearchPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons'
 import { generateId, BindOnce } from '../../directives/bind-once'
 
@@ -118,7 +121,7 @@ import { generateId, BindOnce } from '../../directives/bind-once'
  */
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     BButton,
     BNumber,
     BTextbox,

@@ -4,7 +4,6 @@
 
 @import "./dashboard.css";
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
-@import "@fortawesome/fontawesome-svg-core/styles.css";
 
 .dark {
   --color-background: 24 24 27; /* gray-900 */

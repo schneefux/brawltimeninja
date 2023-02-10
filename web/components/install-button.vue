@@ -6,10 +6,10 @@
     sm
     @click="clickInstall"
   >
-    <font-awesome-icon
-      class="mr-1"
+    <fa
       :icon="faDownload"
-    ></font-awesome-icon>
+      class="mr-1 inline"
+    ></fa>
     {{ $t('action.install') }}
   </b-button>
 </template>
@@ -18,12 +18,12 @@
 import { defineComponent } from 'vue'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import { useInstall } from '~/composables/app'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { BButton } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     BButton,
   },
   setup() {

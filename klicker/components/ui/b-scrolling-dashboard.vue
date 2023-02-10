@@ -36,9 +36,10 @@
         round
         @click="scrollLeft()"
       >
-        <font-awesome-icon
+        <fa
           :icon="faChevronLeft"
-        ></font-awesome-icon>
+          class="inline"
+        ></fa>
       </b-button>
     </div>
 
@@ -56,9 +57,10 @@
         round
         @click="scrollRight()"
       >
-        <font-awesome-icon
+        <fa
           :icon="faChevronRight"
-        ></font-awesome-icon>
+          class="inline"
+        ></fa>
       </b-button>
     </div>
   </div>
@@ -66,7 +68,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import BButton from './b-button.vue'
 import { useScroll, useResizeObserver, useMutationObserver } from '@vueuse/core'
@@ -82,7 +84,7 @@ export interface ScrollEvent {
  */
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     BButton,
   },
   props: {

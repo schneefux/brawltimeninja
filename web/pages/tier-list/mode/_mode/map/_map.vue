@@ -43,10 +43,10 @@
             class="relative"
             @click.capture.prevent="lightboxOpen = true"
           >
-            <font-awesome-icon
+            <fa
               :icon="faExpand"
-              class="absolute bottom-4 right-6"
-            ></font-awesome-icon>
+              class="absolute bottom-4 right-6 inline"
+            ></fa>
           </event-picture-card>
         </template>
 
@@ -74,7 +74,7 @@ import { getMapName } from '~/composables/map'
 import MapViews from '~/components/map/map-views.vue'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
 import { useAsync, useCacheHeaders, useConfig, useMeta, useValidate } from '@/composables/compat'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { useRoute } from 'vue-router'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
@@ -87,7 +87,7 @@ interface Map {
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     BSplitDashboard,
     BLightbox,
     BCard,

@@ -72,15 +72,14 @@ import CDimension from './c-dimension.vue'
 import BCard from './ui/b-card.vue'
 import BSelect from './ui/b-select.vue'
 import BCheckbox from './ui/b-checkbox.vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
+import Fa from 'vue-fa'
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'
 import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     CMetric,
     CDimension,
     BSelect,
@@ -196,8 +195,6 @@ export default defineComponent({
       canCompare,
       compareMode,
       onInputCubeId,
-      faPlus,
-      faMinus,
       translate,
       id,
     }

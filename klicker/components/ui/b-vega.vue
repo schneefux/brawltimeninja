@@ -21,16 +21,17 @@
       class="w-10 h-10 absolute bottom-0 left-0 -ml-2"
       @click="download()"
     >
-      <font-awesome-icon
+      <fa
         :icon="faDownload"
-      ></font-awesome-icon>
+        class="inline"
+      ></fa>
     </button>
   </div>
 </template>
 
 <script lang="ts">
 import embed, { Result, VisualizationSpec } from 'vega-embed'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import BShimmer from './b-shimmer.vue'
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue'
@@ -38,7 +39,7 @@ import { useResizeObserver } from '@vueuse/core'
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     BShimmer,
   },
   props: {

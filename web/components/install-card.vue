@@ -10,7 +10,10 @@
         class="absolute top-0 right-0 mr-3 mt-2"
         @click="dismissInstall"
       >
-        <font-awesome-icon :icon="faTimes"></font-awesome-icon>
+        <fa
+          :icon="faTimes"
+          class="inline"
+        ></fa>
       </button>
       <p>
         {{ $t('banner.install.catchphrase') }}
@@ -24,10 +27,10 @@
         primary
         @click="clickInstall"
       >
-        <font-awesome-icon
+        <fa
           :icon="faDownload"
-          class="mr-1"
-        ></font-awesome-icon>
+          class="mr-1 inline"
+        ></fa>
         {{ $t('action.install') }}
       </b-button>
     </template>
@@ -38,12 +41,12 @@
 import { faDownload, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { defineComponent } from 'vue'
 import { useInstall } from '~/composables/app'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { BCard, BButton } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     BButton,
     BCard,
   },

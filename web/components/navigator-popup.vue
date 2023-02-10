@@ -26,9 +26,10 @@
         aria-label="close"
         @click="popupOpen = false"
       >
-        <font-awesome-icon
+        <fa
           :icon="faTimes"
-        ></font-awesome-icon>
+          class="inline"
+        ></fa>
       </button>
     </template>
   </b-card>
@@ -45,14 +46,14 @@ import { TocEntry } from '~/model/Web'
 import { useAsync, useLocalePath } from '@/composables/compat'
 import { useAllBrawlers, useAllEvents, useAllModes } from '@/composables/dimension-values'
 import { useI18n } from 'vue-i18n'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 export default defineComponent({
   components: {
     BCard,
     BNavigator,
-    FontAwesomeIcon,
+    Fa,
   },
   props: {
     modelValue: {

@@ -28,9 +28,10 @@
           class="w-10 h-10"
           @click="onDimensionAdd()"
         >
-          <font-awesome-icon
+          <fa
             :icon="faPlus"
-          ></font-awesome-icon>
+            class="inline"
+          ></fa>
         </button>
 
         <button
@@ -38,9 +39,10 @@
           class="w-10 h-10"
           @click="onDimensionRemove()"
         >
-          <font-awesome-icon
+          <fa
             :icon="faMinus"
-          ></font-awesome-icon>
+            class="inline"
+          ></fa>
         </button>
       </div>
     </div>
@@ -49,7 +51,7 @@
 
 <script lang="ts">
 import { CubeComparingQuery, CubeQuery } from '../types'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref, watch } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'
@@ -59,7 +61,7 @@ import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     BSelect,
     BButton,
   },

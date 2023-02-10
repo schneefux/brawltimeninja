@@ -17,14 +17,16 @@
         class="col-start-1"
         @click="toggleLink(link)"
       >
-        <font-awesome-icon
+        <fa
           v-if="expandedLinks[link.id]"
           :icon="faMinus"
-        ></font-awesome-icon>
-        <font-awesome-icon
+          class="inline"
+        ></fa>
+        <fa
           v-else
           :icon="faPlus"
-        ></font-awesome-icon>
+          class="inline"
+        ></fa>
       </button>
       <slot
         v-if="link.target"
@@ -61,13 +63,13 @@
 import { defineComponent, PropType, ref, watchEffect } from 'vue'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Link } from './b-navigator.vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { generateId, BindOnce } from '../../directives/bind-once'
 
 export default defineComponent({
   name: 'navigator-node',
   components: {
-    FontAwesomeIcon,
+    Fa,
   },
   directives: {
     BindOnce,

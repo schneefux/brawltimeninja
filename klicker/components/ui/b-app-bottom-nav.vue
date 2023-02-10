@@ -11,10 +11,10 @@
       }"
       class="flex-1 flex flex-col items-center justify-between pt-2 pb-3 px-3"
     >
-      <font-awesome-icon
+      <fa
         :icon="screen.icon"
-        class="w-6 h-6"
-      ></font-awesome-icon>
+        class="w-6 h-6 inline"
+      ></fa>
       <span class="text-xs leading-none">{{ screen.name }}</span>
     </component>
   </nav>
@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watchEffect, PropType } from 'vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 export interface Screen {
@@ -35,7 +35,7 @@ export interface Screen {
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
   },
   props: {
     tag: {

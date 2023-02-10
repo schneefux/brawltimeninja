@@ -1,6 +1,3 @@
-/* TODO Vue FontAwesomeIcon loads style tags anyways, disabling autoLoadCss doesn't work */
-@import '@fortawesome/fontawesome-svg-core/styles.css';
-
 /* roboto-regular - latin */
 @font-face {
   font-family: 'Roboto';

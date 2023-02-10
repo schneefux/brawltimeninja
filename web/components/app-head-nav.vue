@@ -23,9 +23,10 @@
       class="w-6 text-center h-6"
       primary
     >
-      <font-awesome-icon
+      <fa
         :icon="faInfo"
-      ></font-awesome-icon>
+        class="inline"
+      ></fa>
     </b-button>
 
     <locale-switcher
@@ -39,12 +40,12 @@ import { defineComponent } from 'vue'
 import { faInfo } from '@fortawesome/free-solid-svg-icons'
 import { BAppHeadNav } from '@schneefux/klicker/components'
 import crownUrl from '~/assets/images/logo_with_crown_min.svg'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 
 export default defineComponent({
   components: {
     BAppHeadNav,
-    FontAwesomeIcon,
+    Fa,
   },
   setup() {
     return {

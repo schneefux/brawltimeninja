@@ -57,10 +57,11 @@
                 loading="lazy"
                 @click="selectedBackground = id"
               />
-              <font-awesome-icon
+              <fa
                 v-if="selectedBackground == id"
                 :icon="faCheck"
                 class="
+                  inline
                   absolute
                   bottom-0
                   right-0
@@ -70,7 +71,7 @@
                   p-1
                   m-1
                 "
-              ></font-awesome-icon>
+              ></fa>
             </div>
           </template>
         </b-scrolling-list>
@@ -109,9 +110,10 @@
           dark
           sm
         >
-          <font-awesome-icon
+          <fa
             :icon="faExpand"
-          ></font-awesome-icon>
+            class="inline"
+          ></fa>
         </b-button>
       </div>
     </template>
@@ -153,7 +155,7 @@ import { useConfig, useSelfOrigin } from '@/composables/compat'
 import { capitalizeWords } from '@/lib/util'
 import { BCard, BSelect, BButton, BScrollingList, BLightbox } from '@schneefux/klicker/components'
 import { usePlayerRender } from '@/composables/player'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faCheck, faExpand } from '@fortawesome/free-solid-svg-icons'
 import { BindOnce, generateId } from '@schneefux/klicker/directives'
 import { useI18n } from 'vue-i18n'
@@ -203,7 +205,7 @@ export default defineComponent({
     BButton,
     BLightbox,
     BScrollingList,
-    FontAwesomeIcon,
+    Fa,
   },
   directives: {
     BindOnce,

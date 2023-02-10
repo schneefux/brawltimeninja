@@ -6,9 +6,10 @@
       aria-label="previous"
       @click.stop="page--"
     >
-      <font-awesome-icon
+      <fa
         :icon="faCaretLeft"
-      ></font-awesome-icon>
+        class="inline"
+      ></fa>
     </button>
 
     <span
@@ -25,21 +26,22 @@
       aria-label="next"
       @click.stop="page++"
     >
-      <font-awesome-icon
+      <fa
         :icon="faCaretRight"
-      ></font-awesome-icon>
+        class="inline"
+      ></fa>
     </button>
   </div>
 </template>
 
 <script lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent } from 'vue'
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
   },
   props: {
     modelValue: {

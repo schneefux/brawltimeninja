@@ -37,9 +37,10 @@
               xs
               @click="clearTeam()"
             >
-              <font-awesome-icon
+              <fa
                 :icon="faTimes"
-              ></font-awesome-icon>
+                class="inline"
+              ></fa>
             </b-button>
           </div>
         </div>
@@ -94,7 +95,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import buildTeamWinratePredictor from '~/lib/klicker.ml'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useAsync } from '@/composables/compat'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 
 interface AllyData {
   id: string
@@ -116,7 +117,7 @@ interface SelectedBrawler {
 export default defineComponent({
   components: {
     BCard,
-    FontAwesomeIcon,
+    Fa,
   },
   props: {
     query: {

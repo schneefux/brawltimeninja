@@ -22,9 +22,10 @@
           label="Tooltip"
           class="w-4 text-sm leading-none absolute top-1 right-0"
         >
-          <font-awesome-icon
+          <fa
             :icon="faQuestion"
-          ></font-awesome-icon>
+            class="inline"
+          ></fa>
         </router-link>
         <button
           v-else-if="tooltip != undefined || 'tooltip' in $slots"
@@ -32,9 +33,10 @@
           class="w-4 text-sm leading-none absolute top-1 right-0"
           @click="tooltipOpen = !tooltipOpen"
         >
-          <font-awesome-icon
+          <fa
             :icon="faQuestion"
-          ></font-awesome-icon>
+            class="inline"
+          ></fa>
         </button>
         <dl>
           <dt class="text-text/75">
@@ -52,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { defineComponent, ref } from 'vue'
 import BCard from './b-card.vue'
 import BLightbox from './b-lightbox.vue'
@@ -65,7 +67,7 @@ export default defineComponent({
   components: {
     BCard,
     BLightbox,
-    FontAwesomeIcon,
+    Fa,
   },
   props: {
     title: {

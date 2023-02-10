@@ -16,9 +16,10 @@
         aria-label="close"
         @click="$emit('update:modelValue', false)"
       >
-        <font-awesome-icon
+        <fa
           :icon="faTimes"
-        ></font-awesome-icon>
+          class="inline"
+        ></fa>
       </button>
     </div>
   </Teleport>
@@ -26,13 +27,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 export default defineComponent({
   inheritAttrs: false,
   components: {
-    FontAwesomeIcon,
+    Fa,
   },
   props: {
     modelValue: {

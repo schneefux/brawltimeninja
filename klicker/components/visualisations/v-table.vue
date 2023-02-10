@@ -44,9 +44,10 @@
         :to="linkWithParams"
         class="opacity-75"
       >
-        <font-awesome-icon
+        <fa
           :icon="faExternalLinkAlt"
-        ></font-awesome-icon>
+          class="inline"
+        ></fa>
       </router-link>
     </template>
   </v-card-wrapper>
@@ -58,7 +59,7 @@ import BTable, { Column } from '../ui/b-table.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
 import { computed, defineComponent } from 'vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Fa from 'vue-fa'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
@@ -66,7 +67,7 @@ import { useKlickerConfig } from '../../composables/klicker'
 
 export default defineComponent({
   components: {
-    FontAwesomeIcon,
+    Fa,
     BTable,
     DAuto,
     MAuto,
