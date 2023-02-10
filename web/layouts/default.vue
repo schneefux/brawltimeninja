@@ -10,12 +10,12 @@
 
     <ad
       ad-slot="6848221017"
-      class="fixed left-4 inset-y-0 flex flex-col justify-center"
+      class="fixed left-4 top-1/2 -translate-y-1/2 text-left"
       scraper
     ></ad>
     <ad
       ad-slot="8127026559"
-      class="fixed right-4 inset-y-0 flex flex-col justify-center"
+      class="fixed right-4 top-1/2 -translate-y-1/2 text-right"
       scraper
     ></ad>
 

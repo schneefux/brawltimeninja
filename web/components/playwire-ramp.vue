@@ -1,5 +1,8 @@
 <template>
-  <ins :id="id"></ins>
+  <ins
+    :id="id"
+    class="inline-block"
+  ></ins>
 </template>
 
 <script lang="ts">
@@ -79,12 +82,6 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped>
-ins {
-  display: block;
-}
-</style>
 
 <style lang="postcss">
 /* push above sticky footer (global style) */

@@ -5,8 +5,7 @@
     :data-ad-format="dataAdFormat"
     :data-full-width-responsive="dataFullWidthResponsive"
     :data-adtest="dataAdtest"
-    class="adsbygoogle"
-    style="display: block;"
+    class="adsbygoogle inline-block"
   ></ins>
 </template>
 <script lang="ts">

@@ -6,16 +6,13 @@
       hide-empty
       lazy
     >
-      <div
+      <adsense
         v-if="!isApp && !playwire"
+        :data-ad-slot="adSlot"
+        data-ad-client="ca-pub-6856963757796636"
+        data-full-width-responsive
         class="text-center self-center"
-      >
-        <adsense
-          :data-ad-slot="adSlot"
-          data-ad-client="ca-pub-6856963757796636"
-          data-full-width-responsive
-        ></adsense>
-      </div>
+      ></adsense>
     </b-dashboard-cell>
   </client-only>
 </template>

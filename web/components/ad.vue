@@ -1,53 +1,59 @@
 <template>
-  <div
-    v-if="banner"
-    class="mt-4"
-  >
-    <client-only v-if="allowed && !playwire">
-      <div class="flex justify-center -mx-4">
-        <adsense
-          :data-ad-slot="adSlot"
-          :data-ad-region="adRegion"
-          data-ad-format=""
-          data-ad-client="ca-pub-6856963757796636"
-          class="banner-ad"
-        ></adsense>
-      </div>
-
-      <template v-slot:placeholder>
-        <div class="adswrapper ad-section banner-ad"></div>
-      </template>
-    </client-only>
-  </div>
-  <div v-else-if="scraper">
-    <client-only v-if="allowed && scraperFits && !playwire">
+  <client-only v-if="banner">
+    <div
+      v-if="allowed && !playwire"
+      v-bind="$attrs"
+      class="text-center -mx-4"
+    >
       <adsense
         :data-ad-slot="adSlot"
         :data-ad-region="adRegion"
         data-ad-format=""
         data-ad-client="ca-pub-6856963757796636"
-        class="scraper-ad"
+        class="banner-ad"
       ></adsense>
+    </div>
 
-      <template v-slot:placeholder>
-        <div class="adswrapper ad-section scraper-ad"></div>
-      </template>
-    </client-only>
-  </div>
+    <template v-slot:placeholder>
+      <div
+        v-bind="$attrs"
+        class="adswrapper ad-section banner-ad"
+      ></div>
+    </template>
+  </client-only>
+  <client-only v-else-if="scraper">
+    <adsense
+      v-if="allowed && scraperFits && !playwire"
+      v-bind="$attrs"
+      :data-ad-slot="adSlot"
+      :data-ad-region="adRegion"
+      data-ad-format=""
+      data-ad-client="ca-pub-6856963757796636"
+      class="scraper-ad"
+    ></adsense>
+
+    <template v-slot:placeholder>
+      <div
+        v-bind="$attrs"
+        class="adswrapper ad-section scraper-ad"
+      ></div>
+    </template>
+  </client-only>
   <b-page-section
     v-else
+    v-bind="$attrs"
     ref="ad"
   >
-    <client-only v-if="allowed && visible">
+    <client-only>
       <playwire-ramp
-        v-if="playwire"
+        v-if="allowed && visible && playwire"
         :ad-id="adSlot"
         :instance="instance"
         :type="`${leaderboardFits ? 'leaderboard' : 'med_rect'}_${first ? 'atf' : 'btf'}`"
         class="adsbyplaywire"
       ></playwire-ramp>
       <adsense
-        v-else
+        v-if="allowed && visible && !playwire"
         :data-ad-slot="adSlot"
         :data-ad-region="adRegion"
         data-ad-format="auto"
@@ -73,6 +79,7 @@ import { useConfig } from '@/composables/compat'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     adSlot: {
       type: String,
@@ -104,7 +111,6 @@ export default defineComponent({
     const visible = ref(!props.lazy || props.first)
     const { isApp } = useIsApp()
 
-    // default to "allow" on SSR to render placeholders
     const userAllowed = computed(() => store.adsAllowed == undefined || store.adsAllowed == true)
     const policyAllowed = computed(() => props.first || isApp.value == undefined || isApp.value == false)
     const allowed = computed(() => policyAllowed.value && userAllowed.value)
@@ -131,6 +137,7 @@ export default defineComponent({
       leaderboard: 728,
       scraper: 1900,
     })
+    // all false in SSR
     const leaderboardFits = breakpoints.greaterOrEqual('leaderboard')
     const scraperFits = breakpoints.greaterOrEqual('scraper')
 
@@ -208,7 +215,7 @@ export default defineComponent({
  *  - 300x600
  */
 .scraper-ad {
-  height: 600px;
+  min-height: 600px;
 }
 
 /* fill container margins */
