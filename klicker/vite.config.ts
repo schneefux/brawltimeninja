@@ -14,8 +14,9 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve('./index.ts'),
-        // TODO set up exports so that these actually get used
+        // TODO set up package exports so that these actually get used
         components: resolve('./components/index.ts'),
+        directives: resolve('./directives/index.ts'),
         composables: resolve('./composables/index.ts'),
         ml: resolve('./ml/index.ts'),
         visualisations: resolve('./visualisations.ts'),
