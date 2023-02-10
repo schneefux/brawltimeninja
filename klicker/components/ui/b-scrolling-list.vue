@@ -55,7 +55,7 @@
       <b-dashboard-cell
         v-for="entry in list"
         :key="`${entry.index}-${(entry.item as Record<string, string>)[keyId]}`"
-        :ref="el => setItemRef(entry.index, el)"
+        :ref="el => setItemRef(entry.index, el as any)"
         :columns="cellColumns"
         :rows="cellRows"
         :style="{
@@ -148,10 +148,12 @@ export default defineComponent({
       required: false
     },
   },
-  emits: ['scroll'],
+  emits: {
+    ['scroll'](state: { start: number, end: number }) { return true },
+  },
   setup(props, { emit }) {
     const itemRefs = ref<Record<string, InstanceType<typeof BDashboardCell>|null>>({})
-    const setItemRef = (id: number, el: unknown|null) => itemRefs.value[id] = el as InstanceType<typeof BDashboardCell>|null
+    const setItemRef = (id: number, el: InstanceType<typeof BDashboardCell>|null) => itemRefs.value[id] = el
     const container = ref<InstanceType<typeof BScrollingDashboard>>()
     const preview = ref<HTMLElement>()
 

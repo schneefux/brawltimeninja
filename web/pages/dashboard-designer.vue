@@ -19,22 +19,24 @@
       v-if="canSave"
       class="mt-8 grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center"
     >
-      <label :for="`${prefix}-editor`">
+      <label :for="editorRef?.$el.id">
         {{ $t('action.editor-url') }}
       </label>
       <b-textbox
-        :id="`${prefix}-editor`"
         :model-value="editorUrl"
+        ref="editorRef"
+        v-uid
         readonly
         dark
       ></b-textbox>
 
-      <label :for="`${prefix}-viewer`">
+      <label :for="viewerRef?.$el.id">
         {{ $t('action.viewer-url') }}
       </label>
       <b-textbox
-        :id="`${prefix}-viewer`"
         :model-value="viewerUrl"
+        ref="viewerRef"
+        v-uid
         readonly
         dark
       ></b-textbox>
@@ -47,20 +49,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from "vue"
+import { defineComponent, computed, onMounted, ref } from "vue"
 import { CGrid, BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { Grid, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
-import { useUniqueId } from '@schneefux/klicker/composables'
 import { useRoute } from "vue-router"
 import { useSelfOrigin } from "@/composables/compat"
+import { Uid } from "@schneefux/klicker/directives"
 
 export default defineComponent({
   components: {
     BDashboardCell,
     BTextbox,
     CGrid,
+  },
+  directives: {
+    Uid,
   },
   setup() {
     const { storage: grid, update, canSave } = useStorage<Grid>('grids', {
@@ -101,15 +106,17 @@ export default defineComponent({
       sortId: 'winRate',
     }
 
-    const { id: prefix } = useUniqueId()
+    const editorRef = ref<InstanceType<typeof BTextbox>>()
+    const viewerRef = ref<InstanceType<typeof BTextbox>>()
 
     return {
-      prefix,
       grid,
       canSave,
       editorUrl,
       viewerUrl,
       defaultQuery,
+      editorRef,
+      viewerRef,
     }
   }
 })

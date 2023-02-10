@@ -19,7 +19,9 @@ export default defineComponent({
       default: false
     },
   },
-  emits: ['done'],
+  emits: {
+    ['done']() { return true },
+  },
   mounted() {
     // wait in case components need to $fetch
     setTimeout(() => this.render(), 2000)

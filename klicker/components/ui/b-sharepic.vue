@@ -30,7 +30,9 @@ export default defineComponent({
       default: false
     },
   },
-  emits: ['done'],
+  emits: {
+    ['done']() { return true },
+  },
   setup(props, { emit }) {
     const { translate } = useKlickerConfig()
     const loading = ref(false)

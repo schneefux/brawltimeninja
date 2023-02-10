@@ -1,15 +1,16 @@
 <template>
   <section
     ref="section"
-    :aria-labelledby="title != undefined ? id : undefined"
+    :aria-labelledby="titleRef?.id"
   >
     <div
       v-if="title != undefined"
       class="mt-16"
     >
       <h1
+        ref="titleRef"
         class="text-2xl"
-        :id="id"
+        v-uid
       >
         {{ title }}
       </h1>
@@ -44,12 +45,15 @@
 
 <script lang="ts">
 import { ref, defineComponent } from 'vue'
-import { useUniqueId } from '../../composables/id'
 import LazyHydration from './lazy-hydration.vue'
+import { Uid } from '../../directives/uid'
 
 export default defineComponent({
   components: {
     LazyHydration,
+  },
+  directives: {
+    Uid,
   },
   props: {
     title: {
@@ -63,10 +67,10 @@ export default defineComponent({
   },
   setup() {
     const section = ref<HTMLElement>()
-    const { id } = useUniqueId()
+    const titleRef = ref<HTMLElement>()
 
     return {
-      id,
+      titleRef,
       section,
     }
   },

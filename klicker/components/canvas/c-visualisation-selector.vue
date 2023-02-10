@@ -7,12 +7,13 @@
       <template v-slot:content>
         <div>
           <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
-            <label
-              for="`${prefix}-widget`"
-            >Widget</label>
+            <label :for="widgetRef?.$el.id">
+              Widget
+            </label>
             <b-select
               v-model="component"
-              :id="`${prefix}-widget`"
+              ref="widgetRef"
+              v-uid
               sm
             >
               <option
@@ -28,14 +29,15 @@
               v-for="(propSpec, prop) in (spec.props || {})"
               :key="prop"
             >
-              <label :for="`${prefix}-${prop}`">
+              <label :for="propRefs[prop]?.id">
                 {{ propSpec.name }}
               </label>
               <component
                 v-bind="propSpec.props"
-                :id="`${prefix}-${prop}`"
+                :ref="(el: any) => setPropRef(prop, el)"
                 :model-value="modelValue.props[prop]"
                 :is="propSpec.import || propSpec.component"
+                v-uid
                 @update:modelValue="(v: any) => setWidgetProp(prop, v)"
               ></component>
             </template>
@@ -57,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue'
+import { ComponentPublicInstance, computed, defineComponent, PropType, ref } from 'vue'
 import { CubeComparingResponse, CubeResponse, GridWidget, ReportWidget, StaticWidgetSpec, VisualisationSpec, Widget } from '../../types'
 import BCard from '../ui/b-card.vue'
 import BSelect from '../ui/b-select.vue'
@@ -66,7 +68,7 @@ import { useCubeResponse } from '../../composables/response'
 import { StaticProps } from '../../props'
 import { useKlicker } from '../../composables/klicker'
 import BDashboardCell from '../ui/b-dashboard-cell.vue'
-import { useUniqueId } from '../../composables/id'
+import { Uid } from '../../directives/uid'
 
 /**
  * Show applicable visualisations and bind one of them.
@@ -77,6 +79,9 @@ export default defineComponent({
     BSelect,
     BButton,
     BDashboardCell,
+  },
+  directives: {
+    Uid,
   },
   props: {
     ...StaticProps,
@@ -173,14 +178,18 @@ export default defineComponent({
       emit('update:modelValue', widget)
     }
 
-    const { id: prefix } = useUniqueId()
+    const widgetRef = ref<InstanceType<typeof BSelect>>()
+    const propRefs = ref<Record<string, HTMLElement|null>>({})
+    const setPropRef = (id: string, el: ComponentPublicInstance|HTMLElement|null) => propRefs.value[id] = el != undefined && '$el' in el ? el.$el : el
 
     return {
       spec,
       component,
       setWidgetProp,
       visualisations,
-      prefix,
+      widgetRef,
+      propRefs,
+      setPropRef,
     }
   },
 })

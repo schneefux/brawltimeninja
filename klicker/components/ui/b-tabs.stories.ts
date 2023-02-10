@@ -21,12 +21,21 @@ export const Horizontal: Story = {
       <b-tabs
         :tabs="[{ slot: '1', title: 'Tab 1' }, { slot: '2', title: 'Tab 2' }, { slot: '3', title: 'Tab 3' }]"
       >
-        <div
-          v-for="i in 3"
-          :key="i"
-          :slot="i"
-          style="border: dashed gray; height: 100vh;"
-        >Content {{ i }}</div>
+        <template v-slot:1>
+          <div
+            style="border: dashed gray; height: 100vh;"
+          >Content 1</div>
+        </template>
+        <template v-slot:2>
+          <div
+            style="border: dashed gray; height: 100vh;"
+          >Content 2</div>
+        </template>
+        <template v-slot:3>
+          <div
+            style="border: dashed gray; height: 100vh;"
+          >Content 3</div>
+        </template>
       </b-tabs>
     `,
   }),

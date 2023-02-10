@@ -1,40 +1,37 @@
 <template>
   <div>
     <div class="w-full grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center">
-      <label
-        :for="`${prefix}-title`"
-      >
+      <label :for="titleRef?.$el.id">
         Title
       </label>
       <b-textbox
         v-model="title"
-        :id="`${prefix}-title`"
+        ref="titleRef"
+        v-uid
       ></b-textbox>
 
-      <label
-        :for="`${prefix}-width`"
-      >
+      <label :for="widthRef?.$el.id">
         Width
       </label>
       <b-number
         v-model="width"
-        :id="`${prefix}-width`"
+        ref="widthRef"
         min="300"
         max="4096"
         step="64"
+        v-uid
       ></b-number>
 
-      <label
-        :for="`${prefix}-height`"
-      >
+      <label :for="heightRef?.$el.id">
         Height
       </label>
       <b-number
         v-model="height"
-        :id="`${prefix}-height`"
+        ref="heightRef"
         min="300"
         max="16384"
         step="64"
+        v-uid
       ></b-number>
 
       <b-button
@@ -117,7 +114,7 @@ import Panzoom, { PanzoomObject } from '@panzoom/panzoom'
 import { useFullscreen } from '@vueuse/core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faSearchMinus, faSearchPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons'
-import { useUniqueId } from '../../composables/id'
+import { Uid } from '../../directives/uid'
 
 /**
  * Interactive canvas editor.
@@ -130,6 +127,9 @@ export default defineComponent({
     BTextbox,
     CWidgetEditor,
     CMoveableWidget,
+  },
+  directives: {
+    Uid,
   },
   props: {
     modelValue: {
@@ -246,10 +246,11 @@ export default defineComponent({
       bottom: props.modelValue.height,
     }))
 
-    const { id: prefix } = useUniqueId()
+    const titleRef = ref<InstanceType<typeof BTextbox>>()
+    const widthRef = ref<InstanceType<typeof BNumber>>()
+    const heightRef = ref<InstanceType<typeof BNumber>>()
 
     return {
-      prefix,
       bounds,
       container,
       containerParent,
@@ -269,6 +270,9 @@ export default defineComponent({
       zoomOut,
       isFullscreen,
       toggleFullscreen,
+      titleRef,
+      widthRef,
+      heightRef,
     }
   },
 })

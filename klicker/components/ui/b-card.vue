@@ -1,7 +1,7 @@
 <template>
   <component
     :is="tag"
-    :aria-labelledby="renderTitle ? `${prefix}-title` : undefined"
+    :aria-labelledby="titleRef?.id"
     class="h-full"
   >
     <div
@@ -63,11 +63,12 @@
 
         <div v-if="title != undefined">
           <h1
-            :id="`${prefix}-title`"
+            ref="titleRef"
             :class="{
               'text-lg leading-snug': !dense,
               'text-sm leading-tight': dense,
             }"
+            v-uid
           >
             <template v-if="titleLink != undefined || link != undefined">
               <component
@@ -88,6 +89,7 @@
               'leading-snug': !dense,
               'leading-tight': dense,
             }]"
+            v-uid
           >
             <template v-if="subtitleLink != undefined">
               <component
@@ -140,11 +142,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
-import { useUniqueId } from '../../composables/id'
+import { defineComponent, computed, ref } from 'vue'
 import { useKlickerConfig } from '../../composables/klicker'
+import { Uid } from '../../directives/uid'
 
 export default defineComponent({
+  directives: {
+    Uid,
+  },
   props: {
     tag: {
       type: String,
@@ -210,8 +215,6 @@ export default defineComponent({
   },
   setup(props, { slots, attrs }) {
     const renderTitle = computed(() => props.title != undefined || props.icon != undefined || 'preview' in slots)
-    const { id: prefix } = useUniqueId()
-
     const { navigate, linkComponent } = useKlickerConfig()
 
     const onClickCaptured = (e: Event) => {
@@ -238,14 +241,16 @@ export default defineComponent({
       }
     }
 
+    const titleRef = ref<HTMLHeadingElement>()
+
     return {
       onClick,
       onClickHeader,
       onClickCaptured,
       renderTitle,
-      prefix,
       navigate,
       linkComponent,
+      titleRef,
     }
   },
 })

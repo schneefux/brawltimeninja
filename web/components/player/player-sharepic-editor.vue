@@ -15,10 +15,16 @@
           mb-8
         "
       >
-        <label :for="`${prefix}-brawler`" class="mt-4 md:mt-0">Brawler</label>
+        <label
+          :for="brawlerRef?.$el.id"
+          class="mt-4 md:mt-0"
+        >
+          Brawler
+        </label>
         <b-select
           v-model="selectedBrawlerId"
-          :id="`${prefix}-brawler`"
+          ref="brawlerRef"
+          v-uid
           dark
           sm
         >
@@ -29,16 +35,20 @@
           >{{ name }}</option>
         </b-select>
 
-        <label :for="`${prefix}-background`" class="mt-4 md:mt-0">
+        <label
+          :for="backgroundRef?.$el.id"
+          class="mt-4 md:mt-0"
+        >
           Background
         </label>
         <b-scrolling-list
-          :id="`${prefix}-background`"
           :items="backgrounds"
           :cell-rows="1"
           :cell-columns="2"
           :render-at-least="1"
+          ref="backgroundRef"
           key-id="id"
+          v-uid
           render-placeholder
         >
           <template v-slot:item="{ id, path }">
@@ -147,7 +157,7 @@ import { BCard, BSelect, BButton, BScrollingList, BLightbox } from '@schneefux/k
 import { usePlayerRender } from '@/composables/player'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCheck, faExpand } from '@fortawesome/free-solid-svg-icons'
-import { useUniqueId } from '@schneefux/klicker/composables'
+import { Uid } from '@schneefux/klicker/directives'
 import { useI18n } from 'vue-i18n'
 
 const backgroundIds = [
@@ -196,6 +206,9 @@ export default defineComponent({
     BLightbox,
     BScrollingList,
     FontAwesomeIcon,
+  },
+  directives: {
+    Uid,
   },
   props: {
     player: {
@@ -263,10 +276,11 @@ export default defineComponent({
         .map(([id, brawler]) => [id, capitalizeWords(brawler.name.toLowerCase())])
     ))
 
-    const { id: prefix } = useUniqueId()
-
     const editing = ref(false)
     const lightboxOpen = ref(false)
+
+    const brawlerRef = ref<InstanceType<typeof BSelect>>()
+    const backgroundRef = ref<InstanceType<typeof BSelect>>()
 
     return {
       lightboxOpen,
@@ -286,7 +300,8 @@ export default defineComponent({
       brawlers,
       faCheck,
       faExpand,
-      prefix,
+      backgroundRef,
+      brawlerRef,
     }
   },
 })

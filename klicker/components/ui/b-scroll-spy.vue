@@ -7,7 +7,7 @@
       <ul :class="tocClass">
         <li
           v-for="section in validSections"
-          :ref="el => setLinkRef(section.id, el)"
+          :ref="el => setLinkRef(section.id, el as HTMLElement)"
           :key="section.title"
           :class="{
             'border-primary-400': visibleSections[section.id],
@@ -116,7 +116,7 @@ export default defineComponent({
     const activeSectionTitle = ref<string>()
     const activeSectionId = ref<string>()
     const linkRefs = ref<Record<string, HTMLElement|null>>({})
-    const setLinkRef = (id: string, el: unknown|null) => linkRefs.value[id] = el as HTMLElement|null
+    const setLinkRef = (id: string, el: HTMLElement|null) => linkRefs.value[id] = el
 
     const breakpoints = useBreakpoints(breakpointsTailwind)
     const lgAndLarger = breakpoints.greater('lg')

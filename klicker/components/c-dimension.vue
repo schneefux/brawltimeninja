@@ -1,8 +1,8 @@
 <template>
   <div class="contents">
-    <span>
+    <label :for="dimensionRefs[0]?.$el.id">
       {{ title }}
-    </span>
+    </label>
 
     <div class="flex flex-wrap gap-4">
       <b-select
@@ -10,6 +10,8 @@
         :key="index"
         :model-value="modelValue.dimensionsIds[index - 1]"
         :disabled="!editable"
+        ref="dimensionRefs"
+        v-uid
         @update:modelValue="v => onInputDimensionsIds(index - 1, v)"
       >
         <option
@@ -54,12 +56,16 @@ import { computed, defineComponent, PropType, ref, watch } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BButton from './ui/b-button.vue'
+import { Uid } from '../directives/uid'
 
 export default defineComponent({
   components: {
     FontAwesomeIcon,
     BSelect,
     BButton,
+  },
+  directives: {
+    uid: Uid,
   },
   props: {
     modelValue: {
@@ -164,6 +170,8 @@ export default defineComponent({
     })
     const editable = computed(() => !compareMode.value || props.comparing)
 
+    const dimensionRefs = ref<InstanceType<typeof BSelect>[]>([])
+
     return {
       title,
       editable,
@@ -175,6 +183,7 @@ export default defineComponent({
       onDimensionRemove,
       faPlus,
       faMinus,
+      dimensionRefs,
     }
   },
 })

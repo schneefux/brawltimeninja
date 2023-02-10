@@ -20,22 +20,24 @@
       class="mt-8 grid grid-cols-[max-content,max-content] gap-x-4 gap-y-8 items-center"
     >
       <template v-if="report.id != undefined">
-        <label :for="`${prefix}-editor`">
+        <label :for="editorRef?.$el.id">
           {{ $t('action.editor-url') }}
         </label>
         <b-textbox
-          :id="`${prefix}-editor`"
           :model-value="editorUrl"
+          ref="editorRef"
+          v-uid
           readonly
           dark
         ></b-textbox>
 
-        <label :for="`${prefix}-viewer`">
+        <label :for="viewerRef?.$el.id">
           {{ $t('action.viewer-url') }}
         </label>
         <b-textbox
-          :id="`${prefix}-viewer`"
           :model-value="viewerUrl"
+          ref="viewerRef"
+          v-uid
           readonly
           dark
         ></b-textbox>
@@ -56,20 +58,23 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, computed, onMounted } from "vue"
+import { defineComponent, computed, onMounted, ref } from "vue"
 import { CCanvas, BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { Report, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
-import { useUniqueId } from '@schneefux/klicker/composables'
 import { useRoute } from "vue-router"
 import { useSelfOrigin } from "@/composables/compat"
+import { Uid } from "@schneefux/klicker/directives"
 
 export default defineComponent({
   components: {
     BDashboardCell,
     BTextbox,
     CCanvas,
+  },
+  directives: {
+    Uid,
   },
   setup() {
     const { storage: report, update, canSave } = useStorage<Report>('reports', {
@@ -124,16 +129,18 @@ export default defineComponent({
       sortId: 'winRate',
     }
 
-    const { id: prefix } = useUniqueId()
+    const editorRef = ref<InstanceType<typeof BTextbox>>()
+    const viewerRef = ref<InstanceType<typeof BTextbox>>()
 
     return {
-      prefix,
       report,
       canSave,
       embedUrl,
       editorUrl,
       viewerUrl,
       defaultQuery,
+      editorRef,
+      viewerRef,
     }
   }
 })

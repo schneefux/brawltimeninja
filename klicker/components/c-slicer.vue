@@ -14,7 +14,7 @@
       <button
         :selected="showFilters"
         :aria-label="showFilters ? translate('action.collapse') : translate('action.expand')"
-        :aria-controls="`${prefix}-filters`"
+        :aria-controls="filtersRef?.id"
         class="md:hidden w-10"
         @click.stop="toggleFilters"
       >
@@ -26,13 +26,14 @@
 
     <template v-slot:content>
       <div
+        ref="filtersRef"
         :class="{
           'hidden md:flex': !showFilters,
           'flex': showFilters,
         }"
-        :id="`${prefix}-filters`"
         :aria-expanded="showFilters"
         class="flex-col md:flex-row flex-wrap gap-4"
+        v-uid
       >
         <component
           v-for="spec in specs"
@@ -54,12 +55,15 @@ import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
 import BCard from './ui/b-card.vue'
 import { useCheckSlicerApplicable } from '../composables/check-slicer-applicable'
 import { useKlickerConfig } from '../composables/klicker'
-import { useUniqueId } from '../composables/id'
+import { Uid } from '../directives/uid'
 
 export default defineComponent({
   components: {
     FontAwesomeIcon,
     BCard,
+  },
+  directives: {
+    Uid,
   },
   props: {
     modelValue: {
@@ -226,7 +230,7 @@ export default defineComponent({
 
     const toggleFilters = () => showFilters.value = !showFilters.value
 
-    const { id: prefix } = useUniqueId()
+    const filtersRef = ref<HTMLElement>()
 
     return {
       title,
@@ -238,7 +242,7 @@ export default defineComponent({
       specs,
       translate,
       toggleFilters,
-      prefix,
+      filtersRef,
     }
   },
 })

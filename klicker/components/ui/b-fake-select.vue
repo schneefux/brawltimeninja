@@ -45,6 +45,9 @@ import { defineComponent, ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
 export default defineComponent({
+  emits: {
+    ['open']() { return true },
+  },
   setup(props, { emit }) {
     const container = ref<HTMLElement>()
     const dropdownOpen = ref(false)
@@ -64,9 +67,6 @@ export default defineComponent({
       dropdownOpen,
       toggleDropdown,
     }
-  },
-  emits: {
-    ['open']() { return true },
   },
 })
 </script>

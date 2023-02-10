@@ -19,7 +19,7 @@
               <d-auto
                 v-for="title in headings.slice(page * pageSize, (page + 1) * pageSize)"
                 :key="title.id"
-                :ref="el => setItemRef(title.id, el)"
+                :ref="el => setItemRef(title.id, el as any)"
                 :response="response"
                 :row="title.entry"
                 tag="td"
@@ -139,7 +139,7 @@ export default defineComponent({
     const wrapper = ref<HTMLElement>()
     const heading = ref<HTMLElement>()
     const itemRefs = ref<Record<string, InstanceType<typeof DAuto>|null>>({})
-    const setItemRef = (id: string, el: unknown|null) => itemRefs.value[id] = el as InstanceType<typeof DAuto>|null
+    const setItemRef = (id: string, el: InstanceType<typeof DAuto>|null) => itemRefs.value[id] = el
     const page = ref(0)
     const pageSize = ref(headings.value.length)
 

@@ -6,16 +6,19 @@
     <template v-slot:content>
       <div class="flex flex-wrap items-center">
         <div class="grid grid-cols-[auto,auto] gap-6 items-center">
-          <h1
+          <label
             v-if="configureCube"
+            :for="cubeRef?.$el.id"
             class="inline"
           >
             {{ translate('configurator.source') }}
-          </h1>
+          </label>
 
           <div v-if="configureCube">
             <b-select
               :model-value="modelValue.cubeId"
+              ref="cubeRef"
+              v-uid
               sm
               @update:modelValue="onInputCubeId"
             >
@@ -72,8 +75,9 @@ import BSelect from './ui/b-select.vue'
 import BCheckbox from './ui/b-checkbox.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType } from 'vue'
+import { computed, defineComponent, PropType, ref } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'
+import { Uid } from '../directives/uid'
 
 export default defineComponent({
   components: {
@@ -83,6 +87,9 @@ export default defineComponent({
     BSelect,
     BCheckbox,
     BCard,
+  },
+  directives: {
+    Uid,
   },
   props: {
     modelValue: {
@@ -183,6 +190,8 @@ export default defineComponent({
       return selectedMetrics.length == 1 && selectedMetrics[0].type == 'quantitative'
     })
 
+    const cubeRef = ref<InstanceType<typeof BSelect>>()
+
     return {
       cubes,
       canCompare,
@@ -191,6 +200,7 @@ export default defineComponent({
       faPlus,
       faMinus,
       translate,
+      cubeRef,
     }
   },
 })

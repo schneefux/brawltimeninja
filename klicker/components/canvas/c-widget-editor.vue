@@ -12,29 +12,27 @@
 
           <b-radio
             v-model="withQuery"
-            :id="`${prefix}-static`"
+            ref="staticRef"
             :value="false"
             name="withQuery"
+            v-uid
             required
             primary
           ></b-radio>
-          <label
-            :for="`${prefix}-static`"
-          >
+          <label :for="staticRef?.$el.id">
             Static Widget
           </label>
 
           <b-radio
             v-model="withQuery"
-            :id="`${prefix}-data`"
+            ref="dataRef"
             :value="true"
             name="withQuery"
+            v-uid
             required
             primary
           ></b-radio>
-          <label
-            :for="`${prefix}-data`"
-          >
+          <label :for="dataRef?.$el.id">
             Widget with Data
           </label>
         </div>
@@ -92,14 +90,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue'
+import { defineComponent, PropType, computed, ref } from 'vue'
 import { CubeComparingQuery, CubeQuery, Widget } from '../../types'
 import CVisualisationSelector from './c-visualisation-selector.vue'
 import CDashboard from '../c-dashboard.vue'
 import BCard from '../ui/b-card.vue'
 import BRadio from '../ui/b-radio.vue'
 import BButton from '../ui/b-button.vue'
-import { useUniqueId } from '../../composables/id'
+import { Uid } from '../../directives/uid'
 
 /**
  * Form to edit a widget.
@@ -111,6 +109,9 @@ export default defineComponent({
     BButton,
     CDashboard,
     CVisualisationSelector,
+  },
+  directives: {
+    Uid,
   },
   props: {
     modelValue: {
@@ -168,12 +169,14 @@ export default defineComponent({
       }
     })
 
-    const { id: prefix } = useUniqueId()
+    const staticRef = ref<InstanceType<typeof BRadio>>()
+    const dataRef = ref<InstanceType<typeof BRadio>>()
 
     return {
-      prefix,
       query,
       withQuery,
+      staticRef,
+      dataRef,
     }
   },
 })
