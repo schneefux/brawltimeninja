@@ -51,7 +51,7 @@
         :ad-id="adSlot"
         :instance="instance"
         :type="`${leaderboardFits ? 'leaderboard' : 'med_rect'}_${first ? 'atf' : 'btf'}`"
-        class="adsbyplaywire w-full"
+        class="adsbyplaywire"
       ></playwire-ramp>
       <adsense
         v-if="allowed && visible && !playwire"
