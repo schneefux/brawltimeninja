@@ -32,7 +32,7 @@
           <template v-slot:content>
             <media-img
               :path="`/maps/competition-winners/${date.date}`"
-              :alt="date"
+              :alt="`${date.date} - ${$t('competition-winner')}`"
               size="512"
             ></media-img>
           </template>
