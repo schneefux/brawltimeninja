@@ -22,10 +22,7 @@
           label="Tooltip"
           class="w-4 text-sm leading-none absolute top-1 right-0"
         >
-          <fa
-            :icon="faQuestion"
-            class="inline"
-          ></fa>
+          <fa :icon="faQuestion"></fa>
         </router-link>
         <button
           v-else-if="tooltip != undefined || 'tooltip' in $slots"
@@ -33,10 +30,7 @@
           class="w-4 text-sm leading-none absolute top-1 right-0"
           @click="tooltipOpen = !tooltipOpen"
         >
-          <fa
-            :icon="faQuestion"
-            class="inline"
-          ></fa>
+          <fa :icon="faQuestion"></fa>
         </button>
         <dl>
           <dt class="text-text/75">
@@ -54,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import Fa from 'vue-fa'
+import Fa from '../fa.vue'
 import { defineComponent, ref } from 'vue'
 import BCard from './b-card.vue'
 import BLightbox from './b-lightbox.vue'

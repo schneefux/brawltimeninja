@@ -21,17 +21,14 @@
       class="w-10 h-10 absolute bottom-0 left-0 -ml-2"
       @click="download()"
     >
-      <fa
-        :icon="faDownload"
-        class="inline"
-      ></fa>
+      <fa :icon="faDownload"></fa>
     </button>
   </div>
 </template>
 
 <script lang="ts">
 import embed, { Result, VisualizationSpec } from 'vega-embed'
-import Fa from 'vue-fa'
+import Fa from '../fa.vue'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import BShimmer from './b-shimmer.vue'
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue'

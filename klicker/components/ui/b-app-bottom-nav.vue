@@ -13,7 +13,7 @@
     >
       <fa
         :icon="screen.icon"
-        class="w-6 h-6 inline"
+        class="w-6 h-6"
       ></fa>
       <span class="text-xs leading-none">{{ screen.name }}</span>
     </component>
@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watchEffect, PropType } from 'vue'
-import Fa from 'vue-fa'
+import Fa from '../fa.vue'
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 export interface Screen {

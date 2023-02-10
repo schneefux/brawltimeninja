@@ -6,7 +6,7 @@
   >
     <fa
       :icon="faSearch"
-      class="-mr-6 inline"
+      class="-mr-6"
     ></fa>
     <b-textbox
       v-model="filter"
@@ -32,7 +32,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import BTextbox from './b-textbox.vue'
-import Fa from 'vue-fa'
+import Fa from '../fa.vue'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { onKeyStroke, onClickOutside } from '@vueuse/core'
 

@@ -72,14 +72,12 @@ import CDimension from './c-dimension.vue'
 import BCard from './ui/b-card.vue'
 import BSelect from './ui/b-select.vue'
 import BCheckbox from './ui/b-checkbox.vue'
-import Fa from 'vue-fa'
-import { computed, defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'
 import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
-    Fa,
     CMetric,
     CDimension,
     BSelect,

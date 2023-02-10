@@ -12184,11 +12184,6 @@ vue-docgen-api@^4.40.0:
     ts-map "^1.0.3"
     vue-inbrowser-compiler-independent-utils "^4.56.2"
 
-vue-fa@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/vue-fa/-/vue-fa-4.0.1.tgz#c1bee1e7d38c2c2dae897a259ae02561d5d2175f"
-  integrity sha512-4kjFeRQR76g/CK+g9PWZfmaWjDgN4HcIz3u9c/ZRHsZ1KXA+NFY23g/okd0f03VukBf71cGyVwzvXEvA+16sSg==
-
 vue-inbrowser-compiler-independent-utils@^4.56.2:
   version "4.56.2"
   resolved "https://registry.yarnpkg.com/vue-inbrowser-compiler-independent-utils/-/vue-inbrowser-compiler-independent-utils-4.56.2.tgz#2ca2866b205eb1ef02c04b7a87b6a9f21000c3c7"

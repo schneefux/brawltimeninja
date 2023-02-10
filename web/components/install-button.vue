@@ -8,7 +8,7 @@
   >
     <fa
       :icon="faDownload"
-      class="mr-1 inline"
+      class="mr-1"
     ></fa>
     {{ $t('action.install') }}
   </b-button>
@@ -18,8 +18,7 @@
 import { defineComponent } from 'vue'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import { useInstall } from '~/composables/app'
-import Fa from 'vue-fa'
-import { BButton } from '@schneefux/klicker/components'
+import { BButton, Fa } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {

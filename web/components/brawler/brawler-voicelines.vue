@@ -16,7 +16,7 @@
             >
               <fa
                 :icon="faPlayCircle"
-                class="text-3xl inline"
+                class="text-3xl"
               ></fa>
             </b-button>
             <q
@@ -36,10 +36,9 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
-import { BScrollingList, BDashboardCell, BCard, BButton } from '@schneefux/klicker/components'
+import { BScrollingList, BDashboardCell, BCard, BButton, Fa } from '@schneefux/klicker/components'
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
 import { useConfig } from '~/composables/compat'
-import Fa from 'vue-fa'
 
 export default defineComponent({
   components: {

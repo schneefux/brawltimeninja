@@ -7,7 +7,7 @@
         <template v-slot:content><p >
           <fa
             :icon="faClock"
-            class="mr-1 inline"
+            class="mr-1"
           ></fa>
           <span ref="hourCounter">
             ...
@@ -41,10 +41,9 @@
 <script lang="ts">
 import { Player } from '@/model/Api'
 import { xpToHours } from '~/lib/util'
-import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
+import { BBigstat, BDashboardCell, Fa } from '@schneefux/klicker/components'
 import { ref, computed, defineComponent, onMounted, PropType } from 'vue'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
-import Fa from 'vue-fa'
 import { useI18n } from 'vue-i18n'
 
 interface FunStat {

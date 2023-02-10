@@ -61,3 +61,4 @@ export { default as CGridRenderer } from './canvas/c-grid-renderer.vue'
 export { default as CWidgetEditor } from './canvas/c-widget-editor.vue'
 
 export { default as ClientOnly } from './client-only'
+export { default as Fa } from './fa.vue'

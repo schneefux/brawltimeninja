@@ -26,17 +26,14 @@
         aria-label="close"
         @click="popupOpen = false"
       >
-        <fa
-          :icon="faTimes"
-          class="inline"
-        ></fa>
+        <fa :icon="faTimes"></fa>
       </button>
     </template>
   </b-card>
 </template>
 
 <script lang="ts">
-import { BCard, BNavigator } from '@schneefux/klicker/components'
+import { BCard, BNavigator, Fa } from '@schneefux/klicker/components'
 import { defineComponent, computed, ref } from 'vue'
 import { useVModel } from '@vueuse/core'
 import { Link } from '@schneefux/klicker/components/ui/b-navigator.vue'
@@ -46,7 +43,6 @@ import { TocEntry } from '~/model/Web'
 import { useAsync, useLocalePath } from '@/composables/compat'
 import { useAllBrawlers, useAllEvents, useAllModes } from '@/composables/dimension-values'
 import { useI18n } from 'vue-i18n'
-import Fa from 'vue-fa'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 export default defineComponent({

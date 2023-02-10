@@ -34,10 +34,7 @@
           class="w-10 h-10"
           @click="onMetricRemove()"
         >
-          <fa
-            :icon="faMinus"
-            class="inline"
-          ></fa>
+          <fa :icon="faMinus"></fa>
         </button>
 
         <button
@@ -45,10 +42,7 @@
           class="w-10 h-10"
           @click="numMetrics++"
         >
-          <fa
-            :icon="faPlus"
-            class="inline"
-          ></fa>
+          <fa :icon="faPlus"></fa>
         </button>
       </div>
 
@@ -57,10 +51,7 @@
         class="w-10 h-10"
         @click="tooltipOpen = !tooltipOpen"
       >
-        <fa
-          :icon="faQuestion"
-          class="inline"
-        ></fa>
+        <fa :icon="faQuestion"></fa>
       </button>
     </div>
 
@@ -81,7 +72,7 @@
 
 <script lang="ts">
 import { CubeComparingQuery, CubeQuery } from '../types'
-import Fa from 'vue-fa'
+import Fa from './fa.vue'
 import { faMinus, faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'

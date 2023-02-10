@@ -13,10 +13,7 @@
       xs
       @click="dateFilter = undefined"
     >
-      <fa
-        :icon="faTimes"
-        class="inline"
-      ></fa>
+      <fa :icon="faTimes"></fa>
     </b-button>
 
     <b-scrolling-list
@@ -45,9 +42,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { BScrollingList, BTextbox } from '@schneefux/klicker/components'
+import { BScrollingList, BTextbox, Fa } from '@schneefux/klicker/components'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import Fa from 'vue-fa'
 
 export default defineComponent({
   components: {

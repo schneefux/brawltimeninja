@@ -20,12 +20,10 @@
         <fa
           v-if="expandedLinks[link.id]"
           :icon="faMinus"
-          class="inline"
         ></fa>
         <fa
           v-else
           :icon="faPlus"
-          class="inline"
         ></fa>
       </button>
       <slot
@@ -63,7 +61,7 @@
 import { defineComponent, PropType, ref, watchEffect } from 'vue'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Link } from './b-navigator.vue'
-import Fa from 'vue-fa'
+import Fa from '../fa.vue'
 import { generateId, BindOnce } from '../../directives/bind-once'
 
 export default defineComponent({

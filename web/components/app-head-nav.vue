@@ -23,10 +23,7 @@
       class="w-6 text-center h-6"
       primary
     >
-      <fa
-        :icon="faInfo"
-        class="inline"
-      ></fa>
+      <fa :icon="faInfo"></fa>
     </b-button>
 
     <locale-switcher
@@ -38,9 +35,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { faInfo } from '@fortawesome/free-solid-svg-icons'
-import { BAppHeadNav } from '@schneefux/klicker/components'
+import { BAppHeadNav, Fa } from '@schneefux/klicker/components'
 import crownUrl from '~/assets/images/logo_with_crown_min.svg'
-import Fa from 'vue-fa'
 
 export default defineComponent({
   components: {

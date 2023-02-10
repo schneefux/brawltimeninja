@@ -20,7 +20,6 @@
       >
         <fa
           :icon="showFilters ? faChevronUp : faChevronDown"
-          class="inline"
         ></fa>
       </button>
     </template>
@@ -48,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import Fa from 'vue-fa'
+import Fa from './fa.vue'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'

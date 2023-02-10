@@ -6,10 +6,7 @@
       aria-label="previous"
       @click.stop="page--"
     >
-      <fa
-        :icon="faCaretLeft"
-        class="inline"
-      ></fa>
+      <fa :icon="faCaretLeft"></fa>
     </button>
 
     <span
@@ -26,16 +23,13 @@
       aria-label="next"
       @click.stop="page++"
     >
-      <fa
-        :icon="faCaretRight"
-        class="inline"
-      ></fa>
+      <fa :icon="faCaretRight"></fa>
     </button>
   </div>
 </template>
 
 <script lang="ts">
-import Fa from 'vue-fa'
+import Fa from '../fa.vue'
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent } from 'vue'
 

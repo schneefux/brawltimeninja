@@ -45,7 +45,7 @@
           >
             <fa
               :icon="faExpand"
-              class="absolute bottom-4 right-6 inline"
+              class="absolute bottom-4 right-6"
             ></fa>
           </event-picture-card>
         </template>
@@ -69,12 +69,11 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
 import { deslugify, kebabToCamel } from '~/lib/util'
-import { BSplitDashboard, BCard, BLightbox } from '@schneefux/klicker/components'
+import { BSplitDashboard, BCard, BLightbox, Fa } from '@schneefux/klicker/components'
 import { getMapName } from '~/composables/map'
 import MapViews from '~/components/map/map-views.vue'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
 import { useAsync, useCacheHeaders, useConfig, useMeta, useValidate } from '@/composables/compat'
-import Fa from 'vue-fa'
 import { useRoute } from 'vue-router'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'

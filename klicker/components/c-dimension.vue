@@ -28,10 +28,7 @@
           class="w-10 h-10"
           @click="onDimensionAdd()"
         >
-          <fa
-            :icon="faPlus"
-            class="inline"
-          ></fa>
+          <fa :icon="faPlus"></fa>
         </button>
 
         <button
@@ -39,10 +36,7 @@
           class="w-10 h-10"
           @click="onDimensionRemove()"
         >
-          <fa
-            :icon="faMinus"
-            class="inline"
-          ></fa>
+          <fa :icon="faMinus"></fa>
         </button>
       </div>
     </div>
@@ -51,7 +45,7 @@
 
 <script lang="ts">
 import { CubeComparingQuery, CubeQuery } from '../types'
-import Fa from 'vue-fa'
+import Fa from './fa.vue'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { computed, defineComponent, PropType, ref, watch } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'

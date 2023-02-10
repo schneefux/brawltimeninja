@@ -58,22 +58,13 @@
     >
       <div class="panzoom-exclude absolute bottom-2 right-3 flex gap-x-2 z-10">
         <button @click="zoomOut">
-          <fa
-            :icon="faSearchMinus"
-            class="inline"
-          ></fa>
+          <fa :icon="faSearchMinus"></fa>
         </button>
         <button @click="zoomIn">
-          <fa
-            :icon="faSearchPlus"
-            class="inline"
-          ></fa>
+          <fa :icon="faSearchPlus"></fa>
         </button>
         <button @click="toggleFullscreen">
-          <fa
-            :icon="isFullscreen ? faCompress : faExpand"
-            class="inline"
-          ></fa>
+          <fa :icon="isFullscreen ? faCompress : faExpand"></fa>
         </button>
       </div>
 
@@ -112,7 +103,7 @@ import BButton from '../ui/b-button.vue'
 import { Report, ReportWidget, CubeQuery } from '../../types'
 import Panzoom, { PanzoomObject } from '@panzoom/panzoom'
 import { useFullscreen } from '@vueuse/core'
-import Fa from 'vue-fa'
+import Fa from '../fa.vue'
 import { faSearchMinus, faSearchPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons'
 import { generateId, BindOnce } from '../../directives/bind-once'
 

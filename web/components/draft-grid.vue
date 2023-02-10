@@ -37,10 +37,7 @@
               xs
               @click="clearTeam()"
             >
-              <fa
-                :icon="faTimes"
-                class="inline"
-              ></fa>
+              <fa :icon="faTimes"></fa>
             </b-button>
           </div>
         </div>
@@ -90,12 +87,11 @@ import { defineComponent } from 'vue'
 import { computed, PropType, ref } from 'vue'
 import { CubeQuery } from '@schneefux/klicker/types'
 import { brawlerId, capitalizeWords } from '~/lib/util'
-import { BCard } from '@schneefux/klicker/components'
+import { BCard, Fa } from '@schneefux/klicker/components'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import buildTeamWinratePredictor from '~/lib/klicker.ml'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useAsync } from '@/composables/compat'
-import Fa from 'vue-fa'
 
 interface AllyData {
   id: string

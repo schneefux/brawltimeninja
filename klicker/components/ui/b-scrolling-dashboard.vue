@@ -36,10 +36,7 @@
         round
         @click="scrollLeft()"
       >
-        <fa
-          :icon="faChevronLeft"
-          class="inline"
-        ></fa>
+        <fa :icon="faChevronLeft"></fa>
       </b-button>
     </div>
 
@@ -57,10 +54,7 @@
         round
         @click="scrollRight()"
       >
-        <fa
-          :icon="faChevronRight"
-          class="inline"
-        ></fa>
+        <fa :icon="faChevronRight"></fa>
       </b-button>
     </div>
   </div>
@@ -68,7 +62,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
-import Fa from 'vue-fa'
+import Fa from '../fa.vue'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import BButton from './b-button.vue'
 import { useScroll, useResizeObserver, useMutationObserver } from '@vueuse/core'
