@@ -51,7 +51,7 @@
         :ad-id="adSlot"
         :instance="instance"
         :type="`${leaderboardFits ? 'leaderboard' : 'med_rect'}_${first ? 'atf' : 'btf'}`"
-        class="adsbyplaywire"
+        class="adsbyplaywire w-full"
       ></playwire-ramp>
       <adsense
         v-if="allowed && visible && !playwire"
@@ -59,6 +59,7 @@
         :data-ad-region="adRegion"
         data-ad-format="auto"
         data-ad-client="ca-pub-6856963757796636"
+        class="w-full"
       ></adsense>
 
       <template v-slot:placeholder>
