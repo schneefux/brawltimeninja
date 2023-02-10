@@ -5,22 +5,30 @@ import { useLocalePath } from './compat'
 import { usePreferencesStore } from '@/stores/preferences'
 
 export function useIsApp() {
-  const isPwa = ref<boolean>()
-  const isTwa = ref<boolean>()
+  const isApp = ref<boolean>()
 
   onMounted(() => {
     // track some meta data
     // play store allows only 1 ad/page - TWA is detected via referrer
-    isPwa.value = window.matchMedia('(display-mode: standalone)').matches
-    isTwa.value = document.referrer.startsWith('android-app')
-  })
+    const isPwa = window.matchMedia('(display-mode: standalone)').matches
+    const isTwa = document.referrer.startsWith('android-app')
 
-  const isApp = computed(() => isPwa.value || isTwa.value)
+    event('branch_dimension', {
+      'branch': import.meta.env.VITE_BRANCH || '',
+      'non_interaction': true,
+    })
+    event('is_pwa_dimension', {
+      'is_pwa': isPwa,
+      'non_interaction': true,
+    })
+    event('is_twa_dimension', {
+      'is_twa': isTwa,
+      'non_interaction': true,
+    })
+  })
 
   return {
     isApp,
-    isPwa,
-    isTwa,
   }
 }
 

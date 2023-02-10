@@ -1,7 +1,6 @@
 import { watch } from "vue"
 import { usePreferencesStore } from "@/stores/preferences"
-import { event, optIn } from "vue-gtag"
-import { useIsApp } from "./app"
+import { event, optIn, optOut } from "vue-gtag"
 
 export const useTrackScroll = (trackingPageId: string) => {
   const makeVisibilityCallback = (trackingId: string) => (visible: boolean, element: any) =>  {
@@ -27,26 +26,16 @@ export const useTrackScroll = (trackingPageId: string) => {
 
 export function useAnalytics() {
   const store = usePreferencesStore()
-  const { isPwa, isTwa } = useIsApp()
 
-  const stop = watch(() => store.adsAllowed, async (value) => {
-    if (value == true) {
+  watch(() => store.adsAllowed, (allowed) => {
+    if (import.meta.env.SSR) {
+      return
+    }
+
+    if (allowed) {
       optIn()
-
-      event('branch_dimension', {
-        'branch': import.meta.env.VITE_BRANCH || '',
-        'non_interaction': true,
-      })
-      event('is_pwa_dimension', {
-        'is_pwa': isPwa.value,
-        'non_interaction': true,
-      })
-      event('is_twa_dimension', {
-        'is_twa': isTwa.value,
-        'non_interaction': true,
-      })
-
-      stop()
+    } else {
+      optOut()
     }
   }, {
     immediate: true,

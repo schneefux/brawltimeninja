@@ -34,11 +34,12 @@ export function useAdsense(publisherId: string) {
     ],
   }))
 
-  const stop = watch(() => store.adsAllowed, (allowed) => {
-    if (allowed) {
-      window.adsbygoogle.pauseAdRequests = 0
-      stop()
+  watch(() => store.adsAllowed, (allowed) => {
+    if (import.meta.env.SSR) {
+      return
     }
+
+    window.adsbygoogle.pauseAdRequests = allowed ? 0 : 1
   }, {
     immediate: true,
   })
