@@ -5,6 +5,7 @@ import path from "path";
 import { Player } from "@/model/Api";
 import { root } from "../../server/root.js";
 import { calculateAccountRating, totalBrawlers, xpToHours } from "../../lib/util.js";
+import { PlayerTotals } from "@/stores/brawlstars.js";
 
 export default class ProfileView {
   private template: any;
@@ -53,6 +54,7 @@ export default class ProfileView {
 
   async render(
     player: Player,
+    playerTotals: PlayerTotals | undefined,
     brawlerId: string,
     backgroundFilename: string,
     mediaUrl: string,
@@ -93,6 +95,18 @@ export default class ProfileView {
         value: accountRating.rating,
         unit: "Rating",
       },
+      ...(playerTotals != undefined ? [
+        {
+          image: await this.readLocal("./assets/images/icon/icons8-discount-100.png"),
+          value: (playerTotals.winRate * 100).toFixed(2),
+          unit: "Recent Win Rate",
+        },
+        {
+          image: await this.readLocal("./assets/images/icon/icons8-counter-100.png"),
+          value: playerTotals.picks,
+          unit: "Battles Tracked",
+        },
+      ] : []),
       {
         image: await this.readLocal(
           "./assets/images/icon/icon_trophy_medium.png"
@@ -211,7 +225,7 @@ export default class ProfileView {
       stats: stats.map((s, index) => ({
         ...s,
         xOffset: 20 + (index % 2) * 240,
-        yOffset: 18 + Math.floor(index / 2) * 62,
+        yOffset: playerTotals == undefined ? 18 + Math.floor(index / 2) * 62 : 10 + Math.floor(index / 2) * 54,
       })),
       brawlerStats: brawlerStats.map((s, index) => ({
         ...s,

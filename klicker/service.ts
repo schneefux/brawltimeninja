@@ -2,9 +2,9 @@ import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, Slic
 import cubejs, { CubejsApi, Filter, ITransport, Query, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
-import defaultVisualisations from "./visualisations"
-import defaultStaticWidgets from "./static-widgets"
-import { PluginConfig } from "./composables/klicker"
+import defaultVisualisations from "./visualisations.js"
+import defaultStaticWidgets from "./static-widgets.js"
+import { PluginConfig } from "./composables/klicker.js"
 
 export const capitalizeWords = (str: string) => str.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
 
@@ -105,11 +105,11 @@ export default class KlickerService implements IKlickerService {
       slicers: SlicerSpec[],
       dimensionRenderers: DimensionRendererSpec[],
       metricRenderers: MetricRendererSpec[],
-      fetchImplementation: any,
+      fetchImplementation: typeof fetch,
   ) {
     const apiUrl = cubeUrl + '/cubejs-api/v1'
     // FIXME ???
-    if (import.meta.env.PROD) {
+    if (import.meta.env == undefined || import.meta.env.PROD) {
       // @ts-ignore
       this.cubejsApi = new CubejsApi('', {
         apiUrl,
@@ -235,7 +235,7 @@ export default class KlickerService implements IKlickerService {
     }
     const desiredConfig = this.validateCube(query, this.config[query.cubeId])
 
-    if (import.meta.env.KLICKER_DEBUG != undefined) {
+    if (import.meta.env?.KLICKER_DEBUG != undefined) {
       let bestConfig: CubeQueryConfiguration|undefined
       let minCubeCardinality = Infinity
       let matchedCubeIsAtRootLevel = true

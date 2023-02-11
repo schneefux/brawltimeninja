@@ -1,6 +1,11 @@
-import { Config, SlicerSpec, StaticWidgetSpec, ValueType, VisualisationSpec, DimensionRendererSpec, MetricRendererSpec } from "@schneefux/klicker/types"
-import { formatMode, idToTag } from "~/lib/util"
-import KlickerService from '@schneefux/klicker/service'
+import { ValueType } from "@schneefux/klicker/types"
+import { formatMode, idToTag } from "../lib/util.js"
+import KlickerService from '@schneefux/klicker/service.js'
+import config from '../lib/klicker.cubes.js'
+import visualisations from '../lib/klicker.visualisations.conf.js'
+import staticWidgets from '../lib/klicker.widgets.conf.js'
+import slicers from '../lib/klicker.slicers.conf.js'
+import { dimensionRenderers, metricRenderers } from '../lib/klicker.renderers.js'
 
 export interface EventMetadata {
   key: string
@@ -16,13 +21,7 @@ export interface EventMetadata {
 export { BrawltimeKlickerService }
 
 class BrawltimeKlickerService extends KlickerService {
-  constructor(cubeUrl: string,
-      config: Config,
-      visualisations: VisualisationSpec[],
-      staticWidgets: StaticWidgetSpec[],
-      slicers: SlicerSpec[],
-      dimensionRenderers: DimensionRendererSpec[],
-      metricRenderers: MetricRendererSpec[]) {
+  constructor(cubeUrl: string, fetchImplementation: typeof fetch) {
     super(
       cubeUrl,
       config,
@@ -31,7 +30,7 @@ class BrawltimeKlickerService extends KlickerService {
       slicers,
       dimensionRenderers,
       metricRenderers,
-      import.meta.env.SSR ? fetch : window.fetch.bind(window), // fetch requires window as `this`
+      fetchImplementation,
     )
   }
 

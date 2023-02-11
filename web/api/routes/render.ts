@@ -9,6 +9,10 @@ import ProfileView from "../templates/ProfileView.js";
 import BrawlstarsService from "../services/BrawlstarsService.js";
 import path from "path";
 import { root } from "../../server/root.js";
+import { BrawltimeKlickerService } from "../../plugins/klicker.service.js";
+import { tagToId } from "../../lib/util.js";
+import isbot from 'isbot'
+import { PlayerTotals } from "../../stores/brawlstars.js";
 
 const router = express.Router();
 
@@ -20,6 +24,25 @@ function asyncWrapper(fn: RequestHandler) {
 
 const profileView = new ProfileView();
 const brawlStarsApiService = new BrawlstarsService();
+const klickerService = new BrawltimeKlickerService(process.env.CUBE_URL!, fetch);
+
+async function getPlayerTotals(tag: string) {
+  return await klickerService.query({
+    cubeId: 'battle',
+    dimensionsIds: [],
+    metricsIds: ['picks', 'winRate', 'trophyChange'],
+    slices: {
+      playerId: [tagToId(tag)],
+    },
+    sortId: 'picks',
+  })
+  .then(data => data.data[0].metricsRaw as unknown as PlayerTotals)
+  .then(totals => totals.picks == 0 ? undefined : totals)
+  .catch(e => {
+    console.error('error fetching player totals', e)
+    return undefined
+  })
+}
 
 router.get(
   "/profile/:tag/:brawler.svg",
@@ -30,8 +53,12 @@ router.get(
       return;
     }
 
+    const isBot = isbot(req.headers['user-agent'] || '')
+    const playerTotals = isBot ? undefined : await getPlayerTotals(req.params.tag)
+
     const svg = await profileView.render(
       player,
+      playerTotals,
       req.params.brawler,
       (req.query.background as string) ?? "BlueSkull_Default.jpg",
       process.env.MEDIA_URL!,
@@ -52,8 +79,12 @@ router.get(
       return;
     }
 
+    const isBot = isbot(req.headers['user-agent'] || '')
+    const playerTotals = isBot ? undefined : await getPlayerTotals(req.params.tag)
+
     const svg = await profileView.render(
       player,
+      playerTotals,
       req.params.brawler,
       (req.query.background as string) ?? "BlueSkull_Default.jpg",
       process.env.MEDIA_URL!,

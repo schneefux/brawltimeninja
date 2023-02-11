@@ -6,12 +6,6 @@ interface StoredPlayer {
   name: string
 }
 
-export interface PlayerTotals {
-  picks: number
-  winRate: number
-  trophyChange: number
-}
-
 export const usePreferencesStore = defineStore('preferences', () => {
   const version = ref<number>()
   const lastPlayers = ref<StoredPlayer[]>([])

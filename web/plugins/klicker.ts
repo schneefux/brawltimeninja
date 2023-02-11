@@ -2,12 +2,7 @@ import { BButton, BCard, BCheckbox, BLightbox, BPage, BPageSection, BRadio, BScr
 import { KlickerConfigInjectionKey } from '@schneefux/klicker/composables/klicker'
 import { App, Ref, onServerPrefetch } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
-import config from '@/lib/klicker.cubes'
 import { BrawltimeKlickerService } from './klicker.service'
-import visualisations from '@/lib/klicker.visualisations.conf'
-import staticWidgets from '@/lib/klicker.widgets.conf'
-import slicers from '@/lib/klicker.slicers.conf'
-import { dimensionRenderers, metricRenderers } from '@/lib/klicker.renderers'
 import { Router } from 'vue-router'
 import { useSentry } from '@/composables/compat'
 
@@ -22,7 +17,7 @@ interface Options {
 }
 
 function createClient(options: Options) {
-  return new BrawltimeKlickerService(options.cubeUrl, config, visualisations, staticWidgets, slicers, dimensionRenderers, metricRenderers)
+  return new BrawltimeKlickerService(options.cubeUrl, import.meta.env.SSR ? fetch : window.fetch.bind(window)) // fetch requires window as `this`
 }
 
 function install(app: App, options: Options) {
