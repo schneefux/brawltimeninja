@@ -1,5 +1,6 @@
 // rebuild for frontend with ./node_modules/.bin/tsc lib/util.ts -m ESNext
 
+import { Player } from "@/model/Api";
 import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
 
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
@@ -327,3 +328,31 @@ export const ratingPercentiles = {
 }
 
 export const tagPattern = new RegExp('^#?[0289PYLQGRJCUV]{3,}$')
+
+
+export function calculateAccountRating(player: Player, totalBrawlers: number) {
+  const brawlersUnlocked = Object.keys(player.brawlers).length
+  const brawlerTrophies = [...Object.values(player.brawlers)]
+    .map(({ trophies }) => trophies)
+    .sort()
+  const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
+  const trophiesGoal = medBrawlerTrophies * totalBrawlers
+  let rating = '?'
+  const medTrophies = trophiesGoal / totalBrawlers
+  // measured on 2020-11-01 with data from 2020-10-01
+  // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
+  for (const key in ratingPercentiles) {
+    if (medTrophies <= ratingPercentiles[key as keyof typeof ratingPercentiles][1]) {
+      rating = key
+      break
+    }
+  }
+
+  return {
+    rating,
+    brawlersUnlocked,
+    trophiesGoal,
+  }
+}
+
+export const totalBrawlers = 64 // TODO get from an API

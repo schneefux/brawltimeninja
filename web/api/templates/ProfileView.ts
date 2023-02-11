@@ -4,6 +4,7 @@ import url from "url";
 import path from "path";
 import { Player } from "@/model/Api";
 import { root } from "../../server/root.js";
+import { calculateAccountRating, totalBrawlers, xpToHours } from "../../lib/util.js";
 
 export default class ProfileView {
   private template: any;
@@ -78,44 +79,65 @@ export default class ProfileView {
         : []),
     ];
 
+    const accountRating = calculateAccountRating(player, totalBrawlers);
+
+    // Icons are either Brawl Stars' or icons8 "stickers" style
     const stats = [
+      {
+        image: await this.readLocal("./assets/images/icon/icons8-story-time-100.png"),
+        value: Math.floor(xpToHours(player.expPoints)),
+        unit: "Hours",
+      },
+      {
+        image: await this.readLocal("./assets/images/icon/icons8-star-100.png"),
+        value: accountRating.rating,
+        unit: "Rating",
+      },
       {
         image: await this.readLocal(
           "./assets/images/icon/icon_trophy_medium.png"
         ),
         value: player.trophies,
+        unit: "Trophies",
       },
       {
         image: await this.readLocal(
           "./assets/images/icon/icon_leaderboards.png"
         ),
         value: player.highestTrophies,
+        unit: "Highest",
       },
+
       {
         image: await this.readLocal(
           "./assets/images/icon/icon_player_level.png"
         ),
         value: player.expLevel,
+        unit: "Level",
       },
       {
         image: await this.readLocal("./assets/images/icon/icon_3v3.png"),
         value: player["3vs3Victories"],
+        unit: "Wins",
       },
       {
         image: await this.readLocal(
           "./assets/images/icon/icon_solo_showdown.png"
         ),
         value: player.soloVictories,
+        unit: "Wins",
       },
       {
         image: await this.readLocal(
           "./assets/images/icon/icon_duo_showdown.png"
         ),
         value: player.duoVictories,
+        unit: "Wins",
       },
       {
         image: await this.readLocal("./assets/images/icon/icon_brawlers.png"),
         value: Object.values(player.brawlers).length,
+        unit: "Brawlers",
       },
       {
         image: await this.readLocal("./assets/images/icon/scrap_pile.png"),
@@ -123,6 +145,7 @@ export default class ProfileView {
           (count, brawler) => count + brawler.gears.length,
           0
         ),
+        unit: "Gears",
       },
       {
         image: await this.readLocal("./assets/images/icon/SP_base@4x.png"),
@@ -130,6 +153,7 @@ export default class ProfileView {
           (count, brawler) => count + brawler.starPowers.length,
           0
         ),
+        unit: "Star Powers",
       },
       {
         image: await this.readLocal("./assets/images/icon/Gadget.png"),
@@ -137,6 +161,7 @@ export default class ProfileView {
           (count, brawler) => count + brawler.gadgets.length,
           0
         ),
+        unit: "Gadgets",
       },
     ];
 
@@ -158,12 +183,14 @@ export default class ProfileView {
           "./assets/images/icon/icon_trophy_medium.png"
         ),
         value: brawler.trophies,
+        unit: "Trophies",
       },
       {
         image: await this.readLocal(
           "./assets/images/icon/icon_leaderboards.png"
         ),
         value: brawler.highestTrophies,
+        unit: "Highest",
       },
     ];
 
@@ -184,7 +211,7 @@ export default class ProfileView {
       stats: stats.map((s, index) => ({
         ...s,
         xOffset: 20 + (index % 2) * 240,
-        yOffset: 24 + Math.floor(index / 2) * 74,
+        yOffset: 18 + Math.floor(index / 2) * 62,
       })),
       brawlerStats: brawlerStats.map((s, index) => ({
         ...s,

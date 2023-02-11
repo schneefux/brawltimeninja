@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { tagToId } from '~/lib/util'
+import { tagToId, totalBrawlers } from '~/lib/util'
 import { Player } from '~/model/Api'
 
 interface StoredPlayer {
@@ -38,7 +38,7 @@ export const useBrawlstarsStore = defineStore('brawlstars', {
         tag: 'QRUQQLV0',
         name: 'CG |Nukleo',
       } ],
-    totalBrawlers: 56,
+    totalBrawlers: totalBrawlers,
     player: undefined,
     playerTotals: undefined,
   }),

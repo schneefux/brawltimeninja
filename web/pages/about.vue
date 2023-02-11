@@ -20,6 +20,8 @@
       >this button</b-button>.
     </p>
 
+    <p>Icons by <a href="https://icons8.com/" rel="nofollow">Icons8</a> and <a href="https://fontawesome.com/" rel="nofollow">Font Awesome</a>.</p>
+
     <playwire-privacy></playwire-privacy>
 
     <h1>Privacy Policy</h1>

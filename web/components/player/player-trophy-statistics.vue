@@ -63,7 +63,7 @@
     <b-dashboard-cell :columns="2">
       <b-bigstat
         :title="$t('metric.accountRating')"
-        :value="accountRating"
+        :value="rating"
         tooltip=""
       >
         <template v-slot:tooltip>
@@ -104,7 +104,7 @@
 
 <script lang="ts">
 import { Player } from '@/model/Api'
-import { ratingPercentiles } from '~/lib/util'
+import { calculateAccountRating, ratingPercentiles } from '~/lib/util'
 import { PlayerTotals } from '@/stores/brawlstars'
 import { BBigstat, BScrollingDashboard, BDashboardCell } from '@schneefux/klicker/components'
 import { computed, defineComponent, PropType } from 'vue'
@@ -129,34 +129,18 @@ export default defineComponent({
   setup(props) {
     const store = useBrawlstarsStore()
 
-    const brawlersUnlocked = computed(() => Object.keys(props.player.brawlers).length)
-    const trophiesGoal = computed(() => {
-      const brawlerTrophies = [...Object.values(props.player.brawlers)]
-        .map(({ trophies }) => trophies)
-      brawlerTrophies.sort()
-      const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
-      return medBrawlerTrophies * store.totalBrawlers
-    })
-    const accountRating = computed(() => {
-      const medTrophies = trophiesGoal.value as number / store.totalBrawlers
-      // measured on 2020-11-01 with data from 2020-10-01
-      // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
-      for (const key in ratingPercentiles) {
-        if (medTrophies <= ratingPercentiles[key as keyof typeof ratingPercentiles][1]) {
-          return key
-        }
-      }
-      return '?'
-    })
-
     const totalBrawlers = computed<number>(() => store.totalBrawlers)
+    const accountRating = computed(() => calculateAccountRating(props.player, totalBrawlers.value))
+    const brawlersUnlocked = computed(() => accountRating.value.brawlersUnlocked)
+    const trophiesGoal = computed(() => accountRating.value.trophiesGoal)
+    const rating = computed(() => accountRating.value.rating)
 
     const hasPlayerTotals = computed(() => props.playerTotals != undefined && props.playerTotals.picks > 0)
 
     return {
       trophiesGoal,
       totalBrawlers,
-      accountRating,
+      rating,
       brawlersUnlocked,
       ratingPercentiles,
       hasPlayerTotals,

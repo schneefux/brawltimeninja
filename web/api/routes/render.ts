@@ -22,6 +22,28 @@ const profileView = new ProfileView();
 const brawlStarsApiService = new BrawlstarsService();
 
 router.get(
+  "/profile/:tag/:brawler.svg",
+  asyncWrapper(async (req, res) => {
+    const player = await brawlStarsApiService.getPlayerStatistics(req.params.tag, false, true);
+    if (!(req.params.brawler in player.brawlers)) {
+      res.status(404).send("Player does not own this brawler");
+      return;
+    }
+
+    const svg = await profileView.render(
+      player,
+      req.params.brawler,
+      (req.query.background as string) ?? "BlueSkull_Default.jpg",
+      process.env.MEDIA_URL!,
+    );
+
+    res.type("svg");
+    res.header("Cache-Control", "public, max-age=600");
+    return res.send(svg);
+  })
+);
+
+router.get(
   "/profile/:tag/:brawler.png",
   asyncWrapper(async (req, res) => {
     const player = await brawlStarsApiService.getPlayerStatistics(req.params.tag, false, true);
