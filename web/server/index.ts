@@ -2,9 +2,9 @@ import 'dotenv/config'
 import express from 'express'
 import compression from 'compression'
 import { renderPage } from 'vite-plugin-ssr'
-import apiMiddleware from '../api/index.js'
-import { root } from './root.js'
-import { PageContext } from '@/renderer/types.js'
+import apiMiddleware from '../api/index'
+import { root } from './root'
+import { PageContext } from '@/renderer/types'
 import * as Sentry from '@sentry/node'
 import {
   Dedupe as DedupeIntegration,

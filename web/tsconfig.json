@@ -18,10 +18,13 @@
     }
   },
   "ts-node": {
-    "transpileOnly": true,
     "esm": true,
+    "swc": true,
+    "transpileOnly": true,
+    "experimentalResolver": true,
+    "experimentalSpecifierResolution": "node",
     "compilerOptions": {
-      "moduleResolution": "node16"
+      "module": "node16"
     }
   },
   "exclude": [

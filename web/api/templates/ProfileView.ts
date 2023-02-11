@@ -3,9 +3,9 @@ import fs from "fs/promises";
 import url from "url";
 import path from "path";
 import { Player } from "@/model/Api";
-import { root } from "../../server/root.js";
-import { calculateAccountRating, totalBrawlers, xpToHours } from "../../lib/util.js";
-import { PlayerTotals } from "@/stores/brawlstars.js";
+import { root } from "../../server/root";
+import { calculateAccountRating, totalBrawlers, xpToHours } from "../../lib/util";
+import { PlayerTotals } from "@/stores/brawlstars";
 
 export default class ProfileView {
   private template: any;

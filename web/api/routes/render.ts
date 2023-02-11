@@ -5,14 +5,14 @@ import express, {
   RequestHandler,
   Response,
 } from "express";
-import ProfileView from "../templates/ProfileView.js";
-import BrawlstarsService from "../services/BrawlstarsService.js";
+import ProfileView from "../templates/ProfileView";
+import BrawlstarsService from "../services/BrawlstarsService";
 import path from "path";
-import { root } from "../../server/root.js";
-import { BrawltimeKlickerService } from "../../plugins/klicker.service.js";
-import { tagToId } from "../../lib/util.js";
+import { root } from "../../server/root";
+import { BrawltimeKlickerService } from "../../plugins/klicker.service";
+import { tagToId } from "../../lib/util";
 import isbot from 'isbot'
-import { PlayerTotals } from "../../stores/brawlstars.js";
+import { PlayerTotals } from "../../stores/brawlstars";
 
 const router = express.Router();
 

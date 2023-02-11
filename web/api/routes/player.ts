@@ -1,11 +1,11 @@
 import { TRPCError } from '@trpc/server'
 import { StatsD } from 'hot-shots'
-import { tagWithoutHashType } from '../schema/types.js'
-import BrawlstarsService from '../services/BrawlstarsService.js'
-import ProfileUpdaterService from '../services/ProfileUpdaterService.js'
+import { tagWithoutHashType } from '../schema/types'
+import BrawlstarsService from '../services/BrawlstarsService'
+import ProfileUpdaterService from '../services/ProfileUpdaterService'
 import Knex from 'knex'
-import knexfile from '../knexfile.js'
-import { publicProcedure, router } from '../trpc.js'
+import knexfile from '../knexfile'
+import { publicProcedure, router } from '../trpc'
 
 const environment = process.env.NODE_ENV || 'development'
 const knex = Knex(knexfile[environment])

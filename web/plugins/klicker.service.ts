@@ -1,11 +1,11 @@
 import { ValueType } from "@schneefux/klicker/types"
-import { formatMode, idToTag } from "../lib/util.js"
+import { formatMode, idToTag } from "../lib/util"
 import KlickerService from '@schneefux/klicker/service.js'
-import config from '../lib/klicker.cubes.js'
-import visualisations from '../lib/klicker.visualisations.conf.js'
-import staticWidgets from '../lib/klicker.widgets.conf.js'
-import slicers from '../lib/klicker.slicers.conf.js'
-import { dimensionRenderers, metricRenderers } from '../lib/klicker.renderers.js'
+import config from '../lib/klicker.cubes'
+import visualisations from '../lib/klicker.visualisations.conf'
+import staticWidgets from '../lib/klicker.widgets.conf'
+import slicers from '../lib/klicker.slicers.conf'
+import { dimensionRenderers, metricRenderers } from '../lib/klicker.renderers'
 
 export interface EventMetadata {
   key: string

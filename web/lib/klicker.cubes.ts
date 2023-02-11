@@ -1,6 +1,6 @@
-import { asSlice, Cube, MetaGridEntry, Dimension, Metric } from "@schneefux/klicker/types.js"
+import { asSlice, Cube, MetaGridEntry, Dimension, Metric } from "@schneefux/klicker/types"
 import ChiSquaredPdf from "@stdlib/stats-base-dists-chisquare-pdf"
-import { formatClickhouseDate } from "./util.js"
+import { formatClickhouseDate } from "./util"
 
 /* c&p from util */
 export function getSeasonEnd(timestamp: Date) {

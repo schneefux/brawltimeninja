@@ -1,6 +1,6 @@
 import express from 'express'
 
-import cubes from '../../lib/klicker.cubes.js'
+import cubes from '../../lib/klicker.cubes'
 
 const router = express.Router()
 

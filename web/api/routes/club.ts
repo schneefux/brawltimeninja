@@ -1,6 +1,6 @@
-import { tagWithoutHashType } from '../schema/types.js'
-import BrawlstarsService from '../services/BrawlstarsService.js'
-import { publicProcedure, router } from '../trpc.js'
+import { tagWithoutHashType } from '../schema/types'
+import BrawlstarsService from '../services/BrawlstarsService'
+import { publicProcedure, router } from '../trpc'
 
 const brawlstarsService = new BrawlstarsService()
 
