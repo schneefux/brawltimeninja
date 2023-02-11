@@ -47,9 +47,9 @@ export const Horizontal: Story = {
     // FIXME workaround for https://github.com/storybookjs/storybook/issues/15934
     canvasElement.querySelectorAll('a').forEach((a) => a.setAttribute('target', '_self'))
 
-    const tab2Button = await canvas.findByText('Tab 2')
-    expect(tab2Button).toHaveAttribute('aria-selected', 'false')
-    await userEvent.click(tab2Button)
-    await waitFor(() => expect(tab2Button).toHaveAttribute('aria-selected', 'true'))
+    const tab3Button = await canvas.findByText('Tab 3')
+    expect(tab3Button).toHaveAttribute('aria-selected', 'false')
+    await userEvent.click(tab3Button)
+    await waitFor(() => expect(tab3Button).toHaveAttribute('aria-selected', 'true'))
   },
 }
