@@ -11,7 +11,7 @@
         :data-ad-slot="adSlot"
         data-ad-client="ca-pub-6856963757796636"
         data-full-width-responsive
-        class="text-center self-center"
+        class="text-center self-center w-full"
       ></adsense>
     </b-dashboard-cell>
   </client-only>
