@@ -1,11 +1,11 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "nodemon --watch server --watch renderer --watch api -e ts -x node --inspect --loader ts-node/esm ./server/index.ts",
+    "dev": "node --inspect ./node_modules/.bin/vite",
     "typecheck": "vue-tsc --noEmit",
-    "build": "vite build",
-    "start": "cross-env NODE_ENV=production ts-node-esm ./server/index.ts",
-    "start:debug": "cross-env NODE_ENV=production node --inspect --loader ts-node/esm ./server/index.ts"
+    "build": "vavite",
+    "start": "cross-env NODE_ENV=production node ./dist/server",
+    "start:debug": "cross-env NODE_ENV=production node --inspect ./dist/server"
   },
   "dependencies": {
     "@apla/clickhouse": "^1.6.4",
@@ -15,13 +15,12 @@
     "@jacksongross/vue-tweet-embed": "^3.0.1",
     "@resvg/resvg-js": "^2.4.0",
     "@schneefux/klicker": "link:../klicker",
-    "@sentry/integrations": "^7.36.0",
-    "@sentry/vue": "^7.36.0",
+    "@sentry/integrations": "^7.37.1",
+    "@sentry/vue": "^7.37.1",
     "@stdlib/stats-base-dists-chisquare-pdf": "^0.0.7",
-    "@swc/core": "^1.3.34",
     "@tanstack/vue-query": "^4.24.4",
-    "@trpc/client": "^10.10.0",
-    "@trpc/server": "^10.10.0",
+    "@trpc/client": "^10.11.0",
+    "@trpc/server": "^10.11.0",
     "@types/js-cookie": "^3.0.2",
     "@types/js-yaml": "^4.0.5",
     "@types/node": "^18.13.0",
@@ -50,11 +49,10 @@
     "sirv": "^2.0.2",
     "string-similarity": "^4.0.4",
     "superjson": "^1.12.1",
-    "ts-node": "^10.9.1",
     "typescript": "^4.9.5",
     "undici": "^5.18.0",
     "vite": "^4.1.1",
-    "vite-plugin-ssr": "^0.4.77",
+    "vite-plugin-ssr": "^0.4.79",
     "vue": "^3.2.47",
     "vue-gtag": "^2.0.1",
     "vue-i18n": "^9.1.6",
@@ -64,7 +62,6 @@
     "ztable": "^1.0.7"
   },
   "devDependencies": {
-    "@originjs/vue-codemod": "^1.1.1",
     "@sentry/vite-plugin": "^0.4.0",
     "@types/compression": "^1.7.2",
     "@types/etag": "^1.8.1",
@@ -80,8 +77,9 @@
     "tailwindcss": "^3.2.6",
     "ts-jest": "^29.0.3",
     "unplugin-vue-components": "^0.23.0",
+    "vavite": "^1.5.3",
     "vite-plugin-pages": "^0.28.0",
-    "vite-plugin-pwa": "^0.14.3",
+    "vite-plugin-pwa": "^0.14.4",
     "vue-tsc": "^1.0.24"
   }
 }

@@ -40,4 +40,4 @@ RUN rm ./.npmrc
 ENV PORT=80
 EXPOSE 80
 USER node
-CMD [ "node", "--experimental-fetch", "./node_modules/.bin/ts-node-esm", "./server/index.ts" ]
+CMD [ "node", "./dist/server" ]

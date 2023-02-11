@@ -7,8 +7,6 @@ import express, {
 } from "express";
 import ProfileView from "../templates/ProfileView";
 import BrawlstarsService from "../services/BrawlstarsService";
-import path from "path";
-import { root } from "../../server/root";
 import { BrawltimeKlickerService } from "../../plugins/klicker.service";
 import { tagToId } from "../../lib/util";
 import isbot from 'isbot'
@@ -92,10 +90,7 @@ router.get(
     const resvg = new Resvg(svg, {
       font: {
         fontFiles: [
-          path.join(
-            root,
-            "assets/fonts/LilitaOne-Regular.ttf"
-          ),
+          new URL(`../../assets/fonts/LilitaOne-Regular.ttf`, import.meta.url).pathname,
         ],
         loadSystemFonts: false,
       },

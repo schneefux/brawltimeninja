@@ -8,9 +8,31 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { VitePWA } from 'vite-plugin-pwa'
 import Pages from 'vite-plugin-pages'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
+import vavite from 'vavite'
 
 const config: UserConfig = {
+  buildSteps: [
+		{ name: "client" },
+		{
+			name: "server",
+			config: {
+				build: {
+					ssr: true,
+					rollupOptions: {
+						output: {
+							// We have to disable this for multiple entries
+							inlineDynamicImports: false,
+						},
+					},
+				},
+			},
+		},
+	],
   plugins: [
+    vavite({
+			serverEntry: "/server/index.ts",
+			serveClientAssetsInDev: true,
+		}),
     Components({
       dirs: './components',
       dts: true,
@@ -157,7 +179,7 @@ const config: UserConfig = {
       },
     }),
     UnheadVite(),
-    ssr(),
+    ssr({ disableAutoFullBuild: true }),
     process.env.VITE_GIT_REV != undefined ? sentryVitePlugin({
       include: './dist',
       release: `brawltimeninja@${process.env.VITE_GIT_REV}`,

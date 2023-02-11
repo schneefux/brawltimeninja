@@ -3,7 +3,6 @@ import fs from "fs/promises";
 import url from "url";
 import path from "path";
 import { Player } from "@/model/Api";
-import { root } from "../../server/root";
 import { calculateAccountRating, totalBrawlers, xpToHours } from "../../lib/util";
 import { PlayerTotals } from "@/stores/brawlstars";
 
@@ -13,25 +12,23 @@ export default class ProfileView {
 
   private async compileTemplate() {
     if (this.template == undefined) {
-      const source = await fs.readFile(
-        path.join(root, "api/templates/profile.handlebars"),
-        "utf-8"
-      );
-      this.template = Handlebars.compile(source);
+      const source = await import("../templates/profile.handlebars?raw");
+      this.template = Handlebars.compile(source.default);
     }
   }
 
-  private async readLocal(p: string): Promise<string> {
-    if (this.cache.has(p)) {
-      return this.cache.get(p)!;
+  private async readIcon(name: string): Promise<string> {
+    if (this.cache.has(name)) {
+      return this.cache.get(name)!;
     }
 
-    const filetype = path.extname(p) == '.png' ? 'png' : 'jpeg';
-    const data =
-      `data:image/${filetype};base64,` +
-      (await fs.readFile(path.join(root, p), { encoding: "base64" }));
-    this.cache.set(p, data);
-    return data;
+    const filePath = new URL(`../../assets/images/icon/${name}`, import.meta.url).pathname
+    const filetype = path.extname(filePath) == '.png' ? 'png' : 'jpeg';
+    const data = `data:image/${filetype};base64,${
+      await fs.readFile(filePath, { encoding: "base64" })
+    }`;
+    this.cache.set(name, data);
+    return data
   }
 
   private async readRemote(u: string | undefined): Promise<string> {
@@ -73,7 +70,7 @@ export default class ProfileView {
       ...(player.club?.tag != undefined
         ? [
             {
-              image: await this.readLocal("./assets/images/icon/club.png"),
+              image: await this.readIcon("club.png"),
               title: player.club.name,
               subtitle: player.club.tag,
             },
@@ -86,75 +83,75 @@ export default class ProfileView {
     // Icons are either Brawl Stars' or icons8 "stickers" style
     const stats = [
       {
-        image: await this.readLocal("./assets/images/icon/icons8-story-time-100.png"),
+        image: await this.readIcon("icons8-story-time-100.png"),
         value: Math.floor(xpToHours(player.expPoints)),
         unit: "Hours",
       },
       {
-        image: await this.readLocal("./assets/images/icon/icons8-star-100.png"),
+        image: await this.readIcon("icons8-star-100.png"),
         value: accountRating.rating,
         unit: "Rating",
       },
       ...(playerTotals != undefined ? [
         {
-          image: await this.readLocal("./assets/images/icon/icons8-discount-100.png"),
+          image: await this.readIcon("icons8-discount-100.png"),
           value: (playerTotals.winRate * 100).toFixed(2),
           unit: "Recent Win Rate",
         },
         {
-          image: await this.readLocal("./assets/images/icon/icons8-counter-100.png"),
+          image: await this.readIcon("icons8-counter-100.png"),
           value: playerTotals.picks,
           unit: "Battles Tracked",
         },
       ] : []),
       {
-        image: await this.readLocal(
-          "./assets/images/icon/icon_trophy_medium.png"
+        image: await this.readIcon(
+          "icon_trophy_medium.png"
         ),
         value: player.trophies,
         unit: "Trophies",
       },
       {
-        image: await this.readLocal(
-          "./assets/images/icon/icon_leaderboards.png"
+        image: await this.readIcon(
+          "icon_leaderboards.png"
         ),
         value: player.highestTrophies,
         unit: "Highest",
       },
 
       {
-        image: await this.readLocal(
-          "./assets/images/icon/icon_player_level.png"
+        image: await this.readIcon(
+          "icon_player_level.png"
         ),
         value: player.expLevel,
         unit: "Level",
       },
       {
-        image: await this.readLocal("./assets/images/icon/icon_3v3.png"),
+        image: await this.readIcon("icon_3v3.png"),
         value: player["3vs3Victories"],
         unit: "Wins",
       },
       {
-        image: await this.readLocal(
-          "./assets/images/icon/icon_solo_showdown.png"
+        image: await this.readIcon(
+          "icon_solo_showdown.png"
         ),
         value: player.soloVictories,
         unit: "Wins",
       },
       {
-        image: await this.readLocal(
-          "./assets/images/icon/icon_duo_showdown.png"
+        image: await this.readIcon(
+          "icon_duo_showdown.png"
         ),
         value: player.duoVictories,
         unit: "Wins",
       },
       {
-        image: await this.readLocal("./assets/images/icon/icon_brawlers.png"),
+        image: await this.readIcon("icon_brawlers.png"),
         value: Object.values(player.brawlers).length,
         unit: "Brawlers",
       },
       {
-        image: await this.readLocal("./assets/images/icon/scrap_pile.png"),
+        image: await this.readIcon("scrap_pile.png"),
         value: Object.values(player.brawlers).reduce(
           (count, brawler) => count + brawler.gears.length,
           0
@@ -162,7 +159,7 @@ export default class ProfileView {
         unit: "Gears",
       },
       {
-        image: await this.readLocal("./assets/images/icon/SP_base@4x.png"),
+        image: await this.readIcon("SP_base@4x.png"),
         value: Object.values(player.brawlers).reduce(
           (count, brawler) => count + brawler.starPowers.length,
           0
@@ -170,7 +167,7 @@ export default class ProfileView {
         unit: "Star Powers",
       },
       {
-        image: await this.readLocal("./assets/images/icon/Gadget.png"),
+        image: await this.readIcon("Gadget.png"),
         value: Object.values(player.brawlers).reduce(
           (count, brawler) => count + brawler.gadgets.length,
           0
@@ -193,16 +190,12 @@ export default class ProfileView {
 
     const brawlerStats = [
       {
-        image: await this.readLocal(
-          "./assets/images/icon/icon_trophy_medium.png"
-        ),
+        image: await this.readIcon("icon_trophy_medium.png"),
         value: brawler.trophies,
         unit: "Trophies",
       },
       {
-        image: await this.readLocal(
-          "./assets/images/icon/icon_leaderboards.png"
-        ),
+        image: await this.readIcon("icon_leaderboards.png"),
         value: brawler.highestTrophies,
         unit: "Highest",
       },
