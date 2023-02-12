@@ -14,6 +14,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
   const cookiesAllowed = ref<boolean>()
   const adsAllowed = ref<boolean>()
   const installBannerDismissed = ref(false)
+  const reviewBannerDismissed = ref(false)
 
   const state = {
     version,
@@ -23,6 +24,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
     cookiesAllowed,
     adsAllowed,
     installBannerDismissed,
+    reviewBannerDismissed,
   }
 
   const consentPopupVisible = computed(() =>

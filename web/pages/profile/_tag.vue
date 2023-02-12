@@ -74,6 +74,9 @@
         <install-card
           class="mt-8 max-w-md"
         ></install-card>
+        <review-card
+          class="mt-8 max-w-md"
+        ></review-card>
       </b-page-section>
 
       <ad

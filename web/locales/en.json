@@ -586,5 +586,7 @@
     "action.download": "Download",
     "player.sharepic.title": "Profile Image",
     "metric.gear.short": "Gear",
-    "metric.gear": "Gear"
+    "metric.gear": "Gear",
+    "banner.review.title": "Support the app",
+    "banner.review.catchphrase": "Write a review for the Play Store"
 }

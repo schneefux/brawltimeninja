@@ -4,14 +4,17 @@ import { useRouter } from 'vue-router'
 import { useLocalePath } from './compat'
 import { usePreferencesStore } from '@/stores/preferences'
 
+const packageId = 'xyz.schneefux.brawltimeninja'
+
 export function useIsApp() {
-  const isApp = ref<boolean>()
+  const isPwa = ref<boolean>()
+  const isTwa = ref<boolean>()
 
   onMounted(() => {
     // track some meta data
     // play store allows only 1 ad/page - TWA is detected via referrer
-    const isPwa = window.matchMedia('(display-mode: standalone)').matches
-    const isTwa = document.referrer.startsWith('android-app')
+    isPwa.value = window.matchMedia('(display-mode: standalone)').matches
+    isTwa.value = document.referrer.startsWith('android-app')
 
     event('branch_dimension', {
       'branch': import.meta.env.VITE_BRANCH || '',
@@ -27,7 +30,11 @@ export function useIsApp() {
     })
   })
 
+  const isApp = computed(() => isPwa.value || isTwa.value)
+
   return {
+    isPwa,
+    isTwa,
     isApp,
   }
 }
@@ -87,7 +94,7 @@ export function useInstall(source: string) {
         'event_category': 'app',
         'event_label': 'fallback',
       })
-      window.open('https://play.google.com/store/apps/details?id=xyz.schneefux.brawltimeninja' + referrer, '_blank')
+      window.open(`https://play.google.com/store/apps/details?id=${packageId}${referrer}`, '_blank')
       return
     }
 
@@ -152,4 +159,43 @@ export function useInstallPromptListeners() {
 
 export function clearInstallPrompt() {
   installPrompt.value = undefined
+}
+
+export function useReview() {
+  const store = usePreferencesStore()
+  const { isTwa } = useIsApp()
+
+  const reviewable = computed(() => {
+    if (import.meta.env.SSR) {
+      return false
+    }
+    return isTwa.value
+  })
+
+  const dismissReview = () => {
+    event('dismiss', {
+      'event_category': 'app',
+      'event_label': 'review',
+    })
+    store.reviewBannerDismissed = true
+  }
+
+  const clickReview = () => {
+    event('click', {
+      'event_category': 'app',
+      'event_label': 'review',
+    })
+    store.reviewBannerDismissed = true
+    window.location.href = 'brawltime://review'
+    setTimeout(() => window.open(`https://play.google.com/store/apps/details?id=${packageId}`, '_blank'), 1000)
+  }
+
+  const reviewDismissed = computed(() => store.reviewBannerDismissed)
+
+  return {
+    reviewDismissed,
+    reviewable,
+    dismissReview,
+    clickReview,
+  }
 }

@@ -107,6 +107,7 @@ declare module '@vue/runtime-core' {
     QuizResultCard: typeof import('./components/quiz/quiz-result-card.vue')['default']
     QuizResultSharepic: typeof import('./components/quiz/quiz-result-sharepic.vue')['default']
     RangeSliderSelect: typeof import('./components/range-slider-select.vue')['default']
+    ReviewCard: typeof import('./components/review-card.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SAlly: typeof import('./components/klicker/s-ally.vue')['default']
