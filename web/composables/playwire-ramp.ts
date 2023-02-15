@@ -42,9 +42,9 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
     'site_skin',
     'flex_leaderboard',
     'top_rail',
-    //'right_rail', // layout has its own scrapers instead
+    'right_rail',
     'bottom_rail',
-    //'left_rail',
+    'left_rail',
   ].map(unit => ({ type: unit }))
 
   const route = useRoute()
