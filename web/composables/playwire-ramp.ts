@@ -49,28 +49,16 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
 
   const route = useRoute()
 
-  watch(route, (newRoute, oldRoute) => {
-    if (import.meta.env.SSR) {
-      return
-    }
-
+  watch(route, () => {
     window.ramp.setPath(route.fullPath)
-    if (oldRoute != undefined) {
-      window.ramp.que.push(() => {
-        window.ramp.destroyUnits('all')
-          .catch(e => console.warn(e))
-      })
-    }
-
     window.ramp.que.push(() => {
+      window.ramp.destroyUnits('all')
+        .catch(e => console.warn(e))
       window.ramp.addUnits(outOfPageUnits)
         .catch(e => console.warn(e))
         .finally(() => window.ramp.displayUnits())
     })
-  }, {
-    flush: 'post',
-    immediate: true,
-  })
+  }, { flush: 'post' })
 
   useMeta(() => ({
     script: [ {
@@ -83,6 +71,9 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
         window.ramp = window.ramp || {};
         window.ramp.que = window.ramp.que || [];
         window.ramp.passiveMode = true;
+        window.ramp.que.push(() => {
+          window.ramp.addUnits(${JSON.stringify(outOfPageUnits)}).catch(e => console.warn(e)).finally(() => window.ramp.displayUnits());
+        });
       `.replace(/\s+/g, ' '),
     }, {
       key: 'playwire-ramp-ga4',

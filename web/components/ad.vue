@@ -16,6 +16,7 @@
 
     <template v-slot:placeholder>
       <div
+        v-if="!playwire"
         v-bind="$attrs"
         class="adswrapper ad-section banner-ad"
       ></div>
@@ -34,6 +35,7 @@
 
     <template v-slot:placeholder>
       <div
+        v-if="!playwire"
         v-bind="$attrs"
         class="adswrapper ad-section scraper-ad"
       ></div>
