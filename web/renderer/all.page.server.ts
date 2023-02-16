@@ -1,5 +1,5 @@
 import { renderToString } from '@vue/server-renderer'
-import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr'
+import { dangerouslySkipEscape, escapeInject, InjectFilterEntry } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import type { Config, PageContext } from './types'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'

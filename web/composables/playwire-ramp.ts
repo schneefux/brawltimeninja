@@ -36,7 +36,7 @@ declare global {
 }
 
 export function usePlaywireRamp(publisherId: string, siteId: string, playwireRampGa4Id: string) {
-  const outOfPageUnits = [
+  const outOfPageUnits = ([
     'trendi_slideshow',
     'trendi_video',
     'site_skin',
@@ -45,13 +45,32 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
     'right_rail',
     'bottom_rail',
     'left_rail',
-  ].map(unit => ({ type: unit }))
+  ] satisfies TaglessType[]).map(unit => ({ type: unit }) satisfies TaglessUnit)
 
   const route = useRoute()
 
-  watch(route, () => {
-    window.ramp.setPath(route.path)
-  }, { flush: 'post' })
+  watch(route, (newRoute, oldRoute) => {
+    if (import.meta.env.SSR) {
+      return
+    }
+
+    window.ramp.setPath(route.fullPath)
+    if (oldRoute != undefined) {
+      window.ramp.que.push(() => {
+        window.ramp.destroyUnits('all')
+          .catch(e => console.warn(e))
+      })
+    }
+
+    window.ramp.que.push(() => {
+      window.ramp.addUnits(outOfPageUnits)
+        .catch(e => console.warn(e))
+        .finally(() => window.ramp.displayUnits())
+    })
+  }, {
+    flush: 'post',
+    immediate: true,
+  })
 
   useMeta(() => ({
     script: [ {
@@ -65,34 +84,30 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
       async: true,
     }, {
       key: 'playwire-ramp-init',
-      innerHTML:
-`window.ramp = window.ramp || {};
-window.ramp.que = window.ramp.que || [];
-window.ramp.passiveMode = true;
-
-window.ramp.que.push(() => {
-  window.ramp
-    .addUnits(${JSON.stringify(outOfPageUnits)})
-    .finally(() => window.ramp.displayUnits())
-});`
+      innerHTML: `
+        window.ramp = window.ramp || {};
+        window.ramp.que = window.ramp.que || [];
+        window.ramp.passiveMode = true;
+      `.replace(/\s+/g, ' '),
     }, {
       key: 'playwire-ramp-ga4',
-      innerHTML:
-`window._pwGA4PageviewId = ''.concat(Date.now());
-window.dataLayer = window.dataLayer || [];
-window.gtag = window.gtag || function () {
-  dataLayer.push(arguments);
-};
-gtag('js', new Date());
-gtag('config', '${playwireRampGa4Id}', { 'send_page_view': false });
-gtag(
-  'event',
-  'ramp_js',
-  {
-    'send_to': '${playwireRampGa4Id}',
-    'pageview_id': window._pwGA4PageviewId
-  }
-);`
+      innerHTML: `
+        window._pwGA4PageviewId = ''.concat(Date.now());
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () {
+          dataLayer.push(arguments);
+        };
+        gtag('js', new Date());
+        gtag('config', '${playwireRampGa4Id}', { 'send_page_view': false });
+        gtag(
+          'event',
+          'ramp_js',
+          {
+            'send_to': '${playwireRampGa4Id}',
+            'pageview_id': window._pwGA4PageviewId
+          }
+        );
+      `.replace(/\s+/g, ' '),
     } ],
   }))
 }

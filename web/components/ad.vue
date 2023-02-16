@@ -51,7 +51,7 @@
         :ad-id="adSlot"
         :instance="instance"
         :type="`${leaderboardFits ? 'leaderboard' : 'med_rect'}_${first ? 'atf' : 'btf'}`"
-        class="adsbyplaywire"
+        class="adsbyplaywire section-ad-pw"
       ></playwire-ramp>
       <adsense
         v-if="allowed && visible && !playwire"
@@ -171,6 +171,10 @@ export default defineComponent({
   height: 100px;
 }
 
+.banner-ad-pw {
+  min-height: 100px;
+}
+
 @media(min-width: 468px) {
   .banner-ad {
     width: 468px;
@@ -248,6 +252,15 @@ export default defineComponent({
   width: 320px;
 }
 
+/*
+ * Required by playwire:
+ * Set a min-height of 100px for mobile
+ * and 250px for desktop
+ */
+.section-ad-pw {
+  min-height: 100px;
+}
+
 @media(min-width: 468px) {
   .section-ad {
     width: 468px;
@@ -258,6 +271,10 @@ export default defineComponent({
   .section-ad {
     height: 280px;
     width: 728px;
+  }
+
+  .section-ad-pw {
+    min-height: 250px;
   }
 }
 
