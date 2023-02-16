@@ -66,6 +66,7 @@ import { useConfig, useLocaleCookieRedirect, useLocalePath } from '@/composables
 import { useRoute } from 'vue-router'
 import { usePreferencesStore } from '@/stores/preferences'
 import { usePlaywireRamp } from '@/composables/playwire-ramp'
+import { useQuantcast } from '@/composables/quantcast'
 import { useAdsense } from '@/composables/adsense'
 import { useAnalytics } from '@/composables/gtag'
 
@@ -124,6 +125,9 @@ export default defineComponent({
 
     useInstallPromptListeners()
     useLocaleCookieRedirect()
+
+    useQuantcast(config.quantcastChoiceId)
+
     const enablePlaywire = config.playwireRampPublisherId != ''
     if (enablePlaywire) {
       usePlaywireRamp(config.playwireRampPublisherId, config.playwireRampSiteId, config.playwireRampGa4Id)
@@ -131,7 +135,7 @@ export default defineComponent({
       useAdsense(config.adsensePubid)
     }
     useAnalytics()
-    const consentPopupVisible = computed(() => store.consentPopupVisible && !enablePlaywire)
+    const consentPopupVisible = computed(() => store.consentPopupVisible && !config.quantcastChoiceId)
 
     return {
       route,

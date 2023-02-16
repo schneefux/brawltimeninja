@@ -98,6 +98,7 @@ job "brawltime-testing" {
         PLAYWIRE_RAMP_PUBLISHER_ID = "1024864"
         PLAYWIRE_RAMP_SITE_ID = "74021"
         PLAYWIRE_RAMP_GA4_ID = "G-YBE993Z5SQ"
+        QUANTCAST_CHOICE_ID = "Zj670A0xwScEY"
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
       }
 

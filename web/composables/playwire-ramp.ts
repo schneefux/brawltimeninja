@@ -74,11 +74,6 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
 
   useMeta(() => ({
     script: [ {
-      // load GPT early to enable funding choices
-      key: 'gpt',
-      src: '//securepubads.g.doubleclick.net/tag/js/gpt.js',
-      async: true,
-    }, {
       key: 'playwire-ramp',
       src: `//cdn.intergient.com/${publisherId}/${siteId}/ramp.js`,
       async: true,

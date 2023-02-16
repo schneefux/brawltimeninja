@@ -151,6 +151,7 @@ job "brawltime-web" {
         UA_ID = "UA-137233906-1"
         OPTIMIZE_ID = "OPT-PWZ78LC"
         ADSENSE_PUBID = "ca-pub-6856963757796636"
+        QUANTCAST_CHOICE_ID = "Zj670A0xwScEY"
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
       }
 

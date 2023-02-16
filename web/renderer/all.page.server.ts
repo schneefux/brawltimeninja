@@ -58,6 +58,7 @@ async function onBeforeRender(pageContext: PageContext) {
     playwireRampPublisherId: process.env.PLAYWIRE_RAMP_PUBLISHER_ID ?? '',
     playwireRampSiteId: process.env.PLAYWIRE_RAMP_SITE_ID ?? '',
     playwireRampGa4Id: process.env.PLAYWIRE_RAMP_GA4_ID ?? '',
+    quantcastChoiceId: process.env.QUANTCAST_CHOICE_ID ?? '',
     sentryDsn: process.env.SENTRY_DSN ?? '',
     traduora,
   }

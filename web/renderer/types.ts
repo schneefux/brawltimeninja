@@ -26,6 +26,7 @@ interface Config {
   playwireRampPublisherId: string
   playwireRampSiteId: string
   playwireRampGa4Id: string
+  quantcastChoiceId: string
   traduora?: {
     url: string
     projectId: string
