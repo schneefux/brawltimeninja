@@ -7,8 +7,8 @@
     </p>
     <h2>Advertising Privacy Settings</h2>
     <p>
-      FOR EU USERS ONLY: When you use our site, pre-selected companies may access and use certain information on your device and about your interests to serve ads or personalized content. You may revisit or change consent-choices at any time by clicking
-      <a href="#cmp" onclick="if(window.__cmp === undefined){console.warn('User is not in the EU - Consent Choices can only be configured when User is in the EU')}else{ramp.showCmpModal()}">here</a>.
+      When you use our site, pre-selected companies may access and use certain information on your device and about your interests to serve ads or personalized content. You may revisit or change consent-choices at any time by clicking
+      <a href="#cmp" onclick="window.__tcfapi('displayConsentUi', 2, function() {} );">here</a>.
     </p>
   </div>
 </template>
