@@ -62,11 +62,8 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
 
   useMeta(() => ({
     script: [ {
-      key: 'playwire-ramp',
-      src: `//cdn.intergient.com/${publisherId}/${siteId}/ramp.js`,
-      async: true,
-    }, {
       key: 'playwire-ramp-init',
+      type: 'text/javascript',
       innerHTML: `
         window.ramp = window.ramp || {};
         window.ramp.que = window.ramp.que || [];
@@ -75,6 +72,7 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
           window.ramp.addUnits(${JSON.stringify(outOfPageUnits)}).catch(e => console.warn(e)).finally(() => window.ramp.displayUnits());
         });
       `.replace(/\s+/g, ' '),
+      tagPriority: 'critical',
     }, {
       key: 'playwire-ramp-ga4',
       innerHTML: `
@@ -94,6 +92,12 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
           }
         );
       `.replace(/\s+/g, ' '),
+      tagPriority: 'critical',
+    }, {
+      key: 'playwire-ramp',
+      src: `//cdn.intergient.com/${publisherId}/${siteId}/ramp.js`,
+      async: true,
+      tagPriority: 'critical',
     } ],
   }))
 }

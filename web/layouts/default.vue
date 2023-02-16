@@ -126,8 +126,6 @@ export default defineComponent({
     useInstallPromptListeners()
     useLocaleCookieRedirect()
 
-    useQuantcast(config.quantcastChoiceId)
-
     const enablePlaywire = config.playwireRampPublisherId != ''
     if (enablePlaywire) {
       usePlaywireRamp(config.playwireRampPublisherId, config.playwireRampSiteId, config.playwireRampGa4Id)
@@ -136,6 +134,8 @@ export default defineComponent({
     }
     useAnalytics()
     const consentPopupVisible = computed(() => store.consentPopupVisible && !config.quantcastChoiceId)
+
+    useQuantcast(config.quantcastChoiceId)
 
     return {
       route,

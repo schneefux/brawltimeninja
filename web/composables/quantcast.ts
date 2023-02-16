@@ -1,25 +1,24 @@
 import { useMeta } from "./compat";
 
 export function useQuantcast(quantcastChoiceId: string) {
+  const host = 'brawltime.ninja'
+
   useMeta(() => ({
     script: [ {
+      key: 'quantcast-choice',
+      type: 'text/javascript',
+      async: true,
+      tagPriority: 'critical',
+      src: `https://cmp.quantcast.com/choice/${quantcastChoiceId}/${host}/choice.js?tag_version=V2`,
+    }, {
       key: 'quantcast-choice-init',
+      type: 'text/javascript',
       async: true,
       tagPriority: 'critical',
       innerHTML: `
 (function() {
-  var host = 'brawltime.ninja';
-  var element = document.createElement('script');
-  var firstScript = document.getElementsByTagName('script')[0];
-  var url = 'https://cmp.quantcast.com'
-    .concat('/choice/', '${quantcastChoiceId}', '/', host, '/choice.js?tag_version=V2');
   var uspTries = 0;
   var uspTriesLimit = 3;
-  element.async = true;
-  element.type = 'text/javascript';
-  element.src = url;
-
-  firstScript.parentNode.insertBefore(element, firstScript);
 
   function makeStub() {
     var TCF_LOCATOR_NAME = '__tcfapiLocator';
@@ -165,7 +164,7 @@ export function useQuantcast(quantcastChoiceId: string) {
     var uspInterval = setInterval(checkIfUspIsReady, 6000);
   }
 })();
-      `,
+      `.replace(/\s+/g, ' '),
     } ],
   }))
 }

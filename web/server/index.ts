@@ -85,7 +85,10 @@ async function startServer() {
     const lines = body.split(/\r?\n/)
     let beginIndex = lines.findIndex(line => line.includes('<head>'))
     lines.forEach((line, index) => {
-      if (line.includes('<script') && line.includes('</script>') && line.includes('ramp')) {
+      if (line.includes('<script') && line.includes('</script>') && (
+          line.includes('ramp') ||
+          line.includes('choice.js') || line.includes('checkIfUspIsReady')) // also move quantcast to top
+        ) {
         lines.splice(index, 1)
         lines.splice(beginIndex + 1, 0, line)
         beginIndex++
