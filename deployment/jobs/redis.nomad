@@ -28,14 +28,22 @@ job "redis" {
       }
     }
 
+    ephemeral_disk {
+      sticky = true
+      migrate = true
+      size = 2048
+    }
+
     task "redis" {
       driver = "docker"
 
       config {
-        image = "redis:6.2-alpine"
+        image = "redis:7.0-alpine"
+        args = [ "/usr/local/etc/redis/redis.conf" ]
 
         volumes = [
           "local/redis.conf:/usr/local/etc/redis/redis.conf:ro",
+          "alloc/data:/data",
         ]
 
         ports = ["db"]
@@ -53,7 +61,6 @@ job "redis" {
       template {
         data = <<-EOF
           port {{ env "NOMAD_PORT_db" }}
-          bind {{ env "NOMAD_IP_db" }}
           maxmemory {{ env "NOMAD_MEMORY_LIMIT" }}mb
           maxmemory-policy allkeys-lru
           stop-writes-on-bgsave-error no
@@ -66,8 +73,8 @@ job "redis" {
 
       resources {
         cpu = 792
-        memory = 1024
-        memory_max = 3072
+        memory = 1024 # will not usually exceed the limit
+        memory_max = 1536
       }
     }
   }
