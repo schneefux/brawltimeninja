@@ -50,7 +50,7 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
   const route = useRoute()
 
   watch(route, (newroute, oldroute) => {
-    if (!('ramp' in window)) {
+    if (window.ramp.setPath == undefined) {
       return
     }
 
