@@ -31,6 +31,13 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
       }),
       new HttpClientIntegration(),
     ],
+    ignoreErrors: [
+      // ignore common errors triggered by ads
+      'SYNC.JS',
+      `Cannot read properties of null (reading 'setTargeting')`,
+      'NS_ERROR_NOT_INITIALIZED',
+      '[GPT] ',
+    ],
   })
   pageContext.sentry = Sentry as any
 
