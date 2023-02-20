@@ -81,25 +81,30 @@ job "brawltime-testing" {
       env {
         HOST = "0.0.0.0"
         PORT = "${NOMAD_PORT_http}"
+        NODE_ENVIRONMENT = "production"
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
+
         CUBE_URL = "https://cube.${var.domain}"
         MEDIA_URL = "https://media.${var.domain}"
         MANAGER_URL = "https://manager.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"
-        SENTRY_DSN = "${var.sentry_dsn}"
-        GA4_ID = "G-8GGHZC6QR2"
-        UA_ID = "UA-137233906-1"
-        OPTIMIZE_ID = "OPT-PWZ78LC"
-        ADSENSE_PUBID = "ca-pub-6856963757796636"
+        CLICKHOUSE_HOST = "clickhouse.service.consul"
+
         TRADUORA_URL = "https://translate.${var.domain}"
         TRADUORA_CLIENT_ID = "${var.web_traduora_client_id}"
         TRADUORA_SECRET = "${var.web_traduora_secret}"
         TRADUORA_PROJECT_ID = "${var.web_traduora_project_id}"
-        CLICKHOUSE_HOST = "clickhouse.service.consul"
+
+        SENTRY_DSN = "${var.sentry_dsn}"
+
+        ADSENSE_PUBID = "ca-pub-6856963757796636"
+        QUANTCAST_CHOICE_ID = "Zj670A0xwScEY"
+        GA4_ID = "G-8GGHZC6QR2"
+        UA_ID = "UA-137233906-1"
+        OPTIMIZE_ID = "OPT-PWZ78LC"
         PLAYWIRE_RAMP_PUBLISHER_ID = "1024864"
         PLAYWIRE_RAMP_SITE_ID = "74021"
         PLAYWIRE_RAMP_GA4_ID = "G-YBE993Z5SQ"
-        QUANTCAST_CHOICE_ID = "Zj670A0xwScEY"
-        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
       }
 
       template {
