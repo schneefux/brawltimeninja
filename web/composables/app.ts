@@ -60,6 +60,7 @@ function detectIOS() {
 export function useInstall(source: string) {
   const store = usePreferencesStore()
   const localePath = useLocalePath()
+  const router = useRouter()
   const { isApp } = useIsApp()
 
   const installable = computed(() => {
@@ -99,7 +100,6 @@ export function useInstall(source: string) {
     }
 
     if (detectIOS()) {
-      const router = useRouter()
       event('redirect_guide', {
         'event_category': 'app',
         'event_label': 'ios',
