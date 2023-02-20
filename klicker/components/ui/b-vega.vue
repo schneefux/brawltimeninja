@@ -59,7 +59,7 @@ export default defineComponent({
   },
   setup(props) {
     const loading = ref(false)
-    const result = ref<Result|undefined>(undefined)
+    const result = ref<any|undefined>(undefined) // TODO typing this as Result breaks type inference
 
     const cleanup = () => {
       result.value?.finalize()
