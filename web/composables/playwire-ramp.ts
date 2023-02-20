@@ -49,8 +49,18 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
 
   const route = useRoute()
 
-  watch(route, () => {
+  watch(route, (newroute, oldroute) => {
+    if (!('ramp' in window)) {
+      return
+    }
+
     window.ramp.setPath(route.fullPath)
+
+    if (newroute.path == oldroute.path) {
+      // do not refresh ads when just the params or the hash changes
+      return
+    }
+
     window.ramp.que.push(() => {
       window.ramp.destroyUnits('all')
         .catch(e => console.warn(e))
