@@ -143,6 +143,11 @@ export default defineComponent({
     let timeout: NodeJS.Timeout
 
     const setActiveTab = (tab: Tab) => {
+      if (activeTab.value == tab.slot) {
+        // already done, skip to avoid unnecessary renders
+        return
+      }
+
       // FIXME workaround for scroll flicker on mobile devices
       scrollSnap.value = false
       clearTimeout(timeout)
@@ -154,11 +159,12 @@ export default defineComponent({
       }
 
       scrollActiveTabIntoView()
-      if (tab.slot != props.tabs[0].slot) {
-        window.history.replaceState(null, '', '#' + tab.slot)
-      } else {
-        // do not write default tab into URL
-        window.history.replaceState(null, '', ' ')
+
+      // do not write default tab into URL
+      const newHash = tab.slot != props.tabs[0].slot ? '#' + tab.slot : ''
+
+      if (window.location.hash != newHash) {
+        window.history.replaceState(null, '', newHash)
       }
     }
 
