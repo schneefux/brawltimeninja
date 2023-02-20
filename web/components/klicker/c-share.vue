@@ -31,6 +31,14 @@ export default defineComponent({
           'event_label': 'share',
         })
       } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          event('cancel', {
+            'event_category': 'dashboard',
+            'event_label': 'share',
+          })
+          return
+        }
+
         console.error(err);
         event('click', {
           'event_category': 'dashboard',

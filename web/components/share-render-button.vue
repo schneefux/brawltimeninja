@@ -42,6 +42,10 @@ export default defineComponent({
       required: false
     },
   },
+  emits: {
+    share: () => true,
+    cancel: () => true,
+  },
   setup(props, { emit }) {
     const $config = useConfig()
 
@@ -72,6 +76,10 @@ export default defineComponent({
           } as any)
           shared = true
         } catch (err) {
+          if (err instanceof DOMException && err.name === 'AbortError') {
+            emit('cancel')
+            return
+          }
           console.error(err)
         }
       }

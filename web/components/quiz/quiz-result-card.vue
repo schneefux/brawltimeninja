@@ -51,7 +51,8 @@
           class="inline-block mr-2"
           primary
           md
-          @share="sharepicTriggered"
+          @share="onShare"
+          @cancel="onShareCancel"
         ></share-render-button>
         <b-button
           primary
@@ -123,7 +124,12 @@ export default defineComponent({
       return `/embed/quiz?${params.toString()}`
     })
 
-    const sharepicTriggered = () => event('click', {
+    const onShare = () => event('click', {
+      'event_category': 'quiz',
+      'event_label': 'share',
+    })
+
+    const onShareCancel = () => event('cancel', {
       'event_category': 'quiz',
       'event_label': 'share',
     })
@@ -131,7 +137,8 @@ export default defineComponent({
     return {
       quizRootUrl,
       sharepicEmbedUrl,
-      sharepicTriggered,
+      onShare,
+      onShareCancel,
       mostSimilarBrawler,
     }
   },

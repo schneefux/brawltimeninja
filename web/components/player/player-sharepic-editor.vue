@@ -137,6 +137,7 @@
           primary
           md
           @share="onShare"
+          @cancel="onShareCancel"
         ></share-render-button>
       </div>
     </template>
@@ -246,6 +247,13 @@ export default defineComponent({
         'event_label': 'share',
       })
     }
+    const onShareCancel = () => {
+      emit('interact')
+      event('cancel', {
+        'event_category': 'profile',
+        'event_label': 'share',
+      })
+    }
 
     const onDownload = () => {
       emit('interact')
@@ -289,6 +297,7 @@ export default defineComponent({
       selectedBackground,
       selectedBrawlerId,
       onShare,
+      onShareCancel,
       onDownload,
       backgrounds,
       brawlers,
