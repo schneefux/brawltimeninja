@@ -279,7 +279,11 @@ export default defineComponent({
 
     const scrapedData = useAsync<ScrapedBrawler>(() =>
       fetch(`${$config.mediaUrl}/brawlers/${brawlerId.value}/data.json`)
-        .then(r => r.json()), `scraped-data-${brawlerId.value}`)
+        .then(r => r.json())
+        .catch(() => {
+          console.error('Could not fetch scraped data for brawler', brawlerId.value)
+          return null
+        }), `scraped-data-${brawlerId.value}`)
 
     const sectionRefs = {
       overviewSection: ref<InstanceType<typeof BPageSection>>(),
