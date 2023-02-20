@@ -44,11 +44,7 @@ function install(app: App, options: Options) {
       const query = useQuery<T, E>([key], handler, {
         keepPreviousData: true,
         onError(err) {
-          if (sentry != undefined) {
-            sentry.captureException(err)
-          } else {
-            console.error(err)
-          }
+          sentry.captureException(err)
         },
       })
       onServerPrefetch(query.suspense)

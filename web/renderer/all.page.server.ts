@@ -1,12 +1,12 @@
 import { renderToString } from '@vue/server-renderer'
-import { dangerouslySkipEscape, escapeInject, InjectFilterEntry } from 'vite-plugin-ssr'
+import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import type { Config, PageContext } from './types'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import { dehydrate } from '@tanstack/vue-query'
 import { renderSSRHead } from '@unhead/ssr'
 import SuperJSON from 'superjson'
-import * as Sentry from '@sentry/vue'
+import Sentry from '@sentry/vue'
 import { getTraduoraToken, TraduoraToken } from '@/locales'
 
 export { onBeforeRender }
