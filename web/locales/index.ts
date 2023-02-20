@@ -9,6 +9,7 @@ export interface Locale {
   file: string
   emoji: string
   show: boolean
+  supported: boolean // whether Brawl Stars supports this language
 }
 
 export const locales: Locale[] = [{
@@ -17,36 +18,42 @@ export const locales: Locale[] = [{
   file: 'en.js',
   emoji: '🇬🇧',
   show: true,
+  supported: true,
 }, {
   code: 'de',
   iso: 'de',
   file: 'de.js',
   emoji: '🇩🇪',
   show: true,
+  supported: true,
 }, {
   code: 'es',
   iso: 'es',
   file: 'es.js',
   emoji: '🇪🇸',
   show: true,
+  supported: true,
 }, {
   code: 'ua',
   iso: 'uk',
   file: 'ua.js',
   emoji: '🇺🇦',
   show: true,
+  supported: false,
 }, {
   code: 'it',
   iso: 'it',
   file: 'it.js',
   emoji: '🇮🇹',
   show: false,
+  supported: true,
 }, {
   code: 'ru',
   iso: 'ru',
   file: 'ru.js',
   emoji: '🇷🇺',
   show: false,
+  supported: true,
 }]
 export const defaultLocale = locales[0]
 
@@ -108,9 +115,9 @@ async function getTraduoraStrings(localeCode: LocaleCode, traduoraConfig: NonNul
 async function loadLocale(locale: Locale, config: Config) {
   const localStrings = await import(`../locales/${locale.code}.json`)
     .catch(() => ({ default: {} })) as { default: Record<string, string> }
-  const mediaStrings = await fetch(config.mediaUrl + '/translations/' + locale.iso + '.json')
+  const mediaStrings = locale.supported ? await fetch(config.mediaUrl + '/translations/' + locale.iso + '.json')
     .then(r => r.json())
-    .catch(() => ({})) as Record<string, string>
+    .catch(() => ({})) as Record<string, string> : {}
   const traduoraStrings = config.traduora != undefined ? await getTraduoraStrings(locale.code, config.traduora).catch(() => ({})) : {}
   const strings = Object.assign({}, localStrings.default, mediaStrings, traduoraStrings)
   const filteredStrings = Object.fromEntries(
