@@ -161,7 +161,7 @@ export default defineComponent({
       scrollActiveTabIntoView()
 
       // do not write default tab into URL
-      const newHash = tab.slot != props.tabs[0].slot ? '#' + tab.slot : ''
+      const newHash = tab.slot != props.tabs[0].slot ? '#' + tab.slot : ' '
 
       if (window.location.hash != newHash) {
         window.history.replaceState(null, '', newHash)
