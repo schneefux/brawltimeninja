@@ -83,7 +83,7 @@ async function startServer() {
     if (contentType == 'text/html;charset=utf-8') {
       // find line with "ramp.js" and move to very top of <head> (required by playwire)
       // FIXME it would be nicer if unhead-ssr would work together with VPS' injects
-      const lines = body.split(/\r?\n/)
+      const lines = body.split(/\n/)
       let beginIndex = lines.findIndex(line => line.includes('<head>'))
       lines.forEach((line, index) => {
         if (line.includes('<script') && line.includes('</script>') && (
