@@ -43,6 +43,11 @@ async function startServer() {
       maxAge: 31536000, // 1 year
       etag: true,
       immutable: true,
+      setHeaders: (res, path) => {
+        if (path.endsWith('/sw.js')) {
+          res.setHeader('Cache-Control', 'no-cache') // force revalidate with etag
+        }
+      },
     }))
   }
 
