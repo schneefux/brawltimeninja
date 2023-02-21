@@ -11,8 +11,6 @@ import {
   ReportingObserver as ReportingObserverIntegration,
   RewriteFrames as RewriteFramesIntegration,
 } from '@sentry/integrations'
-// @ts-ignore
-import { registerSW } from 'virtual:pwa-register'
 
 export { render }
 
@@ -46,6 +44,19 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
   hydrate(params.queryClient, pageContext.vueQueryState)
   params.pinia.state.value = SuperJSON.parse(pageContext.piniaState)
   await params.router.isReady()
-  registerSW({ immediate: true }) // reload app when service worker updates
+
+  const { registerSW } = await import('virtual:pwa-register') // use dynamic import to fetch sw at runtime
+  registerSW({
+    immediate: true, // reload app when service worker updates
+    async onRegisteredSW(swScriptUrl, registration) {
+      // delete old caches by previous PWA implementation
+      const keys = await caches.keys()
+      const oldKeys = keys.filter(key => !key.startsWith('workbox-precache')) // used by vite-plugin-pwa
+      await Promise.all(oldKeys.map(key => caches.delete(key)))
+    },
+    onRegisterError(error) {
+      Sentry.captureException(error)
+    },
+  })
   params.app.mount('#app')
 }

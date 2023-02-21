@@ -8,7 +8,8 @@
     "types": [
       "vite/client",
       "vavite/vite-config",
-      "@types/jest"
+      "@types/jest",
+      "vite-plugin-pwa/client",
     ],
     "skipLibCheck": true,
     "esModuleInterop": true,
