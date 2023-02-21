@@ -45,10 +45,16 @@ const config: UserConfig = {
       resolver: 'vue',
     }),
     VitePWA({
+      injectRegister: null, // not supported by vite-plugin-ssr, injected in all.page.client instead
+      registerType: 'autoUpdate',
       devOptions: {
         enabled: false,
       },
-      registerType: 'autoUpdate',
+      workbox: {
+        // tell workbox not to look for an index.html
+        // https://github.com/vite-pwa/vite-plugin-pwa/issues/120#issuecomment-1202579983
+        navigateFallback: null,
+      },
       manifest: {
         id: '/?standalone=true',
         start_url: '/?standalone=true',
@@ -140,41 +146,6 @@ const config: UserConfig = {
           'sizes': '512x512',
           'type': 'image/png',
           'purpose': 'any'
-        }],
-      },
-      workbox: {
-        // disable precaching
-        globIgnores: ['**/*'],
-        navigateFallback: null,
-        // FIXME depends on env variables being available at build time
-        // - use *.brawltime.ninja as urlPattern instead
-        runtimeCaching: [{
-          urlPattern: process.env.MEDIA_URL + '/.*',
-          handler: 'StaleWhileRevalidate',
-          options: {
-            cacheName: 'media',
-            expiration: {
-              maxAgeSeconds: 60 * 60 * 24 * 31,
-            },
-          },
-        }, {
-          urlPattern: process.env.CUBE_URL + '/.*',
-          handler: 'NetworkFirst',
-          options: {
-            cacheName: 'cube',
-            expiration: {
-              maxAgeSeconds: 60 * 60,
-            },
-          },
-        }, {
-          urlPattern: process.env.MANAGER_URL + '/.*',
-          handler: 'NetworkFirst',
-          options: {
-            cacheName: 'manager',
-            expiration: {
-              maxAgeSeconds: 60 * 60 * 24,
-            },
-          },
         }],
       },
     }),

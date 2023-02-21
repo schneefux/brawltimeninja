@@ -11,6 +11,8 @@ import {
   ReportingObserver as ReportingObserverIntegration,
   RewriteFrames as RewriteFramesIntegration,
 } from '@sentry/integrations'
+// @ts-ignore
+import { registerSW } from 'virtual:pwa-register'
 
 export { render }
 
@@ -44,5 +46,6 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
   hydrate(params.queryClient, pageContext.vueQueryState)
   params.pinia.state.value = SuperJSON.parse(pageContext.piniaState)
   await params.router.isReady()
+  registerSW({ immediate: true }) // reload app when service worker updates
   params.app.mount('#app')
 }
