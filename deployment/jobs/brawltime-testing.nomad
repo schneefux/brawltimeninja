@@ -1,4 +1,3 @@
-variable "sentry_dsn" {}
 variable "web_traduora_client_id" {}
 variable "web_traduora_secret" {}
 variable "web_traduora_project_id" {}
@@ -94,8 +93,6 @@ job "brawltime-testing" {
         TRADUORA_CLIENT_ID = "${var.web_traduora_client_id}"
         TRADUORA_SECRET = "${var.web_traduora_secret}"
         TRADUORA_PROJECT_ID = "${var.web_traduora_project_id}"
-
-        SENTRY_DSN = "${var.sentry_dsn}"
 
         ADSENSE_PUBID = "ca-pub-6856963757796636"
         QUANTCAST_CHOICE_ID = "Zj670A0xwScEY"
