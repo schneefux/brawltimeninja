@@ -19,7 +19,7 @@
       scraper
     ></ad>
 
-    <div class="fill-height">
+    <div class="fill-layout-height">
       <slot></slot>
     </div>
 
@@ -150,15 +150,17 @@ export default defineComponent({
 })
 </script>
 
-<style lang="postcss" scoped>
+<style lang="postcss">
+/* do not use scoped to suppress Vue warning about non-prop attributes */
+
 /* main content size = 100vh - header - footer */
 
-.fill-height {
+.fill-layout-height {
   min-height: calc(100vh - 56px - 56px);
 }
 
 @media screen(lg) {
-  .fill-height {
+  .fill-layout-height {
     min-height: calc(100vh - 76px - 160px);
   }
 }
