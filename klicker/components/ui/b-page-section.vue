@@ -16,10 +16,7 @@
       <slot name="description"></slot>
     </div>
 
-    <lazy-hydration
-      v-if="lazy"
-      :hydrate-when-visible="section"
-    >
+    <lazy-hydration-wrapper v-if="!hydrate">
       <div
         :class="{
           'mt-4': title != undefined,
@@ -28,7 +25,7 @@
       >
         <slot></slot>
       </div>
-    </lazy-hydration>
+    </lazy-hydration-wrapper>
 
     <div
       v-else
@@ -37,19 +34,20 @@
         'mt-8': title == undefined,
       }"
     >
-      <slot></slot>
+    <slot></slot>
     </div>
   </section>
 </template>
 
 <script lang="ts">
 import { ref, defineComponent } from 'vue'
-import LazyHydration from './lazy-hydration.vue'
+import { LazyHydrationWrapper } from 'vue3-lazy-hydration'
+import { useIntersectionObserver } from '@vueuse/core'
 import { generateId, BindOnce } from '../../directives/bind-once'
 
 export default defineComponent({
   components: {
-    LazyHydration,
+    LazyHydrationWrapper,
   },
   directives: {
     BindOnce,
@@ -64,13 +62,32 @@ export default defineComponent({
       default: false
     },
   },
-  setup() {
+  setup(props) {
     const section = ref<HTMLElement>()
     const id = generateId()
+
+    // never hydrate, instead rerender when visible to prevent hydration errors
+    const hydrate = ref(!props.lazy)
+
+    if (!import.meta.env.SSR) {
+      const { isSupported, stop } = useIntersectionObserver(section, ([ { isIntersecting } ]) => {
+        if (isIntersecting) {
+          hydrate.value = true
+          stop()
+        }
+      }, {
+        rootMargin: `50% 50% 50% 50%`,
+      })
+
+      if (!isSupported) {
+        hydrate.value = true
+      }
+    }
 
     return {
       id,
       section,
+      hydrate,
     }
   },
 })
