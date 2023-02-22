@@ -16,7 +16,13 @@ import { Locale } from '~/locales';
  */
 
 export function useAsync<T>(fun: () => Promise<T>, key: MaybeRef<string>): Ref<T|undefined> {
-  const { suspense, data } = useQuery([key], fun)
+  const sentry = useSentry()
+  const { suspense, data } = useQuery([key], fun, {
+    keepPreviousData: true,
+    onError(err) {
+      sentry.captureException(err)
+    },
+  })
   onServerPrefetch(suspense)
   return data
 }
