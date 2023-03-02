@@ -12,7 +12,7 @@
       v-model="filter"
       ref="search"
       :class="inputClass"
-      type="text"
+      type="search"
       aria-label="search"
       autocomplete="off"
       class="pl-8 h-6 w-full"
