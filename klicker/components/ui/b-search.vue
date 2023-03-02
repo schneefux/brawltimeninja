@@ -14,6 +14,7 @@
       :class="inputClass"
       type="text"
       aria-label="search"
+      autocomplete="off"
       class="pl-8 h-6 w-full"
       @focus="$emit('update:modelValue', true)"
       @keyup.enter="$emit('enter')"
