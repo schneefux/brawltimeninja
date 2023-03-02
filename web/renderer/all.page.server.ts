@@ -87,13 +87,11 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 
   let string = await renderToString(app)
   if (firstError) {
-    queryClient.unmount() // fixes memory leak
     throw firstError
   }
 
   const payload = await renderSSRHead(head)
   const vueQueryState = dehydrate(queryClient)
-  queryClient.unmount() // fixes memory leak
   const piniaState = SuperJSON.stringify(pinia.state.value)
 
   const documentHtml = escapeInject`<!DOCTYPE html>
