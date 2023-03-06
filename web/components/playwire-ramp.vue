@@ -67,7 +67,7 @@ export default defineComponent({
 
     onUnmounted(() => {
       if (window.ramp.que.includes(addAdFun)) {
-        // insert & remove does not work due to async issue, so skip both
+        // insert & immediate remove does not work due to async issue, so skip both
         window.ramp.que = window.ramp.que.filter((f) => f != addAdFun)
       } else {
         if (!window.ramp.que.includes(removeAdFun)) {

@@ -25,7 +25,7 @@ declare global {
       displayUnits: () => void;
       getUnits: () => Unit[];
       destroyUnits: (units: 'all'|string|string[]) => Promise<void>;
-      setPath: (path?: string) => void;
+      setPath: (path?: string) => Promise<void>;
       triggerRefresh: () => void;
       showCmpModal: () => void;
       onReady: (callback: () => void) => void;
@@ -49,26 +49,26 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
 
   const route = useRoute()
 
-  watch(route, (newroute, oldroute) => {
-    if (window.ramp.setPath == undefined) {
+  watch(() => route.path, () => {
+    // do not refresh ads when just the params or the hash changes
+    if (import.meta.env.SSR) {
       return
     }
 
-    window.ramp.setPath(route.fullPath)
+    window.ramp.que.push(async () => {
+      let slotsToRemove: string[] = []
+      Object.entries(window.ramp.settings.slots).forEach(([slotName, slot]: [string, any]) => {
+        if (outOfPageUnits.some(unit => unit.type == slot.type) || slot.videoType === 'Bolt Player') {
+          slotsToRemove.push(slotName)
+        }
+      })
 
-    if (newroute.path == oldroute.path) {
-      // do not refresh ads when just the params or the hash changes
-      return
-    }
-
-    window.ramp.que.push(() => {
-      window.ramp.destroyUnits('all')
-        .catch(e => console.warn(e))
-      window.ramp.addUnits(outOfPageUnits)
-        .catch(e => console.warn(e))
-        .finally(() => window.ramp.displayUnits())
+      await window.ramp.destroyUnits(slotsToRemove)
+      await window.ramp.setPath(route.path)
+      await window.ramp.addUnits(outOfPageUnits)
+      await window.ramp.displayUnits()
     })
-  }, { flush: 'post' })
+  }, { immediate: true })
 
   useMeta(() => ({
     script: [ {
@@ -78,9 +78,6 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
         window.ramp = window.ramp || {};
         window.ramp.que = window.ramp.que || [];
         window.ramp.passiveMode = true;
-        window.ramp.que.push(() => {
-          window.ramp.addUnits(${JSON.stringify(outOfPageUnits)}).catch(e => console.warn(e)).finally(() => window.ramp.displayUnits());
-        });
       `.replace(/\s+/g, ' '),
       tagPriority: 'critical',
     }, {

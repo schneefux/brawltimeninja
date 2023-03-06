@@ -79,14 +79,6 @@ export default defineComponent({
     captioned: {
       type: Boolean
     },
-    brawlerId: {
-      type: Function,
-      default: brawlerId
-    },
-    capitalizeWords: {
-      type: Function,
-      default: capitalizeWords
-    },
   },
   setup(props) {
     const localePath = useLocalePath()
