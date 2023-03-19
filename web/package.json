@@ -4,8 +4,8 @@
     "dev": "node --inspect ./node_modules/.bin/vite",
     "typecheck": "vue-tsc --noEmit",
     "build": "vavite",
-    "start": "cross-env NODE_ENV=production node ./dist/server",
-    "start:debug": "cross-env NODE_ENV=production node --inspect ./dist/server"
+    "start": "cross-env NODE_ENV=production node ./dist/server/index.mjs",
+    "start:debug": "cross-env NODE_ENV=production node --inspect ./dist/server/index.mjs"
   },
   "dependencies": {
     "@apla/clickhouse": "^1.6.4",

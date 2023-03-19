@@ -40,4 +40,4 @@ RUN rm ./.npmrc
 ENV PORT=80
 EXPOSE 80
 USER node
-CMD [ "node", "./dist/server" ]
+CMD [ "node", "./dist/server/index.mjs" ]
