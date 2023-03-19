@@ -78,7 +78,6 @@
 import { defineComponent, computed, ref } from 'vue'
 import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
 import { useIsApp } from '~/composables/app'
-import { usePreferencesStore } from '@/stores/preferences'
 import { useConfig } from '@/composables/compat'
 import { useRoute } from 'vue-router'
 
@@ -110,14 +109,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = usePreferencesStore()
     const ad = ref<HTMLElement>()
     const visible = ref(!props.lazy || props.first)
     const { isApp } = useIsApp()
 
-    const userAllowed = computed(() => store.adsAllowed == undefined || store.adsAllowed == true)
-    const policyAllowed = computed(() => props.first || isApp.value == undefined || isApp.value == false)
-    const allowed = computed(() => policyAllowed.value && userAllowed.value)
+    const allowed = computed(() => props.first || isApp.value == undefined || isApp.value == false)
 
     if (!import.meta.env.SSR) {
       const { isSupported, stop } = useIntersectionObserver(ad, ([{ isIntersecting }]) => {

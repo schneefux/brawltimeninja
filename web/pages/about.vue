@@ -12,12 +12,7 @@
       Send questions or feedback to <client-only><span>dev (at) {{ domain }}</span></client-only>. Built with ❤️ by <a href="https://schneefux.xyz">schneefux</a>. You can view this site's source code <a href="https://github.com/schneefux/brawltimeninja">on GitHub</a>.
     </p>
     <p class="mt-2">
-      With your consent, this site shares visitor data with Google Analytics and Google AdSense which store cookies. You can withdraw consent by deleting this site's settings in your browser or by clicking
-      <b-button
-        light
-        xs
-        @click="withdrawCookieConsent"
-      >this button</b-button>.
+      With your consent, this site shares visitor data with Google Analytics and Google AdSense which store cookies. You can withdraw consent by deleting this site's settings in your browser or below.
     </p>
 
     <p>Icons by <a href="https://icons8.com/" rel="nofollow">Icons8</a> and <a href="https://fontawesome.com/" rel="nofollow">Font Awesome</a>.</p>
@@ -60,7 +55,6 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useCacheHeaders, useMeta } from '@/composables/compat';
-import { usePreferencesStore } from '@/stores/preferences';
 
 export default defineComponent({
   setup() {
@@ -72,9 +66,6 @@ export default defineComponent({
       return ''
     })
 
-    const store = usePreferencesStore()
-    const withdrawCookieConsent = () => store.withdrawConsent()
-
     useCacheHeaders()
     useMeta(() => ({
       title: 'Privacy',
@@ -82,7 +73,6 @@ export default defineComponent({
 
     return {
       domain,
-      withdrawCookieConsent,
     }
   },
 })

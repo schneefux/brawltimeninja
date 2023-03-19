@@ -11,8 +11,6 @@ export const usePreferencesStore = defineStore('preferences', () => {
   const lastPlayers = ref<StoredPlayer[]>([])
   const userTag = ref<string>() // personal tag (last searched)
   const personalityTestResult = ref<string>()
-  const cookiesAllowed = ref<boolean>()
-  const adsAllowed = ref<boolean>()
   const installBannerDismissed = ref(false)
   const reviewBannerDismissed = ref(false)
 
@@ -21,14 +19,9 @@ export const usePreferencesStore = defineStore('preferences', () => {
     lastPlayers,
     userTag,
     personalityTestResult,
-    cookiesAllowed,
-    adsAllowed,
     installBannerDismissed,
     reviewBannerDismissed,
   }
-
-  const consentPopupVisible = computed(() =>
-    !import.meta.env.SSR && (cookiesAllowed.value == undefined || adsAllowed.value == undefined))
 
   function addLastPlayer(player: StoredPlayer) {
     const clone = (obj: any) => JSON.parse(JSON.stringify(obj))
@@ -36,11 +29,6 @@ export const usePreferencesStore = defineStore('preferences', () => {
     const newLastPlayers = [clone(player), ...lastPlayers.value]
       .filter((player, index, arr) => index == arr.findIndex(p => p.tag == player.tag)) // unique
     lastPlayers.value = newLastPlayers.slice(0, 4)
-  }
-
-  function withdrawConsent() {
-    cookiesAllowed.value = undefined
-    adsAllowed.value = undefined
   }
 
   // sync with localstorage
@@ -71,9 +59,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
 
   return {
     ...state,
-    consentPopupVisible,
     addLastPlayer,
-    withdrawConsent,
   }
 })
 

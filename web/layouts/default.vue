@@ -23,22 +23,6 @@
       <slot></slot>
     </div>
 
-    <client-only>
-      <b-cookie-consent
-        v-if="consentPopupVisible"
-        @enable-none="disableCookies"
-        @enable-cookies="enableCookies"
-        @enable-all="enableCookiesAndAds"
-      >
-        <template v-slot:link>
-          <router-link
-            :to="localePath('/about')"
-            class="underline"
-          >link</router-link>
-        </template>
-      </b-cookie-consent>
-    </client-only>
-
     <app-bottom-nav class="lg:hidden"></app-bottom-nav>
     <b-web-footer
       :links="links"
@@ -59,21 +43,18 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import { useMutationObserver } from '@vueuse/core'
-import { BWebFooter, BCookieConsent } from '@schneefux/klicker/components'
+import { BWebFooter } from '@schneefux/klicker/components'
 import { useInstallPromptListeners } from '~/composables/app'
 import { useI18n } from 'vue-i18n'
 import { useConfig, useLocaleCookieRedirect, useLocalePath } from '@/composables/compat'
 import { useRoute } from 'vue-router'
-import { usePreferencesStore } from '@/stores/preferences'
 import { usePlaywireRamp } from '@/composables/playwire-ramp'
 import { useQuantcast } from '@/composables/quantcast'
 import { useAdsense } from '@/composables/adsense'
-import { useAnalytics } from '@/composables/gtag'
 
 export default defineComponent({
   components: {
     BWebFooter,
-    BCookieConsent,
   },
   setup() {
     const container = ref<HTMLElement>()
@@ -96,21 +77,6 @@ export default defineComponent({
       target: localePath('/about'),
     }])
 
-    const store = usePreferencesStore()
-
-    const disableCookies = () => {
-      store.cookiesAllowed = false
-      store.adsAllowed = false
-    }
-    const enableCookies = () => {
-      store.cookiesAllowed = true
-      store.adsAllowed = false
-    }
-    const enableCookiesAndAds = () => {
-      store.cookiesAllowed = true
-      store.adsAllowed = true
-    }
-
     const route = useRoute()
 
     useMutationObserver(container, () => {
@@ -132,18 +98,12 @@ export default defineComponent({
     } else {
       useAdsense(config.adsensePubid)
     }
-    useAnalytics()
-    const consentPopupVisible = computed(() => store.consentPopupVisible && !config.quantcastChoiceId)
 
     useQuantcast(config.quantcastChoiceId)
 
     return {
       route,
       links,
-      disableCookies,
-      enableCookies,
-      enableCookiesAndAds,
-      consentPopupVisible,
       container,
     }
   },

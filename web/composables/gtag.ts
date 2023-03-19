@@ -1,6 +1,4 @@
-import { watch } from "vue"
-import { usePreferencesStore } from "@/stores/preferences"
-import { event, optIn, optOut } from "vue-gtag"
+import { event } from "vue-gtag"
 
 export const useTrackScroll = (trackingPageId: string) => {
   const makeVisibilityCallback = (trackingId: string) => (visible: boolean, element: any) =>  {
@@ -22,22 +20,4 @@ export const useTrackScroll = (trackingPageId: string) => {
     trackInteraction,
     makeVisibilityCallback,
   }
-}
-
-export function useAnalytics() {
-  const store = usePreferencesStore()
-
-  watch(() => store.adsAllowed, (allowed) => {
-    if (import.meta.env.SSR) {
-      return
-    }
-
-    if (allowed) {
-      optIn()
-    } else {
-      optOut()
-    }
-  }, {
-    immediate: true,
-  })
 }
