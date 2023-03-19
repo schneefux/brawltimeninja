@@ -35,7 +35,7 @@ declare global {
   }
 }
 
-export function usePlaywireRamp(publisherId: string, siteId: string, playwireRampGa4Id: string) {
+export function usePlaywireRamp(publisherId: string, siteId: string) {
   const outOfPageUnits = ([
     'trendi_slideshow',
     'trendi_video',
@@ -78,26 +78,6 @@ export function usePlaywireRamp(publisherId: string, siteId: string, playwireRam
         window.ramp = window.ramp || {};
         window.ramp.que = window.ramp.que || [];
         window.ramp.passiveMode = true;
-      `.replace(/\s+/g, ' '),
-      tagPriority: 'critical',
-    }, {
-      key: 'playwire-ramp-ga4',
-      innerHTML: `
-        window._pwGA4PageviewId = ''.concat(Date.now());
-        window.dataLayer = window.dataLayer || [];
-        window.gtag = window.gtag || function () {
-          dataLayer.push(arguments);
-        };
-        gtag('js', new Date());
-        gtag('config', '${playwireRampGa4Id}', { 'send_page_view': false });
-        gtag(
-          'event',
-          'ramp_js',
-          {
-            'send_to': '${playwireRampGa4Id}',
-            'pageview_id': window._pwGA4PageviewId
-          }
-        );
       `.replace(/\s+/g, ' '),
       tagPriority: 'critical',
     }, {

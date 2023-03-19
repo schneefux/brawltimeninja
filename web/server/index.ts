@@ -78,29 +78,11 @@ async function startServer() {
     if (!httpResponse) {
       return next()
     }
-    let { statusCode, contentType, earlyHints, body } = httpResponse
+    const { statusCode, contentType, earlyHints, body } = httpResponse
     if (res.writeEarlyHints) {
       res.writeEarlyHints({
         link: earlyHints.map(e => e.earlyHintLink),
       })
-    }
-
-    if (contentType == 'text/html;charset=utf-8') {
-      // find line with "ramp.js" and move to very top of <head> (required by playwire)
-      // FIXME it would be nicer if unhead-ssr would work together with VPS' injects
-      const lines = body.split(/\n/)
-      let beginIndex = lines.findIndex(line => line.includes('<head>'))
-      lines.forEach((line, index) => {
-        if (line.includes('<script') && line.includes('</script>') && (
-            line.includes('ramp') ||
-            line.includes('choice.js') || line.includes('checkIfUspIsReady')) // also move quantcast to top
-          ) {
-          lines.splice(index, 1)
-          lines.splice(beginIndex + 1, 0, line)
-          beginIndex++
-        }
-      })
-      body = lines.join('\n')
     }
 
     res.status(pageContext.statusCode ?? statusCode).type(contentType).send(body)
