@@ -135,7 +135,7 @@ export default defineComponent({
         metricsIds: ['winRate', 'picks'],
         sortId: 'picks',
       })
-      if (response.data[0].metricsRaw.picks > 0) {
+      if (response.data[0].metricsRaw.picks as number > 0) {
         return {
           winrate: response.data[0].metricsRaw.winRate as number,
           picks: response.data[0].metricsRaw.picks as number,

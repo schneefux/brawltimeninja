@@ -124,7 +124,7 @@ export default defineComponent({
     })
 
     const stats = computed<Stats>(() => {
-      if (data.value?.metricsRaw?.picks != undefined && data.value.metricsRaw.picks > 0) {
+      if (data.value?.metricsRaw?.picks != undefined && data.value.metricsRaw.picks as number > 0) {
         const wins = Math.floor((data.value.metricsRaw.winRate as number) * (data.value.metricsRaw.picks as number))
         const losses = (data.value.metricsRaw.picks as number) - wins
         return {

@@ -62,7 +62,7 @@ export const useBrawlstarsStore = defineStore('brawlstars', {
         }],
       }))
 
-      if (battleData.data[0].metricsRaw.picks > 0) {
+      if (battleData.data[0].metricsRaw.picks as number > 0) {
         this.playerTotals = battleData.data[0].metricsRaw as PlayerTotals
       } else {
         // calculate player totals from battle log
