@@ -588,5 +588,9 @@
     "metric.gear.short": "Gear",
     "metric.gear": "Gear",
     "banner.review.title": "Support the app",
-    "banner.review.catchphrase": "Write a review for the Play Store"
+    "banner.review.catchphrase": "Write a review for the Play Store",
+    "metric.picks.short": "Picks",
+    "metric.ally": "Ally",
+    "metric.mode": "Mode",
+    "metric.map": "Map"
 }

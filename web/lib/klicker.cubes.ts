@@ -1,4 +1,4 @@
-import { asSlice, Cube, MetaGridEntry, Dimension, Metric } from "@schneefux/klicker/types"
+import { asSlice, Cube, MetaGridEntry, Dimension, Metric, Slice } from "@schneefux/klicker/types"
 import ChiSquaredPdf from "@stdlib/stats-base-dists-chisquare-pdf"
 import { formatClickhouseDate } from "./util"
 
@@ -1411,34 +1411,6 @@ const brawlerSlices = asSlice({
       operator: 'equals',
     },
   },
-  ally: {
-    id: 'ally',
-    config: {
-      member: 'ally_brawler_dimension',
-      operator: 'equals',
-    },
-  },
-  allyId: {
-    id: 'allyId',
-    config: {
-      member: 'ally_brawler_id_dimension',
-      operator: 'equals',
-    },
-  },
-  enemy: {
-    id: 'enemy',
-    config: {
-      member: 'enemy_brawler_dimension',
-      operator: 'equals',
-    },
-  },
-  enemyId: {
-    id: 'enemyId',
-    config: {
-      member: 'enemy_brawler_id_dimension',
-      operator: 'equals',
-    },
-  },
   trophyRangeGte: {
     id: 'trophyRangeGte',
     config: {
@@ -1706,6 +1678,34 @@ const playerBrawlerSlices = [
   commonSlices.powerLte,
 ]
 
+const allySlices: Slice[] = [{
+  id: 'ally',
+  config: {
+    member: 'ally_brawler_dimension',
+    operator: 'equals',
+  },
+}, {
+  id: 'allyId',
+  config: {
+    member: 'ally_brawler_id_dimension',
+    operator: 'equals',
+  },
+}]
+
+const enemySlices: Slice[] = [{
+  id: 'enemy',
+  config: {
+      member: 'enemy_brawler_dimension',
+      operator: 'equals',
+    },
+}, {
+  id: 'enemyId',
+  config: {
+    member: 'enemy_brawler_id_dimension',
+    operator: 'equals',
+  },
+}]
+
 const mapCube: Cube = {
   id: 'map',
   table: 'map_meta',
@@ -1826,20 +1826,25 @@ const brawlerAlliesCube: Cube = {
     modeDimension,
     mapDimension,
   ],
-  defaultDimensionsIds: ['brawler'],
+  defaultDimensionsIds: ['brawler', 'ally'],
   metrics: [
+    modeMetric,
+    mapMetric,
+    eventIdMetric,
+    brawlerMetric,
     winRateSumMergedMetric,
     picksMergedMetric,
   ],
-  defaultMetricIds: ['winRateAdj'],
-  metaMetrics: ['picks', 'timestamp'],
+  defaultMetricIds: ['winRate'],
+  metaMetrics: ['picks'],
   slices: [
     ...brawlerBattleSlices,
     commonSlices.mode,
     commonSlices.map,
+    commonSlices.mapLike,
+    commonSlices.mapNotLike,
     commonSlices.brawlerId,
-    commonSlices.ally,
-    commonSlices.allyId,
+    ...allySlices,
   ],
   defaultSliceValues: {
     season: [monthAgoSeason],
@@ -1858,20 +1863,25 @@ const brawlerEnemiesCube: Cube = {
     modeDimension,
     mapDimension,
   ],
-  defaultDimensionsIds: ['brawler'],
+  defaultDimensionsIds: ['brawler', 'enemy'],
   metrics: [
+    modeMetric,
+    mapMetric,
+    eventIdMetric,
+    brawlerMetric,
     winRateSumMergedMetric,
     picksMergedMetric,
   ],
-  defaultMetricIds: ['winRateAdj'],
-  metaMetrics: ['picks', 'timestamp'],
+  defaultMetricIds: ['winRate'],
+  metaMetrics: ['picks'],
   slices: [
     ...brawlerBattleSlices,
     commonSlices.mode,
     commonSlices.map,
+    commonSlices.mapLike,
+    commonSlices.mapNotLike,
     commonSlices.brawlerId,
-    commonSlices.enemy,
-    commonSlices.enemyId,
+    ...enemySlices,
   ],
   defaultSliceValues: {
     season: [monthAgoSeason],
@@ -1881,7 +1891,7 @@ const brawlerEnemiesCube: Cube = {
 const battleCube: Cube = {
   id: 'battle',
   table: 'battle',
-  name: 'Battles',
+  name: 'All Battle Data (slow)',
   dimensions: [
     ...playerBrawlerDimensions,
     modeDimension,
@@ -1896,7 +1906,7 @@ const battleCube: Cube = {
     gearDimension,
     gearsLengthDimension,
   ],
-  defaultDimensionsIds: ['player'],
+  defaultDimensionsIds: [],
   metrics: [
     ...playerBrawlerMetrics,
     winsMetric,
@@ -1941,11 +1951,11 @@ const battleCube: Cube = {
 const brawlerCube: Cube = {
   id: 'brawler',
   table: 'brawler',
-  name: 'Raw Brawlers',
+  name: 'All Brawler Data (slow)',
   dimensions: [
     ...playerBrawlerDimensions,
   ],
-  defaultDimensionsIds: ['player'],
+  defaultDimensionsIds: [],
   metrics: [
     ...playerBrawlerMetrics,
   ],

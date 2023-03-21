@@ -7,7 +7,7 @@ import { rankingsRouter } from './routes/rankings'
 import { eventsRouter } from './routes/events'
 import { router } from './trpc'
 import renderRouter from './routes/render'
-//import klickerRouter from './routes/klicker'
+import klickerRouter from './routes/klicker'
 import etag from 'etag'
 
 const appRouter = router({
@@ -31,7 +31,7 @@ app.post('/cron', async (req, res) => {
 })
 
 app.use('/render', renderRouter)
-//app.use('/klicker', klickerRouter)
+app.use('/klicker', klickerRouter)
 
 app.use(
   '/',

@@ -6,7 +6,7 @@
   >
     <div class="mr-2 w-24 sm:w-23 md:w-40">
       <media-img
-        :path="`/modes/${row.dimensionsRaw.mode.mode}/background`"
+        :path="imgPath"
         :alt="row.dimensions.mode"
         size="160"
         clazz="h-6 sm:h-8 md:h-10"
@@ -37,9 +37,11 @@ export default defineComponent({
   setup(props) {
     const localePath = useLocalePath()
     const to = computed(() => localePath(`/tier-list/mode/${camelToKebab(props.row.dimensionsRaw.mode.mode)}`))
+    const imgPath = computed(() => `/modes/${camelToKebab(props.row.dimensionsRaw.mode.mode)}/background`)
 
     return {
       to,
+      imgPath,
     }
   },
 })
