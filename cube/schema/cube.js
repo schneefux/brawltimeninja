@@ -1,1492 +1,1548 @@
 
-/* generated on 2023-02-05T11:35:10.081Z */
+/* generated on 2023-03-21T13:00:05.946Z */
 
 cube('brawler', {
-refreshKey: {
-  every: '10 minutes',
-},
-sql: `SELECT * FROM brawltime.brawler`,
-rewriteQueries: true,
+  refreshKey: {
+    every: '10 minutes',
+  },
+  sql: `SELECT * FROM brawltime.brawler`,
+  rewriteQueries: true,
 
-measures: {
+  measures: {
 
-  picks_measure: {
-    title: 'Picks recorded',
-    
-    sql: "",
-    type: 'count',
+    picks_measure: {
+      title: 'Picks recorded',
+
+      sql: "",
+      type: 'count',
+    },
+
+    pickRate_measure: {
+      title: 'Pick Rate',
+      description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+      sql: "",
+      type: 'count',
+    },
+
+    useRate_measure: {
+      title: 'Use Rate',
+      description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
+      sql: "player_brawlers_length",
+      type: 'sum',
+    },
+
+    users_measure: {
+      title: 'Players',
+      description: 'The total number of players.',
+      sql: "uniqCombined(player_id)",
+      type: 'number',
+    },
+
+    timestamp_measure: {
+      title: 'Last Update',
+
+      sql: "formatDateTime(MAX(timestamp), '%FT%TZ', 'UTC')",
+      type: 'number',
+    },
+
+    day_measure: {
+      title: 'Day',
+
+      sql: "formatDateTime(MAX(toStartOfDay(timestamp)), '%FT%TZ', 'UTC')",
+      type: 'number',
+    },
+
+    playerName_measure: {
+      title: 'Most common name',
+
+      sql: "any(player_name)",
+      type: 'number',
+    },
+
+    playerNameColor_measure: {
+      title: 'Most common color',
+
+      sql: "any(player_name_color)",
+      type: 'number',
+    },
+
+    playerIcon_measure: {
+      title: 'Most common icon',
+
+      sql: "any(player_icon_id)",
+      type: 'number',
+    },
+
+    playerTrophies_measure: {
+      title: 'Player Trophies',
+
+      sql: "player_trophies",
+      type: 'max',
+    },
+
+    playerHighestTrophies_measure: {
+      title: 'Player Highest Trophies',
+
+      sql: "player_highest_trophies",
+      type: 'max',
+    },
+
+    powerPlayPoints_measure: {
+      title: 'Power Play Points',
+
+      sql: "player_power_play_points",
+      type: 'max',
+    },
+
+    highestPowerPlayPoints_measure: {
+      title: 'Highest Power Play Points',
+
+      sql: "player_highest_power_play_points",
+      type: 'max',
+    },
+
+    expPoints_measure: {
+      title: 'EXP',
+
+      sql: "player_exp_points",
+      type: 'max',
+    },
+
+    victories_measure: {
+      title: '3v3 Victories',
+
+      sql: "player_3vs3_victories",
+      type: 'max',
+    },
+
+    soloVictories_measure: {
+      title: 'Solo Victories',
+
+      sql: "player_solo_victories",
+      type: 'max',
+    },
+
+    duoVictories_measure: {
+      title: 'Duo Victories',
+
+      sql: "player_duo_victories",
+      type: 'max',
+    },
+
+    brawlers_measure: {
+      title: 'Brawlers',
+
+      sql: "player_brawlers_length",
+      type: 'max',
+    },
+
+    clubName_measure: {
+      title: 'Most common Club name',
+
+      sql: "any(player_club_name)",
+      type: 'number',
+    },
+
+    brawler_measure: {
+      title: 'Most played Brawler',
+
+      sql: "anyHeavy(brawler_name)",
+      type: 'number',
+    },
+
+    power_measure: {
+      title: 'Power',
+
+      sql: "brawler_power",
+      type: 'avg',
+    },
+
+    trophies_measure: {
+      title: 'Trophies',
+      description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
+      sql: "brawler_trophies",
+      type: 'avg',
+    },
+
+    highestTrophies_measure: {
+      title: 'Highest Trophies',
+
+      sql: "brawler_highest_trophies",
+      type: 'max',
+    },
+
+    starpowers_measure: {
+      title: 'Star Powers',
+
+      sql: "brawler_starpowers_length",
+      type: 'max',
+    },
+
+    gadgets_measure: {
+      title: 'Gadgets',
+
+      sql: "brawler_gadgets_length",
+      type: 'max',
+    },
+
+    gears_measure: {
+      title: 'Gears',
+
+      sql: "brawler_gears_length",
+      type: 'max',
+    },
+
+    hours_measure: {
+      title: 'Hours',
+
+      sql: "player_exp_points / 220",
+      type: 'max',
+    }
   },
 
-  pickRate_measure: {
-    title: 'Pick Rate',
-    description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
-    sql: "",
-    type: 'count',
-  },
+  dimensions: {
 
-  useRate_measure: {
-    title: 'Use Rate',
-    description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
-    sql: "player_brawlers_length",
-    type: 'sum',
-  },
+    season_dimension: {
+      title: 'Bi-Week',
+      sql: "trophy_season_end",
+      type: 'time',
+    },
 
-  users_measure: {
-    title: 'Players',
-    description: 'The total number of players.',
-    sql: "uniqCombined(player_id)",
-    type: 'number',
-  },
+    timestamp_dimension: {
+      title: 'Timestamp',
+      sql: "timestamp",
+      type: 'time',
+    },
 
-  timestamp_measure: {
-    title: 'Last Update',
-    
-    sql: "formatDateTime(MAX(timestamp), '%FT%TZ', 'UTC')",
-    type: 'number',
-  },
+    day_dimension: {
+      title: 'Day',
+      sql: "toStartOfDay(timestamp)",
+      type: 'time',
+    },
 
-  day_measure: {
-    title: 'Day',
-    
-    sql: "formatDateTime(MAX(toStartOfDay(timestamp)), '%FT%TZ', 'UTC')",
-    type: 'number',
-  },
+    player_dimension: {
+      title: 'Player',
+      sql: "player_id",
+      type: 'string',
+    },
 
-  playerName_measure: {
-    title: 'Most common name',
-    
-    sql: "any(player_name)",
-    type: 'number',
-  },
+    brawler_dimension: {
+      title: 'Brawler',
+      sql: "brawler_name",
+      type: 'string',
+    },
 
-  playerNameColor_measure: {
-    title: 'Most common color',
-    
-    sql: "any(player_name_color)",
-    type: 'number',
-  },
+    brawlerId_dimension: {
+      title: 'Brawler ID',
+      sql: "brawler_id",
+      type: 'string',
+    },
 
-  playerIcon_measure: {
-    title: 'Most common icon',
-    
-    sql: "any(player_icon_id)",
-    type: 'number',
-  },
+    trophyRange_dimension: {
+      title: 'Trophy Range',
+      sql: "brawler_trophyrange",
+      type: 'string',
+    },
 
-  playerTrophies_measure: {
-    title: 'Player Trophies',
-    
-    sql: "player_trophies",
-    type: 'max',
-  },
-
-  playerHighestTrophies_measure: {
-    title: 'Player Highest Trophies',
-    
-    sql: "player_highest_trophies",
-    type: 'max',
-  },
-
-  powerPlayPoints_measure: {
-    title: 'Power Play Points',
-    
-    sql: "player_power_play_points",
-    type: 'max',
-  },
-
-  highestPowerPlayPoints_measure: {
-    title: 'Highest Power Play Points',
-    
-    sql: "player_highest_power_play_points",
-    type: 'max',
-  },
-
-  expPoints_measure: {
-    title: 'EXP',
-    
-    sql: "player_exp_points",
-    type: 'max',
-  },
-
-  victories_measure: {
-    title: '3v3 Victories',
-    
-    sql: "player_3vs3_victories",
-    type: 'max',
-  },
-
-  soloVictories_measure: {
-    title: 'Solo Victories',
-    
-    sql: "player_solo_victories",
-    type: 'max',
-  },
-
-  duoVictories_measure: {
-    title: 'Duo Victories',
-    
-    sql: "player_duo_victories",
-    type: 'max',
-  },
-
-  brawlers_measure: {
-    title: 'Brawlers',
-    
-    sql: "player_brawlers_length",
-    type: 'max',
-  },
-
-  clubName_measure: {
-    title: 'Most common Club name',
-    
-    sql: "any(player_club_name)",
-    type: 'number',
-  },
-
-  brawler_measure: {
-    title: 'Most played Brawler',
-    
-    sql: "anyHeavy(brawler_name)",
-    type: 'number',
-  },
-
-  power_measure: {
-    title: 'Power',
-    
-    sql: "brawler_power",
-    type: 'avg',
-  },
-
-  trophies_measure: {
-    title: 'Trophies',
-    description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
-    sql: "brawler_trophies",
-    type: 'avg',
-  },
-
-  highestTrophies_measure: {
-    title: 'Highest Trophies',
-    
-    sql: "brawler_highest_trophies",
-    type: 'max',
-  },
-
-  starpowers_measure: {
-    title: 'Star Powers',
-    
-    sql: "brawler_starpowers_length",
-    type: 'max',
-  },
-
-  gadgets_measure: {
-    title: 'Gadgets',
-    
-    sql: "brawler_gadgets_length",
-    type: 'max',
-  },
-
-  gears_measure: {
-    title: 'Gears',
-    
-    sql: "brawler_gears_length",
-    type: 'max',
-  },
-
-  hours_measure: {
-    title: 'Hours',
-    
-    sql: "player_exp_points / 220",
-    type: 'max',
+    power_dimension: {
+      title: 'Power',
+      sql: "brawler_power",
+      type: 'number',
+    }
   }
-},
+  })
 
-dimensions: {
+  /* generated on 2023-03-21T13:00:05.946Z */
 
-  season_dimension: {
-    title: 'Bi-Week',
-    sql: "trophy_season_end",
-    type: 'time',
+  cube('battle', {
+  refreshKey: {
+    every: '10 minutes',
+  },
+  sql: `SELECT * FROM brawltime.battle`,
+  rewriteQueries: true,
+
+  measures: {
+
+    picks_measure: {
+      title: 'Picks recorded',
+
+      sql: "",
+      type: 'count',
+    },
+
+    pickRate_measure: {
+      title: 'Pick Rate',
+      description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+      sql: "",
+      type: 'count',
+    },
+
+    useRate_measure: {
+      title: 'Use Rate',
+      description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
+      sql: "player_brawlers_length",
+      type: 'sum',
+    },
+
+    users_measure: {
+      title: 'Players',
+      description: 'The total number of players.',
+      sql: "uniqCombined(player_id)",
+      type: 'number',
+    },
+
+    timestamp_measure: {
+      title: 'Last Update',
+
+      sql: "formatDateTime(MAX(timestamp), '%FT%TZ', 'UTC')",
+      type: 'number',
+    },
+
+    day_measure: {
+      title: 'Day',
+
+      sql: "formatDateTime(MAX(toStartOfDay(timestamp)), '%FT%TZ', 'UTC')",
+      type: 'number',
+    },
+
+    playerName_measure: {
+      title: 'Most common name',
+
+      sql: "any(player_name)",
+      type: 'number',
+    },
+
+    playerNameColor_measure: {
+      title: 'Most common color',
+
+      sql: "any(player_name_color)",
+      type: 'number',
+    },
+
+    playerIcon_measure: {
+      title: 'Most common icon',
+
+      sql: "any(player_icon_id)",
+      type: 'number',
+    },
+
+    playerTrophies_measure: {
+      title: 'Player Trophies',
+
+      sql: "player_trophies",
+      type: 'max',
+    },
+
+    playerHighestTrophies_measure: {
+      title: 'Player Highest Trophies',
+
+      sql: "player_highest_trophies",
+      type: 'max',
+    },
+
+    powerPlayPoints_measure: {
+      title: 'Power Play Points',
+
+      sql: "player_power_play_points",
+      type: 'max',
+    },
+
+    highestPowerPlayPoints_measure: {
+      title: 'Highest Power Play Points',
+
+      sql: "player_highest_power_play_points",
+      type: 'max',
+    },
+
+    expPoints_measure: {
+      title: 'EXP',
+
+      sql: "player_exp_points",
+      type: 'max',
+    },
+
+    victories_measure: {
+      title: '3v3 Victories',
+
+      sql: "player_3vs3_victories",
+      type: 'max',
+    },
+
+    soloVictories_measure: {
+      title: 'Solo Victories',
+
+      sql: "player_solo_victories",
+      type: 'max',
+    },
+
+    duoVictories_measure: {
+      title: 'Duo Victories',
+
+      sql: "player_duo_victories",
+      type: 'max',
+    },
+
+    brawlers_measure: {
+      title: 'Brawlers',
+
+      sql: "player_brawlers_length",
+      type: 'max',
+    },
+
+    clubName_measure: {
+      title: 'Most common Club name',
+
+      sql: "any(player_club_name)",
+      type: 'number',
+    },
+
+    brawler_measure: {
+      title: 'Most played Brawler',
+
+      sql: "anyHeavy(brawler_name)",
+      type: 'number',
+    },
+
+    power_measure: {
+      title: 'Power',
+
+      sql: "brawler_power",
+      type: 'avg',
+    },
+
+    trophies_measure: {
+      title: 'Trophies',
+      description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
+      sql: "brawler_trophies",
+      type: 'avg',
+    },
+
+    highestTrophies_measure: {
+      title: 'Highest Trophies',
+
+      sql: "brawler_highest_trophies",
+      type: 'max',
+    },
+
+    starpowers_measure: {
+      title: 'Star Powers',
+
+      sql: "brawler_starpowers_length",
+      type: 'max',
+    },
+
+    gadgets_measure: {
+      title: 'Gadgets',
+
+      sql: "brawler_gadgets_length",
+      type: 'max',
+    },
+
+    gears_measure: {
+      title: 'Gears',
+
+      sql: "brawler_gears_length",
+      type: 'max',
+    },
+
+    hours_measure: {
+      title: 'Hours',
+
+      sql: "player_exp_points / 220",
+      type: 'max',
+    },
+
+    wins_measure: {
+      title: 'Wins',
+
+      sql: "battle_victory",
+      type: 'sum',
+    },
+
+    duration_measure: {
+      title: 'Duration',
+      description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
+      sql: "battle_duration",
+      type: 'avg',
+    },
+
+    rank_measure: {
+      title: 'Average Rank',
+      description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
+      sql: "battle_rank",
+      type: 'avg',
+    },
+
+    rank1_measure: {
+      title: '#1 Recorded',
+
+      sql: "battle_rank1",
+      type: 'sum',
+    },
+
+    trophyChange_measure: {
+      title: 'Trophy Change',
+
+      sql: "battle_trophy_change",
+      type: 'avg',
+    },
+
+    winRate_measure: {
+      title: 'Win Rate',
+      description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
+      sql: "battle_victory",
+      type: 'avg',
+    },
+
+    winRateAdj_measure: {
+      title: 'Adjusted Win Rate',
+      description: 'For Brawlers with few picks, the Adjusted Win Rate is interpolated using a Bayesian Average.',
+      sql: "(1583+toFloat64(AVG(battle_victory))*COUNT())/(1583/least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)+COUNT())",
+      type: 'number',
+    },
+
+    starRate_measure: {
+      title: 'Star Player',
+      description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
+      sql: "battle_is_starplayer",
+      type: 'avg',
+    },
+
+    starpowerName_measure: {
+      title: 'Star Power',
+
+      sql: "any(brawler_starpower_name)",
+      type: 'number',
+    },
+
+    gadgetName_measure: {
+      title: 'Gadget',
+
+      sql: "any(brawler_gadget_name)",
+      type: 'number',
+    },
+
+    gearName_measure: {
+      title: 'Gear',
+
+      sql: "any(brawler_gear_name)",
+      type: 'number',
+    }
   },
 
-  timestamp_dimension: {
-    title: 'Timestamp',
-    sql: "timestamp",
-    type: 'time',
-  },
+  dimensions: {
 
-  day_dimension: {
-    title: 'Day',
-    sql: "toStartOfDay(timestamp)",
-    type: 'time',
-  },
+    season_dimension: {
+      title: 'Bi-Week',
+      sql: "trophy_season_end",
+      type: 'time',
+    },
 
-  player_dimension: {
-    title: 'Player',
-    sql: "player_id",
-    type: 'string',
-  },
+    timestamp_dimension: {
+      title: 'Timestamp',
+      sql: "timestamp",
+      type: 'time',
+    },
 
-  brawler_dimension: {
-    title: 'Brawler',
-    sql: "brawler_name",
-    type: 'string',
-  },
+    day_dimension: {
+      title: 'Day',
+      sql: "toStartOfDay(timestamp)",
+      type: 'time',
+    },
 
-  brawlerId_dimension: {
-    title: 'Brawler ID',
-    sql: "brawler_id",
-    type: 'string',
-  },
+    player_dimension: {
+      title: 'Player',
+      sql: "player_id",
+      type: 'string',
+    },
 
-  trophyRange_dimension: {
-    title: 'Trophy Range',
-    sql: "brawler_trophyrange",
-    type: 'string',
-  },
+    brawler_dimension: {
+      title: 'Brawler',
+      sql: "brawler_name",
+      type: 'string',
+    },
 
-  power_dimension: {
-    title: 'Power',
-    sql: "brawler_power",
-    type: 'number',
+    brawlerId_dimension: {
+      title: 'Brawler ID',
+      sql: "brawler_id",
+      type: 'string',
+    },
+
+    trophyRange_dimension: {
+      title: 'Trophy Range',
+      sql: "brawler_trophyrange",
+      type: 'string',
+    },
+
+    power_dimension: {
+      title: 'Power',
+      sql: "brawler_power",
+      type: 'number',
+    },
+
+    mode_dimension: {
+      title: 'Mode',
+      sql: "battle_event_mode",
+      type: 'string',
+    },
+
+    map_dimension: {
+      title: 'Map',
+      sql: "battle_event_map",
+      type: 'string',
+    },
+
+    powerplay_dimension: {
+      title: 'Power Play',
+      sql: "battle_event_powerplay",
+      type: 'boolean',
+    },
+
+    team_dimension: {
+      title: 'Team',
+      sql: "arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name]))",
+      type: 'string',
+    },
+
+    teamSize_dimension: {
+      title: 'Team size',
+      sql: "length(battle_allies.brawler_name) + 1",
+      type: 'number',
+    },
+
+    starpower_dimension: {
+      title: 'Star Power',
+      sql: "brawler_starpower_id",
+      type: 'string',
+    },
+
+    starpowersLength_dimension: {
+      title: 'Star Powers owned',
+      sql: "brawler_starpowers_length",
+      type: 'string',
+    },
+
+    gadget_dimension: {
+      title: 'Gadget',
+      sql: "brawler_gadget_id",
+      type: 'string',
+    },
+
+    gadgetsLength_dimension: {
+      title: 'Gadgets owned',
+      sql: "brawler_gadgets_length",
+      type: 'string',
+    },
+
+    gear_dimension: {
+      title: 'Gear',
+      sql: "brawler_gear_id",
+      type: 'string',
+    },
+
+    gearsLength_dimension: {
+      title: 'Gears owned',
+      sql: "brawler_gears_length",
+      type: 'string',
+    }
   }
-}
-})
+  })
 
-/* generated on 2023-02-05T11:35:10.081Z */
+  /* generated on 2023-03-21T13:00:05.946Z */
 
-cube('battle', {
-refreshKey: {
-  every: '10 minutes',
-},
-sql: `SELECT * FROM brawltime.battle`,
-rewriteQueries: true,
+  cube('map', {
+  refreshKey: {
+    every: '10 minutes',
+  },
+  sql: `SELECT * FROM brawltime.map_meta`,
+  rewriteQueries: true,
 
-measures: {
+  measures: {
 
-  picks_measure: {
-    title: 'Picks recorded',
-    
-    sql: "",
-    type: 'count',
+    mode_measure: {
+      title: 'Mode',
+
+      sql: "any(battle_event_mode)",
+      type: 'number',
+    },
+
+    map_measure: {
+      title: 'Map',
+
+      sql: "any(battle_event_map)",
+      type: 'number',
+    },
+
+    eventId_measure: {
+      title: 'Event ID',
+
+      sql: "any(battle_event_id)",
+      type: 'number',
+    },
+
+    timestamp_measure: {
+      title: 'Last Update',
+
+      sql: "formatDateTime(argMaxMerge(timestamp_state), '%FT%TZ', 'UTC')",
+      type: 'number',
+    },
+
+    trophyChange_measure: {
+      title: 'Trophy Change',
+
+      sql: "avgMerge(battle_trophy_change_state)",
+      type: 'number',
+    },
+
+    winRate_measure: {
+      title: 'Win Rate',
+      description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
+      sql: "avgMerge(battle_victory_state)",
+      type: 'number',
+    },
+
+    winRateAdj_measure: {
+      title: 'Adjusted Win Rate',
+      description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
+      sql: "(1583+toFloat64(avgMerge(battle_victory_state))*SUM(picks))/(1583/least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)+SUM(picks))",
+      type: 'number',
+    },
+
+    wins_measure: {
+      title: 'Wins',
+      description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
+      sql: "toFloat64(avgMerge(battle_victory_state))*SUM(picks)",
+      type: 'number',
+    },
+
+    picks_measure: {
+      title: 'Picks recorded',
+
+      sql: "sum(picks)",
+      type: 'number',
+    },
+
+    pickRate_measure: {
+      title: 'Pick Rate',
+      description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+      sql: "SUM(picks)",
+      type: 'number',
+    },
+
+    useRate_measure: {
+      title: 'Use Rate',
+      description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
+      sql: "picks_weighted",
+      type: 'sum',
+    },
+
+    starRate_measure: {
+      title: 'Star Player',
+      description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
+      sql: "avgMerge(battle_starplayer_state)",
+      type: 'number',
+    },
+
+    rank_measure: {
+      title: 'Average Rank',
+      description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
+      sql: "avgMerge(battle_rank_state)",
+      type: 'number',
+    },
+
+    rank1Rate_measure: {
+      title: '#1 Rate',
+      description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
+      sql: "avgMerge(battle_rank1_state)",
+      type: 'number',
+    },
+
+    duration_measure: {
+      title: 'Duration',
+      description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
+      sql: "avgMerge(battle_duration_state)",
+      type: 'number',
+    },
+
+    level_measure: {
+      title: 'Average Level',
+
+      sql: "avgMerge(battle_level_state)",
+      type: 'number',
+    },
+
+    brawler_measure: {
+      title: 'Most played Brawler',
+
+      sql: "anyHeavy(brawler_name)",
+      type: 'number',
+    }
   },
 
-  pickRate_measure: {
-    title: 'Pick Rate',
-    description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
-    sql: "",
-    type: 'count',
-  },
+  dimensions: {
 
-  useRate_measure: {
-    title: 'Use Rate',
-    description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
-    sql: "player_brawlers_length",
-    type: 'sum',
-  },
+    brawler_dimension: {
+      title: 'Brawler',
+      sql: "brawler_name",
+      type: 'string',
+    },
 
-  users_measure: {
-    title: 'Players',
-    description: 'The total number of players.',
-    sql: "uniqCombined(player_id)",
-    type: 'number',
-  },
+    season_dimension: {
+      title: 'Bi-Week',
+      sql: "trophy_season_end",
+      type: 'time',
+    },
 
-  timestamp_measure: {
-    title: 'Last Update',
-    
-    sql: "formatDateTime(MAX(timestamp), '%FT%TZ', 'UTC')",
-    type: 'number',
-  },
+    trophyRange_dimension: {
+      title: 'Trophy Range',
+      sql: "brawler_trophyrange",
+      type: 'string',
+    },
 
-  day_measure: {
-    title: 'Day',
-    
-    sql: "formatDateTime(MAX(toStartOfDay(timestamp)), '%FT%TZ', 'UTC')",
-    type: 'number',
-  },
+    mode_dimension: {
+      title: 'Mode',
+      sql: "battle_event_mode",
+      type: 'string',
+    },
 
-  playerName_measure: {
-    title: 'Most common name',
-    
-    sql: "any(player_name)",
-    type: 'number',
-  },
+    map_dimension: {
+      title: 'Map',
+      sql: "battle_event_map",
+      type: 'string',
+    },
 
-  playerNameColor_measure: {
-    title: 'Most common color',
-    
-    sql: "any(player_name_color)",
-    type: 'number',
-  },
-
-  playerIcon_measure: {
-    title: 'Most common icon',
-    
-    sql: "any(player_icon_id)",
-    type: 'number',
-  },
-
-  playerTrophies_measure: {
-    title: 'Player Trophies',
-    
-    sql: "player_trophies",
-    type: 'max',
-  },
-
-  playerHighestTrophies_measure: {
-    title: 'Player Highest Trophies',
-    
-    sql: "player_highest_trophies",
-    type: 'max',
-  },
-
-  powerPlayPoints_measure: {
-    title: 'Power Play Points',
-    
-    sql: "player_power_play_points",
-    type: 'max',
-  },
-
-  highestPowerPlayPoints_measure: {
-    title: 'Highest Power Play Points',
-    
-    sql: "player_highest_power_play_points",
-    type: 'max',
-  },
-
-  expPoints_measure: {
-    title: 'EXP',
-    
-    sql: "player_exp_points",
-    type: 'max',
-  },
-
-  victories_measure: {
-    title: '3v3 Victories',
-    
-    sql: "player_3vs3_victories",
-    type: 'max',
-  },
-
-  soloVictories_measure: {
-    title: 'Solo Victories',
-    
-    sql: "player_solo_victories",
-    type: 'max',
-  },
-
-  duoVictories_measure: {
-    title: 'Duo Victories',
-    
-    sql: "player_duo_victories",
-    type: 'max',
-  },
-
-  brawlers_measure: {
-    title: 'Brawlers',
-    
-    sql: "player_brawlers_length",
-    type: 'max',
-  },
-
-  clubName_measure: {
-    title: 'Most common Club name',
-    
-    sql: "any(player_club_name)",
-    type: 'number',
-  },
-
-  brawler_measure: {
-    title: 'Most played Brawler',
-    
-    sql: "anyHeavy(brawler_name)",
-    type: 'number',
-  },
-
-  power_measure: {
-    title: 'Power',
-    
-    sql: "brawler_power",
-    type: 'avg',
-  },
-
-  trophies_measure: {
-    title: 'Trophies',
-    description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
-    sql: "brawler_trophies",
-    type: 'avg',
-  },
-
-  highestTrophies_measure: {
-    title: 'Highest Trophies',
-    
-    sql: "brawler_highest_trophies",
-    type: 'max',
-  },
-
-  starpowers_measure: {
-    title: 'Star Powers',
-    
-    sql: "brawler_starpowers_length",
-    type: 'max',
-  },
-
-  gadgets_measure: {
-    title: 'Gadgets',
-    
-    sql: "brawler_gadgets_length",
-    type: 'max',
-  },
-
-  gears_measure: {
-    title: 'Gears',
-    
-    sql: "brawler_gears_length",
-    type: 'max',
-  },
-
-  hours_measure: {
-    title: 'Hours',
-    
-    sql: "player_exp_points / 220",
-    type: 'max',
-  },
-
-  wins_measure: {
-    title: 'Wins',
-    
-    sql: "battle_victory",
-    type: 'sum',
-  },
-
-  duration_measure: {
-    title: 'Duration',
-    description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
-    sql: "battle_duration",
-    type: 'avg',
-  },
-
-  rank_measure: {
-    title: 'Average Rank',
-    description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
-    sql: "battle_rank",
-    type: 'avg',
-  },
-
-  rank1_measure: {
-    title: '#1 Recorded',
-    
-    sql: "battle_rank1",
-    type: 'sum',
-  },
-
-  trophyChange_measure: {
-    title: 'Trophy Change',
-    
-    sql: "battle_trophy_change",
-    type: 'avg',
-  },
-
-  winRate_measure: {
-    title: 'Win Rate',
-    description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
-    sql: "battle_victory",
-    type: 'avg',
-  },
-
-  winRateAdj_measure: {
-    title: 'Adjusted Win Rate',
-    description: 'For Brawlers with few picks, the Adjusted Win Rate is interpolated using a Bayesian Average.',
-    sql: "(1583+toFloat64(AVG(battle_victory))*COUNT())/(1583/least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)+COUNT())",
-    type: 'number',
-  },
-
-  starRate_measure: {
-    title: 'Star Player',
-    description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
-    sql: "battle_is_starplayer",
-    type: 'avg',
-  },
-
-  starpowerName_measure: {
-    title: 'Star Power',
-    
-    sql: "any(brawler_starpower_name)",
-    type: 'number',
-  },
-
-  gadgetName_measure: {
-    title: 'Gadget',
-    
-    sql: "any(brawler_gadget_name)",
-    type: 'number',
-  },
-
-  gearName_measure: {
-    title: 'Gear',
-    
-    sql: "any(brawler_gear_name)",
-    type: 'number',
+    powerplay_dimension: {
+      title: 'Power Play',
+      sql: "battle_event_powerplay",
+      type: 'boolean',
+    }
   }
-},
+  })
 
-dimensions: {
+  /* generated on 2023-03-21T13:00:05.946Z */
 
-  season_dimension: {
-    title: 'Bi-Week',
-    sql: "trophy_season_end",
-    type: 'time',
+  cube('gadget', {
+  refreshKey: {
+    every: '10 minutes',
+  },
+  sql: `SELECT * FROM brawltime.gadget_meta`,
+  rewriteQueries: true,
+
+  measures: {
+
+    mode_measure: {
+      title: 'Mode',
+
+      sql: "any(battle_event_mode)",
+      type: 'number',
+    },
+
+    map_measure: {
+      title: 'Map',
+
+      sql: "any(battle_event_map)",
+      type: 'number',
+    },
+
+    eventId_measure: {
+      title: 'Event ID',
+
+      sql: "any(battle_event_id)",
+      type: 'number',
+    },
+
+    timestamp_measure: {
+      title: 'Last Update',
+
+      sql: "formatDateTime(argMaxMerge(timestamp_state), '%FT%TZ', 'UTC')",
+      type: 'number',
+    },
+
+    trophyChange_measure: {
+      title: 'Trophy Change',
+
+      sql: "avgMerge(battle_trophy_change_state)",
+      type: 'number',
+    },
+
+    winRate_measure: {
+      title: 'Win Rate',
+      description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
+      sql: "avgMerge(battle_victory_state)",
+      type: 'number',
+    },
+
+    winRateAdj_measure: {
+      title: 'Adjusted Win Rate',
+      description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
+      sql: "(1583+toFloat64(avgMerge(battle_victory_state))*SUM(picks))/(1583/least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)+SUM(picks))",
+      type: 'number',
+    },
+
+    wins_measure: {
+      title: 'Wins',
+      description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
+      sql: "toFloat64(avgMerge(battle_victory_state))*SUM(picks)",
+      type: 'number',
+    },
+
+    picks_measure: {
+      title: 'Picks recorded',
+
+      sql: "sum(picks)",
+      type: 'number',
+    },
+
+    pickRate_measure: {
+      title: 'Pick Rate',
+      description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+      sql: "SUM(picks)",
+      type: 'number',
+    },
+
+    useRate_measure: {
+      title: 'Use Rate',
+      description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
+      sql: "picks_weighted",
+      type: 'sum',
+    },
+
+    starRate_measure: {
+      title: 'Star Player',
+      description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
+      sql: "avgMerge(battle_starplayer_state)",
+      type: 'number',
+    },
+
+    rank_measure: {
+      title: 'Average Rank',
+      description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
+      sql: "avgMerge(battle_rank_state)",
+      type: 'number',
+    },
+
+    rank1Rate_measure: {
+      title: '#1 Rate',
+      description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
+      sql: "avgMerge(battle_rank1_state)",
+      type: 'number',
+    },
+
+    duration_measure: {
+      title: 'Duration',
+      description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
+      sql: "avgMerge(battle_duration_state)",
+      type: 'number',
+    },
+
+    level_measure: {
+      title: 'Average Level',
+
+      sql: "avgMerge(battle_level_state)",
+      type: 'number',
+    },
+
+    brawler_measure: {
+      title: 'Most played Brawler',
+
+      sql: "anyHeavy(brawler_name)",
+      type: 'number',
+    },
+
+    gadgetName_measure: {
+      title: 'Gadget',
+
+      sql: "any(brawler_gadget_name)",
+      type: 'number',
+    }
   },
 
-  timestamp_dimension: {
-    title: 'Timestamp',
-    sql: "timestamp",
-    type: 'time',
-  },
+  dimensions: {
 
-  day_dimension: {
-    title: 'Day',
-    sql: "toStartOfDay(timestamp)",
-    type: 'time',
-  },
+    brawler_dimension: {
+      title: 'Brawler',
+      sql: "brawler_name",
+      type: 'string',
+    },
 
-  player_dimension: {
-    title: 'Player',
-    sql: "player_id",
-    type: 'string',
-  },
+    season_dimension: {
+      title: 'Bi-Week',
+      sql: "trophy_season_end",
+      type: 'time',
+    },
 
-  brawler_dimension: {
-    title: 'Brawler',
-    sql: "brawler_name",
-    type: 'string',
-  },
+    trophyRange_dimension: {
+      title: 'Trophy Range',
+      sql: "brawler_trophyrange",
+      type: 'string',
+    },
 
-  brawlerId_dimension: {
-    title: 'Brawler ID',
-    sql: "brawler_id",
-    type: 'string',
-  },
+    brawlerId_dimension: {
+      title: 'Brawler ID',
+      sql: "brawler_id",
+      type: 'string',
+    },
 
-  trophyRange_dimension: {
-    title: 'Trophy Range',
-    sql: "brawler_trophyrange",
-    type: 'string',
-  },
-
-  power_dimension: {
-    title: 'Power',
-    sql: "brawler_power",
-    type: 'number',
-  },
-
-  mode_dimension: {
-    title: 'Mode',
-    sql: "battle_event_mode",
-    type: 'string',
-  },
-
-  map_dimension: {
-    title: 'Map',
-    sql: "battle_event_map",
-    type: 'string',
-  },
-
-  powerplay_dimension: {
-    title: 'Power Play',
-    sql: "battle_event_powerplay",
-    type: 'boolean',
-  },
-
-  team_dimension: {
-    title: 'Team',
-    sql: "arraySort(arrayConcat(battle_allies.brawler_name, [brawler_name]))",
-    type: 'string',
-  },
-
-  teamSize_dimension: {
-    title: 'Team size',
-    sql: "length(battle_allies.brawler_name) + 1",
-    type: 'number',
-  },
-
-  starpower_dimension: {
-    title: 'Star Power',
-    sql: "brawler_starpower_id",
-    type: 'string',
-  },
-
-  starpowersLength_dimension: {
-    title: 'Star Powers owned',
-    sql: "brawler_starpowers_length",
-    type: 'string',
-  },
-
-  gadget_dimension: {
-    title: 'Gadget',
-    sql: "brawler_gadget_id",
-    type: 'string',
-  },
-
-  gadgetsLength_dimension: {
-    title: 'Gadgets owned',
-    sql: "brawler_gadgets_length",
-    type: 'string',
-  },
-
-  gear_dimension: {
-    title: 'Gear',
-    sql: "brawler_gear_id",
-    type: 'string',
-  },
-
-  gearsLength_dimension: {
-    title: 'Gears owned',
-    sql: "brawler_gears_length",
-    type: 'string',
+    gadget_dimension: {
+      title: 'Gadget',
+      sql: "brawler_gadget_id",
+      type: 'string',
+    }
   }
-}
-})
+  })
 
-/* generated on 2023-02-05T11:35:10.081Z */
+  /* generated on 2023-03-21T13:00:05.946Z */
 
-cube('map', {
-refreshKey: {
-  every: '10 minutes',
-},
-sql: `SELECT * FROM brawltime.map_meta`,
-rewriteQueries: true,
+  cube('starpower', {
+  refreshKey: {
+    every: '10 minutes',
+  },
+  sql: `SELECT * FROM brawltime.starpower_meta`,
+  rewriteQueries: true,
 
-measures: {
+  measures: {
 
-  mode_measure: {
-    title: 'Mode',
-    
-    sql: "any(battle_event_mode)",
-    type: 'number',
+    mode_measure: {
+      title: 'Mode',
+
+      sql: "any(battle_event_mode)",
+      type: 'number',
+    },
+
+    map_measure: {
+      title: 'Map',
+
+      sql: "any(battle_event_map)",
+      type: 'number',
+    },
+
+    eventId_measure: {
+      title: 'Event ID',
+
+      sql: "any(battle_event_id)",
+      type: 'number',
+    },
+
+    timestamp_measure: {
+      title: 'Last Update',
+
+      sql: "formatDateTime(argMaxMerge(timestamp_state), '%FT%TZ', 'UTC')",
+      type: 'number',
+    },
+
+    trophyChange_measure: {
+      title: 'Trophy Change',
+
+      sql: "avgMerge(battle_trophy_change_state)",
+      type: 'number',
+    },
+
+    winRate_measure: {
+      title: 'Win Rate',
+      description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
+      sql: "avgMerge(battle_victory_state)",
+      type: 'number',
+    },
+
+    winRateAdj_measure: {
+      title: 'Adjusted Win Rate',
+      description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
+      sql: "(1583+toFloat64(avgMerge(battle_victory_state))*SUM(picks))/(1583/least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)+SUM(picks))",
+      type: 'number',
+    },
+
+    wins_measure: {
+      title: 'Wins',
+      description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
+      sql: "toFloat64(avgMerge(battle_victory_state))*SUM(picks)",
+      type: 'number',
+    },
+
+    picks_measure: {
+      title: 'Picks recorded',
+
+      sql: "sum(picks)",
+      type: 'number',
+    },
+
+    pickRate_measure: {
+      title: 'Pick Rate',
+      description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+      sql: "SUM(picks)",
+      type: 'number',
+    },
+
+    useRate_measure: {
+      title: 'Use Rate',
+      description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
+      sql: "picks_weighted",
+      type: 'sum',
+    },
+
+    starRate_measure: {
+      title: 'Star Player',
+      description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
+      sql: "avgMerge(battle_starplayer_state)",
+      type: 'number',
+    },
+
+    rank_measure: {
+      title: 'Average Rank',
+      description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
+      sql: "avgMerge(battle_rank_state)",
+      type: 'number',
+    },
+
+    rank1Rate_measure: {
+      title: '#1 Rate',
+      description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
+      sql: "avgMerge(battle_rank1_state)",
+      type: 'number',
+    },
+
+    duration_measure: {
+      title: 'Duration',
+      description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
+      sql: "avgMerge(battle_duration_state)",
+      type: 'number',
+    },
+
+    level_measure: {
+      title: 'Average Level',
+
+      sql: "avgMerge(battle_level_state)",
+      type: 'number',
+    },
+
+    brawler_measure: {
+      title: 'Most played Brawler',
+
+      sql: "anyHeavy(brawler_name)",
+      type: 'number',
+    },
+
+    starpowerName_measure: {
+      title: 'Star Power',
+
+      sql: "any(brawler_starpower_name)",
+      type: 'number',
+    }
   },
 
-  map_measure: {
-    title: 'Map',
-    
-    sql: "any(battle_event_map)",
-    type: 'number',
-  },
+  dimensions: {
 
-  eventId_measure: {
-    title: 'Event ID',
-    
-    sql: "any(battle_event_id)",
-    type: 'number',
-  },
+    brawler_dimension: {
+      title: 'Brawler',
+      sql: "brawler_name",
+      type: 'string',
+    },
 
-  timestamp_measure: {
-    title: 'Last Update',
-    
-    sql: "formatDateTime(argMaxMerge(timestamp_state), '%FT%TZ', 'UTC')",
-    type: 'number',
-  },
+    season_dimension: {
+      title: 'Bi-Week',
+      sql: "trophy_season_end",
+      type: 'time',
+    },
 
-  trophyChange_measure: {
-    title: 'Trophy Change',
-    
-    sql: "avgMerge(battle_trophy_change_state)",
-    type: 'number',
-  },
+    trophyRange_dimension: {
+      title: 'Trophy Range',
+      sql: "brawler_trophyrange",
+      type: 'string',
+    },
 
-  winRate_measure: {
-    title: 'Win Rate',
-    description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
-    sql: "avgMerge(battle_victory_state)",
-    type: 'number',
-  },
+    brawlerId_dimension: {
+      title: 'Brawler ID',
+      sql: "brawler_id",
+      type: 'string',
+    },
 
-  winRateAdj_measure: {
-    title: 'Adjusted Win Rate',
-    description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
-    sql: "(1583+toFloat64(avgMerge(battle_victory_state))*SUM(picks))/(1583/least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)+SUM(picks))",
-    type: 'number',
-  },
-
-  wins_measure: {
-    title: 'Wins',
-    description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
-    sql: "toFloat64(avgMerge(battle_victory_state))*SUM(picks)",
-    type: 'number',
-  },
-
-  picks_measure: {
-    title: 'Picks recorded',
-    
-    sql: "sum(picks)",
-    type: 'number',
-  },
-
-  pickRate_measure: {
-    title: 'Pick Rate',
-    description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
-    sql: "SUM(picks)",
-    type: 'number',
-  },
-
-  useRate_measure: {
-    title: 'Use Rate',
-    description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
-    sql: "picks_weighted",
-    type: 'sum',
-  },
-
-  starRate_measure: {
-    title: 'Star Player',
-    description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
-    sql: "avgMerge(battle_starplayer_state)",
-    type: 'number',
-  },
-
-  rank_measure: {
-    title: 'Average Rank',
-    description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
-    sql: "avgMerge(battle_rank_state)",
-    type: 'number',
-  },
-
-  rank1Rate_measure: {
-    title: '#1 Rate',
-    description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
-    sql: "avgMerge(battle_rank1_state)",
-    type: 'number',
-  },
-
-  duration_measure: {
-    title: 'Duration',
-    description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
-    sql: "avgMerge(battle_duration_state)",
-    type: 'number',
-  },
-
-  level_measure: {
-    title: 'Average Level',
-    
-    sql: "avgMerge(battle_level_state)",
-    type: 'number',
-  },
-
-  brawler_measure: {
-    title: 'Most played Brawler',
-    
-    sql: "anyHeavy(brawler_name)",
-    type: 'number',
+    starpower_dimension: {
+      title: 'Star Power',
+      sql: "brawler_starpower_id",
+      type: 'string',
+    }
   }
-},
+  })
 
-dimensions: {
+  /* generated on 2023-03-21T13:00:05.946Z */
 
-  brawler_dimension: {
-    title: 'Brawler',
-    sql: "brawler_name",
-    type: 'string',
+  cube('gear', {
+  refreshKey: {
+    every: '10 minutes',
+  },
+  sql: `SELECT * FROM brawltime.gear_meta`,
+  rewriteQueries: true,
+
+  measures: {
+
+    mode_measure: {
+      title: 'Mode',
+
+      sql: "any(battle_event_mode)",
+      type: 'number',
+    },
+
+    map_measure: {
+      title: 'Map',
+
+      sql: "any(battle_event_map)",
+      type: 'number',
+    },
+
+    eventId_measure: {
+      title: 'Event ID',
+
+      sql: "any(battle_event_id)",
+      type: 'number',
+    },
+
+    timestamp_measure: {
+      title: 'Last Update',
+
+      sql: "formatDateTime(argMaxMerge(timestamp_state), '%FT%TZ', 'UTC')",
+      type: 'number',
+    },
+
+    trophyChange_measure: {
+      title: 'Trophy Change',
+
+      sql: "avgMerge(battle_trophy_change_state)",
+      type: 'number',
+    },
+
+    winRate_measure: {
+      title: 'Win Rate',
+      description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
+      sql: "avgMerge(battle_victory_state)",
+      type: 'number',
+    },
+
+    winRateAdj_measure: {
+      title: 'Adjusted Win Rate',
+      description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
+      sql: "(1583+toFloat64(avgMerge(battle_victory_state))*SUM(picks))/(1583/least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)+SUM(picks))",
+      type: 'number',
+    },
+
+    wins_measure: {
+      title: 'Wins',
+      description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
+      sql: "toFloat64(avgMerge(battle_victory_state))*SUM(picks)",
+      type: 'number',
+    },
+
+    picks_measure: {
+      title: 'Picks recorded',
+
+      sql: "sum(picks)",
+      type: 'number',
+    },
+
+    pickRate_measure: {
+      title: 'Pick Rate',
+      description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
+      sql: "SUM(picks)",
+      type: 'number',
+    },
+
+    useRate_measure: {
+      title: 'Use Rate',
+      description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
+      sql: "picks_weighted",
+      type: 'sum',
+    },
+
+    starRate_measure: {
+      title: 'Star Player',
+      description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
+      sql: "avgMerge(battle_starplayer_state)",
+      type: 'number',
+    },
+
+    rank_measure: {
+      title: 'Average Rank',
+      description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
+      sql: "avgMerge(battle_rank_state)",
+      type: 'number',
+    },
+
+    rank1Rate_measure: {
+      title: '#1 Rate',
+      description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
+      sql: "avgMerge(battle_rank1_state)",
+      type: 'number',
+    },
+
+    duration_measure: {
+      title: 'Duration',
+      description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
+      sql: "avgMerge(battle_duration_state)",
+      type: 'number',
+    },
+
+    level_measure: {
+      title: 'Average Level',
+
+      sql: "avgMerge(battle_level_state)",
+      type: 'number',
+    },
+
+    brawler_measure: {
+      title: 'Most played Brawler',
+
+      sql: "anyHeavy(brawler_name)",
+      type: 'number',
+    },
+
+    gearName_measure: {
+      title: 'Gear',
+
+      sql: "any(brawler_gear_name)",
+      type: 'number',
+    }
   },
 
-  season_dimension: {
-    title: 'Bi-Week',
-    sql: "trophy_season_end",
-    type: 'time',
-  },
+  dimensions: {
 
-  trophyRange_dimension: {
-    title: 'Trophy Range',
-    sql: "brawler_trophyrange",
-    type: 'string',
-  },
+    brawler_dimension: {
+      title: 'Brawler',
+      sql: "brawler_name",
+      type: 'string',
+    },
 
-  mode_dimension: {
-    title: 'Mode',
-    sql: "battle_event_mode",
-    type: 'string',
-  },
+    season_dimension: {
+      title: 'Bi-Week',
+      sql: "trophy_season_end",
+      type: 'time',
+    },
 
-  map_dimension: {
-    title: 'Map',
-    sql: "battle_event_map",
-    type: 'string',
-  },
+    trophyRange_dimension: {
+      title: 'Trophy Range',
+      sql: "brawler_trophyrange",
+      type: 'string',
+    },
 
-  powerplay_dimension: {
-    title: 'Power Play',
-    sql: "battle_event_powerplay",
-    type: 'boolean',
+    brawlerId_dimension: {
+      title: 'Brawler ID',
+      sql: "brawler_id",
+      type: 'string',
+    },
+
+    gear_dimension: {
+      title: 'Gear',
+      sql: "brawler_gear_id",
+      type: 'string',
+    }
   }
-}
-})
+  })
 
-/* generated on 2023-02-05T11:35:10.081Z */
+  /* generated on 2023-03-21T13:00:05.946Z */
 
-cube('gadget', {
-refreshKey: {
-  every: '10 minutes',
-},
-sql: `SELECT * FROM brawltime.gadget_meta`,
-rewriteQueries: true,
+  cube('brawlerAllies', {
+  refreshKey: {
+    every: '10 minutes',
+  },
+  sql: `SELECT * FROM brawltime.brawler_allies_mv`,
+  rewriteQueries: true,
 
-measures: {
+  measures: {
 
-  mode_measure: {
-    title: 'Mode',
-    
-    sql: "any(battle_event_mode)",
-    type: 'number',
+    mode_measure: {
+      title: 'Mode',
+
+      sql: "any(battle_event_mode)",
+      type: 'number',
+    },
+
+    map_measure: {
+      title: 'Map',
+
+      sql: "any(battle_event_map)",
+      type: 'number',
+    },
+
+    eventId_measure: {
+      title: 'Event ID',
+
+      sql: "any(battle_event_id)",
+      type: 'number',
+    },
+
+    brawler_measure: {
+      title: 'Most played Brawler',
+
+      sql: "anyHeavy(brawler_name)",
+      type: 'number',
+    },
+
+    winRate_measure: {
+      title: 'Win Rate',
+      description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
+      sql: "sum(battle_victory) / sum(picks)",
+      type: 'number',
+    },
+
+    picks_measure: {
+      title: 'Picks recorded',
+
+      sql: "sum(picks)",
+      type: 'number',
+    }
   },
 
-  map_measure: {
-    title: 'Map',
-    
-    sql: "any(battle_event_map)",
-    type: 'number',
-  },
+  dimensions: {
 
-  eventId_measure: {
-    title: 'Event ID',
-    
-    sql: "any(battle_event_id)",
-    type: 'number',
-  },
+    brawler_dimension: {
+      title: 'Brawler',
+      sql: "brawler_name",
+      type: 'string',
+    },
 
-  timestamp_measure: {
-    title: 'Last Update',
-    
-    sql: "formatDateTime(argMaxMerge(timestamp_state), '%FT%TZ', 'UTC')",
-    type: 'number',
-  },
+    season_dimension: {
+      title: 'Bi-Week',
+      sql: "trophy_season_end",
+      type: 'time',
+    },
 
-  trophyChange_measure: {
-    title: 'Trophy Change',
-    
-    sql: "avgMerge(battle_trophy_change_state)",
-    type: 'number',
-  },
+    trophyRange_dimension: {
+      title: 'Trophy Range',
+      sql: "brawler_trophyrange",
+      type: 'string',
+    },
 
-  winRate_measure: {
-    title: 'Win Rate',
-    description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
-    sql: "avgMerge(battle_victory_state)",
-    type: 'number',
-  },
+    brawlerId_dimension: {
+      title: 'Brawler ID',
+      sql: "brawler_id",
+      type: 'string',
+    },
 
-  winRateAdj_measure: {
-    title: 'Adjusted Win Rate',
-    description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
-    sql: "(1583+toFloat64(avgMerge(battle_victory_state))*SUM(picks))/(1583/least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)+SUM(picks))",
-    type: 'number',
-  },
+    ally_dimension: {
+      title: 'Ally',
+      sql: "ally_brawler_name",
+      type: 'string',
+    },
 
-  wins_measure: {
-    title: 'Wins',
-    description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
-    sql: "toFloat64(avgMerge(battle_victory_state))*SUM(picks)",
-    type: 'number',
-  },
+    allyId_dimension: {
+      title: 'Ally ID',
+      sql: "ally_brawler_id",
+      type: 'string',
+    },
 
-  picks_measure: {
-    title: 'Picks recorded',
-    
-    sql: "sum(picks)",
-    type: 'number',
-  },
+    mode_dimension: {
+      title: 'Mode',
+      sql: "battle_event_mode",
+      type: 'string',
+    },
 
-  pickRate_measure: {
-    title: 'Pick Rate',
-    description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
-    sql: "SUM(picks)",
-    type: 'number',
-  },
-
-  useRate_measure: {
-    title: 'Use Rate',
-    description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
-    sql: "picks_weighted",
-    type: 'sum',
-  },
-
-  starRate_measure: {
-    title: 'Star Player',
-    description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
-    sql: "avgMerge(battle_starplayer_state)",
-    type: 'number',
-  },
-
-  rank_measure: {
-    title: 'Average Rank',
-    description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
-    sql: "avgMerge(battle_rank_state)",
-    type: 'number',
-  },
-
-  rank1Rate_measure: {
-    title: '#1 Rate',
-    description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
-    sql: "avgMerge(battle_rank1_state)",
-    type: 'number',
-  },
-
-  duration_measure: {
-    title: 'Duration',
-    description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
-    sql: "avgMerge(battle_duration_state)",
-    type: 'number',
-  },
-
-  level_measure: {
-    title: 'Average Level',
-    
-    sql: "avgMerge(battle_level_state)",
-    type: 'number',
-  },
-
-  brawler_measure: {
-    title: 'Most played Brawler',
-    
-    sql: "anyHeavy(brawler_name)",
-    type: 'number',
-  },
-
-  gadgetName_measure: {
-    title: 'Gadget',
-    
-    sql: "any(brawler_gadget_name)",
-    type: 'number',
+    map_dimension: {
+      title: 'Map',
+      sql: "battle_event_map",
+      type: 'string',
+    }
   }
-},
+  })
 
-dimensions: {
+  /* generated on 2023-03-21T13:00:05.946Z */
 
-  brawler_dimension: {
-    title: 'Brawler',
-    sql: "brawler_name",
-    type: 'string',
+  cube('brawlerEnemies', {
+  refreshKey: {
+    every: '10 minutes',
+  },
+  sql: `SELECT * FROM brawltime.brawler_enemies_mv`,
+  rewriteQueries: true,
+
+  measures: {
+
+    mode_measure: {
+      title: 'Mode',
+
+      sql: "any(battle_event_mode)",
+      type: 'number',
+    },
+
+    map_measure: {
+      title: 'Map',
+
+      sql: "any(battle_event_map)",
+      type: 'number',
+    },
+
+    eventId_measure: {
+      title: 'Event ID',
+
+      sql: "any(battle_event_id)",
+      type: 'number',
+    },
+
+    brawler_measure: {
+      title: 'Most played Brawler',
+
+      sql: "anyHeavy(brawler_name)",
+      type: 'number',
+    },
+
+    winRate_measure: {
+      title: 'Win Rate',
+      description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
+      sql: "sum(battle_victory) / sum(picks)",
+      type: 'number',
+    },
+
+    picks_measure: {
+      title: 'Picks recorded',
+
+      sql: "sum(picks)",
+      type: 'number',
+    }
   },
 
-  season_dimension: {
-    title: 'Bi-Week',
-    sql: "trophy_season_end",
-    type: 'time',
-  },
+  dimensions: {
 
-  trophyRange_dimension: {
-    title: 'Trophy Range',
-    sql: "brawler_trophyrange",
-    type: 'string',
-  },
+    brawler_dimension: {
+      title: 'Brawler',
+      sql: "brawler_name",
+      type: 'string',
+    },
 
-  brawlerId_dimension: {
-    title: 'Brawler ID',
-    sql: "brawler_id",
-    type: 'string',
-  },
+    season_dimension: {
+      title: 'Bi-Week',
+      sql: "trophy_season_end",
+      type: 'time',
+    },
 
-  gadget_dimension: {
-    title: 'Gadget',
-    sql: "brawler_gadget_id",
-    type: 'string',
+    trophyRange_dimension: {
+      title: 'Trophy Range',
+      sql: "brawler_trophyrange",
+      type: 'string',
+    },
+
+    brawlerId_dimension: {
+      title: 'Brawler ID',
+      sql: "brawler_id",
+      type: 'string',
+    },
+
+    enemy_dimension: {
+      title: 'Enemery',
+      sql: "enemy_brawler_name",
+      type: 'string',
+    },
+
+    enemyId_dimension: {
+      title: 'Enemy ID',
+      sql: "enemy_brawler_id",
+      type: 'string',
+    },
+
+    mode_dimension: {
+      title: 'Mode',
+      sql: "battle_event_mode",
+      type: 'string',
+    },
+
+    map_dimension: {
+      title: 'Map',
+      sql: "battle_event_map",
+      type: 'string',
+    }
   }
-}
-})
-
-/* generated on 2023-02-05T11:35:10.081Z */
-
-cube('starpower', {
-refreshKey: {
-  every: '10 minutes',
-},
-sql: `SELECT * FROM brawltime.starpower_meta`,
-rewriteQueries: true,
-
-measures: {
-
-  mode_measure: {
-    title: 'Mode',
-    
-    sql: "any(battle_event_mode)",
-    type: 'number',
-  },
-
-  map_measure: {
-    title: 'Map',
-    
-    sql: "any(battle_event_map)",
-    type: 'number',
-  },
-
-  eventId_measure: {
-    title: 'Event ID',
-    
-    sql: "any(battle_event_id)",
-    type: 'number',
-  },
-
-  timestamp_measure: {
-    title: 'Last Update',
-    
-    sql: "formatDateTime(argMaxMerge(timestamp_state), '%FT%TZ', 'UTC')",
-    type: 'number',
-  },
-
-  trophyChange_measure: {
-    title: 'Trophy Change',
-    
-    sql: "avgMerge(battle_trophy_change_state)",
-    type: 'number',
-  },
-
-  winRate_measure: {
-    title: 'Win Rate',
-    description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
-    sql: "avgMerge(battle_victory_state)",
-    type: 'number',
-  },
-
-  winRateAdj_measure: {
-    title: 'Adjusted Win Rate',
-    description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
-    sql: "(1583+toFloat64(avgMerge(battle_victory_state))*SUM(picks))/(1583/least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)+SUM(picks))",
-    type: 'number',
-  },
-
-  wins_measure: {
-    title: 'Wins',
-    description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
-    sql: "toFloat64(avgMerge(battle_victory_state))*SUM(picks)",
-    type: 'number',
-  },
-
-  picks_measure: {
-    title: 'Picks recorded',
-    
-    sql: "sum(picks)",
-    type: 'number',
-  },
-
-  pickRate_measure: {
-    title: 'Pick Rate',
-    description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
-    sql: "SUM(picks)",
-    type: 'number',
-  },
-
-  useRate_measure: {
-    title: 'Use Rate',
-    description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
-    sql: "picks_weighted",
-    type: 'sum',
-  },
-
-  starRate_measure: {
-    title: 'Star Player',
-    description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
-    sql: "avgMerge(battle_starplayer_state)",
-    type: 'number',
-  },
-
-  rank_measure: {
-    title: 'Average Rank',
-    description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
-    sql: "avgMerge(battle_rank_state)",
-    type: 'number',
-  },
-
-  rank1Rate_measure: {
-    title: '#1 Rate',
-    description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
-    sql: "avgMerge(battle_rank1_state)",
-    type: 'number',
-  },
-
-  duration_measure: {
-    title: 'Duration',
-    description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
-    sql: "avgMerge(battle_duration_state)",
-    type: 'number',
-  },
-
-  level_measure: {
-    title: 'Average Level',
-    
-    sql: "avgMerge(battle_level_state)",
-    type: 'number',
-  },
-
-  brawler_measure: {
-    title: 'Most played Brawler',
-    
-    sql: "anyHeavy(brawler_name)",
-    type: 'number',
-  },
-
-  starpowerName_measure: {
-    title: 'Star Power',
-    
-    sql: "any(brawler_starpower_name)",
-    type: 'number',
-  }
-},
-
-dimensions: {
-
-  brawler_dimension: {
-    title: 'Brawler',
-    sql: "brawler_name",
-    type: 'string',
-  },
-
-  season_dimension: {
-    title: 'Bi-Week',
-    sql: "trophy_season_end",
-    type: 'time',
-  },
-
-  trophyRange_dimension: {
-    title: 'Trophy Range',
-    sql: "brawler_trophyrange",
-    type: 'string',
-  },
-
-  brawlerId_dimension: {
-    title: 'Brawler ID',
-    sql: "brawler_id",
-    type: 'string',
-  },
-
-  starpower_dimension: {
-    title: 'Star Power',
-    sql: "brawler_starpower_id",
-    type: 'string',
-  }
-}
-})
-
-/* generated on 2023-02-05T11:35:10.081Z */
-
-cube('gear', {
-refreshKey: {
-  every: '10 minutes',
-},
-sql: `SELECT * FROM brawltime.gear_meta`,
-rewriteQueries: true,
-
-measures: {
-
-  mode_measure: {
-    title: 'Mode',
-    
-    sql: "any(battle_event_mode)",
-    type: 'number',
-  },
-
-  map_measure: {
-    title: 'Map',
-    
-    sql: "any(battle_event_map)",
-    type: 'number',
-  },
-
-  eventId_measure: {
-    title: 'Event ID',
-    
-    sql: "any(battle_event_id)",
-    type: 'number',
-  },
-
-  timestamp_measure: {
-    title: 'Last Update',
-    
-    sql: "formatDateTime(argMaxMerge(timestamp_state), '%FT%TZ', 'UTC')",
-    type: 'number',
-  },
-
-  trophyChange_measure: {
-    title: 'Trophy Change',
-    
-    sql: "avgMerge(battle_trophy_change_state)",
-    type: 'number',
-  },
-
-  winRate_measure: {
-    title: 'Win Rate',
-    description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
-    sql: "avgMerge(battle_victory_state)",
-    type: 'number',
-  },
-
-  winRateAdj_measure: {
-    title: 'Adjusted Win Rate',
-    description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',
-    sql: "(1583+toFloat64(avgMerge(battle_victory_state))*SUM(picks))/(1583/least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)+SUM(picks))",
-    type: 'number',
-  },
-
-  wins_measure: {
-    title: 'Wins',
-    description: 'The number of Wins recorded ranks Brawlers high who are played a lot and win a lot.',
-    sql: "toFloat64(avgMerge(battle_victory_state))*SUM(picks)",
-    type: 'number',
-  },
-
-  picks_measure: {
-    title: 'Picks recorded',
-    
-    sql: "sum(picks)",
-    type: 'number',
-  },
-
-  pickRate_measure: {
-    title: 'Pick Rate',
-    description: 'The Pick Rate tells you the % of battles this Brawler appears in.',
-    sql: "SUM(picks)",
-    type: 'number',
-  },
-
-  useRate_measure: {
-    title: 'Use Rate',
-    description: 'The Use Rate measures the popularity of a Brawler, adjusted to how many players unlocked them. It is the main statistic Supercell uses to balance Brawlers.',
-    sql: "picks_weighted",
-    type: 'sum',
-  },
-
-  starRate_measure: {
-    title: 'Star Player',
-    description: 'The Star Rate tells you the % of battles this Brawler becomes Star Player.',
-    sql: "avgMerge(battle_starplayer_state)",
-    type: 'number',
-  },
-
-  rank_measure: {
-    title: 'Average Rank',
-    description: 'The Average Rank tells you what place the Brawler is ranked in Showdown on average.',
-    sql: "avgMerge(battle_rank_state)",
-    type: 'number',
-  },
-
-  rank1Rate_measure: {
-    title: '#1 Rate',
-    description: 'The #1 Rate tells you the % of Showdown battles a Brawler is #1.',
-    sql: "avgMerge(battle_rank1_state)",
-    type: 'number',
-  },
-
-  duration_measure: {
-    title: 'Duration',
-    description: 'The Duration tells you how long battles with this Brawler last on average in seconds.',
-    sql: "avgMerge(battle_duration_state)",
-    type: 'number',
-  },
-
-  level_measure: {
-    title: 'Average Level',
-    
-    sql: "avgMerge(battle_level_state)",
-    type: 'number',
-  },
-
-  brawler_measure: {
-    title: 'Most played Brawler',
-    
-    sql: "anyHeavy(brawler_name)",
-    type: 'number',
-  },
-
-  gearName_measure: {
-    title: 'Gear',
-    
-    sql: "any(brawler_gear_name)",
-    type: 'number',
-  }
-},
-
-dimensions: {
-
-  brawler_dimension: {
-    title: 'Brawler',
-    sql: "brawler_name",
-    type: 'string',
-  },
-
-  season_dimension: {
-    title: 'Bi-Week',
-    sql: "trophy_season_end",
-    type: 'time',
-  },
-
-  trophyRange_dimension: {
-    title: 'Trophy Range',
-    sql: "brawler_trophyrange",
-    type: 'string',
-  },
-
-  brawlerId_dimension: {
-    title: 'Brawler ID',
-    sql: "brawler_id",
-    type: 'string',
-  },
-
-  gear_dimension: {
-    title: 'Gear',
-    sql: "brawler_gear_id",
-    type: 'string',
-  }
-}
-})
-
-/* generated on 2023-02-05T11:35:10.081Z */
-
-cube('brawlerAllies', {
-refreshKey: {
-  every: '10 minutes',
-},
-sql: `SELECT * FROM brawltime.brawler_allies_mv`,
-rewriteQueries: true,
-
-measures: {
-
-  winRate_measure: {
-    title: 'Win Rate',
-    description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
-    sql: "sum(battle_victory) / sum(picks)",
-    type: 'number',
-  },
-
-  picks_measure: {
-    title: 'Picks recorded',
-    
-    sql: "sum(picks)",
-    type: 'number',
-  }
-},
-
-dimensions: {
-
-  brawler_dimension: {
-    title: 'Brawler',
-    sql: "brawler_name",
-    type: 'string',
-  },
-
-  season_dimension: {
-    title: 'Bi-Week',
-    sql: "trophy_season_end",
-    type: 'time',
-  },
-
-  trophyRange_dimension: {
-    title: 'Trophy Range',
-    sql: "brawler_trophyrange",
-    type: 'string',
-  },
-
-  brawlerId_dimension: {
-    title: 'Brawler ID',
-    sql: "brawler_id",
-    type: 'string',
-  },
-
-  ally_dimension: {
-    title: 'Ally',
-    sql: "ally_brawler_name",
-    type: 'string',
-  },
-
-  allyId_dimension: {
-    title: 'Ally ID',
-    sql: "ally_brawler_id",
-    type: 'string',
-  },
-
-  mode_dimension: {
-    title: 'Mode',
-    sql: "battle_event_mode",
-    type: 'string',
-  },
-
-  map_dimension: {
-    title: 'Map',
-    sql: "battle_event_map",
-    type: 'string',
-  }
-}
-})
-
-/* generated on 2023-02-05T11:35:10.081Z */
-
-cube('brawlerEnemies', {
-refreshKey: {
-  every: '10 minutes',
-},
-sql: `SELECT * FROM brawltime.brawler_enemies_mv`,
-rewriteQueries: true,
-
-measures: {
-
-  winRate_measure: {
-    title: 'Win Rate',
-    description: 'The Win Rate tells you the % of battles a Brawler wins or ranks high.',
-    sql: "sum(battle_victory) / sum(picks)",
-    type: 'number',
-  },
-
-  picks_measure: {
-    title: 'Picks recorded',
-    
-    sql: "sum(picks)",
-    type: 'number',
-  }
-},
-
-dimensions: {
-
-  brawler_dimension: {
-    title: 'Brawler',
-    sql: "brawler_name",
-    type: 'string',
-  },
-
-  season_dimension: {
-    title: 'Bi-Week',
-    sql: "trophy_season_end",
-    type: 'time',
-  },
-
-  trophyRange_dimension: {
-    title: 'Trophy Range',
-    sql: "brawler_trophyrange",
-    type: 'string',
-  },
-
-  brawlerId_dimension: {
-    title: 'Brawler ID',
-    sql: "brawler_id",
-    type: 'string',
-  },
-
-  enemy_dimension: {
-    title: 'Enemery',
-    sql: "enemy_brawler_name",
-    type: 'string',
-  },
-
-  enemyId_dimension: {
-    title: 'Enemy ID',
-    sql: "enemy_brawler_id",
-    type: 'string',
-  },
-
-  mode_dimension: {
-    title: 'Mode',
-    sql: "battle_event_mode",
-    type: 'string',
-  },
-
-  map_dimension: {
-    title: 'Map',
-    sql: "battle_event_map",
-    type: 'string',
-  }
-}
 })
