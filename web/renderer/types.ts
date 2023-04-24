@@ -6,7 +6,7 @@ export type { Config }
 
 import { DehydratedState } from '@tanstack/vue-query'
 import * as SentryTypes from '@sentry/core'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import type { ComponentPublicInstance } from 'vue'
 import { LocaleIso } from '@/locales'
 
