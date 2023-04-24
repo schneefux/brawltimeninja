@@ -52,8 +52,8 @@ job "traduora" {
 
       template {
         data = <<-EOF
-          TR_DB_HOST={{ range service "mariadb" }}{{ .Address }}{{ end }}
-          TR_DB_PORT={{ range service "mariadb" }}{{ .Port }}{{ end }}
+          TR_DB_HOST={{ with service "mariadb" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}
+          TR_DB_PORT={{ with service "mariadb" }}{{ with index . 0}}{{ .Port }}{{ end }}{{ end }}
           TR_DB_USER="traduora"
           TR_DB_PASSWORD="traduora"
           TR_AUTH_GOOGLE_CLIENT_ID="${var.traduora_google_client_id}"

@@ -108,8 +108,8 @@ job "brawltime-manager" {
           "database": {
             "client": "mysql2",
             "connection": {
-              "host": "{{ range service "mariadb" }}{{ .Address }}{{ end }}",
-              "port": {{ range service "mariadb" }}{{ .Port }}{{ end }},
+              "host": "{{ with service "mariadb" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}",
+              "port": {{ with service "mariadb" }}{{ with index . 0 }}{{ .Port }}{{ end }}{{ end }},
               "user": "brawltime_manager",
               "password": "brawltime_manager",
               "database": "brawltime_manager"

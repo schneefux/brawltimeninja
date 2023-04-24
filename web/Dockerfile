@@ -1,4 +1,4 @@
-FROM node:19 AS builder
+FROM node:20 AS builder
 ARG SENTRY_DSN=''
 ENV SENTRY_DSN=$SENTRY_DSN
 ARG SENTRY_ORG=''
@@ -18,7 +18,7 @@ RUN yarn install --frozen-lockfile
 COPY . .
 RUN yarn run build
 
-FROM node:19
+FROM node:20
 ENV NODE_ENV=production
 ARG SENTRY_DSN=''
 ENV SENTRY_DSN=$SENTRY_DSN

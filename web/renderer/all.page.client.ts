@@ -1,6 +1,5 @@
 import { createApp } from './app'
 import type { PageContext } from './types'
-import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
 import { hydrate } from '@tanstack/vue-query'
 import SuperJSON from 'superjson'
 import * as Sentry from '@sentry/vue'
@@ -14,7 +13,7 @@ import {
 
 export { render }
 
-async function render(pageContext: PageContextBuiltInClient & PageContext) {
+async function render(pageContext: PageContext) {
   const params = createApp(pageContext)
 
   Sentry.init({

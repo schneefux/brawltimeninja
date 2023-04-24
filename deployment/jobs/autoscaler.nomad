@@ -104,7 +104,7 @@ job "autoscaler" {
                 query = "percentage-allocated_cpu"
 
                 strategy "target-value" {
-                  target = 50
+                  target = 60
                 }
               }
 
@@ -113,7 +113,7 @@ job "autoscaler" {
                 query = "percentage-allocated_memory"
 
                 strategy "target-value" {
-                  target = 50
+                  target = 60
                 }
               }
 

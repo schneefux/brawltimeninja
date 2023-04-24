@@ -2,7 +2,7 @@ import 'dotenv/config'
 import httpDevServer from "vavite/http-dev-server"
 import express from 'express'
 import compression from 'compression'
-import { renderPage } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr/server'
 import apiMiddleware from '../api/index'
 import { PageContext } from '@/renderer/types'
 import * as Sentry from '@sentry/node'
@@ -79,11 +79,14 @@ async function startServer() {
       return next()
     }
     const { statusCode, contentType, earlyHints, body } = httpResponse
+    /*
+    // early hints are not supported by nginx - hang the request with http2 (https://forum.nginx.org/read.php?10,293049)
     if (res.writeEarlyHints) {
       res.writeEarlyHints({
         link: earlyHints.map(e => e.earlyHintLink),
       })
     }
+    */
 
     res.status(pageContext.statusCode ?? statusCode).type(contentType).send(body)
   })

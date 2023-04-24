@@ -1,8 +1,8 @@
 import { renderToString } from '@vue/server-renderer'
-import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr'
+import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr/server'
 import { createApp } from './error-app'
 import type { PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import { renderSSRHead } from '@unhead/ssr'
 
 export { passToClient }
