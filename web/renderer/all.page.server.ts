@@ -1,8 +1,8 @@
 import { renderToString } from '@vue/server-renderer'
-import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr'
+import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr/server'
 import { createApp } from './app'
 import type { Config, PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import { dehydrate } from '@tanstack/vue-query'
 import { renderSSRHead } from '@unhead/ssr'
 import SuperJSON from 'superjson'
@@ -17,7 +17,7 @@ const passToClient = [
   'vueQueryState',
   'piniaState',
   'errorWhileRendering',
-  'config',
+  'envConfig',
   'validated',
   'statusCode',
   'redirectTo',
@@ -67,7 +67,7 @@ async function onBeforeRender(pageContext: PageContext) {
 
   return {
     pageContext: {
-      config,
+      envConfig: config, // "config" is internally used by VPS
       sentry,
       refs: {}, // for arbitrary data, see ssrRef()
     }

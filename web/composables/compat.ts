@@ -1,4 +1,4 @@
-import { computed, inject, onServerPrefetch, Ref, toRef, watch } from "vue"
+import { computed, inject, onServerPrefetch, Ref, toRef } from "vue"
 import { useQuery } from "@tanstack/vue-query";
 import { useI18n } from 'vue-i18n'
 import { usePageContext } from '~/renderer/usePageContext'
@@ -10,6 +10,7 @@ import Cookies from 'js-cookie'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
 import { AppI18n } from "@/renderer/app";
 import { Locale } from '~/locales';
+import { RenderErrorPage } from "vite-plugin-ssr/RenderErrorPage";
 
 /*
  * Nuxt 2 backwards compatibility composables
@@ -67,7 +68,7 @@ export function useApi() {
 
 export function useConfig() {
   const pageContext = usePageContext()
-  return pageContext.config
+  return pageContext.envConfig
 }
 
 const i18nCookieName = 'i18n_redirected'
@@ -118,12 +119,6 @@ export function useLocaleCookieRedirect() {
 export function useMeta(fun: () => ReactiveHead) {
   const meta = computed(fun)
   useHead(meta)
-}
-// see https://github.com/brillout/vite-plugin-ssr/blob/main/vite-plugin-ssr/node/runtime/renderPage/RenderErrorPage.ts
-function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown> } = {}) {
-  const err = new Error('RenderErrorPage')
-  Object.assign(err, { pageContext, '__isRenderErrorPageException': true })
-  return err
 }
 interface ValidateContext {
   params: Record<string, string|string[]>

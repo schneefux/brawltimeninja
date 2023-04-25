@@ -18,7 +18,7 @@ async function render(pageContext: PageContext) {
 
   Sentry.init({
     app: params.app,
-    dsn: pageContext.config.sentryDsn,
+    dsn: pageContext.envConfig.sentryDsn,
     debug: import.meta.env.DEV,
     autoSessionTracking: !import.meta.env.SSR,
     integrations: [

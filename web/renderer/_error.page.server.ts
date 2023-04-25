@@ -1,8 +1,7 @@
 import { renderToString } from '@vue/server-renderer'
-import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr'
+import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr/server'
 import { createApp } from './error-app'
 import type { PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import { renderSSRHead } from '@unhead/ssr'
 
 export { passToClient }
@@ -14,7 +13,7 @@ const passToClient = [
   'statusCode',
 ]
 
-async function render(pageContext: PageContextBuiltIn & PageContext) {
+async function render(pageContext: PageContext) {
   const { app, head } = createApp(pageContext)
 
   const string = await renderToString(app)

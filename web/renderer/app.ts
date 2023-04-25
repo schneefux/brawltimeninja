@@ -91,12 +91,12 @@ function createApp(pageContext: PageContext) {
   })
   app.use(head)
 
-  const router = createRouter(i18n.global, pageContext, head, pageContext.config)
+  const router = createRouter(i18n.global, pageContext, head, pageContext.envConfig)
   app.use(router)
 
   const klickerOptions = {
-    cubeUrl: pageContext.config.cubeUrl,
-    managerUrl: pageContext.config.managerUrl,
+    cubeUrl: pageContext.envConfig.cubeUrl,
+    managerUrl: pageContext.envConfig.managerUrl,
     translate: i18n.global.t,
     router,
   }
@@ -143,7 +143,7 @@ function createApp(pageContext: PageContext) {
   app.config.globalProperties.localePath = (path: string) => localePath(path, i18n.global)
 
   const gtagParams = {
-    optimize_id: pageContext.config.optimizeId,
+    optimize_id: pageContext.envConfig.optimizeId,
     custom_map: {
       'dimension1': 'branch',
       'dimension2': 'ads_blocked',
@@ -154,15 +154,15 @@ function createApp(pageContext: PageContext) {
   }
   app.use(VueGtagPlugin, {
     config: {
-      id: pageContext.config.ga4Id,
+      id: pageContext.envConfig.ga4Id,
       params: gtagParams,
     },
     includes: [ {
       // old property
-      id: pageContext.config.uaId,
+      id: pageContext.envConfig.uaId,
       params: gtagParams,
     }, {
-      id: pageContext.config.playwireRampGa4Id,
+      id: pageContext.envConfig.playwireRampGa4Id,
       params: {
         'send_page_view': false,
       },
@@ -170,7 +170,7 @@ function createApp(pageContext: PageContext) {
     onReady() {
       query('js', new Date())
       event('ramp_js', {
-        'send_to': pageContext.config.playwireRampGa4Id,
+        'send_to': pageContext.envConfig.playwireRampGa4Id,
         'pageview_id': `${Date.now()}`,
       })
     },

@@ -6,7 +6,7 @@ export type { Config }
 
 import { DehydratedState } from '@tanstack/vue-query'
 import * as SentryTypes from '@sentry/core'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import type { ComponentPublicInstance } from 'vue'
 import { LocaleIso } from '@/locales'
 
@@ -46,7 +46,7 @@ export type PageContextCustom = {
   piniaState: string
   sentry: typeof SentryTypes,
   errorWhileRendering?: Error
-  config: Config
+  envConfig: Config
   validated: null | boolean
   statusCode?: number
   redirectTo?: string
