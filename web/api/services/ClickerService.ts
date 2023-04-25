@@ -1,5 +1,4 @@
-import ClickHouse from '@apla/clickhouse'
-import { ClickHouse as ClickHouse2 } from 'clickhouse'
+import { createClient, ClickHouseClient } from '@clickhouse/client'
 import StatsD from 'hot-shots'
 import { Player, BattleLog, BattlePlayer, BattlePlayerMultiple } from '../../model/Brawlstars'
 import { performance } from 'perf_hooks'
@@ -14,38 +13,19 @@ const seasonSliceStart = getSeasonEnd(balanceChangesDate);
 console.log(`querying data >= ${seasonSliceStart}`)
 
 export default class ClickerService {
-  // readonly
-  private chRo: ClickHouse2;
+  private ch: ClickHouseClient;
 
   constructor() {
-    // use 1 thread -> server can handle more queries
-    // player queries take about 25% longer than with 4 threads
-    this.chRo = new ClickHouse2({
-      url: dbHost,
-      config: {
-        readonly: 1,
+    this.ch = createClient({
+      host: `http://${dbHost}:8123`,
+      clickhouse_settings: {
+        // use 1 thread -> server can handle more queries
+        // player queries take about 25% longer than with 4 threads
         max_threads: 1,
         output_format_json_quote_64bit_integers: 1,
       },
       // clickhouse allows only a single query per session!
-      isSessionPerQuery: true,
-    } as any)
-  }
-
-  private insert(sql: string, callback: (error?: Error) => void) {
-    // only this client supports JSON insert streams
-    // this client has no support for sessions
-    // => create a new client = create a new session
-    const ch = new ClickHouse(dbHost)
-    return ch.query(sql, { format: 'JSONEachRow' }, callback)
-  }
-
-  // ro query
-  private async query<T>(query: string, metricName: string): Promise<T[]> {
-    stats.increment(metricName + '.run')
-    return stats.asyncTimer(() =>
-      this.chRo.query(query).toPromise() as Promise<T[]>
-    , metricName + '.timer')()
+    })
   }
 
   public async store(entry: { player: Player, battleLog: BattleLog }) {
@@ -59,21 +39,18 @@ export default class ClickerService {
     }))
 
     // TODO maybe put this into redis to avoid slow blocking point queries
-    const maxTimestamp = await this.query<any>(
-      `SELECT formatDateTime(MAX(timestamp), '%FT%TZ', 'UTC') AS maxTimestamp FROM brawltime.battle WHERE trophy_season_end>=toDateTime('${formatClickhouse(seasonSliceStart)}', 'UTC') AND player_id=${tagToId(player.tag)}`,
-      'player.get_last')
+    const getLastQueryStart = performance.now()
+    const maxTimestampResultSet = await this.ch.query({
+      query: `SELECT formatDateTime(MAX(timestamp), '%FT%TZ', 'UTC') AS maxTimestamp FROM brawltime.battle WHERE trophy_season_end>=toDateTime('${formatClickhouse(seasonSliceStart)}', 'UTC') AND player_id=${tagToId(player.tag)}`,
+      format: 'JSONEachRow',
+    })
+    const maxTimestamp = await maxTimestampResultSet.json() as { maxTimestamp: string }[]
+    stats.timing('player.get_last.timer', performance.now() - getLastQueryStart)
     // if not found, clickhouse max() defaults to 0000 date (Date.parse returns NaN)
     // changed to 1970 in 20.7
     const lastBattleTimestamp = (maxTimestamp[0].maxTimestamp.startsWith('0000') || maxTimestamp[0].maxTimestamp.startsWith('1970')) ? seasonSliceStart : new Date(Date.parse(maxTimestamp[0].maxTimestamp))
 
     const battleInsertStart = performance.now()
-    const battleStream = this.insert('INSERT INTO brawltime.battle', (error) => {
-      stats.timing('player.insert.timer', performance.now() - battleInsertStart)
-      if (error) {
-        stats.increment('player.insert.error')
-        console.error(`error inserting battle for ${player.tag} (${tagToId(player.tag)}): ${error}`)
-      }
-    })
 
     const playerFacts = {
       player_id: tagToId(player.tag),
@@ -101,6 +78,7 @@ export default class ClickerService {
     }
 
     // insert records for meta stats
+    const battleRecords = []
     for (const battle of battles) {
       stats.increment('player.insert.prepare')
 
@@ -166,8 +144,8 @@ export default class ClickerService {
         const enemies = teams.filter(t => t !== myTeam).flatMap(t => t.flatMap(b => 'brawler' in b ? [b.brawler] : b.brawlers))
 
         const record = {
-          timestamp: battle.battleTime,
-          trophy_season_end: getSeasonEnd(battle.battleTime),
+          timestamp: formatClickhouse(battle.battleTime),
+          trophy_season_end: formatClickhouseDate(getSeasonEnd(battle.battleTime)),
           ...playerFacts,
           /* player brawler */
           // see other table
@@ -247,39 +225,27 @@ export default class ClickerService {
           'battle_enemies.brawler_trophies': enemies.map(b => b.trophies),
         }
 
-        // to debug encoding errors:
-        // console.log(require('@apla/clickhouse/src/process-db-value').encodeRow(record, (<any>stream).format))
-        await new Promise<void>((resolve, reject) => {
-          stats.increment('player.insert.run')
-          if (battleStream.write(record)) {
-            return resolve()
-          }
-
-          stats.increment('player.insert.buffering')
-          battleStream.once('drain', (err) => {
-            if (err) {
-              stats.increment('player.insert.error')
-              console.error(`error inserting battle for ${player.tag} (${tagToId(player.tag)})`, record, err)
-              return reject(err)
-            }
-
-            return resolve()
-          })
-        })
+        battleRecords.push(record)
+        stats.increment('player.insert.run')
       }
     }
 
-    battleStream.end()
+    try {
+      await this.ch.insert({
+        table: 'brawltime.battle',
+        values: battleRecords,
+        format: 'JSONEachRow',
+      })
+    } catch (err) {
+      stats.increment('player.insert.error')
+      console.error(`error inserting battles for ${player.tag} (${tagToId(player.tag)})`, battleRecords, err)
+    }
+
+    stats.timing('player.insert.timer', performance.now() - battleInsertStart)
 
     const brawlerInsertStart = performance.now()
-    const brawlerStream = this.insert('INSERT INTO brawltime.brawler', (error) => {
-      stats.timing('brawler.insert.timer', performance.now() - brawlerInsertStart)
-      if (error) {
-        stats.increment('brawler.insert.error')
-        console.error(`error inserting brawler for ${player.tag} (${tagToId(player.tag)}): ${error}`)
-      }
-    })
 
+    const brawlerRecords = []
     for (const brawler of player.brawlers) {
       stats.increment('brawler.insert.prepare')
 
@@ -307,25 +273,21 @@ export default class ClickerService {
         brawler_gears_length: brawler.gears.length,
       }
 
-      await new Promise<void>((resolve, reject) => {
-        stats.increment('brawler.insert.run')
-        if (brawlerStream.write(record)) {
-          return resolve()
-        }
-
-        stats.increment('brawler.insert.buffering')
-        brawlerStream.once('drain', (err) => {
-          if (err) {
-            stats.increment('brawler.insert.error')
-            console.error(`error inserting brawler for ${player.tag} (${tagToId(player.tag)})`, record, err)
-            return reject(err)
-          }
-
-          return resolve()
-        })
-      })
+      stats.increment('brawler.insert.run')
+      brawlerRecords.push(record)
     }
 
-    brawlerStream.end()
+    try {
+      await this.ch.insert({
+        table: 'brawltime.brawler',
+        values: brawlerRecords,
+        format: 'JSONEachRow',
+      })
+    } catch (err) {
+      stats.increment('brawler.insert.error')
+      console.error(`error inserting brawler for ${player.tag} (${tagToId(player.tag)})`, brawlerRecords, err)
+    }
+
+    stats.timing('brawler.insert.timer', performance.now() - brawlerInsertStart)
   }
 }

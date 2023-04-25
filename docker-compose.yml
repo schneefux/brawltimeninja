@@ -13,7 +13,7 @@ services:
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
 
   clickhouse:
-    image: clickhouse/clickhouse-server:22.6
+    image: clickhouse/clickhouse-server:23.2
     ports:
     - 8123:8123
     - 9000:9000

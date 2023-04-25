@@ -8,7 +8,7 @@
     "start:debug": "cross-env NODE_ENV=production node --inspect ./dist/server/index.mjs"
   },
   "dependencies": {
-    "@apla/clickhouse": "^1.6.4",
+    "@clickhouse/client": "^0.0.14",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
@@ -28,7 +28,6 @@
     "@unhead/ssr": "^1.1.26",
     "@unhead/vue": "^1.1.26",
     "@vitejs/plugin-vue": "^4.1.0",
-    "clickhouse": "^2.6.0",
     "compression": "^1.7.4",
     "cookie": "^0.5.0",
     "cross-env": "^7.0.3",
