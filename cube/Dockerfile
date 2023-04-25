@@ -1,10 +1,10 @@
-FROM node:19 AS builder
+FROM node:20 AS builder
 WORKDIR /app
 COPY ./package.json ./yarn.lock .
 RUN yarn install --frozen-lockfile
 COPY . .
 
-FROM cubejs/cube:v0.31
+FROM cubejs/cube:v0.32
 RUN apt-get update \
     && apt-get install -y patch \
     && rm -rf /var/lib/apt/lists/*
