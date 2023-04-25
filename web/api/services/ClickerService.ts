@@ -145,7 +145,7 @@ export default class ClickerService {
 
         const record = {
           timestamp: formatClickhouse(battle.battleTime),
-          trophy_season_end: formatClickhouseDate(getSeasonEnd(battle.battleTime)),
+          trophy_season_end: formatClickhouse(getSeasonEnd(battle.battleTime)),
           ...playerFacts,
           /* player brawler */
           // see other table
