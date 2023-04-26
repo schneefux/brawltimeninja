@@ -13,7 +13,7 @@
             clazz="w-20 h-20 rounded object-contain"
           ></media-img>
 
-          <div class="w-full grid grid-cols-[repeat(auto-fit,2rem)] justify-items-center items-center gap-4">
+          <div class="w-full grid grid-cols-[repeat(auto-fit,2rem)] justify-items-center items-center gap-2">
             <media-img
               v-for="starpower in brawler.starPowers"
               :key="starpower.id"
@@ -38,11 +38,12 @@
           </div>
         </div>
 
-        <history-graph
-          :brawler="brawler.name"
-          :player-tag="playerTag"
-          class="h-32 mt-6"
-        ></history-graph>
+        <div class="h-32 mt-6">
+          <history-graph
+            :brawler="brawler.name"
+            :player-tag="playerTag"
+          ></history-graph>
+        </div>
 
         <b-kv-table
           :rows="kvTableRows"
