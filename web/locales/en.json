@@ -592,5 +592,7 @@
     "metric.picks.short": "Picks",
     "metric.ally": "Ally",
     "metric.mode": "Mode",
-    "metric.map": "Map"
+    "metric.map": "Map",
+    "prodigy-ad.title": "Power League Prodigy",
+    "prodigy-ad.description": "Try Power League Prodigy, the interactive Power League guide powered by Brawl Time Ninja."
 }

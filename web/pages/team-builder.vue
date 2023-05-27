@@ -53,6 +53,10 @@
         </b-dashboard>
       </template>
     </c-query>
+
+    <prodigy-ad
+      class="mt-8"
+    ></prodigy-ad>
   </b-page>
 </template>
 
