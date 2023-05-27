@@ -94,3 +94,9 @@ write_files:
       server = true
       bootstrap_expect = 3
       retry_join = ["10.0.0.2"]
+  # disable userland proxy to (hopefully) fix network issues
+  - path: /etc/docker/daemon.json
+    content: |
+      {
+        "userland-proxy": false
+      }
