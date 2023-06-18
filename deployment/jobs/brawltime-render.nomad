@@ -106,7 +106,6 @@ job "brawltime-render" {
         image = "ghcr.io/schneefux/brawltime-render:${var.tag}"
         ipc_mode = "host"
         ports = ["http"]
-        dns_servers = ["${attr.unique.network.ip-address}"]
 
         auth {
           username = "${var.github_user}"

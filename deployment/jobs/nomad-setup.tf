@@ -1,5 +1,22 @@
-resource "nomad_job" "plugin_hcloud_csi" {
-  jobspec = file("${path.module}/plugin-hcloud-csi.nomad")
+resource "nomad_job" "hcloud_controller" {
+  jobspec = file("hcloud-csi-controller.nomad")
+
+  lifecycle {
+    ignore_changes = [
+      allocation_ids,
+    ]
+  }
+
+  hcl2 {
+    enabled = true
+    vars = {
+      hcloud_token = var.hcloud_token
+    }
+  }
+}
+
+resource "nomad_job" "hcloud_node" {
+  jobspec = file("hcloud-csi-node.nomad")
 
   lifecycle {
     ignore_changes = [
@@ -26,7 +43,7 @@ resource "nomad_scheduler_config" "config" {
 }
 
 data "nomad_plugin" "hetzner" {
-  depends_on = [nomad_job.plugin_hcloud_csi]
+  depends_on = [nomad_job.hcloud_controller, nomad_job.hcloud_node]
   plugin_id = "csi.hetzner.cloud"
   wait_for_healthy = true
 }

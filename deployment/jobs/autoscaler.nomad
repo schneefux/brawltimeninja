@@ -139,7 +139,8 @@ job "autoscaler" {
                   }
                 EOOF
                 hcloud_ssh_keys = "${var.ssh_public_key_name}"
-                # scaling-intensive services (web, cube, render) have a 1:2 RAM:CPU ratio, so pick cpx11 over cx21
+                # scaling-intensive services (web, cube, render) have a 1:2 RAM:CPU ratio, so pick cpx11
+                # TODO ARM only in fsn1, no CPU frequency for ARM - unusable
                 hcloud_server_type = "cpx11"
                 hcloud_labels = "firewall=true,nomad_class=worker"
                 # id of hetzner network brawltime-net

@@ -141,7 +141,6 @@ job "brawltime-media" {
       config {
         image = "ghcr.io/schneefux/brawltime-media:${var.tag}"
         ports = ["http"]
-        dns_servers = ["${attr.unique.network.ip-address}"]
 
         auth {
           username = "${var.github_user}"

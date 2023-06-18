@@ -47,7 +47,7 @@ job "mariadb" {
 
       env {
         MYSQL_ALLOW_EMPTY_PASSWORD = 1
-        #MARIADB_AUTO_UPGRADE = 1
+        MARIADB_AUTO_UPGRADE = 1
       }
 
       config {

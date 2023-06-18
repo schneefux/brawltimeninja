@@ -116,7 +116,6 @@ job "brawltime-testing" {
       config {
         image = "ghcr.io/schneefux/brawltime-web:latest"
         ports = ["http"]
-        dns_servers = ["${attr.unique.network.ip-address}"]
 
         auth {
           username = "${var.github_user}"

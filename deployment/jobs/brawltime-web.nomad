@@ -140,8 +140,6 @@ job "brawltime-web" {
         MEDIA_URL = "https://media.${var.domain}"
         MANAGER_URL = "https://manager.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"
-        CLICKHOUSE_HOST = "clickhouse.service.consul"
-        MYSQL_HOST = "mariadb.service.consul"
         MYSQL_DATABASE = "brawltime"
         MYSQL_USER = "brawltime"
         MYSQL_PASSWORD = "brawltime"
@@ -161,6 +159,17 @@ job "brawltime-web" {
         PLAYWIRE_RAMP_GA4_ID = "G-YBE993Z5SQ"
       }
 
+      # FIXME containers do not respect host's DNS settings
+      # https://github.com/hashicorp/nomad/issues/12894
+      template {
+        data = <<-EOF
+          CLICKHOUSE_HOST = "{{ with service "clickhouse" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
+          MYSQL_HOST = "{{ with service "mariadb" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
+        EOF
+        destination = "secrets/db.env"
+        env = true
+      }
+
       template {
         data = <<-EOF
           BRAWLSTARS_TOKEN="{{ key (printf "brawlstars-token/alloc-%s" (env "NOMAD_ALLOC_ID")) }}"
@@ -173,7 +182,13 @@ job "brawltime-web" {
       config {
         image = "ghcr.io/schneefux/brawltime-web:${var.tag}"
         ports = ["http"]
-        dns_servers = ["${attr.unique.network.ip-address}"]
+        extra_hosts = [
+          "${var.domain}:10.0.0.2",
+          "cube.${var.domain}:10.0.0.2",
+          "media.${var.domain}:10.0.0.2",
+          "manager.${var.domain}:10.0.0.2",
+          "render.${var.domain}:10.0.0.2"
+        ]
 
         auth {
           username = "${var.github_user}"

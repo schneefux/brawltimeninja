@@ -74,7 +74,7 @@ resource "nomad_job" "mariadb" {
 resource "hcloud_volume" "clickhouse" {
   name = "clickhouse-database"
   location = "nbg1"
-  size = 60
+  size = 100
   format = "ext4"
   delete_protection = true
 

@@ -104,14 +104,17 @@ variable "servers" {
     barley = {
       server_type = "cpx11"
       class = "ingress"
+      location = "nbg1"
     }
     colt = {
       server_type = "cx21"
       class = "database"
+      location = "nbg1"
     }
     dynamike = {
       server_type = "cpx31"
       class = "database"
+      location = "nbg1"
     }
     /*
     edgar = {
@@ -166,7 +169,8 @@ resource "hcloud_server" "default" {
   for_each = var.servers
 
   name = "brawltime-${each.key}"
-  location = "nbg1"
+  location = each.value.location
+  #datacenter = "nbg1-dc3"
   image = "docker-ce"
   server_type = each.value.server_type
   keep_disk = true

@@ -26,7 +26,7 @@ job "brawltime-cube" {
   }
 
   group "cube" {
-    count = 3
+    count = 2
 
     scaling {
       enabled = true
@@ -105,16 +105,23 @@ job "brawltime-cube" {
 
       env {
         PORT = "${NOMAD_PORT_http}"
-        CUBEJS_DB_HOST = "clickhouse.service.consul"
-        CUBEJS_REDIS_URL = "redis://redis.service.consul"
-        CUBEJS_CUBESTORE_HOST = "cubestore.service.consul"
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
+      }
+
+      # FIXME container does not use host's DNS setting
+      template {
+        data = <<-EOF
+          CUBEJS_DB_HOST = "{{ with service "clickhouse" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
+          CUBEJS_REDIS_URL = "redis://{{ with service "redis" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
+          CUBEJS_CUBESTORE_HOST = "{{ with service "cubestore" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
+        EOF
+        destination = "secrets/db.env"
+        env = true
       }
 
       config {
         image = "ghcr.io/schneefux/brawltime-cube:${var.tag}"
         ports = ["http"]
-        dns_servers = ["${attr.unique.network.ip-address}"]
 
         auth {
           username = "${var.github_user}"
@@ -179,10 +186,18 @@ job "brawltime-cube" {
       driver = "docker"
 
       env {
-        CUBEJS_DB_HOST = "clickhouse.service.consul"
-        CUBEJS_REDIS_URL = "redis://redis.service.consul:6379"
-        CUBEJS_CUBESTORE_HOST = "cubestore.service.consul"
         CUBEJS_REFRESH_WORKER = true
+      }
+
+      # FIXME container does not use host's DNS setting
+      template {
+        data = <<-EOF
+          CUBEJS_DB_HOST = "{{ with service "clickhouse" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
+          CUBEJS_REDIS_URL = "redis://{{ with service "redis" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
+          CUBEJS_CUBESTORE_HOST = "{{ with service "cubestore" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
+        EOF
+        destination = "secrets/db.env"
+        env = true
       }
 
       config {
