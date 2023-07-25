@@ -120,7 +120,7 @@ const seasonDimension: Dimension = {
     nice: 'week',
   },
   config: {
-    sql: 'trophy_season_end',
+    sql: 'toDate(trophy_season_end)',
     type: 'time',
   },
 }
