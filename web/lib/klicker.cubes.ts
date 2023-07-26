@@ -1353,7 +1353,7 @@ const metaSlices = asSlice({
     id: 'season',
     config: {
       member: 'season_dimension',
-      operator: 'afterDate',
+      operator: 'gte',
     },
   },
   seasonExact: {

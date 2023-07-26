@@ -1,5 +1,5 @@
 import { useKlicker } from "@schneefux/klicker/composables"
-import { capitalizeWords, formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd } from "@/lib/util"
+import { capitalizeWords, formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd, parseClickhouse } from "@/lib/util"
 import { EventMetadata } from "@/plugins/klicker.service"
 import { SliceValue } from "@schneefux/klicker/types"
 import { differenceInMinutes, parseISO, subWeeks, format } from "date-fns"
@@ -111,7 +111,7 @@ export function useAllSeasons(limitWeeks: number = 8) {
 
   const seasons = computed<{ id: string, name: string }[]>(() => data.value?.data
     .map(e => {
-      const d = parseISO(e.dimensionsRaw.season.season)
+      const d = parseClickhouse(e.dimensionsRaw.season.season)
       return {
         id: formatClickhouseDate(d),
         name: format(subWeeks(d, 2), 'PP') // seasons last 2 weeks

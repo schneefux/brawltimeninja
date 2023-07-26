@@ -1,16 +1,23 @@
 <template>
   <b-select
-    v-if="seasons.length > 0"
+    v-if="seasonsSince.length > 0 && seasonsAt.length > 0"
     v-model="value"
     dark
     sm
   >
     <option
-      v-for="s in seasons"
-      :key="s.id"
-      :value="s.id"
+      v-for="s in seasonsSince"
+      :key="`since@${s.id}`"
+      :value="`since@${s.id}`"
     >
       {{ $t('option.season-since', { season: s.name }) }}
+    </option>
+    <option
+      v-for="s in seasonsAt"
+      :key="`at@${s.id}`"
+      :value="`at@${s.id}`"
+    >
+      {{ $t('option.season-at', { season: s.name }) }}
     </option>
   </b-select>
 </template>
@@ -30,30 +37,48 @@ export default defineComponent({
       type: Function as PropType<SliceValueUpdateListener>,
       required: true
     },
-    limit: {
+    limitSince: {
       type: Number,
       default: 8
     },
+    limitAt: {
+      type: Number,
+      default: 52
+    },
   },
   setup(props) {
-    const seasons = useAllSeasons(props.limit)
+    const seasons = useAllSeasons(Math.max(props.limitSince, props.limitAt))
+    const seasonsSince = computed(() => seasons.value.slice(0, props.limitSince))
+    const seasonsAt = computed(() => seasons.value.slice(0, props.limitAt))
 
     const value = computed({
       get() {
-        const season = (props.modelValue.season || [])[0]
-        if (season == undefined) {
-          throw new Error('No season selected')
+        // 'season' is always set, so check seasonAt for existence first as it takes precedence
+        const seasonAt = (props.modelValue.seasonExact || [])[0]
+        if (seasonAt != undefined) {
+          return `at@${seasonAt}`
         }
-        return season
+        const seasonSince = (props.modelValue.season || [])[0]
+        if (seasonSince != undefined) {
+          return `since@${seasonSince}`
+        }
+        throw new Error('No season selected')
       },
       set(v: string) {
-        props.onInput({ season: [v] })
+        const [operator, value] = v.split('@')
+        if (operator == 'at') {
+          props.onInput({ season: [value], seasonExact: [value] })
+        }
+        if (operator == 'since') {
+          props.onInput({ season: [value], seasonExact: [] })
+        }
       }
     })
 
     return {
       value,
-      seasons,
+      seasonsSince,
+      seasonsAt,
     }
   },
 })

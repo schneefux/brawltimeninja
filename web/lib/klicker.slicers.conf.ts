@@ -65,13 +65,6 @@ const slicers: SlicerSpec[] = [{
     return dimensions.some(d => d.id == 'season')
   },
 }, {
-  name: 'Exact Season',
-  component: 's-season-exact',
-  import: defineAsyncComponent(() => import(/* webpackChunkName: "s-custom" */ '~/components/klicker/s-season-exact.vue')),
-  applicable(dimensions) {
-    return dimensions.some(d => d.id == 'season')
-  },
-}, {
   name: 'Trophies',
   component: 's-trophies',
   import: defineAsyncComponent(() => import(/* webpackChunkName: "s-custom" */ '~/components/klicker/s-trophies.vue')),

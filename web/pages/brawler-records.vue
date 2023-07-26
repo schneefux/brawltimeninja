@@ -9,7 +9,7 @@
     <b-page-section :title="$t('brawler-records.players')">
       <c-dashboard
         v-model="query"
-        :slicer-components="['s-season-exact', 's-brawler', 's-power']"
+        :slicer-components="['s-season', 's-brawler', 's-power']"
         slicer
       >
         <template v-slot:totals="data">

@@ -1,6 +1,5 @@
-// rebuild for frontend with ./node_modules/.bin/tsc lib/util.ts -m ESNext
-
 import { Player } from "@/model/Api";
+import { parseISO } from "date-fns";
 import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
 
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
@@ -278,6 +277,10 @@ export function getMonthSeasonEnd() {
  */
 export function getTodaySeasonEnd() {
   return getSeasonEnd(new Date())
+}
+
+export function parseClickhouse(timestamp: string) {
+  return parseISO(timestamp + 'Z')
 }
 
 export function formatClickhouse(timestamp: Date) {
