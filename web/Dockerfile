@@ -13,8 +13,10 @@ ARG BRANCH=''
 ENV VITE_BRANCH=$BRANCH
 WORKDIR /app
 COPY ./.npmrc ./package.json ./yarn.lock .
-RUN yarn add @schneefux/klicker
+RUN sed -i '/@schneefux\/klicker/d' package.json
 RUN yarn install --frozen-lockfile
+RUN npm install --save @schneefux/klicker
+RUN cat package.json
 COPY . .
 RUN yarn run build
 
