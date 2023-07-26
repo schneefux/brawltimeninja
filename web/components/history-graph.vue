@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { formatClickhouse, getSeasonEnd, tagToId } from '~/lib/util'
+import { formatClickhouseDate, getSeasonEnd, tagToId } from '~/lib/util'
 import { subMonths } from 'date-fns'
 import { VLineplot } from '@schneefux/klicker/components'
 import { computed, defineComponent } from 'vue'
@@ -43,7 +43,7 @@ export default defineComponent({
   },
   setup(props) {
     const d = new Date()
-    const season = formatClickhouse(getSeasonEnd(subMonths(d, 3)))
+    const season = formatClickhouseDate(getSeasonEnd(subMonths(d, 3)))
 
     const playerId = computed(() => tagToId(props.playerTag))
 

@@ -91,7 +91,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
 import { Brawler } from '~/model/Api'
-import { brawlerId as getBrawlerId, capitalizeWords, formatClickhouse, getSeasonEnd, tagToId } from '~/lib/util'
+import { brawlerId as getBrawlerId, capitalizeWords, formatClickhouseDate, getSeasonEnd, tagToId } from '~/lib/util'
 import { subWeeks } from 'date-fns'
 import { BKvTable } from '@schneefux/klicker/components'
 import { useKlicker } from '@schneefux/klicker/composables'
@@ -122,7 +122,7 @@ export default defineComponent({
   },
   setup(props) {
     const $klicker = useKlicker()
-    const season = formatClickhouse(getSeasonEnd(subWeeks(new Date(), 12)))
+    const season = formatClickhouseDate(getSeasonEnd(subWeeks(new Date(), 12)))
 
     const fetchData = async () => {
       const response = await $klicker.query({
