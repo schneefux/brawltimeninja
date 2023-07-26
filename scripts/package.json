@@ -11,9 +11,8 @@
   "dependencies": {
     "axios": "^0.27.2",
     "jsdom": "^20.0.3",
-    "node-fetch": "2.6.7",
     "string-similarity": "^4.0.4",
-    "wtf-plugin-api": "^1.0.1",
-    "wtf_wikipedia": "^10.0.5"
+    "wtf_wikipedia": "^10.0.5",
+    "wtf-plugin-api": "^1.0.1"
   }
 }

@@ -1,4 +1,9 @@
-const fetch = require('node-fetch')
+// work around a node v20 bug: https://github.com/nodejs/node/issues/47822#issuecomment-1564708870
+const net = require("net");
+if (net.setDefaultAutoSelectFamily) {
+  net.setDefaultAutoSelectFamily(false);
+}
+
 const { createWriteStream } = require('fs')
 const fs = require('fs').promises
 const { promisify } = require('util')
