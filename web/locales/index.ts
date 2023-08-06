@@ -45,7 +45,7 @@ export const locales: Locale[] = [{
   iso: 'it',
   file: 'it.js',
   emoji: '🇮🇹',
-  show: false,
+  show: true,
   supported: true,
 }, {
   code: 'ru',
