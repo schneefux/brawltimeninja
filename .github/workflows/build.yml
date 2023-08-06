@@ -43,7 +43,7 @@ jobs:
         name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: '19.x'
+          node-version: '20.x'
           cache: yarn
           cache-dependency-path: klicker/yarn.lock
           registry-url: 'https://npm.pkg.github.com'
