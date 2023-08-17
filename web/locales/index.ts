@@ -1,10 +1,10 @@
 import { Config } from "@/renderer/types"
 
-export type LocaleCode = 'en' | 'de' | 'es' | 'ua' | 'it' | 'ru'
+export type LocaleCode = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru'
 export type LocaleIso = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru'
 
 export interface Locale {
-  code: LocaleCode
+  code: LocaleCode // traduora code
   iso: LocaleIso // 2 letter ISO code, equal to or prefix of navigator.language
   file: string
   emoji: string
@@ -34,9 +34,9 @@ export const locales: Locale[] = [{
   show: true,
   supported: true,
 }, {
-  code: 'ua',
+  code: 'uk',
   iso: 'uk',
-  file: 'ua.js',
+  file: 'uk.js',
   emoji: '🇺🇦',
   show: true,
   supported: false,
