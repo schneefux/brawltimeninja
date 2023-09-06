@@ -121,10 +121,14 @@ export default class ClickerService {
       const brawlers = 'brawler' in me ? [me.brawler] : me.brawlers
 
       for (let brawler of brawlers) {
-        const myBrawler = player.brawlers.find((b) => b.name == brawler.name)!
-        const myStarpower = myBrawler.starPowers.length != 1 ? null : myBrawler.starPowers[0]
-        const myGadget = myBrawler.gadgets.length != 1 ? null : myBrawler.gadgets[0]
-        const myGear = myBrawler.gears.length != 1 ? null : myBrawler.gears[0]
+        // 2023-09-06: apparently, players can sometimes play Brawlers they do not own
+        const myBrawler = player.brawlers.find((b) => b.name == brawler.name)
+        if (myBrawler == undefined) {
+          console.log(`player ${player.tag} (${tagToId(player.tag)} is playing brawler ${brawler.name} which they do not own`)
+        }
+        const myStarpower = myBrawler?.starPowers.length == 1 ? myBrawler.starPowers[0] : null
+        const myGadget = myBrawler?.gadgets.length == 1 ? myBrawler.gadgets[0] : null
+        const myGear = myBrawler?.gears.length == 1 ? myBrawler.gears[0] : null
         const floatingVictory =
             battle.battle.result == 'victory' ? 1.0
           : battle.battle.result == 'defeat' ? 0.0
@@ -136,7 +140,7 @@ export default class ClickerService {
         const isPowerplay = battle.battle.type == 'soloRanked' || battle.battle.type == 'teamRanked'
 
         // type=tournament battles have no trophies, fall back to current brawler trophies
-        const myBrawlerTrophies = brawler.trophies || myBrawler.trophies
+        const myBrawlerTrophies = brawler.trophies || myBrawler?.trophies || 0
         // power league has trophies = league level (0-19)
         const trophyRange = isPowerplay ? myBrawlerTrophies : Math.floor(myBrawlerTrophies / 100) || 0
 
@@ -150,11 +154,11 @@ export default class ClickerService {
           /* player brawler */
           // see other table
           /* brawler */
-          brawler_id: myBrawler.id,
-          brawler_name: myBrawler.name,
+          brawler_id: brawler.id,
+          brawler_name: brawler.name,
           brawler_power: brawler.power,
           brawler_trophies: myBrawlerTrophies,
-          brawler_highest_trophies: myBrawler.highestTrophies,
+          brawler_highest_trophies: myBrawler?.highestTrophies ?? myBrawlerTrophies,
           // calculated
           brawler_trophyrange: trophyRange,
           /* brawler starpower */
