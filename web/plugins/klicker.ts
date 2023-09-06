@@ -1,6 +1,6 @@
 import { BButton, BCard, BCheckbox, BLightbox, BPage, BPageSection, BRadio, BScrollingDashboard, BSelect, BShimmer, CQuery } from '@schneefux/klicker/components'
 import { KlickerConfigInjectionKey } from '@schneefux/klicker/composables/klicker'
-import { App, Ref, onServerPrefetch } from 'vue'
+import { App, Ref, onServerPrefetch, watch } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import { BrawltimeKlickerService } from './klicker.service'
 import { Router } from 'vue-router'

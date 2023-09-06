@@ -46,7 +46,7 @@
             v-for="c in renderedColumns"
             :is="c.header ? 'th' : 'td'"
             :scope="c.header ? 'row' : undefined"
-            :key="c.keys.join('-')"
+            :key="`${r.key}-${c.keys.join('-')}`"
             :class="['text-left pt-2', {
               'pr-3': c.index != columns.length - 1,
               'text-text': c.lightText,
@@ -151,7 +151,7 @@ export default defineComponent({
       const offset = page.value * (props.pageSize || 0)
       const pageRows = props.pageSize == undefined ? props.rows : props.rows.slice(offset, (page.value+1)*props.pageSize)
       return pageRows.map((r, index) => ({
-        key: r[props.idKey as keyof typeof r],
+        key: `${r[props.idKey as keyof typeof r]}-${Math.random()}`, // random: force rerender when rows change because the data might have changed
         index: offset + index,
         row: r,
         fields: props.columns.map(c => c.keys.map(k => k.split('.').reduce((a, b) => a[b as keyof typeof a], r)).join(', ')),
