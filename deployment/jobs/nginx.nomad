@@ -69,7 +69,7 @@ job "nginx" {
       }
 
       config {
-        image = "nginx:1.24-alpine"
+        image = "nginx:1.25.2-alpine"
         network_mode = "host"
 
         ulimit {
