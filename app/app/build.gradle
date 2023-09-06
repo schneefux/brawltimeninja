@@ -50,13 +50,13 @@ def twaManifest = [
 ]
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     defaultConfig {
         applicationId "xyz.schneefux.brawltimeninja"
         minSdkVersion 19
-        targetSdkVersion 31
-        versionCode 6
-        versionName "6"
+        targetSdkVersion 33
+        versionCode 7
+        versionName "7"
 
         // The name for the application
         resValue "string", "appName", twaManifest.name
@@ -148,9 +148,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    lintOptions {
-        checkReleaseBuilds false
-    }
+  lint {
+    checkReleaseBuilds false
+  }
 }
 
 task generateShorcutsFile {
@@ -195,9 +195,9 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+  implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-        implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.3.0'
+  implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
 
   implementation 'com.google.android.play:core:1.10.3'
 }
