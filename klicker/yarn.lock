@@ -1416,10 +1416,10 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@cubejs-client/core@^0.32.22":
-  version "0.32.22"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.32.22.tgz#fe3bc9382e7858cb1b9c7dd726e3327acc3e9508"
-  integrity sha512-JYA8lgr0Pjus/Y+GA5gbP6iY/X2+7wO+DXg4fjAWJjn2MEU8X478OU+uLENzgIqLyZRSjvEZoI6Vt8BicJboEQ==
+"@cubejs-client/core@^0.33.47":
+  version "0.33.47"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.33.47.tgz#c5b45c8b75570b5fe3023436ad9d28f459e62129"
+  integrity sha512-da2aCompNvSrP/DFROJ4oLNQ1VBcKISwqEG8YMH54kRKSx1C+TPFw311sgzmuLRD7psXgUJuCHq1Co1SrEjN7Q==
   dependencies:
     "@babel/runtime" "^7.1.2"
     core-js "^3.6.5"
@@ -13291,11 +13291,6 @@ y18n@^5.0.5:
   resolved "https://registry.yarnpkg.com/y18n/-/y18n-5.0.8.tgz#7f4934d0f7ca8c56f95314939ddcd2dd91ce1d55"
   integrity sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==
 
-yallist@*, yallist@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
-  integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
-
 yallist@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-2.1.2.tgz#1c11f9218f076089a47dd512f93c6699a6a81d52"
@@ -13305,6 +13300,11 @@ yallist@^3.0.2:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.1.1.tgz#dbb7daf9bfd8bac9ab45ebf602b8cbad0d5d08fd"
   integrity sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==
+
+yallist@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
+  integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
 yaml@^1.10.0, yaml@^1.10.2:
   version "1.10.2"
