@@ -112,7 +112,6 @@ job "brawltime-cube" {
       template {
         data = <<-EOF
           CUBEJS_DB_HOST = "{{ with service "clickhouse" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
-          CUBEJS_REDIS_URL = "redis://{{ with service "redis" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
           CUBEJS_CUBESTORE_HOST = "{{ with service "cubestore" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
         EOF
         destination = "secrets/db.env"
@@ -193,7 +192,6 @@ job "brawltime-cube" {
       template {
         data = <<-EOF
           CUBEJS_DB_HOST = "{{ with service "clickhouse" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
-          CUBEJS_REDIS_URL = "redis://{{ with service "redis" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
           CUBEJS_CUBESTORE_HOST = "{{ with service "cubestore" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
         EOF
         destination = "secrets/db.env"

@@ -114,20 +114,6 @@ resource "nomad_job" "clickhouse" {
   }
 }
 
-resource "nomad_job" "redis" {
-  jobspec = file("${path.module}/redis.nomad")
-
-  lifecycle {
-    ignore_changes = [
-      allocation_ids,
-    ]
-  }
-
-  hcl2 {
-    enabled = true
-  }
-}
-
 variable "traduora_google_client_id" {}
 variable "traduora_google_client_secret" {}
 variable "traduora_secret" {}
