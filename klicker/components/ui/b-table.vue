@@ -12,7 +12,7 @@
           </th>
           <th
             v-for="(c, index) in columns"
-            :key="c.keys.join('-')"
+            :key="`head-${c.keys.join('-')}`"
             :class="['text-left leading-tight pb-2 font-normal', {
               'pr-3': index != columns.length - 1,
               'w-0': c.shrink,
@@ -34,7 +34,7 @@
         </tr>
         <tr
           v-for="r in pageRows"
-          :key="r.key"
+          :key="`row-${r.id}`"
         >
           <td
             v-if="ranked"
@@ -46,7 +46,7 @@
             v-for="c in renderedColumns"
             :is="c.header ? 'th' : 'td'"
             :scope="c.header ? 'row' : undefined"
-            :key="`${r.key}-${c.keys.join('-')}`"
+            :key="`cell-${r.id}-${c.keys.join('-')}-${r.fieldHashes[c.index]}`"
             :class="['text-left pt-2', {
               'pr-3': c.index != columns.length - 1,
               'text-text': c.lightText,
@@ -76,6 +76,7 @@
 <script lang="ts">
 import { useKlickerConfig } from '../../composables/klicker'
 import { computed, defineComponent, PropType, ref, watch } from 'vue'
+import { hashCode } from '../../util'
 import BPaginator from './b-paginator.vue'
 
 export interface Column {
@@ -150,12 +151,16 @@ export default defineComponent({
     const pageRows = computed(() => {
       const offset = page.value * (props.pageSize || 0)
       const pageRows = props.pageSize == undefined ? props.rows : props.rows.slice(offset, (page.value+1)*props.pageSize)
-      return pageRows.map((r, index) => ({
-        key: `${r[props.idKey as keyof typeof r]}-${Math.random()}`, // random: force rerender when rows change because the data might have changed
-        index: offset + index,
-        row: r,
-        fields: props.columns.map(c => c.keys.map(k => k.split('.').reduce((a, b) => a[b as keyof typeof a], r)).join(', ')),
-      }))
+      return pageRows.map((r, index) => {
+        const fieldValues = props.columns.map(c => c.keys.map(k => k.split('.').reduce((a, b) => a[b as keyof typeof a], r)).join(', '))
+        return {
+          id: r[props.idKey as keyof typeof r],
+          index: offset + index,
+          row: r,
+          fields: fieldValues,
+          fieldHashes: fieldValues.map(v => hashCode(JSON.stringify(v))),
+        }
+      })
     })
 
     const renderedColumns = computed(() => props.columns
