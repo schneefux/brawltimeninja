@@ -54,9 +54,9 @@ export default defineComponent({
 
     const query = computed(() => ({
       cubeId: 'map',
-      metricsIds: ['winRate', 'useRate', 'picks'],
+      metricsIds: ['winRateAdj', 'useRate', 'picks'],
       dimensionsIds: ['brawler'],
-      sortId: 'winRate',
+      sortId: 'winRateAdj',
       slices: props.slices,
     }))
 
