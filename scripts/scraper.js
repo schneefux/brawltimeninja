@@ -422,14 +422,16 @@ async function main() {
 
     // skins
     const SKINS_RELATIVE_PATH = "skins/"
+    const skinSectionDepth = wtfBrawler.sections()[skinSectionID].json()['depth']
     let skinSections = []
-    if (skinSectionID == lastSectionID) {
-      // single skin
-      skinSections = [wtfBrawler.sections()[skinSectionID].json()]
-    } else {
-      for (let i = skinSectionID+1; i < lastSectionID+1; i++) {
-        skinSections.push(wtfBrawler.sections()[i].json())
-      }
+    for (let sectionID = skinSectionID; sectionID <= lastSectionID; sectionID++) {
+     const section = wtfBrawler.sections()[sectionID].json()
+     if (sectionID != skinSectionID && section.depth <= skinSectionDepth) {
+       break;
+     }
+     if ('templates' in section) {
+       skinSections.push(section)
+     }
     }
     const skinCategories = skinSections.map(skinSection => {
       const skinsElements = skinSection['templates'][0]
