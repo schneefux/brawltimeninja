@@ -9,6 +9,7 @@ const localeImportMap: Record<LocaleIso, any> = {
   uk: () => import('date-fns/locale/uk/index'),
   it: () => import('date-fns/locale/it/index'),
   ru: () => import('date-fns/locale/ru/index'),
+  pl: () => import('date-fns/locale/pl/index'),
 }
 
 export const useDateFnLocale = () => {

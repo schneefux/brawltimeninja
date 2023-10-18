@@ -7,7 +7,7 @@ if (net.setDefaultAutoSelectFamily) {
 const { createWriteStream } = require('fs')
 const fs = require('fs').promises
 const { promisify } = require('util')
-const streamPipeline = promisify(require('stream').pipeline)
+const { pipeline } = require('stream/promises')
 
 const starlistUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v1/';
 const token = process.env.BRAWLAPI_TOKEN || '';
@@ -26,7 +26,7 @@ async function main() {
     const relevant = Object.fromEntries(Object.entries(strings)
       .filter(([key, value]) => key.startsWith('map_name_'))
       .map(([key, value]) => [key.replace('map_name_', 'map.'), value]))
-    await streamPipeline(JSON.stringify(relevant), createWriteStream('./out/translations/' + lang + '.json'))
+    await pipeline(JSON.stringify(relevant), createWriteStream('./out/translations/' + lang + '.json'))
   }
 }
 
