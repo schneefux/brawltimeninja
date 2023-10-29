@@ -7,8 +7,8 @@
     "dev": "cross-env CUBEJS_DEV_MODE=true ./node_modules/.bin/cubejs-server server"
   },
   "devDependencies": {
-    "@cubejs-backend/clickhouse-driver": "^0.33.43",
-    "@cubejs-backend/server": "^0.33.50",
+    "@cubejs-backend/clickhouse-driver": "^0.34.1",
+    "@cubejs-backend/server": "^0.34.10",
     "cross-env": "^7.0.3"
   }
 }
