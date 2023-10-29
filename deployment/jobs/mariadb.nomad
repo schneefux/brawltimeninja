@@ -51,7 +51,7 @@ job "mariadb" {
       }
 
       config {
-        image = "mariadb:10.11"
+        image = "mariadb:11.1"
         args = ["--datadir", "/srv/mariadb"]
         ports = ["db"]
       }
