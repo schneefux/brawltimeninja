@@ -1,5 +1,5 @@
 import { createSSRApp, markRaw, reactive } from 'vue'
-import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
+import { QueryCache, QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import KlickerPlugin, { createClient as createKlickerClient } from '~/plugins/klicker'
 import TRPCPlugin, { createClient as createTrpcClient } from '~/plugins/trpc'
 import type { PageContext } from './types'
@@ -107,12 +107,17 @@ function createApp(pageContext: PageContext) {
       queries: {
         staleTime: 1000 * 60 * 5, // reuse data without firing a new request if it is less than 5 minutes old
         refetchInterval: 1000 * 60 * 5, // refetch data every 5 minutes
-        cacheTime: !import.meta.env.SSR ? undefined : 1000 * 60 * 1, // remove data from cache if unused for 1 minute
+        gcTime: !import.meta.env.SSR ? undefined : 1000 * 60 * 1, // remove data from cache if unused for 1 minute
         refetchOnMount: true,
         refetchOnWindowFocus: true,
         refetchOnReconnect: true,
       },
     },
+    queryCache: new QueryCache({
+      onError(err) {
+        pageContext.sentry.captureException(err)
+      },
+    })
   })
   app.use(VueQueryPlugin, { queryClient })
 

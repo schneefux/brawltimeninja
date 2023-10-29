@@ -2,7 +2,7 @@ import 'dotenv/config'
 import httpDevServer from "vavite/http-dev-server"
 import express from 'express'
 import compression from 'compression'
-import { renderPage } from 'vite-plugin-ssr/server'
+import { renderPage } from 'vike/server'
 import apiMiddleware from '../api/index'
 import { PageContext } from '@/renderer/types'
 import * as Sentry from '@sentry/node'

@@ -15,6 +15,9 @@ import { usePost } from '~/composables/content'
 export default defineComponent({
   async setup() {
     useCacheHeaders()
+
+    const post = await usePost('guides')
+
     useMeta(() => {
       if (post.value == undefined) {
         return {}
@@ -26,8 +29,6 @@ export default defineComponent({
         ]
       }
     })
-
-    const post = await usePost('guides')
 
     return {
       post,

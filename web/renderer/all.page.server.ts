@@ -1,8 +1,8 @@
 import { renderToString } from '@vue/server-renderer'
-import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr/server'
+import { dangerouslySkipEscape, escapeInject } from 'vike/server'
 import { createApp } from './app'
 import type { Config, PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vike/types'
 import { dehydrate } from '@tanstack/vue-query'
 import { renderSSRHead } from '@unhead/ssr'
 import SuperJSON from 'superjson'
@@ -74,7 +74,7 @@ async function onBeforeRender(pageContext: PageContext) {
   }
 }
 
-async function render(pageContext: PageContextBuiltIn & PageContext) {
+async function render(pageContext: PageContextBuiltInServer & PageContext) {
   const { app, head, pinia, router, queryClient } = createApp(pageContext)
 
   let firstError: unknown = undefined

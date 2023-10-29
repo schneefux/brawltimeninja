@@ -1,7 +1,7 @@
 import { Config } from "@/renderer/types"
 
-export type LocaleCode = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru'
-export type LocaleIso = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru'
+export type LocaleCode = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl'
+export type LocaleIso = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl'
 
 export interface Locale {
   code: LocaleCode // traduora code
@@ -53,6 +53,13 @@ export const locales: Locale[] = [{
   file: 'ru.js',
   emoji: '🇷🇺',
   show: false,
+  supported: true,
+}, {
+  code: 'pl',
+  iso: 'pl',
+  file: 'pl.js',
+  emoji: '🇵🇱',
+  show: true,
   supported: true,
 }]
 export const defaultLocale = locales[0]

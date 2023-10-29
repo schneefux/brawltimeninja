@@ -1,5 +1,5 @@
-import { computed, inject, onServerPrefetch, Ref, toRef } from "vue"
-import { useQuery } from "@tanstack/vue-query";
+import { computed, ComputedRef, inject, onServerPrefetch, Ref, toRef } from "vue"
+import { useQuery, keepPreviousData } from "@tanstack/vue-query";
 import { useI18n } from 'vue-i18n'
 import { usePageContext } from '~/renderer/usePageContext'
 import { TrpcInjectionKey } from "@/plugins/trpc"
@@ -10,19 +10,17 @@ import Cookies from 'js-cookie'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
 import { AppI18n } from "@/renderer/app";
 import { Locale } from '~/locales';
-import { RenderErrorPage } from "vite-plugin-ssr/RenderErrorPage";
+import { RenderErrorPage } from "vike/RenderErrorPage";
 
 /*
  * Nuxt 2 backwards compatibility composables
  */
 
-export function useAsync<T>(fun: () => Promise<T>, key: MaybeRef<string>): Ref<T|undefined> {
-  const sentry = useSentry()
-  const { suspense, data } = useQuery([key], fun, {
-    keepPreviousData: true,
-    onError(err) {
-      sentry.captureException(err)
-    },
+export function useAsync<T>(fun: () => Promise<T>, key: ComputedRef<string>|MaybeRef<string>): Ref<T|undefined> {
+  const { suspense, data } = useQuery({
+    queryKey: [key],
+    queryFn: fun,
+    placeholderData: keepPreviousData,
   })
   onServerPrefetch(suspense)
   return data

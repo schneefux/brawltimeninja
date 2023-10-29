@@ -1,5 +1,5 @@
 import vue from '@vitejs/plugin-vue'
-import ssr from 'vite-plugin-ssr/plugin'
+import ssr from 'vike/plugin'
 import Components from 'unplugin-vue-components/vite'
 import UnheadVite from '@unhead/addons/vite'
 import { UserConfig } from 'vite'
@@ -8,7 +8,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { VitePWA } from 'vite-plugin-pwa'
 import Pages from 'vite-plugin-pages'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
-import vavite from 'vavite'
+import { vavite } from 'vavite'
 
 const config: UserConfig = {
   buildSteps: [
@@ -45,7 +45,7 @@ const config: UserConfig = {
       resolver: 'vue',
     }),
     VitePWA({
-      injectRegister: null, // not supported by vite-plugin-ssr, injected in all.page.client instead
+      injectRegister: null, // not supported by vike, injected in all.page.client instead
       registerType: 'autoUpdate',
       devOptions: {
         enabled: false,
@@ -152,12 +152,13 @@ const config: UserConfig = {
     UnheadVite(),
     ssr({ disableAutoFullBuild: true }),
     process.env.VITE_GIT_REV != undefined ? sentryVitePlugin({
-      include: './dist',
-      release: `brawltimeninja@${process.env.VITE_GIT_REV}`,
-      setCommits: {
-        auto: false,
-        repo: 'schneefux/brawltimeninja',
-        commit: process.env.VITE_GIT_REV,
+      release: {
+        name: `brawltimeninja@${process.env.VITE_GIT_REV}`,
+        setCommits: {
+          auto: false,
+          repo: 'schneefux/brawltimeninja',
+          commit: process.env.VITE_GIT_REV,
+        },
       },
       telemetry: false,
     }) : undefined,

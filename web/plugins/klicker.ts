@@ -1,10 +1,9 @@
 import { BButton, BCard, BCheckbox, BLightbox, BPage, BPageSection, BRadio, BScrollingDashboard, BSelect, BShimmer, CQuery } from '@schneefux/klicker/components'
 import { KlickerConfigInjectionKey } from '@schneefux/klicker/composables/klicker'
-import { App, Ref, onServerPrefetch, watch } from 'vue'
-import { useQuery } from '@tanstack/vue-query'
+import { App, Ref, onServerPrefetch } from 'vue'
+import { useQuery, keepPreviousData } from '@tanstack/vue-query'
 import { BrawltimeKlickerService } from './klicker.service'
 import { Router } from 'vue-router'
-import { useSentry } from '@/composables/compat'
 
 export default { install }
 export { createClient }
@@ -40,12 +39,10 @@ function install(app: App, options: Options) {
     managerUrl: options.managerUrl,
     translate: options.translate,
     useQuery: function<T, E>(key: Ref<string>, handler: () => Promise<T>) {
-      const sentry = useSentry()
-      const query = useQuery<T, E>([key], handler, {
-        keepPreviousData: true,
-        onError(err) {
-          sentry.captureException(err)
-        },
+      const query = useQuery<T, E>({
+        queryKey: [key],
+        queryFn: handler,
+        placeholderData: keepPreviousData,
       })
       onServerPrefetch(query.suspense)
 

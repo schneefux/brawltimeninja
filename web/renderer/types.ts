@@ -6,7 +6,7 @@ export type { Config }
 
 import { DehydratedState } from '@tanstack/vue-query'
 import * as SentryTypes from '@sentry/core'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltInServer } from 'vike/types'
 import type { ComponentPublicInstance } from 'vue'
 import { LocaleIso } from '@/locales'
 
@@ -60,7 +60,7 @@ export type PageContextCustom = {
   localeMessages: Partial<Record<LocaleIso, Record<string, string>>>
 }
 
-type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom
+type PageContextServer = PageContextBuiltInServer<Page> & PageContextCustom
 type PageContextClient = PageContextCustom
 
 type PageContext = PageContextClient | PageContextServer
