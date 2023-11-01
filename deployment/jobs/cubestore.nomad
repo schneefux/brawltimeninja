@@ -6,7 +6,6 @@ job "cubestore" {
     value = "database"
   }
 
-  // TODO is cubestore needed at all? there are no pre-aggregations
   group "cubestore" {
     network {
       port "http" {
@@ -59,9 +58,9 @@ job "cubestore" {
       }
 
       resources {
-        cpu = 64
-        memory = 384
-        memory_max = 512
+        cpu = 2048
+        memory = 1024
+        memory_max = 1526
       }
     }
 
