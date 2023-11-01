@@ -78,7 +78,7 @@ async function startServer() {
     if (!httpResponse) {
       return next()
     }
-    const { statusCode, contentType, earlyHints, body } = httpResponse
+    const { statusCode, headers, earlyHints, body } = httpResponse
     /*
     // early hints are not supported by nginx - hang the request with http2 (https://forum.nginx.org/read.php?10,293049)
     if (res.writeEarlyHints) {
@@ -88,7 +88,8 @@ async function startServer() {
     }
     */
 
-    res.status(pageContext.statusCode ?? statusCode).type(contentType).send(body)
+    headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.status(pageContext.statusCode ?? statusCode).send(body)
   })
 
   app.use(Sentry.Handlers.errorHandler())
