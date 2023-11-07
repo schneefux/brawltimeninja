@@ -1,11 +1,13 @@
-FROM node:16 AS builder
+# use alpine for better memory management
+# see https://sharp.pixelplumbing.com/install#linux-memory-allocator
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package.json yarn.lock .
 RUN yarn install --frozen-lockfile
 COPY . .
 RUN yarn run build
 
-FROM node:16
+FROM node:20-alpine
 ENV NODE_ENV=production
 WORKDIR /app
 COPY package.json yarn.lock .
