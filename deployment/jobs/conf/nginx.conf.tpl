@@ -6,7 +6,7 @@ error_log  /var/log/nginx/error.log notice;
 pid        /var/run/nginx.pid;
 
 events {
-    worker_connections  8192;
+  worker_connections  8192;
 }
 
 http {
@@ -103,6 +103,40 @@ http {
   ssl_certificate {{ env "SSL_PATH" }}/fullchain.pem;
   ssl_certificate_key {{ env "SSL_PATH" }}/privkey.pem;
 
+  # Brawl Stars API Proxy
+
+  upstream brawlstars {
+    server api.brawlstars.com:443;
+    keepalive 100;
+  }
+
+  server {
+    listen 80;
+    listen [::]:80;
+
+    allow 10.0.0.0/8;
+    allow fe80::/10;
+    allow 127.0.0.1;
+    allow ::1;
+    deny all;
+
+    server_name proxy.brawltime.ninja;
+
+    location / {
+      resolver 8.8.8.8 ipv6=off;
+      proxy_pass https://brawlstars;
+      proxy_set_header Authorization "Bearer {{ env "BRAWLSTARS_TOKEN" }}";
+      proxy_set_header Host $http_host;
+
+      add_header X-Proxy-Cache $upstream_cache_status;
+      proxy_cache main-cache;
+      proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504 http_429;
+      proxy_cache_lock on;
+      proxy_http_version 1.1;
+      proxy_set_header Connection "";
+    }
+  }
+
   upstream traefik {
     least_conn;
     {{- range service "traefik" }}
@@ -131,12 +165,14 @@ http {
     listen [::]:80;
     {{- end }}
     {{- if (eq $i 1) }}
-    listen 443 ssl http2 default_server;
-    listen [::]:443 ssl http2;
+    listen 443 ssl default_server;
+    listen [::]:443 ssl;
+    http2 on;
     {{- end }}
     {{- if (gt $i 1) }}
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
     {{- end }}
 
     {{- if (eq $i 0) }}
