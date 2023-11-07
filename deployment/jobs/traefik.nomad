@@ -94,8 +94,8 @@ job "traefik" {
 
       resources {
         cpu = 1536
-        memory = 256
-        memory_max = 512
+        memory = 512
+        memory_max = 1536
       }
     }
   }
