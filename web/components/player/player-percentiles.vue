@@ -20,7 +20,7 @@ import { defineComponent, PropType, computed } from 'vue'
 import { Player } from '~/model/Api'
 // @ts-ignore
 import ztable from 'ztable'
-import { BBigstat, BDashboardCell } from '@schneefux/klicker/components'
+import { BScrollingDashboard, BBigstat, BDashboardCell } from '@schneefux/klicker/components'
 import { useI18n } from 'vue-i18n'
 
 interface Achievement {
@@ -32,6 +32,7 @@ export default defineComponent({
   components: {
     BBigstat,
     BDashboardCell,
+    BScrollingDashboard,
   },
   props: {
     player: {
@@ -43,33 +44,29 @@ export default defineComponent({
     const i18n = useI18n()
 
     const achievements = computed<Achievement[]>(() => {
-      // 2020-08-08 highest trophies
-      const trophiesMu = 15390
-      const trophiesSigma = 5433
+      // 2023-11-07
+      // select avg(player_highest_trophies), stddev_samp(player_highest_trophies), avg(brawler_highest_trophies), stddev_samp(brawler_highest_trophies), avg(player_3vs3_victories), stddev_samp(player_3vs3_victories), avg(player_solo_victories), stddev_samp(player_solo_victories), avg(player_duo_victories), stddev_samp(player_duo_victories) from brawler where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day \G
+      const trophiesMu = 35515
+      const trophiesSigma = 15196
       const trophiesZ = (props.player.highestTrophies - trophiesMu) / trophiesSigma
 
-      // 2020-08-08 max highest brawler trophies
-      const brawlerMu = 640
-      const brawlerSigma = 153
+      const brawlerMu = 587
+      const brawlerSigma = 266
       const maxHighestBrawlerTrophies = Math.max.apply(Object.values(props.player.brawlers).map(b => b.highestTrophies))
       const brawlerZ = (maxHighestBrawlerTrophies - brawlerMu) / brawlerSigma
 
       // TODO do not use a normal distribution for these
-      // 2020-08-08
-      const victoriesMu = 2577
-      const victoriesSigma = 2940
+      const victoriesMu = 10851
+      const victoriesSigma = 14114
       const victoryZ = (props.player['3vs3Victories'] - victoriesMu) / victoriesSigma
 
-      const soloMu = 437
-      const soloSigma = 441
+      const soloMu = 1524
+      const soloSigma = 1986
       const soloZ = (props.player.soloVictories - soloMu) / soloSigma
 
-      const duoMu = 698
-      const duoSigma = 695
+      const duoMu = 1772
+      const duoSigma = 2988
       const duoZ = (props.player.duoVictories - duoMu) / duoSigma
-
-      // 2020-08-08 championship challenge
-      const ccPercentile = props.player.isQualifiedFromChampionshipChallenge ? 0.95 : 0.05
 
       // TODO create an endpoint?
       const allAchievements = [{
@@ -78,9 +75,6 @@ export default defineComponent({
       }, {
         metric: i18n.t('metric.highestBrawlerTrophies'),
         percentile: ztable(brawlerZ),
-      }, {
-        metric: i18n.t('metric.isQualifiedFromChampionshipChallenge'),
-        percentile: ccPercentile,
       }, {
         metric: i18n.t('metric.victories'),
         percentile: ztable(victoryZ),
