@@ -317,16 +317,16 @@ export function isSpecialEvent(mode: string) {
 
 export const getDotProp = (o: any, k: string) => k.split('.').reduce((a, b) => a[b], o)
 
-// measured on 2020-11-01 with data from 2020-10-01
+// measured on 2023-11-07
 // select quantile(0.25)(player_trophies/player_brawlers_length), quantile(0.375)(player_trophies/player_brawlers_length), quantile(0.5)(player_trophies/player_brawlers_length), quantile(0.90)(player_trophies/player_brawlers_length), quantile(0.95)(player_trophies/player_brawlers_length), quantile(0.99)(player_trophies/player_brawlers_length) from battle where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day and battle_event_powerplay=0
 export const ratingPercentiles = {
   // key: percentile, trophy boundary
-  '?': [0, 480],
-  'D': [0.25, 500],
-  'C': [0.375, 520],
-  'B': [0.5, 590],
-  'A': [0.9, 630],
-  'S': [0.95, 730],
+  '?': [0, 400],
+  'D': [0.25, 450],
+  'C': [0.375, 500],
+  'B': [0.5, 750],
+  'A': [0.9, 850],
+  'S': [0.95, 1100],
   'S+': [0.99, Infinity],
 }
 
