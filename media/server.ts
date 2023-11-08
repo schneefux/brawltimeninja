@@ -85,7 +85,7 @@ app.use(async (ctx, next) => {
     if (ext == '.jpg') {
       transformer = transformer.toFormat('jpeg')
     }
-    ctx.body = await transformer.toBuffer()
+    ctx.body = transformer
   } else {
     ctx.body = fs.createReadStream(filePath)
   }
