@@ -69,7 +69,6 @@ app.use(async (ctx, next) => {
 
   const ext = path.extname(path.basename(requestPath))
   ctx.type = ext
-  ctx.length = stats.size
   ctx.lastModified = stats.mtime
   ctx.set('Cache-Control', `public, max-age=${maxage}`)
 
@@ -87,6 +86,7 @@ app.use(async (ctx, next) => {
     }
     ctx.body = transformer
   } else {
+    ctx.length = stats.size
     ctx.body = fs.createReadStream(filePath)
   }
 })
