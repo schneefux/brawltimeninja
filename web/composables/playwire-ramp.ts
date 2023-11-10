@@ -3,7 +3,7 @@ import { watch } from "vue"
 import { useMeta } from "./compat";
 
 export type TaggedType = 'leaderboard_atf' | 'leaderboard_btf' | 'med_rect_atf' | 'med_rect_btf' | 'sky_atf' | 'sky_btf'
-export type TaglessType = 'trendi_slideshow' | 'trendi_video' | 'site_skin' | 'flex_leaderboard' | 'top_rail' | 'right_rail' | 'bottom_rail' | 'left_rail'
+export type TaglessType = 'trendi_video' | 'site_skin' | 'flex_leaderboard' | 'right_rail' | 'bottom_rail' | 'left_rail' | 'in_content' | 'sidebar' | 'sticky_sidebar'
 
 interface TaggedUnit {
   type: TaggedType
@@ -37,14 +37,15 @@ declare global {
 
 export function usePlaywireRamp(publisherId: string, siteId: string) {
   const outOfPageUnits = ([
-    'trendi_slideshow',
     'trendi_video',
     'site_skin',
     'flex_leaderboard',
-    'top_rail',
     'right_rail',
     'bottom_rail',
     'left_rail',
+    'in_content',
+    'sidebar',
+    'sticky_sidebar',
   ] satisfies TaglessType[]).map(unit => ({ type: unit }) satisfies TaglessUnit)
 
   const route = useRoute()
