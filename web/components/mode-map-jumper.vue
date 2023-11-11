@@ -35,7 +35,7 @@ export default defineComponent({
       type: String,
       required: false
     },
-    id: {
+    eventId: {
       type: String,
       required: false
     },
@@ -44,8 +44,8 @@ export default defineComponent({
     const modePath = computed(() => props.mode != undefined ? `/tier-list/mode/${camelToKebab(props.mode)}` : '')
     const mapPath = computed(() => props.map != undefined ? `${modePath.value}/map/${slugify(props.map)}` : '')
 
-    const { id, map } = toRefs(props)
-    const mapName = useMapName(id, map)
+    const { eventId, map } = toRefs(props)
+    const mapName = useMapName(eventId, map)
 
     const router = useRouter()
     const localePath = useLocalePath()

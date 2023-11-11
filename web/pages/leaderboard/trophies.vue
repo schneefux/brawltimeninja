@@ -1,10 +1,10 @@
 <template>
   <b-card :title="$t('leaderboard.by-metric', { metric: $t('metric.trophies') })">
     <template v-slot:content>
-      <p>
+      <p id="description">
         {{ $t('leaderboard.player.description', { length: rows.length }) }}
       </p>
-      <div class="mt-2">
+      <div id="table" class="mt-2">
         <player-rank-table
           :columns="['trophies']"
           :column-names="[$t('metric.trophies')]"

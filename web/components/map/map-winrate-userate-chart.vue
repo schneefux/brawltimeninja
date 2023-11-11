@@ -21,7 +21,7 @@ export default defineComponent({
     CQuery,
   },
   props: {
-    id: {
+    eventId: {
       type: [Number, String],
       default: () => undefined
     },
@@ -39,8 +39,8 @@ export default defineComponent({
       sortId: 'useRate',
     }))
 
-    const { id, slices } = toRefs(props)
-    const title = useTopNTitle('brawler.winrate-userate-chart', slices, id)
+    const { eventId, slices } = toRefs(props)
+    const title = useTopNTitle('brawler.winrate-userate-chart', slices, eventId)
 
     return {
       title,

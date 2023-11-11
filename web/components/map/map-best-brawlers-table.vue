@@ -22,7 +22,7 @@ export default defineComponent({
     CQuery,
   },
   props: {
-    id: {
+    eventId: {
       type: [Number, String],
       default: () => undefined
     },
@@ -32,8 +32,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { id, slices } = toRefs(props)
-    const title = useTopNTitle('best.brawlers', slices, id)
+    const { eventId, slices } = toRefs(props)
+    const title = useTopNTitle('best.brawlers', slices, eventId)
 
     const query = computed<CubeQuery>(() => ({
         cubeId: 'map',

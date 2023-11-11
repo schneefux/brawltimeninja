@@ -27,7 +27,7 @@
                 v-if="!event.key.startsWith('all')"
                 :mode="event.mode"
                 :map="event.map"
-                :id="event.id"
+                :event-id="event.id"
                 :class="{
                   'bg-primary-400 rounded-2xl': mode == event.mode && map == event.map,
                 }"

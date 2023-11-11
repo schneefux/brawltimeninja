@@ -26,7 +26,7 @@ export default defineComponent({
       type: String as PropType<'starpowers'|'gadgets'|'gears'>,
       default: 'starpowers'
     },
-    id: {
+    eventId: {
       type: [Number, String],
       default: () => undefined
     },
@@ -36,8 +36,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { id, slices } = toRefs(props)
-    const title = useTopNTitle('best.' + props.kind, slices, id)
+    const { eventId, slices } = toRefs(props)
+    const title = useTopNTitle('best.' + props.kind, slices, eventId)
 
     const dimensionMap = {
       starpowers: 'starpower',

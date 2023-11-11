@@ -1,6 +1,7 @@
 <template>
   <div>
     <breadcrumbs
+      id="breadcrumbs"
       :links="[{
         path: '/tier-list/brawler',
         name: $t('brawler', 2),
@@ -11,15 +12,16 @@
       class="mt-4"
     ></breadcrumbs>
 
-    <p class="mt-4 prose dark:prose-invert">
+    <p id="description" class="mt-4 prose dark:prose-invert">
       {{ $t(`tier-list.${singular}.description`) }}
     </p>
 
     <gadget-starpower-disclaimer
+      id="disclaimer"
       class="mt-4"
     ></gadget-starpower-disclaimer>
 
-    <b-page-section :title="$t(`tier-list.${singular}.${plural}`)">
+    <b-page-section id="dashboard" :title="$t(`tier-list.${singular}.${plural}`)">
       <c-dashboard
         v-model="query"
         :slicer-components="['s-season', 's-mode-map', 's-trophies', 's-powerplay', 's-competition-maps']"

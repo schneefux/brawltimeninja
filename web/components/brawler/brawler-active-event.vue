@@ -2,7 +2,7 @@
   <event-card
     :mode="mode"
     :map="map"
-    :id="id"
+    :event-id="eventId"
   >
     <template
       v-if="end != undefined"
@@ -42,7 +42,7 @@ export default defineComponent({
       type: String,
       required: true
     },
-    id: {
+    eventId: {
       type: [String, Number],
       required: true
     },

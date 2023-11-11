@@ -1,6 +1,6 @@
 <template>
   <b-page :title="$t('tier-list.maps.title')">
-    <p class="mt-4 prose dark:prose-invert">
+    <p id="description" class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.maps.description') }}
      </p>
 
@@ -12,6 +12,7 @@
     <b-split-dashboard>
       <template v-slot:aside>
         <b-scroll-spy
+          id="sidenav"
           :sections="sections"
           nav-class="top-14 lg:top-0"
           toc-class="hidden lg:block"
@@ -20,6 +21,7 @@
       </template>
 
       <b-page-section
+        id="active"
         ref="activeSection"
         :title="$t('events.active.title')"
         v-observe-visibility="{
@@ -34,6 +36,7 @@
       </b-page-section>
 
       <b-page-section
+        id="powerleague"
         ref="powerleagueSection"
         :title="$t('events.powerleague.title')"
         v-observe-visibility="{
@@ -54,6 +57,7 @@
       ></ad>
 
       <b-page-section
+        id="upcoming"
         ref="upcomingSection"
         :title="$t('events.upcoming.title')"
         v-observe-visibility="{
@@ -69,6 +73,7 @@
       </b-page-section>
 
       <b-page-section
+        id="season"
         :title="$t('events.season.title')"
         ref="seasonSection"
         v-observe-visibility="{
@@ -83,6 +88,7 @@
       </b-page-section>
 
       <b-page-section
+        id="competition-winners"
         :title="$t('tier-list.competition-winners.title')"
         ref="competitionWinnersSection"
         v-observe-visibility="{

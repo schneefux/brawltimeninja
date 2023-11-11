@@ -14,7 +14,7 @@ import { useMapName } from '~/composables/map'
 
 export default defineComponent({
   props: {
-    id: {
+    eventId: {
       type: [Number, String],
       required: true
     },
@@ -33,9 +33,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { id, map } = toRefs(props)
-    const mapName = useMapName(id, map)
-    const path = computed(() => props.id != 0 ? `/maps/${props.id}` : `/maps/competition-winners/${props.map.replace('Competition Winner ', '')}`)
+    const { eventId, map } = toRefs(props)
+    const mapName = useMapName(eventId, map)
+    const path = computed(() => props.eventId != 0 ? `/maps/${props.eventId}` : `/maps/competition-winners/${props.map.replace('Competition Winner ', '')}`)
 
     return {
       mapName,

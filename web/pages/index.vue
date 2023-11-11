@@ -7,7 +7,7 @@
     ></ad>
 
     <div class="flex flex-col justify-center">
-      <div class="mx-auto relative">
+      <div id="logo" class="mx-auto relative">
         <img
           :src="logoWithCrownUrl"
           class="mx-auto mt-2 h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 object-contain"
@@ -20,7 +20,7 @@
         </span>
       </div>
 
-      <b-page-section class="text-center">
+      <b-page-section id="title" class="text-center">
         <h1 class="text-4xl font-bold">
           {{ $t('index.title') }}
         </h1>
@@ -30,6 +30,7 @@
       </b-page-section>
 
       <form
+        id="search"
         v-observe-visibility="{
           callback: makeVisibilityCallback('section'),
           once: true,
@@ -70,7 +71,7 @@
         </p>
       </form>
 
-      <div class="mt-4 mx-6 flex justify-center">
+      <div id="help" class="mt-4 mx-6 flex justify-center">
         <div class="flex justify-center">
           <details
             ref="helpDropdown"
@@ -105,7 +106,7 @@
         </div>
       </div>
 
-      <div class="mt-2 mx-6 flex flex-wrap justify-center">
+      <div id="recommended" class="mt-2 mx-6 flex flex-wrap justify-center">
         <div class="mt-2">
           <template v-if="lastPlayers.length === 0">
             {{ $t('index.recommended') }}
@@ -136,11 +137,13 @@
     ></ad>
 
     <b-page-section
+      id="best"
       class="mt-4"
       lazy
     >
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <top-brawlers-card
+          id="top-brawlers"
           v-observe-visibility="{
             callback: makeVisibilityCallback('best_brawlers'),
             once: true,
@@ -150,6 +153,7 @@
         ></top-brawlers-card>
 
         <top-players-card
+          id="top-players"
           v-observe-visibility="{
             callback: makeVisibilityCallback('best_players'),
             once: true,
@@ -166,6 +170,7 @@
     ></ad>
 
     <b-page-section
+      id="events"
       v-if="events != undefined && events.length > 0"
       :title="$t('index.events.title')"
       v-observe-visibility="{

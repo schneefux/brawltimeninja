@@ -15,7 +15,7 @@
         <brawler-active-event
           :mode="event.mode"
           :map="event.map"
-          :id="event.id"
+          :event-id="event.id"
           :end="event.end"
           :brawler-name="brawlerName"
           :data="event"

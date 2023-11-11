@@ -17,8 +17,8 @@
 
     <template v-slot:preview>
       <map-img
-        v-if="id != undefined && map != undefined"
-        :id="id"
+        v-if="eventId != undefined && map != undefined"
+        :event-id="eventId"
         :map="map"
         clazz="h-12 w-12 object-contain"
       ></map-img>
@@ -61,7 +61,7 @@ export default defineComponent({
     map: {
       type: String,
     },
-    id: {
+    eventId: {
       // enables map icon top right
       type: [String, Number],
     },
@@ -87,8 +87,8 @@ export default defineComponent({
     const modeLink = computed(() => props.mode != undefined ? localePath(`/tier-list/mode/${camelToKebab(props.mode)}`) : undefined)
     const mapLink = computed(() => props.mode != undefined && props.map != undefined ? localePath(`/tier-list/mode/${camelToKebab(props.mode)}/map/${slugify(props.map)}`) : undefined)
 
-    const { id, map } = toRefs(props)
-    const mapName = useMapName(id, map)
+    const { eventId, map } = toRefs(props)
+    const mapName = useMapName(eventId, map)
 
     return {
       mapName,

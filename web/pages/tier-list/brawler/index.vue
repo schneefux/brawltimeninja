@@ -1,10 +1,11 @@
 <template>
   <b-page :title="$t('brawlers.title')">
-    <p class="mt-4 prose dark:prose-invert">
+    <p id="description" class="mt-4 prose dark:prose-invert">
       {{ $t('brawlers.description') }}
     </p>
 
     <brawlers-roll
+      id="roll"
       class="mt-8"
     ></brawlers-roll>
 
@@ -14,19 +15,21 @@
     ></ad>
 
     <b-page-section
+      id="tier-list"
       :title="$t('tier-list.all.title')"
       v-observe-visibility="{
         callback: makeVisibilityCallback('widget'),
         once: true,
       }"
     >
-      <mode-map-jumper></mode-map-jumper>
+      <mode-map-jumper id="mode-map-jumper"></mode-map-jumper>
 
       <p class="mt-4 prose dark:prose-invert">
         {{ $t('tier-list.brawler.description') }}
       </p>
 
       <map-views
+        id="dashboard"
         ga-category="brawler"
         class="mt-8"
       ></map-views>

@@ -2,7 +2,7 @@
   <event-card
     :mode="battle.event.mode"
     :map="battle.event.map"
-    :id="battle.event.id"
+    :event-id="battle.event.id"
   >
     <template v-slot:infobar>
       <div class="flex justify-between">

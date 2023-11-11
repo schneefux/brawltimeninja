@@ -50,7 +50,7 @@
                   callback: makeVisibilityCallback('brawlers'),
                   once: true,
                 }"
-                :id="id"
+                :event-id="eventId"
                 :slices="slices"
               ></map-best-brawlers-table>
             </b-dashboard-cell>
@@ -66,7 +66,7 @@
                   callback: makeVisibilityCallback('teams'),
                   once: true,
                 }"
-                :id="id"
+                :event-id="eventId"
                 :slices="slices"
               ></map-best-teams-table>
             </b-dashboard-cell>
@@ -83,13 +83,13 @@
                 callback: makeVisibilityCallback('insights'),
                 once: true,
               }"
-              :id="id"
+              :event-id="eventId"
               :slices="slices"
               tab="brawlers"
             ></map-insights>
 
             <map-balance-chart
-              :id="id"
+              :event-id="eventId"
               :slices="slices"
               v-observe-visibility="{
                 callback: makeVisibilityCallback('charts'),
@@ -104,7 +104,7 @@
               lazy
             >
               <map-winrate-userate-chart
-                :id="id"
+                :event-id="eventId"
                 :slices="slices"
               ></map-winrate-userate-chart>
             </b-dashboard-cell>
@@ -116,7 +116,7 @@
               lazy
             >
               <map-trend-chart
-                :id="id"
+                :event-id="eventId"
                 :slices="slices"
               ></map-trend-chart>
             </b-dashboard-cell>
@@ -143,7 +143,7 @@
                   callback: makeVisibilityCallback('leaderboard'),
                   once: true,
                 }"
-                :id="id"
+                :event-id="eventId"
                 :slices="slices"
               ></map-best-players-table>
             </b-dashboard-cell>
@@ -171,7 +171,7 @@
                   callback: makeVisibilityCallback('starpowers'),
                   once: true,
                 }"
-                :id="id"
+                :event-id="eventId"
                 :slices="slices"
                 kind="starpowers"
               ></map-best-accessory-table>
@@ -182,7 +182,7 @@
                 callback: makeVisibilityCallback('insights'),
                 once: true,
               }"
-              :id="id"
+              :event-id="eventId"
               :slices="slices"
               tab="starpowers"
             ></map-insights>
@@ -219,7 +219,7 @@
                   callback: makeVisibilityCallback('gadgets'),
                   once: true,
                 }"
-                :id="id"
+                :event-id="eventId"
                 :slices="slices"
                 kind="gadgets"
               ></map-best-accessory-table>
@@ -230,7 +230,7 @@
                 callback: makeVisibilityCallback('insights'),
                 once: true,
               }"
-              :id="id"
+              :event-id="eventId"
               :slices="slices"
               tab="gadgets"
             ></map-insights>
@@ -267,7 +267,7 @@
                   callback: makeVisibilityCallback('gears'),
                   once: true,
                 }"
-                :id="id"
+                :event-id="eventId"
                 :slices="slices"
                 kind="gears"
               ></map-best-accessory-table>
@@ -278,7 +278,7 @@
                 callback: makeVisibilityCallback('insights'),
                 once: true,
               }"
-              :id="id"
+              :event-id="eventId"
               :slices="slices"
               tab="gears"
             ></map-insights>
@@ -340,7 +340,7 @@ export default defineComponent({
     map: {
       type: String
     },
-    id: {
+    eventId: {
       type: String
     },
     gaCategory: {

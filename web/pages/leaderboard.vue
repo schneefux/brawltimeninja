@@ -1,6 +1,6 @@
 <template>
   <b-page :title="$t('leaderboard.player.metric.title', { metric: $t('metric.' + metric) })">
-    <p>{{ $t('leaderboard.player.metric.description', { metric: $t('metric.' + metric) }) }}</p>
+    <p id="description">{{ $t('leaderboard.player.metric.description', { metric: $t('metric.' + metric) }) }}</p>
 
     <ad
       ad-slot="4579727583"
@@ -19,7 +19,7 @@
       </b-button>
     </div>
 
-    <div class="flex justify-center mt-8">
+    <div id="leaderboard" class="flex justify-center mt-8">
       <router-view></router-view>
     </div>
 

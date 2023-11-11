@@ -26,7 +26,7 @@ export default defineComponent({
     VLineplot,
   },
   props: {
-    id: {
+    eventId: {
       type: [Number, String],
       default: () => undefined
     },
@@ -69,7 +69,7 @@ export default defineComponent({
 
       // TODO refactor: write a function that returns a query that compares to parent dimension
       if (comparingSlices == undefined && props.slices.map?.length > 0) {
-        name = i18n.t('mode.' + props.slices.mode[0]!) + ' - ' + i18n.t('map.' + props.id)
+        name = i18n.t('mode.' + props.slices.mode[0]!) + ' - ' + i18n.t('map.' + props.eventId)
         referenceName = i18n.t('mode.' + props.slices.mode[0]!)
         comparingSlices = {
           ...props.slices,
@@ -134,11 +134,11 @@ export default defineComponent({
       }
     })
 
-    const { id, slices } = toRefs(props)
+    const { eventId, slices } = toRefs(props)
     const args = computed(() => ({
       metric: i18n.t('metric.' + props.metric),
     }))
-    const title = useTopNTitle('trend-chart.metric', slices, id, args)
+    const title = useTopNTitle('trend-chart.metric', slices, eventId, args)
 
     return {
       title,

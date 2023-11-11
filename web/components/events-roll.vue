@@ -38,7 +38,7 @@
             v-if="withData"
             :slices="event.slices"
             :powerplay="event.powerplay"
-            :id="event.id"
+            :event-id="event.id"
             :start-date="event.start"
             :end-date="event.end"
           ></map-best-brawlers-card>
@@ -46,7 +46,7 @@
             v-else
             :mode="event.mode"
             :map="event.map"
-            :id="event.id"
+            :event-id="event.id"
           ></event-picture-card>
         </slot>
       </template>

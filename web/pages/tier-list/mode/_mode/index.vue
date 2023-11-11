@@ -1,10 +1,11 @@
 <template>
   <b-page :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })">
     <mode-map-jumper
+      id="mode-map-jumper"
       :mode="mode"
     ></mode-map-jumper>
 
-    <p class="mt-4 prose dark:prose-invert">
+    <p id="description" class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
     </p>
 
@@ -14,6 +15,7 @@
     ></ad>
 
     <b-page-section
+      id="maps"
       v-if="events != undefined && events.length > 0"
       :title="$t('tier-list.maps.title')"
       v-observe-visibility="{
@@ -35,7 +37,7 @@
       lazy
     ></ad>
 
-    <b-page-section>
+    <b-page-section id="dashboard">
       <map-views
         :mode="mode"
         ga-category="mode"

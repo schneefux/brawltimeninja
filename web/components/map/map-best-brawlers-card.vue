@@ -2,7 +2,7 @@
   <event-card
     :mode="mode"
     :map="map"
-    :id="id"
+    :event-id="eventId"
   >
     <template
       v-if="powerplay || endDate != undefined || startDate != undefined"
@@ -49,7 +49,7 @@ export default defineComponent({
       type: String,
       required: false
     },
-    id: {
+    eventId: {
       type: [Number, String],
       required: false
     },

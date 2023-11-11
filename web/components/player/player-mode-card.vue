@@ -24,7 +24,7 @@
         >
           <template v-slot:preview>
             <map-img
-              :id="activeMap.id"
+              :event-id="activeMap.id"
               :map="activeMap.map"
               clazz="h-10"
             ></map-img>

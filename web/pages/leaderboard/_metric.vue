@@ -2,6 +2,7 @@
   <c-query :query="query">
     <template v-slot="data">
       <v-table
+        id="table"
         v-bind="data"
         :page-size="100"
         :card="{

@@ -3,14 +3,14 @@
     :mode="mode"
     :map="map"
     :link="mapPath"
-    :id="id"
+    :event-id="eventId"
     nobackground
   >
     <template v-slot:preview></template>
     <template v-slot:content>
       <div class="pt-4 h-full flex flex-col justify-center">
         <map-img
-          :id="id"
+          :event-id="eventId"
           :map="map"
           clazz="w-full h-48 object-contain"
         ></map-img>
@@ -35,7 +35,7 @@ export default defineComponent({
       type: String,
       required: true
     },
-    id: {
+    eventId: {
       type: [String, Number],
       required: true
     },

@@ -6,7 +6,7 @@
   >
     <div class="mr-2 w-10 sm:w-12 md:w-14">
       <map-img
-        :id="row.dimensionsRaw.map.eventId"
+        :event-id="row.dimensionsRaw.map.eventId"
         :map="row.dimensionsRaw.map.map"
         clazz="h-6 sm:h-8 md:h-10"
       ></map-img>

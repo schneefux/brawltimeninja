@@ -3,12 +3,13 @@
     :title="$t('oejts.title')"
     class="max-w-lg"
   >
-    <p class="mt-4 mb-8">{{ $t('oejts.description') }}</p>
+    <p id="description" class="mt-4 mb-8">{{ $t('oejts.description') }}</p>
     <ad
       ad-slot="1985124187"
       banner
     ></ad>
     <quiz-card
+      id="quiz"
       class="mt-8"
     ></quiz-card>
     <ad

@@ -12,6 +12,7 @@
       <template v-slot:aside>
         <div class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8">
           <player-aside
+            id="aside"
             :player="player"
             v-observe-visibility="{
               callback: makeVisibilityCallback('aside'),
@@ -21,6 +22,7 @@
           ></player-aside>
 
           <b-scroll-spy
+            id="sidenav"
             :sections="sections"
             nav-class="top-14 lg:top-0"
             toc-class="hidden lg:block"
@@ -30,6 +32,7 @@
       </template>
 
       <b-page-section
+        id="time"
         ref="timeSection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('hours'),
@@ -45,6 +48,7 @@
       </b-page-section>
 
       <b-page-section
+        id="trophy"
         ref="trophySection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('trophies'),
@@ -61,6 +65,7 @@
       </b-page-section>
 
       <b-page-section
+        id="info"
         v-observe-visibility="{
           callback: makeVisibilityCallback('info'),
           once: true,
@@ -85,6 +90,7 @@
       ></ad>
 
       <b-page-section
+        id="brawlers"
         ref="brawlersSection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('brawlers'),
@@ -105,6 +111,7 @@
       </b-page-section>
 
       <b-page-section
+        id="sharepic"
         ref="sharepicSection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('sharepic'),
@@ -120,6 +127,7 @@
       </b-page-section>
 
       <b-page-section
+        id="quiz"
         ref="quizSection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('quiz'),
@@ -141,6 +149,7 @@
       ></ad>
 
       <b-page-section
+        id="battles"
         v-if="playerTotals != undefined && playerTotals.picks > 0"
         ref="battlesSection"
         v-observe-visibility="{
@@ -162,6 +171,7 @@
       </b-page-section>
 
       <b-page-section
+        id="modes"
         ref="modesSection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('gamemodes'),
@@ -183,6 +193,7 @@
       </b-page-section>
 
       <b-page-section
+        id="records"
         ref="recordsSection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('records'),

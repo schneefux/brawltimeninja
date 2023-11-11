@@ -1,6 +1,7 @@
 <template>
   <b-page :title="brawlerName">
     <breadcrumbs
+      id="breadcrumbs"
       :links="[{
         path: '/tier-list/brawler',
         name: $t('brawler', 2),
@@ -20,12 +21,14 @@
       <template v-slot:aside>
         <div class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8">
           <brawler-aside
+            id="aside"
             :brawler-id="brawlerId"
             :brawler-name="brawlerName"
             class="!h-auto"
           ></brawler-aside>
 
           <b-scroll-spy
+            id="sidenav"
             :sections="sections"
             nav-class="top-14 lg:top-0"
             toc-class="hidden lg:block"
@@ -35,6 +38,7 @@
       </template>
 
       <b-page-section
+        id="overview"
         ref="overviewSection"
         :title="$t('brawler.overview')"
         v-observe-visibility="{
@@ -49,6 +53,7 @@
       </b-page-section>
 
       <b-page-section
+        id="accessory"
         ref="accessorySection"
         :title="$t('brawler.accessories')"
         v-observe-visibility="{
@@ -64,6 +69,7 @@
       </b-page-section>
 
       <b-page-section
+        id="synergy"
         ref="synergySection"
         :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName })"
         v-observe-visibility="{
@@ -78,6 +84,7 @@
       </b-page-section>
 
       <b-page-section
+        id="maps"
         ref="mapsSection"
         :title="$t('brawler.current-maps.title', { brawler: brawlerName })"
         v-observe-visibility="{
@@ -92,6 +99,7 @@
       </b-page-section>
 
       <b-page-section
+        id="modes"
         ref="modesSection"
         :title="$t('brawler.modes.title', { brawler: brawlerName })"
         v-observe-visibility="{
@@ -110,6 +118,7 @@
       </b-page-section>
 
       <b-page-section
+        id="trends"
         ref="trendsSection"
         :title="$t('brawler.trends', { brawler: brawlerName })"
         v-observe-visibility="{
@@ -133,6 +142,7 @@
       </b-page-section>
 
       <b-page-section
+        id="trophies"
         ref="trophiesSection"
         :title="$t('brawler.by-trophies', { brawler: brawlerName })"
         v-observe-visibility="{
@@ -155,6 +165,7 @@
         but until scrapedData is fetched, render the placeholders
       -->
       <b-page-section
+        id="skins"
         v-if="scrapedData == undefined || (scrapedData.skins != undefined && scrapedData.skins.length > 0)"
         ref="skinsSection"
         :title="$t('skin', 2)"
@@ -170,6 +181,7 @@
       </b-page-section>
 
       <b-page-section
+        id="pins"
         v-if="scrapedData == undefined || (scrapedData.pins != undefined && scrapedData.pins.length > 0)"
         ref="pinsSection"
         :title="$t('pin', 2)"
@@ -185,6 +197,7 @@
       </b-page-section>
 
       <b-page-section
+        id="voicelines"
         v-if="scrapedData == undefined || (scrapedData.voicelines != undefined && scrapedData.voicelines.length > 0)"
         ref="voicelineSection"
         :title="$t('voiceline', 2)"
@@ -200,6 +213,7 @@
       </b-page-section>
 
       <b-page-section
+        id="balance-changes"
         v-if="scrapedData == undefined || (scrapedData.history != undefined && scrapedData.history.length > 0)"
         :title="$t('balance-changes')"
         ref="balanceChangesSection"
@@ -216,6 +230,7 @@
     </b-split-dashboard>
 
     <b-page-section
+      id="attribution"
       v-observe-visibility="{
         callback: makeVisibilityCallback('attribution'),
         once: true,

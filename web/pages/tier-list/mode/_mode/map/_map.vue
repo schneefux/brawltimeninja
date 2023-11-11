@@ -4,12 +4,13 @@
     :title="$t('tier-list.map.title', { map: mapName })"
   >
     <mode-map-jumper
+      id="mode-map-jumper"
       :mode="event.mode"
       :map="event.map"
-      :id="event.id"
+      :event-id="event.id"
     ></mode-map-jumper>
 
-    <p class="prose dark:prose-invert">
+    <p id="description" class="prose dark:prose-invert">
       {{ $t('tier-list.map.description', {
         map: mapName,
         mode: $t('mode.' + event.mode)
@@ -21,9 +22,9 @@
       first
     ></ad>
 
-    <b-lightbox v-model="lightboxOpen">
+    <b-lightbox id="lightbox" v-model="lightboxOpen">
       <map-img
-        :id="event.id"
+        :event-id="event.id"
         :map="event.map"
         clazz="h-full object-contain"
         size=""
@@ -37,9 +38,10 @@
           v-slot:aside
         >
           <event-picture-card
+            id="aside"
             :mode="event.mode"
             :map="event.map"
-            :id="event.id"
+            :event-id="event.id"
             class="relative"
             @click.capture.prevent="lightboxOpen = true"
           >
@@ -51,9 +53,10 @@
         </template>
 
         <map-views
+          id="dashboard"
           :mode="event.mode"
           :map="event.map"
-          :id="event.id"
+          :event-id="event.id"
           ga-category="map"
         ></map-views>
       </b-split-dashboard>

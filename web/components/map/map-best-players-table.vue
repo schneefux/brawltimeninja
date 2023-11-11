@@ -22,18 +22,18 @@ export default defineComponent({
     CQuery,
   },
   props: {
-    id: {
+    eventId: {
       type: [Number, String],
       default: () => undefined
     },
     slices: {
-      type: Object as PropType<SliceValue>,
+      type: Object as PropType<SliceValue>,
       default: () => ({})
     },
   },
   setup(props) {
-    const { id, slices } = toRefs(props)
-    const title = useTopNTitle('best.players', slices, id)
+    const { eventId, slices } = toRefs(props)
+    const title = useTopNTitle('best.players', slices, eventId)
 
     const query = computed<CubeQuery>(() => {
       const isShowdown = slices.value.mode?.[0]?.toLowerCase().includes('showdown')

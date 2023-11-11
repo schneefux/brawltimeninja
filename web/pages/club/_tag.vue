@@ -5,11 +5,11 @@
   >
     <b-card :title="club.name">
       <template v-slot:content>
-        <blockquote class="mt-2 italic">
+        <blockquote id="description" class="mt-2 italic">
           {{ club.description }}
         </blockquote>
 
-        <table class="mt-2 w-full">
+        <table id="table" class="mt-2 w-full">
           <thead>
             <tr class="h-8 border-b border-gray-600 text-left">
               <th scope="col">

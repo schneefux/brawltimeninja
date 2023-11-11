@@ -3,10 +3,10 @@
     ref="container"
     class="min-h-screen bg-background text-text"
   >
-    <web-nav class="hidden lg:flex"></web-nav>
-    <app-head-nav class="lg:hidden"></app-head-nav>
+    <web-nav id="web-nav" class="hidden lg:flex"></web-nav>
+    <app-head-nav id="app-nav" class="lg:hidden"></app-head-nav>
 
-    <loading-indicator></loading-indicator>
+    <loading-indicator id="loading"></loading-indicator>
 
     <ad
       ad-slot="6848221017"
@@ -23,8 +23,9 @@
       <slot></slot>
     </div>
 
-    <app-bottom-nav class="lg:hidden"></app-bottom-nav>
+    <app-bottom-nav id="app-bottom-nav" class="lg:hidden"></app-bottom-nav>
     <b-web-footer
+      id="footer"
       :links="links"
       tag="router-link"
       class="hidden lg:block"
