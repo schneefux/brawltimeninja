@@ -100,11 +100,6 @@
         <competition-winner-roll></competition-winner-roll>
       </b-page-section>
     </b-split-dashboard>
-
-    <ad
-      ad-slot="3577381889"
-      lazy
-    ></ad>
   </b-page>
 </template>
 
