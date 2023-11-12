@@ -5,7 +5,9 @@ import fs from 'fs'
 import { promisify } from 'util'
 import sharp from 'sharp'
 import resolvePath from 'resolve-path'
+import { fileURLToPath } from 'url'
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const assetDir = process.env.ASSET_DIR || path.join(path.dirname(__dirname), 'assets')
 const maxage = parseInt(process.env.CACHE_SECONDS || '86400')
 
@@ -44,13 +46,16 @@ app.use(async (ctx, next) => {
     } catch (err: any) { }
   }
 
+  const ext = path.extname(path.basename(requestPath))
+  const isImage = ['.webp', '.jpg', '.png'].includes(ext)
+
   let stats
   try {
     stats = await fsStat(filePath)
   } catch (err: any) {
     const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
     if (notfound.includes(err.code)) {
-      if (filePath.endsWith('.png')) {
+      if (isImage) {
         ctx.type = 'image/png'
         ctx.body = placeholder
       } else {
@@ -67,12 +72,11 @@ app.use(async (ctx, next) => {
     return
   }
 
-  const ext = path.extname(path.basename(requestPath))
   ctx.type = ext
   ctx.lastModified = stats.mtime
   ctx.set('Cache-Control', `public, max-age=${maxage}`)
 
-  if (['.webp', '.jpg', '.png'].includes(ext)) {
+  if (isImage) {
     let transformer = sharp(filePath)
     if (typeof ctx.query.size == 'string') {
       const size = Math.max(1, Math.min(1000, parseInt(ctx.query.size)))
