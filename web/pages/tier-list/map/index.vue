@@ -4,11 +4,6 @@
       {{ $t('tier-list.maps.description') }}
      </p>
 
-    <ad
-      ad-slot="8877810024"
-      first
-    ></ad>
-
     <b-split-dashboard>
       <template v-slot:aside>
         <b-scroll-spy
@@ -50,11 +45,6 @@
           with-data
         ></events-roll>
       </b-page-section>
-
-      <ad
-        ad-slot="4150756245"
-        lazy
-      ></ad>
 
       <b-page-section
         id="upcoming"
