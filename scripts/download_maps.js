@@ -39,7 +39,14 @@ async function main() {
   const icons = await getStarlistIcons()
   await fs.mkdir('./out/avatars', { recursive: true })
   for (const icon of [].concat(Object.values(icons.player), Object.values(icons.club))) {
-    await pipeline((await fetch(icon.imageUrl)).body, createWriteStream('./out/avatars/' + icon.id + '.png'))
+    // Brawlify does not update avatar icons anymore, fall back to Brawlace
+    for (const imageUrl of [icon.imageUrl, `https://brawlace.com/assets/images/brawlstars/icons-players/${icon.id}.png`]) {
+      const res = await fetch(imageUrl)
+      if (res.ok) {
+        await pipeline(res.body, createWriteStream('./out/avatars/' + icon.id + '.png'))
+        break
+      }
+    }
     await sleep(500)
   }
 
