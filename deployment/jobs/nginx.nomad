@@ -104,8 +104,12 @@ job "nginx" {
       template {
         data = file("./conf/nginx.conf.tpl")
         destination = "local/nginx.conf"
-        change_mode = "signal"
-        change_signal = "SIGHUP"
+        # FIXME use restart because when traefik briefly goes down,
+        # the upstream never recovers because the config is never applied
+        # (maybe because when receiving SIGHUP, nginx waits for all connections to close first, which never happens?)
+
+        #change_mode = "signal"
+        #change_signal = "SIGHUP"
         # wait for the consul cluster to be consistent
         wait {
           min = "10s"
