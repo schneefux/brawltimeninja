@@ -86,23 +86,23 @@ export default defineComponent({
 <style lang="postcss">
 #pw-oop-bottom_rail {
   /* push bottom rail above sticky footer (global style) */
-  @apply bottom-14 lg:bottom-0 !important;
+  @apply max-md:bottom-14 !important;
   /* remove padding which pushes the unit out of the container (?) */
   @apply pt-0 !important;
 }
 
 #tyche_trendi_video_container {
   /* push video player above bottom rail and sticky footer */
-  @apply bottom-30 lg:bottom-0 !important;
+  @apply max-md:bottom-[115px] !important; /* 3.5rem (14) for footer + 50px for rail + 0.5rem padding */
 }
 
 .pw-sticky {
   /* push sticky in-content ads below sticky header elements */
-  @apply top-28 lg:top-0 !important; /* 3rem (12) for scroll spy nav + 3.5rem (14) for sticky header + 0.5rem (2) padding */
+  @apply max-md:top-28 !important; /* 3rem (12) for scroll spy nav + 3.5rem (14) for sticky header + 0.5rem (2) padding */
 }
 
 main {
   /* add padding to bottom of page so that the rail does not overlap any content */
-  @apply mb-[138px] lg:mb-8 !important; /* 106px for the rail + 32px (mb-8) as usual */
+  @apply max-md:mb-[138px] !important; /* 106px for the rail + 32px (mb-8) as usual */
 }
 </style>

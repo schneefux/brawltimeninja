@@ -30,13 +30,7 @@ async function render(pageContext: PageContext) {
       }),
       new HttpClientIntegration(),
     ],
-    ignoreErrors: [
-      // ignore common errors triggered by ads
-      'SYNC.JS',
-      `Cannot read properties of null (reading 'setTargeting')`,
-      'NS_ERROR_NOT_INITIALIZED',
-      '[GPT] ',
-    ],
+    allowUrls: [/https?:\/\/brawltime\.ninja/]
   })
   pageContext.sentry = Sentry as any
 
