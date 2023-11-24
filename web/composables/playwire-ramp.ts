@@ -43,7 +43,7 @@ export function usePlaywireRamp(publisherId: string, siteId: string) {
     'right_rail',
     'bottom_rail',
     'left_rail',
-    'in_content',
+    // 'in_content',
     'sidebar',
     'sticky_sidebar',
   ] satisfies TaglessType[]).map(unit => ({ type: unit }) satisfies TaglessUnit)
