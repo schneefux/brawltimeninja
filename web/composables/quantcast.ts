@@ -9,7 +9,7 @@ export function useQuantcast(quantcastChoiceId: string) {
       type: 'text/javascript',
       async: true,
       tagPriority: 'critical',
-      src: `https://cmp.quantcast.com/choice/${quantcastChoiceId}/${host}/choice.js?tag_version=V2`,
+      src: `https://cmp.inmobi.com/choice/${quantcastChoiceId}/${host}/choice.js?tag_version=V3`,
     }, {
       key: 'quantcast-choice-init',
       type: 'text/javascript',
@@ -73,7 +73,7 @@ export function useQuantcast(quantcastChoiceId: string) {
         }
       } else {
         if(args[0] === 'init' && typeof args[3] === 'object') {
-          args[3] = Object.assign(args[3], { tag_version: 'V2' });
+          args[3] = Object.assign(args[3], { tag_version: 'V3' });
         }
         queue.push(args);
       }
