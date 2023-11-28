@@ -36,12 +36,9 @@ job "brawltime-media" {
   # disabled, scaling is currently not working with volume
   /*
   update {
-    max_parallel = 1
-    canary = 1
-    min_healthy_time = "10s"
-    healthy_deadline = "5m"
     auto_revert = true
     auto_promote = true
+    canary = 1
   }
   */
 
@@ -118,7 +115,7 @@ job "brawltime-media" {
         timeout = "2s"
 
         check_restart {
-          limit = 5
+          limit = 6
         }
       }
     }
@@ -150,8 +147,8 @@ job "brawltime-media" {
 
       resources {
         cpu = 128
-        memory = 768
-        memory_max = 1536
+        memory = 384
+        memory_max = 512 # sharp will use as much memory as available
       }
     }
 

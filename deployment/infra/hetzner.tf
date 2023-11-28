@@ -107,7 +107,7 @@ variable "servers" {
       location = "nbg1"
     }
     colt = {
-      server_type = "cx21"
+      server_type = "cpx21"
       class = "database"
       location = "nbg1"
     }

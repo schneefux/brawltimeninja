@@ -19,20 +19,22 @@ job "brawltime-web" {
   }
 
   update {
-    max_parallel = 1
-    canary = 1
-    min_healthy_time = "10s"
-    healthy_deadline = "5m"
     auto_revert = true
     auto_promote = true
+    canary = 1
   }
 
   group "web" {
     count = 4
 
+    restart {
+      mode = "delay"
+      interval = "5m"
+    }
+
     scaling {
       enabled = true
-      min = 1
+      min = 2 # 1 backup in case the other fails
       max = 16
 
       policy {
@@ -57,7 +59,7 @@ job "brawltime-web" {
           query_window = "10m"
 
           strategy "threshold" {
-            upper_bound = 20
+            upper_bound = 40
             lower_bound = 0
             within_bounds_trigger = 1
             delta = -1
@@ -84,10 +86,10 @@ job "brawltime-web" {
         type = "http"
         path = "/health"
         interval = "10s"
-        timeout  = "5s"
+        timeout = "10s"
 
         check_restart {
-          limit = 5
+          limit = 6
         }
       }
     }
@@ -129,8 +131,12 @@ job "brawltime-web" {
       # https://github.com/hashicorp/nomad/issues/12894
       template {
         data = <<-EOF
-          CLICKHOUSE_HOST = "{{ with service "clickhouse" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
-          MYSQL_HOST = "{{ with service "mariadb" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
+          {{ with service "clickhouse" }}
+            CLICKHOUSE_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
+          {{ end }}
+          {{ with service "mariadb" }}
+            MYSQL_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
+          {{ end }}
         EOF
         destination = "secrets/db.env"
         env = true

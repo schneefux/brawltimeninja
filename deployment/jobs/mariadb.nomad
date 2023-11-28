@@ -29,11 +29,11 @@ job "mariadb" {
       check {
         type = "tcp"
         interval = "10s"
-        timeout  = "2s"
+        timeout = "2s"
       }
 
       check_restart {
-        limit = 5
+        limit = 6
       }
     }
 

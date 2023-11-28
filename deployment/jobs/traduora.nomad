@@ -5,14 +5,19 @@ variable "traduora_secret" {}
 job "traduora" {
   datacenters = ["dc1"]
 
-  affinity {
+  constraint {
     attribute = "${node.class}"
-    value = "database"
+    value = "worker"
   }
 
   group "traduora" {
     network {
       port "http" {}
+    }
+
+    restart {
+      mode = "delay"
+      interval = "5m"
     }
 
     service {
@@ -27,11 +32,11 @@ job "traduora" {
       check {
         type = "http"
         path = "/health"
-        interval = "2s"
+        interval = "10s"
         timeout = "2s"
 
         check_restart {
-          limit = 5
+          limit = 6
         }
       }
     }
@@ -52,8 +57,10 @@ job "traduora" {
 
       template {
         data = <<-EOF
-          TR_DB_HOST={{ with service "mariadb" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}
-          TR_DB_PORT={{ with service "mariadb" }}{{ with index . 0}}{{ .Port }}{{ end }}{{ end }}
+          {{ with service "mariadb" }}
+          TR_DB_HOST={{ with index . 0 }}{{ .Address }}{{ end }}
+          TR_DB_PORT={{ with index . 0}}{{ .Port }}{{ end }}
+          {{ end }}
           TR_DB_USER="traduora"
           TR_DB_PASSWORD="traduora"
           TR_AUTH_GOOGLE_CLIENT_ID="${var.traduora_google_client_id}"

@@ -24,6 +24,11 @@ job "brawltime-testing" {
       port "http" {}
     }
 
+    restart {
+      mode = "delay"
+      interval = "5m"
+    }
+
     service {
       name = "brawltime-testing"
       port = "http"
@@ -37,40 +42,11 @@ job "brawltime-testing" {
         type = "http"
         path = "/"
         interval = "10s"
-        timeout  = "5s"
-      }
-    }
+        timeout = "10s"
 
-    task "create-api-token" {
-      lifecycle {
-        hook = "prestart"
-      }
-
-      driver = "exec"
-
-      # dynamically register token for current allocation and public IP address
-      config {
-        command = "/bin/bash"
-        args = ["-e", "${NOMAD_TASK_DIR}/create_apikey.sh"]
-      }
-
-      template {
-        data = <<-EOF
-          EMAIL="${var.brawlstars_email}"
-          PASSWORD="${var.brawlstars_password}"
-        EOF
-        destination = "secrets/credentials.env"
-        env = true
-      }
-
-      template {
-        data = file("./bin/create_apikey.sh")
-        destination = "local/create_apikey.sh"
-      }
-
-      resources {
-        cpu = 16
-        memory = 32
+        check_restart {
+          limit = 6
+        }
       }
     }
 
@@ -83,11 +59,11 @@ job "brawltime-testing" {
         NODE_ENVIRONMENT = "production"
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
 
+        BRAWLSTARS_URL = "http://proxy.${var.domain}/v1/"
         CUBE_URL = "https://cube.${var.domain}"
         MEDIA_URL = "https://media.${var.domain}"
         MANAGER_URL = "https://manager.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"
-        CLICKHOUSE_HOST = "clickhouse.service.consul"
 
         TRADUORA_URL = "https://translate.${var.domain}"
         TRADUORA_CLIENT_ID = "${var.web_traduora_client_id}"
@@ -106,7 +82,6 @@ job "brawltime-testing" {
 
       template {
         data = <<-EOF
-          BRAWLSTARS_TOKEN="{{ key (printf "brawlstars-token/alloc-%s" (env "NOMAD_ALLOC_ID")) }}"
           BRAWLAPI_TOKEN="${var.brawlapi_token}"
         EOF
         destination = "secrets/brawlstars.env"
@@ -116,6 +91,15 @@ job "brawltime-testing" {
       config {
         image = "ghcr.io/schneefux/brawltime-web:latest"
         ports = ["http"]
+        extra_hosts = [
+          "${var.domain}:10.0.0.2",
+          "cube.${var.domain}:10.0.0.2",
+          "media.${var.domain}:10.0.0.2",
+          "manager.${var.domain}:10.0.0.2",
+          "render.${var.domain}:10.0.0.2",
+          "proxy.${var.domain}:10.0.0.2",
+          "translate.${var.domain}:10.0.0.2"
+        ]
 
         auth {
           username = "${var.github_user}"

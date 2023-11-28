@@ -26,17 +26,22 @@ job "traefik" {
       }
     }
 
+    restart {
+      mode = "delay"
+      interval = "30s"
+    }
+
     service {
       name = "traefik"
       port = "traefik_http"
 
       check {
         type = "tcp"
-        interval = "10s"
+        interval = "5s"
         timeout = "2s"
 
         check_restart {
-          limit = 5
+          limit = 12
         }
       }
 

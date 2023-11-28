@@ -41,7 +41,7 @@ job "clickhouse" {
         timeout = "2s"
 
         check_restart {
-          limit = 5
+          limit = 6
         }
       }
     }

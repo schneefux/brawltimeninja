@@ -15,20 +15,22 @@ job "brawltime-manager" {
 
   constraint {
     attribute = "${node.class}"
-    value = "database"
+    value = "worker"
   }
 
   update {
-    max_parallel = 1
-    canary = 1
-    min_healthy_time = "10s"
-    healthy_deadline = "5m"
     auto_revert = true
     auto_promote = true
+    canary = 1
   }
 
   group "manager" {
     count = 2
+
+    restart {
+      mode = "delay"
+      interval = "5m"
+    }
 
     scaling {
       enabled = true
@@ -57,7 +59,7 @@ job "brawltime-manager" {
           query_window = "10m"
 
           strategy "threshold" {
-            upper_bound = 20
+            upper_bound = 40
             lower_bound = 0
             within_bounds_trigger = 1
             delta = -1
@@ -86,7 +88,7 @@ job "brawltime-manager" {
         timeout = "2s"
 
         check_restart {
-          limit = 5
+          limit = 6
         }
       }
     }
@@ -108,8 +110,10 @@ job "brawltime-manager" {
           "database": {
             "client": "mysql2",
             "connection": {
-              "host": "{{ with service "mariadb" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}",
-              "port": {{ with service "mariadb" }}{{ with index . 0 }}{{ .Port }}{{ end }}{{ end }},
+              {{ with service "mariadb" }}
+              "host": "{{ with index . 0 }}{{ .Address }}{{ end }}",
+              "port": {{ with index . 0 }}{{ .Port }}{{ end }},
+              {{ end }}
               "user": "brawltime_manager",
               "password": "brawltime_manager",
               "database": "brawltime_manager"

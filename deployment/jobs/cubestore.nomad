@@ -8,10 +8,8 @@ job "cubestore" {
 
   group "cubestore" {
     network {
-      port "http" {
-        // TODO route cubestore via traefik
-        static = 3030
-      }
+      # TODO load balance multiple routers via traefik?
+      port "http" {}
 
       port "db" {}
 
@@ -32,7 +30,7 @@ job "cubestore" {
         timeout = "2s"
 
         check_restart {
-          limit = 5
+          limit = 6
         }
       }
     }
@@ -41,29 +39,32 @@ job "cubestore" {
       driver = "docker"
 
       env {
-        CUBESTORE_STATUS_PORT = "${NOMAD_PORT_status}"
+        CUBESTORE_SERVER_NAME = "${NOMAD_ADDR_http}"
         CUBESTORE_META_PORT = "${NOMAD_PORT_router}"
+        CUBESTORE_WORKERS = "" # no preaggregations - no workers needed
         CUBESTORE_PORT = "${NOMAD_PORT_db}"
-        // TODO set CUBEJS_CUBESTORE_PORT for API instance
-        // and refresh worker to remove static port?
         CUBESTORE_HTTP_PORT = "${NOMAD_PORT_http}"
+        CUBESTORE_STATUS_PORT = "${NOMAD_PORT_status}"
+        CUBESTORE_LOG_LEVEL = "info"
       }
 
       config {
         image = "cubejs/cubestore:v0.34"
-        ports = ["http", "router", "status"]
+        ports = ["http", "db", "router", "status"]
         volumes = [
           "cubestore:/cube/data",
         ]
       }
 
       resources {
-        cpu = 2048
-        memory = 1024
-        memory_max = 1526
+        # while average usage is about 2k,
+        # sometimes cube API or cubestore seems to stall queries,
+        # eventually hanging up
+        cpu = 4096
+        # maybe there is a memory leak? at 2GB limit, memory keeps growing, then everything hangs until crash/restart
+        memory = 3072
+        memory_max = 4096
       }
     }
-
-    // no workers because there are no pre-aggregations
   }
 }

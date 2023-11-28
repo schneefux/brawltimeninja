@@ -12,13 +12,6 @@ job "nginx" {
   # problem: port 80 can't be used twice
 
   group "nginx" {
-    stop_after_client_disconnect = "15m" # free up volume if disconnected from Nomad for a long time
-
-    volume "certs" {
-      type = "host"
-      source = "certs"
-    }
-
     network {
       port "nginx_http" {
         static = 80
@@ -31,18 +24,23 @@ job "nginx" {
       port "status" {}
     }
 
+    restart {
+      mode = "delay"
+      interval = "30s"
+    }
+
     service {
       name = "nginx"
       port = "nginx_http"
 
       check {
         type = "tcp"
-        interval = "10s"
+        interval = "5s"
         timeout = "2s"
       }
 
       check_restart {
-        limit = 5
+        limit = 12
       }
     }
 
@@ -52,7 +50,7 @@ job "nginx" {
 
       check {
         type = "tcp"
-        interval = "10s"
+        interval = "5s"
         timeout = "2s"
       }
     }

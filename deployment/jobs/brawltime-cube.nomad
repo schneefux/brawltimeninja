@@ -17,16 +17,18 @@ job "brawltime-cube" {
   }
 
   update {
-    max_parallel = 1
-    canary = 1
-    min_healthy_time = "10s"
-    healthy_deadline = "5m"
     auto_revert = true
     auto_promote = true
+    canary = 1
   }
 
   group "cube" {
     count = 2
+
+    restart {
+      mode = "delay"
+      interval = "5m"
+    }
 
     scaling {
       enabled = true
@@ -55,7 +57,7 @@ job "brawltime-cube" {
           query_window = "10m"
 
           strategy "threshold" {
-            upper_bound = 20
+            upper_bound = 40
             lower_bound = 0
             within_bounds_trigger = 1
             delta = -1
@@ -82,11 +84,6 @@ job "brawltime-cube" {
         "traefik.enable=true",
         "traefik.http.routers.brawltime-cube.rule=Host(`cube.${var.domain}`)",
       ]
-      # TODO unfortunately, this also caches error pages and continue-wait
-        /*
-        "traefik.http.routers.brawltime-cube.middlewares=brawltime-cube-cache@consulcatalog",
-        "traefik.http.middlewares.brawltime-cube-cache.headers.customresponseheaders.Cache-Control=public, max-age=300",
-        */
 
       check {
         type = "http"
@@ -95,7 +92,7 @@ job "brawltime-cube" {
         timeout = "2s"
 
         check_restart {
-          limit = 5
+          limit = 6
         }
       }
     }
@@ -106,13 +103,23 @@ job "brawltime-cube" {
       env {
         PORT = "${NOMAD_PORT_http}"
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
+        # increase number of connections to clickhouse
+        CUBEJS_CONCURRENCY = "100"
+        CUBEJS_DB_MAX_POOL = "512"
+        CUBEJS_LOG_LEVEL = "info"
+        CUBEJS_DB_QUERY_TIMEOUT = "2m"
       }
 
       # FIXME container does not use host's DNS setting
       template {
         data = <<-EOF
-          CUBEJS_DB_HOST = "{{ with service "clickhouse" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
-          CUBEJS_CUBESTORE_HOST = "{{ with service "cubestore" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
+          {{ with service "clickhouse" }}
+            CUBEJS_DB_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
+          {{ end }}
+          {{ with service "cubestore" }}
+            CUBEJS_CUBESTORE_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
+            CUBEJS_CUBESTORE_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
+          {{ end }}
         EOF
         destination = "secrets/db.env"
         env = true
@@ -130,7 +137,7 @@ job "brawltime-cube" {
 
       resources {
         cpu = 512
-        memory = 256
+        memory = 384
         memory_max = 768
       }
     }
@@ -139,46 +146,15 @@ job "brawltime-cube" {
   group "cube_refresh" {
     count = 1
 
-    scaling {
-      enabled = true
-      min = 1
-      max = 4
-
-      policy {
-        check "high_cpu" {
-          source = "nomad-apm"
-          group = "cpu-allocated-refresh"
-          query = "avg_cpu-allocated"
-          query_window = "10m"
-
-          strategy "threshold" {
-            upper_bound = 100
-            lower_bound = 80
-            within_bounds_trigger = 1
-            delta = 1
-          }
-        }
-
-        check "low_cpu" {
-          source = "nomad-apm"
-          group = "cpu-allocated-refresh"
-          query = "avg_cpu-allocated"
-          query_window = "10m"
-
-          strategy "threshold" {
-            upper_bound = 20
-            lower_bound = 0
-            within_bounds_trigger = 1
-            delta = -1
-          }
-        }
-      }
-    }
-
     affinity {
       attribute = "${node.class}"
       operator = "regexp"
       value = "worker|database"
+    }
+
+    restart {
+      mode = "delay"
+      interval = "5m"
     }
 
     task "refresh" {
@@ -186,13 +162,24 @@ job "brawltime-cube" {
 
       env {
         CUBEJS_REFRESH_WORKER = true
+        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
+        # increase number of connections to clickhouse
+        CUBEJS_CONCURRENCY = "100"
+        CUBEJS_DB_MAX_POOL = "512"
+        CUBEJS_LOG_LEVEL = "info"
+        CUBEJS_DB_QUERY_TIMEOUT = "2m"
       }
 
       # FIXME container does not use host's DNS setting
       template {
         data = <<-EOF
-          CUBEJS_DB_HOST = "{{ with service "clickhouse" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
-          CUBEJS_CUBESTORE_HOST = "{{ with service "cubestore" }}{{ with index . 0 }}{{ .Address }}{{ end }}{{ end }}"
+          {{ with service "clickhouse" }}
+            CUBEJS_DB_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
+          {{ end }}
+          {{ with service "cubestore" }}
+            CUBEJS_CUBESTORE_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
+            CUBEJS_CUBESTORE_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
+          {{ end }}
         EOF
         destination = "secrets/db.env"
         env = true
@@ -210,8 +197,8 @@ job "brawltime-cube" {
 
       resources {
         cpu = 32
-        memory = 128
-        memory_max = 256
+        memory = 192
+        memory_max = 384
       }
     }
   }

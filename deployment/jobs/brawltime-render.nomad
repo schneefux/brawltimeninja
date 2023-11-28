@@ -18,16 +18,18 @@ job "brawltime-render" {
   }
 
   update {
-    max_parallel = 1
-    canary = 1
-    min_healthy_time = "10s"
-    healthy_deadline = "5m"
     auto_revert = true
     auto_promote = true
+    canary = 1
   }
 
   group "render" {
     count = 1
+
+    restart {
+      mode = "delay"
+      interval = "5m"
+    }
 
     scaling {
       enabled = true
@@ -56,7 +58,7 @@ job "brawltime-render" {
           query_window = "10m"
 
           strategy "threshold" {
-            upper_bound = 20
+            upper_bound = 40
             lower_bound = 0
             within_bounds_trigger = 1
             delta = -1
@@ -85,7 +87,7 @@ job "brawltime-render" {
         timeout = "2s"
 
         check_restart {
-          limit = 5
+          limit = 6
         }
       }
     }

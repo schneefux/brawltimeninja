@@ -76,7 +76,7 @@ job "autoscaler" {
             default_evaluation_interval = "1m"
           }
 
-          log_level = "DEBUG"
+          log_level = "INFO"
         EOF
 
         destination = "${NOMAD_TASK_DIR}/config.hcl"
@@ -171,6 +171,24 @@ job "autoscaler" {
           path = "/v1/health"
           interval = "10s"
           timeout = "2s"
+        }
+      }
+
+      # workaround until autoscaler v0.4 is released: restart on policy read error
+      # https://github.com/hashicorp/nomad-autoscaler/issues/519#issuecomment-1753467556
+      service {
+        check {
+          type = "script"
+          command = "/bin/sh"
+          args = ["-c", "! tail -n 1 alloc/logs/autoscaler.stderr.0 | grep -q 'policy_manager.policy_handler: timeout: failed to read policy in time'"]
+          interval = "60s"
+          timeout = "10s"
+
+          check_restart {
+            limit = 3
+            grace = "90s"
+            ignore_warnings = false
+          }
         }
       }
     }
