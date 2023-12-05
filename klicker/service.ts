@@ -1,5 +1,5 @@
 import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, IKlickerService, CubeQueryConfiguration, MetricRendererSpec, DimensionRendererSpec, RouteQuery } from "./types"
-import cubejs, { CubejsApi, Filter, ITransport, Query, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
+import { CubejsApi, Filter, ITransport, Query, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
 import defaultVisualisations from "./visualisations.js"
@@ -90,7 +90,7 @@ class HttpTransport implements ITransport<ResultSet> {
   }
 }
 
-export default class KlickerService implements IKlickerService {
+export class KlickerService implements IKlickerService {
   private cubejsApi: CubejsApi
   public visualisations: VisualisationSpec[] = defaultVisualisations
   public staticWidgets: StaticWidgetSpec[] = defaultStaticWidgets
@@ -108,19 +108,11 @@ export default class KlickerService implements IKlickerService {
       fetchImplementation: typeof fetch,
   ) {
     const apiUrl = cubeUrl + '/cubejs-api/v1'
-    // FIXME ???
-    if (import.meta.env == undefined || import.meta.env.PROD) {
-      // @ts-ignore
-      this.cubejsApi = new CubejsApi('', {
-        apiUrl,
-        transport: new HttpTransport(apiUrl, fetchImplementation),
-      })
-    } else {
-      this.cubejsApi = cubejs('', {
-        apiUrl,
-        transport: new HttpTransport(apiUrl, fetchImplementation),
-      })
-    }
+    // @ts-ignore
+    this.cubejsApi = new CubejsApi('', {
+      apiUrl,
+      transport: new HttpTransport(apiUrl, fetchImplementation),
+    })
     this.visualisations = defaultVisualisations.concat(visualisations)
     this.staticWidgets = defaultStaticWidgets.concat(staticWidgets)
     this.slicers = slicers

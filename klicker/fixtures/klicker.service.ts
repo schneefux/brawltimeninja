@@ -1,4 +1,4 @@
-import KlickerService from '../service'
+import { KlickerService } from '../service'
 import config from './klicker.cubes'
 import en from './en.json'
 import { provide, Ref, shallowRef } from 'vue'

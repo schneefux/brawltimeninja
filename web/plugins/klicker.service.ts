@@ -1,6 +1,6 @@
 import { ValueType } from "@schneefux/klicker/types"
 import { formatMode, idToTag } from "../lib/util"
-import KlickerService from '@schneefux/klicker/service.js'
+import { KlickerService } from '@schneefux/klicker/service'
 import config from '../lib/klicker.cubes'
 import visualisations from '../lib/klicker.visualisations.conf'
 import staticWidgets from '../lib/klicker.widgets.conf'
@@ -18,9 +18,7 @@ export interface EventMetadata {
   metrics: Record<string, string|number>
 }
 
-export { BrawltimeKlickerService }
-
-class BrawltimeKlickerService extends KlickerService {
+export class BrawltimeKlickerService extends KlickerService {
   constructor(cubeUrl: string, fetchImplementation: typeof fetch) {
     super(
       cubeUrl,
