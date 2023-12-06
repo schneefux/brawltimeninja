@@ -119,16 +119,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType, ref, onMounted } from 'vue'
 import { BKvTable } from '@schneefux/klicker/components'
 import { Player } from "~/model/Api"
 import { Row } from "@schneefux/klicker/components/ui/b-kv-table.vue"
-import { useAsync, useApi } from '~/composables/compat'
+import { useApi, useSentry } from '~/composables/compat'
 import clubIcon from '~/assets/images/icon/club.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import victoryIcon from '~/assets/images/icon/victories.png'
 import levelIcon from '~/assets/images/icon/level.png'
 import { useI18n } from 'vue-i18n'
+import { ProfileTrackingStatus } from '@/api/services/ProfileUpdaterService'
 
 export default defineComponent({
   components: {
@@ -142,25 +143,29 @@ export default defineComponent({
   },
   setup(props) {
     const i18n = useI18n()
+    const sentry = useSentry()
 
     const $api = useApi()
     const loading = ref(false)
-    const trackingStatus = useAsync(
-      async () => {
-        try {
-          return await $api.player.getTrackingStatus.query(props.player.tag.substring(1)) ?? null
-        } catch (e) {
-          return 'inactive'
-        }
-      },
-      computed(() => `player-tracking-status-${props.player.tag.substring(1)}`))
+    const trackingStatus = ref<ProfileTrackingStatus|undefined>(undefined)
+    onMounted(async () => {
+      try {
+        trackingStatus.value = await $api.player.getTrackingStatus.query(props.player.tag.substring(1))
+      } catch (e) {
+        trackingStatus.value = 'inactive'
+      }
+    })
 
     const enableTracking = async () => {
       if (props.player == undefined) {
         return
       }
       loading.value = true
-      trackingStatus.value = await $api.player.trackTag.mutate(props.player.tag.substring(1))
+      try {
+        trackingStatus.value = await $api.player.trackTag.mutate(props.player.tag.substring(1))
+      } catch (err) {
+        sentry.captureException(err)
+      }
       loading.value = false
     }
 
