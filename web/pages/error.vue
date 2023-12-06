@@ -49,7 +49,6 @@ export default defineComponent({
     const notFound = computed(() => pageContext.statusCode == 404)
     const error = computed(() => pageContext.errorWhileRendering)
 
-
     return {
       notFound,
       error,

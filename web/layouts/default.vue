@@ -6,7 +6,7 @@
     <web-nav id="web-nav" class="hidden lg:flex"></web-nav>
     <app-head-nav id="app-nav" class="lg:hidden"></app-head-nav>
 
-    <loading-indicator id="loading"></loading-indicator>
+    <loading-indicator></loading-indicator>
 
     <ad
       ad-slot="6848221017"
