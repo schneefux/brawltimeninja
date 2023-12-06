@@ -1,29 +1,8 @@
-import { renderToString } from '@vue/server-renderer'
-import { dangerouslySkipEscape, escapeInject } from 'vike/server'
-import { createApp } from './app'
 import type { Config, PageContext } from './types'
-import type { PageContextBuiltInServer } from 'vike/types'
-import { dehydrate } from '@tanstack/vue-query'
-import { renderSSRHead } from '@unhead/ssr'
-import SuperJSON from 'superjson'
 import Sentry from '@sentry/vue'
 import { getTraduoraToken, TraduoraToken } from '@/locales'
 
 export { onBeforeRender }
-export { passToClient }
-export { render }
-
-const passToClient = [
-  'vueQueryState',
-  'piniaState',
-  'errorWhileRendering',
-  'envConfig',
-  'validated',
-  'statusCode',
-  'redirectTo',
-  'refs',
-  'localeMessages',
-]
 
 let cachedTraduoraToken: TraduoraToken | undefined = undefined
 async function onBeforeRender(pageContext: PageContext) {
@@ -71,46 +50,5 @@ async function onBeforeRender(pageContext: PageContext) {
       sentry,
       refs: {}, // for arbitrary data, see ssrRef()
     }
-  }
-}
-
-async function render(pageContext: PageContextBuiltInServer & PageContext) {
-  const { app, head, pinia, router, queryClient } = createApp(pageContext)
-
-  let firstError: unknown = undefined
-  app.config.errorHandler = (err) => {
-    firstError = firstError ?? err
-    return false
-  }
-  router.push(pageContext.urlOriginal)
-  await router.isReady()
-
-  let string = await renderToString(app)
-  if (firstError) {
-    throw firstError
-  }
-
-  const payload = await renderSSRHead(head)
-  const vueQueryState = dehydrate(queryClient)
-  const piniaState = SuperJSON.stringify(pinia.state.value)
-
-  const documentHtml = escapeInject`<!DOCTYPE html>
-    <html${dangerouslySkipEscape(payload.htmlAttrs)}>
-      <head>
-        ${dangerouslySkipEscape(payload.headTags)}
-      </head>
-      <body${dangerouslySkipEscape(payload.bodyAttrs)}>
-        ${dangerouslySkipEscape(payload.bodyTagsOpen)}
-        <div id="app">${dangerouslySkipEscape(string)}</div>
-        ${dangerouslySkipEscape(payload.bodyTags)}
-      </body>
-    </html>`
-
-  return {
-    documentHtml,
-    pageContext: {
-      vueQueryState,
-      piniaState,
-    },
   }
 }
