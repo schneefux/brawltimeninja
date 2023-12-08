@@ -23,7 +23,7 @@ if (import.meta.env.DEV) {
   import('~/assets/css/development.css')
 }
 
-const layouts = import.meta.glob<ComponentPublicInstance>('~/layouts/*.vue', { eager: true, import: 'default' })
+const layouts = import.meta.glob<ComponentPublicInstance>('../layouts/*.vue', { eager: true, import: 'default' })
 
 export default defineComponent({
   setup() {
