@@ -6,6 +6,7 @@ import visualisations from '../lib/klicker.visualisations.conf'
 import staticWidgets from '../lib/klicker.widgets.conf'
 import slicers from '../lib/klicker.slicers.conf'
 import { dimensionRenderers, metricRenderers } from '../lib/klicker.renderers'
+import { Query } from "@cubejs-client/core"
 
 export interface EventMetadata {
   key: string
@@ -19,7 +20,11 @@ export interface EventMetadata {
 }
 
 export class BrawltimeKlickerService extends KlickerService {
-  constructor(cubeUrl: string, fetchImplementation: typeof fetch) {
+  constructor(private cubeUrl: string, fetchImplementation: typeof fetch) {
+    if (!cubeUrl) {
+      console.warn('CUBE_URL is not set, queries will be unavailable')
+    }
+
     super(
       cubeUrl,
       config,
@@ -30,6 +35,14 @@ export class BrawltimeKlickerService extends KlickerService {
       metricRenderers,
       fetchImplementation,
     )
+  }
+
+  protected async load(query: Query) {
+    if (this.cubeUrl) {
+      return super.load(query)
+    } else {
+      return Promise.reject()
+    }
   }
 
   // override Klicker.format

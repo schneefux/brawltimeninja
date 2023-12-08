@@ -8,19 +8,27 @@ import knexfile from '../knexfile'
 import { publicProcedure, router } from '../trpc'
 
 const environment = process.env.NODE_ENV || 'development'
-const knex = Knex(knexfile[environment])
+let profileUpdaterService: ProfileUpdaterService | undefined
+
+if (process.env.MYSQL_HOST) {
+  const knex = Knex(knexfile[environment])
+  profileUpdaterService = new ProfileUpdaterService(async (tag) => {
+    const player = await brawlstarsService.getPlayerStatistics(tag, true)
+    if (player.battles.length == 0) {
+      return undefined
+    }
+    return player.battles[0].timestamp
+  }, knex)
+} else {
+  console.warn('MYSQL_HOST is not set, profile tracking will be unavailable')
+}
 
 const brawlstarsService = new BrawlstarsService()
-const profileUpdaterService = new ProfileUpdaterService(async (tag) => {
-  const player = await brawlstarsService.getPlayerStatistics(tag, true)
-  if (player.battles.length == 0) {
-    return undefined
-  }
-  return player.battles[0].timestamp
-}, knex)
 
 export async function updateAllProfiles() {
-  return await profileUpdaterService.updateAll()
+  if (profileUpdaterService) {
+    return await profileUpdaterService.updateAll()
+  }
 }
 
 const stats = new StatsD({ prefix: 'brawltime.api.' })
@@ -36,7 +44,7 @@ export const playerRouter = router({
       }
 
       const player = await brawlstarsService.getPlayerStatistics(input, !ctx.isBot)
-      if (!ctx.isBot && player.battles.length > 0) {
+      if (profileUpdaterService && !ctx.isBot && player.battles.length > 0) {
         // organic pageview: update confirmation status
         try {
           await profileUpdaterService.updateProfileTrackingStatus(input, player.battles[0].timestamp)
@@ -50,7 +58,7 @@ export const playerRouter = router({
   getTrackingStatus: publicProcedure
     .input(tagWithoutHashType)
     .query(async ({ input }) => {
-      return await profileUpdaterService.getProfileTrackingStatus(input)
+      return await profileUpdaterService?.getProfileTrackingStatus(input)
     }),
   trackTag: publicProcedure
     .input(tagWithoutHashType)
@@ -62,6 +70,6 @@ export const playerRouter = router({
           message: 'Player did not play any battles recently'
         })
       }
-      return await profileUpdaterService.upsertProfileTrackingStatus(input, stats.battles[0].timestamp)
+      return await profileUpdaterService?.upsertProfileTrackingStatus(input, stats.battles[0].timestamp)
     }),
 })

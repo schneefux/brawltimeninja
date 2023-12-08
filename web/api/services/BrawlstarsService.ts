@@ -9,6 +9,9 @@ const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
+const clickhouseUrl = process.env.CLICKHOUSE_URL
+const twoMonths = 2*4*7*24*60*60*1000
+const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '') || (Date.now() - twoMonths))
 
 /*
 // cn API is unavailable
@@ -32,7 +35,15 @@ export default class BrawlstarsService {
   private readonly apiUnofficial = apiUnofficialUrl;
   private readonly apiOfficial = apiOfficialUrl;
 
-  private readonly clicker = new ClickerService();
+  private readonly clicker?: ClickerService;
+
+  constructor() {
+    if (clickhouseUrl != undefined) {
+      this.clicker = new ClickerService(clickhouseUrl, balanceChangesDate);
+    } else {
+      console.warn('CLICKHOUSE_URL is not set, data storage will be unavailable')
+    }
+  }
 
   private async apiRequest<T>(path: string, metricName: string, timeout: number = 1000) {
     return request<T>(path, this.apiOfficial, metricName,
@@ -244,7 +255,7 @@ export default class BrawlstarsService {
       } as Battle
     }).sort((b1, b2) => (b2.timestamp as Date).valueOf() - (b1.timestamp as Date).valueOf());
 
-    if (store && battleLog.items.length > 0) {
+    if (store && this.clicker && battleLog.items.length > 0) {
       console.log('store battles for ' + tag)
       // do not await - process in background and resolve early
       this.clicker.store({ player, battleLog })

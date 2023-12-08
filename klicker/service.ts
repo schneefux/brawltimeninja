@@ -321,7 +321,7 @@ export class KlickerService implements IKlickerService {
   /**
    * Send a query to cube.js
    */
-  private async load(query: Query) {
+  protected async load(query: Query) {
     return await this.cubejsApi.load(query)
   }
 

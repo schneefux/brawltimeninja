@@ -4,20 +4,15 @@ import { Player, BattleLog, BattlePlayer, BattlePlayerMultiple } from '../../mod
 import { performance } from 'perf_hooks'
 import { parseApiTime, tagToId, validateTag, getSeasonEnd, formatClickhouse, formatClickhouseDate } from '../../lib/util'
 
-const dbHost = process.env.CLICKHOUSE_HOST || ''
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
-const twoMonths = 2*4*7*24*60*60*1000
-const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '') || (Date.now() - twoMonths))
-const seasonSliceStart = getSeasonEnd(balanceChangesDate);
-
-console.log(`querying data >= ${seasonSliceStart}`)
 
 export default class ClickerService {
   private ch: ClickHouseClient;
+  private seasonSliceStart: Date;
 
-  constructor() {
+  constructor(clickhouseUrl: string, balanceChangesDate: Date) {
     this.ch = createClient({
-      host: `http://${dbHost}:8123`,
+      host: clickhouseUrl,
       clickhouse_settings: {
         // use 1 thread -> server can handle more queries
         // player queries take about 25% longer than with 4 threads
@@ -26,6 +21,8 @@ export default class ClickerService {
       },
       // clickhouse allows only a single query per session!
     })
+    this.seasonSliceStart = getSeasonEnd(balanceChangesDate);
+    console.log(`querying data >= ${this.seasonSliceStart}`)
   }
 
   public async store(entry: { player: Player, battleLog: BattleLog }) {
@@ -41,14 +38,14 @@ export default class ClickerService {
     // TODO maybe put this into redis to avoid slow blocking point queries
     const getLastQueryStart = performance.now()
     const maxTimestampResultSet = await this.ch.query({
-      query: `SELECT formatDateTime(MAX(timestamp), '%FT%TZ', 'UTC') AS maxTimestamp FROM brawltime.battle WHERE trophy_season_end>=toDateTime('${formatClickhouse(seasonSliceStart)}', 'UTC') AND player_id=${tagToId(player.tag)}`,
+      query: `SELECT formatDateTime(MAX(timestamp), '%FT%TZ', 'UTC') AS maxTimestamp FROM brawltime.battle WHERE trophy_season_end>=toDateTime('${formatClickhouse(this.seasonSliceStart)}', 'UTC') AND player_id=${tagToId(player.tag)}`,
       format: 'JSONEachRow',
     })
     const maxTimestamp = await maxTimestampResultSet.json() as { maxTimestamp: string }[]
     stats.timing('player.get_last.timer', performance.now() - getLastQueryStart)
     // if not found, clickhouse max() defaults to 0000 date (Date.parse returns NaN)
     // changed to 1970 in 20.7
-    const lastBattleTimestamp = (maxTimestamp[0].maxTimestamp.startsWith('0000') || maxTimestamp[0].maxTimestamp.startsWith('1970')) ? seasonSliceStart : new Date(Date.parse(maxTimestamp[0].maxTimestamp))
+    const lastBattleTimestamp = (maxTimestamp[0].maxTimestamp.startsWith('0000') || maxTimestamp[0].maxTimestamp.startsWith('1970')) ? this.seasonSliceStart : new Date(Date.parse(maxTimestamp[0].maxTimestamp))
 
     const battleInsertStart = performance.now()
 

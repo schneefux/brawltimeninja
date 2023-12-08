@@ -104,7 +104,6 @@ job "brawltime-web" {
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
 
         BRAWLSTARS_URL = "http://proxy.${var.domain}/v1/"
-        CUBE_URL = "https://cube.${var.domain}"
         MEDIA_URL = "https://media.${var.domain}"
         MANAGER_URL = "https://manager.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"
@@ -129,13 +128,18 @@ job "brawltime-web" {
 
       # FIXME containers do not respect host's DNS settings
       # https://github.com/hashicorp/nomad/issues/12894
+      # unset CUBE_URL when a router is available to disable queries
       template {
         data = <<-EOF
           {{ with service "clickhouse" }}
-            CLICKHOUSE_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
+            CLICKHOUSE_URL = "http://{{ with index . 0 }}{{ .Address }}:{{ .Port }}{{ end }}"
           {{ end }}
           {{ with service "mariadb" }}
             MYSQL_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
+            MYSQL_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
+          {{ end }}
+          {{ with service "brawltime-cube" }}
+            CUBE_URL = "https://cube.${var.domain}"
           {{ end }}
         EOF
         destination = "secrets/db.env"
