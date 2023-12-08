@@ -46,11 +46,11 @@
 </template>
 
 <script lang="ts">
-import { camelToKebab, slugify } from '@/lib/util'
+import { camelToKebab, slugify } from '~/lib/util'
 import { defineComponent, computed, toRefs } from 'vue'
 import { useMapName } from '~/composables/map'
 import { useConfig, useLocalePath } from '~/composables/compat'
-import { useSupportsWebp } from '@/composables/webp'
+import { useSupportsWebp } from '~/composables/webp'
 
 export default defineComponent({
   props: {

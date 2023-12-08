@@ -34,7 +34,7 @@ import { defineComponent, PropType, computed } from 'vue'
 import { Player, Battle } from '~/model/Api'
 import { BScrollingList } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
-import { useActiveEvents, useAllModes } from '@/composables/dimension-values'
+import { useActiveEvents, useAllModes } from '~/composables/dimension-values'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({

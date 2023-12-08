@@ -92,7 +92,7 @@
 import { defineComponent, onMounted, ref, watch } from "vue"
 import useFeathers from '@schneefux/klicker/composables/feathers'
 import { Grid, Report, User } from "@schneefux/klicker/types"
-import { useConfig } from "@/composables/compat"
+import { useConfig } from "~/composables/compat"
 
 export default defineComponent({
   setup() {

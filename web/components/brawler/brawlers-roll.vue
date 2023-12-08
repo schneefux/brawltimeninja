@@ -42,7 +42,7 @@
 import { defineComponent, computed } from 'vue'
 import { brawlerId } from '~/lib/util'
 import { BScrollingList, BCard } from '@schneefux/klicker/components'
-import { useAllBrawlers } from '@/composables/dimension-values'
+import { useAllBrawlers } from '~/composables/dimension-values'
 
 export default defineComponent({
   components: {

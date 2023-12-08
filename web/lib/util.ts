@@ -1,4 +1,4 @@
-import { Player } from "@/model/Api";
+import { Player } from "~/model/Api";
 import { parseISO } from "date-fns";
 import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
 

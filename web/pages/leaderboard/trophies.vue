@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { useApi, useAsync, useCacheHeaders } from '@/composables/compat'
+import { useApi, useAsync, useCacheHeaders } from '~/composables/compat'
 import { defineComponent, computed } from 'vue'
 import { PlayerRankTableRow } from '~/components/player/player-rank-table.vue'
 

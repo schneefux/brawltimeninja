@@ -52,13 +52,13 @@
 </template>
 
 <script lang="ts">
-import { camelToKebab, kebabToCamel } from '@/lib/util'
+import { camelToKebab, kebabToCamel } from '~/lib/util'
 import { BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { defineComponent, computed } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
 import { useMeta, useCacheHeaders } from '~/composables/compat'
-import { useActiveEvents } from '@/composables/dimension-values'
+import { useActiveEvents } from '~/composables/dimension-values'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 

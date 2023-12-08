@@ -1,6 +1,6 @@
 import type { Config, PageContext } from './types'
 import Sentry from '@sentry/vue'
-import { getTraduoraToken, TraduoraToken } from '@/locales'
+import { getTraduoraToken, TraduoraToken } from '~/locales'
 
 export { onBeforeRender }
 

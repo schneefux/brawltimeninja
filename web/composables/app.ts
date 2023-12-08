@@ -2,7 +2,7 @@ import { computed, onMounted, ref } from 'vue'
 import { event } from 'vue-gtag'
 import { useRouter } from 'vue-router'
 import { useLocalePath } from './compat'
-import { usePreferencesStore } from '@/stores/preferences'
+import { usePreferencesStore } from '~/stores/preferences'
 
 const packageId = 'xyz.schneefux.brawltimeninja'
 

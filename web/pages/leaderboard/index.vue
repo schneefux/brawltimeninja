@@ -1,5 +1,5 @@
 <script lang="ts">
-import { useCacheHeaders, useValidate } from '@/composables/compat'
+import { useCacheHeaders, useValidate } from '~/composables/compat'
 import { defineComponent } from 'vue'
 
 export default defineComponent({

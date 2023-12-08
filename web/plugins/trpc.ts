@@ -2,7 +2,7 @@ import type { AppRouter } from '~/api'
 import { CreateTRPCProxyClient, createTRPCProxyClient, httpLink } from '@trpc/client'
 import superjson from 'superjson'
 import { App, InjectionKey } from 'vue'
-import { PageContext } from '@/renderer/types'
+import { PageContext } from '~/renderer/types'
 
 export const TrpcInjectionKey = Symbol('trpc') as InjectionKey<CreateTRPCProxyClient<AppRouter>>
 

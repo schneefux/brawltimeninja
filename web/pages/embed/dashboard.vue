@@ -12,7 +12,7 @@ import { CGridRenderer } from '@schneefux/klicker/components'
 import { Grid } from "@schneefux/klicker/types"
 import useFeathers from "@schneefux/klicker/composables/feathers"
 import { useRoute } from "vue-router"
-import { useAsync, useCacheHeaders, useCspHeaders } from "@/composables/compat"
+import { useAsync, useCacheHeaders, useCspHeaders } from "~/composables/compat"
 
 export default defineComponent({
   components: {

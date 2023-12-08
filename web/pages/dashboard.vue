@@ -46,7 +46,7 @@ import { CubeQuery, CubeComparingQuery } from '@schneefux/klicker/types'
 import { CDashboard, VAuto, BDashboardCell } from '@schneefux/klicker/components'
 import { useSyncQueryAndRoute } from '~/composables/link'
 import { computed, defineComponent } from 'vue'
-import { useCacheHeaders } from '@/composables/compat'
+import { useCacheHeaders } from '~/composables/compat'
 import { useKlicker } from '@schneefux/klicker/composables'
 
 export default defineComponent({

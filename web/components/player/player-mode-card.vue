@@ -46,7 +46,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
 import { Player, Battle } from '~/model/Api'
-import { camelToKebab, slugify, tagToId } from '@/lib/util'
+import { camelToKebab, slugify, tagToId } from '~/lib/util'
 import { EventMetadata } from '~/plugins/klicker.service'
 import { winRateMetric } from '~/lib/klicker.cubes'
 import { BKvTable } from '@schneefux/klicker/components'

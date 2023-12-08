@@ -145,13 +145,13 @@
 </template>
 
 <script lang="ts">
-import { Player } from '@/model/Api'
+import { Player } from '~/model/Api'
 import { event } from 'vue-gtag'
 import { computed, defineComponent, PropType, ref, watchEffect, watch, toRef } from 'vue'
-import { useConfig, useSelfOrigin } from '@/composables/compat'
-import { capitalizeWords } from '@/lib/util'
+import { useConfig, useSelfOrigin } from '~/composables/compat'
+import { capitalizeWords } from '~/lib/util'
 import { BCard, BSelect, BButton, BScrollingList, BLightbox, Fa } from '@schneefux/klicker/components'
-import { usePlayerRender } from '@/composables/player'
+import { usePlayerRender } from '~/composables/player'
 import { faCheck, faExpand } from '@fortawesome/free-solid-svg-icons'
 import { BindOnce, generateId } from '@schneefux/klicker/directives'
 import { useI18n } from 'vue-i18n'

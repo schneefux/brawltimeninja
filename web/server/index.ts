@@ -4,7 +4,7 @@ import express from 'express'
 import compression from 'compression'
 import { renderPage } from 'vike/server'
 import apiMiddleware from '../api/index'
-import { PageContext } from '@/renderer/types'
+import { PageContext } from '~/renderer/types'
 import * as Sentry from '@sentry/node'
 import {
   Dedupe as DedupeIntegration,

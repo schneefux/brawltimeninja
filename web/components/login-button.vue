@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { useConfig } from "@/composables/compat";
+import { useConfig } from "~/composables/compat";
 import { computed, defineComponent } from "vue";
 import googleLoginIcon from "~/assets/images/google_login.png";
 

@@ -112,12 +112,12 @@
 import { computed, defineComponent, ref } from 'vue'
 import { useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { formatAsJsonLd, unformatMode } from '@/lib/util'
-import { ActiveEvent } from '@/model/Api'
+import { formatAsJsonLd, unformatMode } from '~/lib/util'
+import { ActiveEvent } from '~/model/Api'
 import { useTrackScroll } from '~/composables/gtag'
 import { BPageSection, BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
-import { useAllEvents } from '@/composables/dimension-values'
-import { useCurrentAndUpcomingEvents } from '@/composables/events'
+import { useAllEvents } from '~/composables/dimension-values'
+import { useCurrentAndUpcomingEvents } from '~/composables/events'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({

@@ -28,10 +28,10 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
-import { formatList, isSpecialEvent, scaleInto } from '@/lib/util'
+import { formatList, isSpecialEvent, scaleInto } from '~/lib/util'
 import { EventMetadata } from '~/plugins/klicker.service'
 import { BScrollingList } from '@schneefux/klicker/components'
-import { useActiveEvents } from '@/composables/dimension-values'
+import { useActiveEvents } from '~/composables/dimension-values'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({

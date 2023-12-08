@@ -1,6 +1,6 @@
 import { useKlicker } from "@schneefux/klicker/composables"
-import { capitalizeWords, formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd, parseClickhouse } from "@/lib/util"
-import { EventMetadata } from "@/plugins/klicker.service"
+import { capitalizeWords, formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd, parseClickhouse } from "~/lib/util"
+import { EventMetadata } from "~/plugins/klicker.service"
 import { SliceValue } from "@schneefux/klicker/types"
 import { differenceInMinutes, parseISO, subWeeks, format } from "date-fns"
 import { computed } from "vue"

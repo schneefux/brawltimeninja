@@ -12,9 +12,9 @@ import { ClientOnly } from '@schneefux/klicker/components'
 import Adsense from '~/components/adsense.vue'
 import { createHead } from '@unhead/vue'
 import { InferSeoMetaPlugin } from '@unhead/addons'
-import { defaultLocale, locales } from '@/locales'
+import { defaultLocale, locales } from '~/locales'
 import { createRouter } from './router'
-import { localePath } from '@/composables/compat'
+import { localePath } from '~/composables/compat'
 
 export { createApp }
 

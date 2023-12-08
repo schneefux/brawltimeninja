@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { useConfig } from "@/composables/compat";
+import { useConfig } from "~/composables/compat";
 
 function genUrl(mediaUrl: string, format: string, props: any, factor: number = 1.0): string {
   let query = ''

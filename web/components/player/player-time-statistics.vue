@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { Player } from '@/model/Api'
+import { Player } from '~/model/Api'
 import { xpToHours } from '~/lib/util'
 import { BBigstat, BDashboardCell, Fa } from '@schneefux/klicker/components'
 import { ref, computed, defineComponent, onMounted, PropType } from 'vue'

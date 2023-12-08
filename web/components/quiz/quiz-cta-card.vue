@@ -55,7 +55,7 @@ import { computed, defineComponent } from 'vue'
 import { event } from 'vue-gtag'
 import organizedImage from '~/assets/images/icon/organized.png'
 import chaoticImage from '~/assets/images/icon/chaotic.png'
-import { usePreferencesStore } from '@/stores/preferences'
+import { usePreferencesStore } from '~/stores/preferences'
 
 export default defineComponent({
   setup(props, { emit }) {

@@ -39,7 +39,7 @@ import { computed, defineComponent } from 'vue'
 import { CubeResponse } from '@schneefux/klicker/types'
 import { VCardWrapper } from '@schneefux/klicker/components'
 import { VisualisationProps } from '@schneefux/klicker/props'
-import { useBrawlstarsStore } from '@/stores/brawlstars'
+import { useBrawlstarsStore } from '~/stores/brawlstars'
 
 export default defineComponent({
   components: {

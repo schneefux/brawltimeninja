@@ -25,7 +25,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
-import { useAllSeasons } from '@/composables/dimension-values'
+import { useAllSeasons } from '~/composables/dimension-values'
 
 export default defineComponent({
   props: {

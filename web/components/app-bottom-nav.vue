@@ -12,7 +12,7 @@ import { defineComponent, computed } from 'vue'
 import { faCalendarDay, faSearch, faMask } from '@fortawesome/free-solid-svg-icons'
 import { Screen } from '@schneefux/klicker/components/ui/b-app-bottom-nav.vue'
 import { BAppBottomNav } from '@schneefux/klicker/components'
-import { useLocalePath } from '@/composables/compat'
+import { useLocalePath } from '~/composables/compat'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 

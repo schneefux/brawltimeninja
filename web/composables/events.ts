@@ -1,6 +1,6 @@
-import { unformatMode } from "@/lib/util"
-import { ActiveEvent } from "@/model/Api"
-import { EventMetadata } from "@/plugins/klicker.service"
+import { unformatMode } from "~/lib/util"
+import { ActiveEvent } from "~/model/Api"
+import { EventMetadata } from "~/plugins/klicker.service"
 import { computed } from "vue"
 import { useApi, useAsync } from "./compat"
 

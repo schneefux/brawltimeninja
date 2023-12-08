@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts">
-import { useSwitchToLocale } from '@/composables/compat'
-import { LocaleIso } from '@/locales'
+import { useSwitchToLocale } from '~/composables/compat'
+import { LocaleIso } from '~/locales'
 import { computed, defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 

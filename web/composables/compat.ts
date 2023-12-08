@@ -2,13 +2,13 @@ import { computed, ComputedRef, inject, onServerPrefetch, Ref, toRef } from "vue
 import { useQuery, keepPreviousData } from "@tanstack/vue-query";
 import { useI18n } from 'vue-i18n'
 import { usePageContext } from '~/renderer/usePageContext'
-import { TrpcInjectionKey } from "@/plugins/trpc"
+import { TrpcInjectionKey } from "~/plugins/trpc"
 import { useHead, ReactiveHead } from "@unhead/vue"
-import { locales } from "@/locales";
+import { locales } from "~/locales";
 import { MaybeRef } from "@vueuse/shared";
 import Cookies from 'js-cookie'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
-import { AppI18n } from "@/renderer/app";
+import { AppI18n } from "~/renderer/app";
 import { Locale } from '~/locales';
 import { RenderErrorPage } from "vike/RenderErrorPage";
 

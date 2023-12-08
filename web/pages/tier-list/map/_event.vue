@@ -1,5 +1,5 @@
 <script lang="ts">
-import { useCacheHeaders, useValidate } from '@/composables/compat'
+import { useCacheHeaders, useValidate } from '~/composables/compat'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { defineComponent } from 'vue'
 import { camelToKebab, slugify } from '~/lib/util'

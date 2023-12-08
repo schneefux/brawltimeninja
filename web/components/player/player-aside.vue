@@ -129,7 +129,7 @@ import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import victoryIcon from '~/assets/images/icon/victories.png'
 import levelIcon from '~/assets/images/icon/level.png'
 import { useI18n } from 'vue-i18n'
-import { ProfileTrackingStatus } from '@/api/services/ProfileUpdaterService'
+import { ProfileTrackingStatus } from '~/api/services/ProfileUpdaterService'
 
 export default defineComponent({
   components: {

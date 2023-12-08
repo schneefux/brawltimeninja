@@ -76,7 +76,7 @@ import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { getMapName } from '~/composables/map'
 import { BFakeSelect, BLightbox } from '@schneefux/klicker/components'
 import { EventMetadata } from '~/plugins/klicker.service'
-import { useAllEvents } from '@/composables/dimension-values'
+import { useAllEvents } from '~/composables/dimension-values'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({

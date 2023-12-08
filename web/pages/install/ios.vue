@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { useCacheHeaders } from '@/composables/compat';
+import { useCacheHeaders } from '~/composables/compat';
 import { defineComponent } from 'vue';
 import { BPage, BPageSection, BCard } from '@schneefux/klicker/components';
 import Step1 from '~/assets/images/install/ios-1_arrow.jpg';

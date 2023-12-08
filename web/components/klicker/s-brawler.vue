@@ -17,7 +17,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
-import { useAllBrawlers } from '@/composables/dimension-values'
+import { useAllBrawlers } from '~/composables/dimension-values'
 
 export default defineComponent({
   props: {

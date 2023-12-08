@@ -46,7 +46,7 @@ import { CubeQuery } from '@schneefux/klicker/types'
 import { CDashboard, BCard, CMetric, VTable, VCsv, BPageSection, BDashboardCell } from '@schneefux/klicker/components'
 import { formatClickhouseDate, getTodaySeasonEnd } from '~/lib/util'
 import { useI18n } from 'vue-i18n'
-import { useCacheHeaders, useMeta } from '@/composables/compat'
+import { useCacheHeaders, useMeta } from '~/composables/compat'
 
 export default defineComponent({
   components: {

@@ -253,10 +253,10 @@
 import { computed, defineComponent, ref } from 'vue'
 import { useAsync, useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { capitalizeWords } from '@/lib/util'
+import { capitalizeWords } from '~/lib/util'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
-import { ScrapedBrawler } from '@/model/Web'
+import { ScrapedBrawler } from '~/model/Web'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 

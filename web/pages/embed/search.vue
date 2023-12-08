@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { useCacheHeaders } from '@/composables/compat'
+import { useCacheHeaders } from '~/composables/compat'
 import { defineComponent, ref, computed } from 'vue'
 import { tagPattern } from '~/lib/util'
 import { event } from 'vue-gtag'

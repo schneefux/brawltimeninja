@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { useLocalePath } from '@/composables/compat'
+import { useLocalePath } from '~/composables/compat'
 import { defineComponent, computed } from 'vue'
 import { idToTag } from '~/lib/util'
 

@@ -69,7 +69,7 @@ import { defineComponent, ref } from 'vue'
 import { useKlicker } from '@schneefux/klicker/composables/klicker'
 import { useRoute } from 'vue-router'
 import { mapRouteQuery } from '~/composables/link'
-import { useCacheHeaders, useMeta } from '@/composables/compat'
+import { useCacheHeaders, useMeta } from '~/composables/compat'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({

@@ -76,7 +76,7 @@ import { BSplitDashboard, BCard, BLightbox, Fa } from '@schneefux/klicker/compon
 import { getMapName } from '~/composables/map'
 import MapViews from '~/components/map/map-views.vue'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
-import { useAsync, useCacheHeaders, useConfig, useMeta, useValidate } from '@/composables/compat'
+import { useAsync, useCacheHeaders, useConfig, useMeta, useValidate } from '~/composables/compat'
 import { useRoute } from 'vue-router'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'

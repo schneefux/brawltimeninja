@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { useConfig } from '@/composables/compat'
+import { useConfig } from '~/composables/compat'
 import { computed, defineComponent } from 'vue'
 
 export default defineComponent({

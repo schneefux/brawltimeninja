@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useMeta, useCacheHeaders } from '@/composables/compat'
+import { useMeta, useCacheHeaders } from '~/composables/compat'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({

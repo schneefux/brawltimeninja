@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useCacheHeaders, useMeta } from '@/composables/compat';
+import { useCacheHeaders, useMeta } from '~/composables/compat';
 
 export default defineComponent({
   setup() {

@@ -172,7 +172,6 @@ const config: UserConfig = {
     dedupe: ['vue', 'vue3-lazy-hydration'], // https://github.com/vitejs/vite/issues/7454#issuecomment-1079830994
     alias: {
       '~': path.resolve(__dirname),
-      '@': path.resolve(__dirname),
     },
   },
 }

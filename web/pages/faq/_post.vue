@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useCacheHeaders, useMeta } from '@/composables/compat'
+import { useCacheHeaders, useMeta } from '~/composables/compat'
 import { usePost } from '~/composables/content'
 import ArticleCard from '~/components/article-card.vue'
 

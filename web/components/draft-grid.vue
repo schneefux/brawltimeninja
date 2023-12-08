@@ -91,7 +91,7 @@ import { BCard, Fa } from '@schneefux/klicker/components'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import buildTeamWinratePredictor from '~/lib/klicker.ml'
 import { useKlicker } from '@schneefux/klicker/composables'
-import { useAsync } from '@/composables/compat'
+import { useAsync } from '~/composables/compat'
 
 interface AllyData {
   id: string

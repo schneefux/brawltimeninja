@@ -103,12 +103,12 @@
 </template>
 
 <script lang="ts">
-import { Player } from '@/model/Api'
+import { Player } from '~/model/Api'
 import { calculateAccountRating, ratingPercentiles } from '~/lib/util'
-import { PlayerTotals } from '@/stores/brawlstars'
+import { PlayerTotals } from '~/stores/brawlstars'
 import { BBigstat, BScrollingDashboard, BDashboardCell } from '@schneefux/klicker/components'
 import { computed, defineComponent, PropType } from 'vue'
-import { useBrawlstarsStore } from '@/stores/brawlstars'
+import { useBrawlstarsStore } from '~/stores/brawlstars'
 
 export default defineComponent({
   components: {

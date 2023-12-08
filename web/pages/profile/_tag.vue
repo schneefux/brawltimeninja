@@ -227,9 +227,9 @@ import { useCacheHeaders, useMeta, useSelfOrigin } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
-import { useBrawlstarsStore } from '@/stores/brawlstars'
+import { useBrawlstarsStore } from '~/stores/brawlstars'
 import { useI18n } from 'vue-i18n'
-import { useLoadAndValidatePlayer, usePlayerRender } from '@/composables/player'
+import { useLoadAndValidatePlayer, usePlayerRender } from '~/composables/player'
 
 export default defineComponent({
   directives: {

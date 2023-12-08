@@ -1,4 +1,4 @@
-import { Config } from "@/renderer/types"
+import { Config } from "~/renderer/types"
 
 export type LocaleCode = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl'
 export type LocaleIso = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl'

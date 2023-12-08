@@ -69,7 +69,7 @@ import { computed, defineComponent, PropType, onMounted } from 'vue'
 import { brawlerScores, OEJTSEntry } from '~/lib/oejts'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { event } from 'vue-gtag'
-import { usePreferencesStore } from '@/stores/preferences'
+import { usePreferencesStore } from '~/stores/preferences'
 
 export interface QuizResult {
   score: OEJTSEntry

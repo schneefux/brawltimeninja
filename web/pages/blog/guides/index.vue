@@ -58,7 +58,7 @@
 import { computed, defineComponent } from 'vue'
 import { format, parseISO } from 'date-fns'
 import { TocEntry } from '~/model/Web'
-import { useAsync, useCacheHeaders } from '@/composables/compat'
+import { useAsync, useCacheHeaders } from '~/composables/compat'
 
 export default defineComponent({
   setup() {

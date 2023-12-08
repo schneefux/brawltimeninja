@@ -54,7 +54,7 @@ import { Grid, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useRoute } from "vue-router"
-import { useSelfOrigin } from "@/composables/compat"
+import { useSelfOrigin } from "~/composables/compat"
 import { BindOnce, generateId } from "@schneefux/klicker/directives"
 
 export default defineComponent({

@@ -6,10 +6,10 @@
 </template>
 
 <script lang="ts">
-import { useCacheHeaders, useCspHeaders } from '@/composables/compat'
+import { useCacheHeaders, useCspHeaders } from '~/composables/compat'
 import { computed, defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
-import QuizResultSharepic from '@/components/quiz/quiz-result-sharepic.vue'
+import QuizResultSharepic from '~/components/quiz/quiz-result-sharepic.vue'
 import { QuizResult } from '~/components/quiz/quiz-result-card.vue'
 
 export default defineComponent({

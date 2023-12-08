@@ -58,8 +58,8 @@
 </template>
 
 <script lang="ts">
-import { useApi, useBlockingAsync, useCacheHeaders, useMeta, useSentry } from '@/composables/compat'
-import { capitalize, tagPattern } from '@/lib/util'
+import { useApi, useBlockingAsync, useCacheHeaders, useMeta, useSentry } from '~/composables/compat'
+import { capitalize, tagPattern } from '~/lib/util'
 import { defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { TRPCClientError } from '@trpc/client'

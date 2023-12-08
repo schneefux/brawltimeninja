@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { useCacheHeaders, useMeta } from '@/composables/compat'
+import { useCacheHeaders, useMeta } from '~/composables/compat'
 import { defineComponent } from 'vue'
 import { usePost } from '~/composables/content'
 

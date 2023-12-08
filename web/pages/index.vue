@@ -195,18 +195,18 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { formatAsJsonLd, tagPattern } from '@/lib/util'
+import { formatAsJsonLd, tagPattern } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { TRPCClientError } from '@trpc/client'
-import { useMeta, useCacheHeaders, useLocalePath, useConfig, useSentry } from '@/composables/compat'
-import { useActiveEvents } from '@/composables/dimension-values'
-import { useBrawlstarsStore } from '@/stores/brawlstars'
+import { useMeta, useCacheHeaders, useLocalePath, useConfig, useSentry } from '~/composables/compat'
+import { useActiveEvents } from '~/composables/dimension-values'
+import { useBrawlstarsStore } from '~/stores/brawlstars'
 import { event } from 'vue-gtag'
 import logoWithCrownUrl from '~/assets/images/logo_with_crown_min.svg'
 import tag1Url from '~/assets/images/tag/tag-1.jpg'
 import tag2Url from '~/assets/images/tag/tag-2.jpg'
 import { useRouter } from 'vue-router'
-import { usePreferencesStore } from '@/stores/preferences'
+import { usePreferencesStore } from '~/stores/preferences'
 import { useI18n } from 'vue-i18n'
 
 interface PlayerLink {

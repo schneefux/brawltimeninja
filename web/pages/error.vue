@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { usePageContext } from '@/renderer/usePageContext';
+import { usePageContext } from '~/renderer/usePageContext';
 import { defineComponent, computed } from 'vue'
 import { BButton } from '@schneefux/klicker/components';
 

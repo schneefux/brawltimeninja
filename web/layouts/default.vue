@@ -47,11 +47,11 @@ import { useMutationObserver } from '@vueuse/core'
 import { BWebFooter } from '@schneefux/klicker/components'
 import { useInstallPromptListeners } from '~/composables/app'
 import { useI18n } from 'vue-i18n'
-import { useConfig, useLocaleCookieRedirect, useLocalePath } from '@/composables/compat'
+import { useConfig, useLocaleCookieRedirect, useLocalePath } from '~/composables/compat'
 import { useRoute } from 'vue-router'
-import { usePlaywireRamp } from '@/composables/playwire-ramp'
-import { useQuantcast } from '@/composables/quantcast'
-import { useAdsense } from '@/composables/adsense'
+import { usePlaywireRamp } from '~/composables/playwire-ramp'
+import { useQuantcast } from '~/composables/quantcast'
+import { useAdsense } from '~/composables/adsense'
 
 export default defineComponent({
   components: {

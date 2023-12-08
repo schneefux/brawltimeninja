@@ -21,7 +21,7 @@ import { computed, defineComponent, toRefs } from 'vue'
 import { SliceValue } from '@schneefux/klicker/types'
 import { useMapName } from '~/composables/map'
 import { camelToKebab, slugify } from '~/lib/util'
-import { useLocalePath } from '@/composables/compat'
+import { useLocalePath } from '~/composables/compat'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 

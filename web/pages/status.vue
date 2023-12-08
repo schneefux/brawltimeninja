@@ -28,7 +28,7 @@
 import { defineComponent, ref, onMounted } from 'vue'
 // @ts-ignore
 import { Timeline } from '@jacksongross/vue-tweet-embed'
-import { useApi, useCacheHeaders, useMeta } from '@/composables/compat'
+import { useApi, useCacheHeaders, useMeta } from '~/composables/compat'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({

@@ -30,7 +30,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { BWebNav } from '@schneefux/klicker/components'
-import { useLocalePath } from '@/composables/compat'
+import { useLocalePath } from '~/composables/compat'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({

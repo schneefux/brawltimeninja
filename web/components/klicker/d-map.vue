@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { useLocalePath } from '@/composables/compat'
+import { useLocalePath } from '~/composables/compat'
 import { computed, defineComponent } from 'vue'
 import { camelToKebab } from '~/lib/util'
 

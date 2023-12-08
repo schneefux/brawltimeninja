@@ -21,7 +21,7 @@
 import { defineComponent } from 'vue'
 import { BDashboardCell } from '@schneefux/klicker/components'
 import { useIsApp } from '~/composables/app'
-import { useConfig } from '@/composables/compat'
+import { useConfig } from '~/composables/compat'
 
 export default defineComponent({
   components: {

@@ -78,7 +78,7 @@
 import { defineComponent, computed, ref } from 'vue'
 import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
 import { useIsApp } from '~/composables/app'
-import { useConfig } from '@/composables/compat'
+import { useConfig } from '~/composables/compat'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({

@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { useMeta } from '@/composables/compat'
+import { useMeta } from '~/composables/compat'
 import { defineComponent } from 'vue'
 
 export default defineComponent({

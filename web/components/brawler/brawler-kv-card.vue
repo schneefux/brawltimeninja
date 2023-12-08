@@ -32,7 +32,7 @@
 import { computed, defineComponent, PropType } from 'vue'
 import { CQuery, VKvTable } from '@schneefux/klicker/components'
 import { SliceValue } from '@schneefux/klicker/types'
-import { brawlerId as getBrawlerId } from '@/lib/util'
+import { brawlerId as getBrawlerId } from '~/lib/util'
 
 export default defineComponent({
   components: {

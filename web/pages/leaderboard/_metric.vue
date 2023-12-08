@@ -15,10 +15,10 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
-import { formatClickhouseDate, getTodaySeasonEnd } from '@/lib/util'
+import { formatClickhouseDate, getTodaySeasonEnd } from '~/lib/util'
 import { CQuery, VTable } from '@schneefux/klicker/components'
 import { useRoute } from 'vue-router'
-import { useCacheHeaders } from '@/composables/compat'
+import { useCacheHeaders } from '~/composables/compat'
 import { CubeQuery } from '@schneefux/klicker/types'
 
 export default defineComponent({
