@@ -19,6 +19,8 @@ locals {
 job "brawltime-media" {
   datacenters = ["dc1"]
 
+  priority = 80
+
 /*
   affinity {
     attribute = "${node.class}"
@@ -147,8 +149,8 @@ job "brawltime-media" {
 
       resources {
         cpu = 128
-        memory = 384
-        memory_max = 512 # sharp will use as much memory as available
+        memory = 512
+        memory_max = 768 # sharp will use as much memory as available
       }
     }
 

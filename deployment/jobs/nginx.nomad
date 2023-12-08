@@ -3,6 +3,8 @@ variable "brawlstars_token" {}
 job "nginx" {
   datacenters = ["dc1"]
 
+  priority = 100
+
   constraint {
     attribute = "${node.class}"
     value = "ingress"

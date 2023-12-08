@@ -1,6 +1,8 @@
 job "mariadb" {
   datacenters = ["dc1"]
 
+  priority = 60
+
   constraint {
     attribute = "${node.class}"
     value = "database"
@@ -51,7 +53,7 @@ job "mariadb" {
       }
 
       config {
-        image = "mariadb:11.1"
+        image = "mariadb:11.3"
         args = ["--datadir", "/srv/mariadb"]
         ports = ["db"]
       }

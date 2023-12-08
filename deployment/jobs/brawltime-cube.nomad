@@ -11,6 +11,8 @@ variable "domain" {
 job "brawltime-cube" {
   datacenters = ["dc1"]
 
+  priority = 40
+
   constraint {
     attribute = "${node.class}"
     value = "worker"

@@ -4,6 +4,8 @@ job "hcloud-csi-controller" {
   datacenters = ["dc1"]
   type = "service"
 
+  priority = 100
+
   constraint {
     attribute = "${node.class}"
     value = "ingress"

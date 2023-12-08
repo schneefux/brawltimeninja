@@ -7,6 +7,8 @@ variable "basic_auth" {}
 job "traefik" {
   datacenters = ["dc1"]
 
+  priority = 100
+
   constraint {
     attribute = "${node.class}"
     value = "ingress"

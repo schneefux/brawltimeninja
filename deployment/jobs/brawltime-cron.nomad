@@ -2,6 +2,8 @@ job "brawltime-cron" {
   datacenters = ["dc1"]
   type = "batch"
 
+  priority = 10
+
   periodic {
     cron = "@hourly"
     prohibit_overlap = true

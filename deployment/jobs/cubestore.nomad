@@ -6,6 +6,8 @@ job "cubestore" {
     value = "database"
   }
 
+  priority = 80
+
   group "cubestore" {
     network {
       # TODO load balance multiple routers via traefik?
@@ -57,13 +59,9 @@ job "cubestore" {
       }
 
       resources {
-        # while average usage is about 2k,
-        # sometimes cube API or cubestore seems to stall queries,
-        # eventually hanging up
-        cpu = 4096
-        # maybe there is a memory leak? at 2GB limit, memory keeps growing, then everything hangs until crash/restart
-        memory = 3072
-        memory_max = 4096
+        cpu = 2048 # mean 768 but peaks up to 4k
+        memory = 2048
+        memory_max = 3072
       }
     }
   }

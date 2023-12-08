@@ -4,6 +4,8 @@ job "hcloud-csi-node" {
   datacenters = ["dc1"]
   type = "system"
 
+  priority = 100
+
   group "node" {
     task "plugin" {
       driver = "docker"

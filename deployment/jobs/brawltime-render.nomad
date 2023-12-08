@@ -11,6 +11,8 @@ variable "domain" {
 job "brawltime-render" {
   datacenters = ["dc1"]
 
+  priority = 10
+
   affinity {
     attribute = "${node.class}"
     operator = "regexp"

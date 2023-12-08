@@ -6,6 +6,8 @@ variable "brawltime_net_id" {}
 job "autoscaler" {
   datacenters = ["dc1"]
 
+  priority = 40
+
   affinity {
     attribute = "${node.class}"
     value = "ingress"

@@ -6,6 +6,8 @@ job "clickhouse" {
     value = "database"
   }
 
+  priority = 100 # move all other services to get this one running!
+
   group "clickhouse" {
     stop_after_client_disconnect = "15m" # free up volume if disconnected from Nomad for a long time
 
@@ -60,7 +62,7 @@ job "clickhouse" {
       }
 
       config {
-        image = "clickhouse/clickhouse-server:23.8-alpine"
+        image = "clickhouse/clickhouse-server:23.11-alpine"
         network_mode = "host"
 
         volumes = [

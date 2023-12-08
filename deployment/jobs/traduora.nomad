@@ -5,6 +5,8 @@ variable "traduora_secret" {}
 job "traduora" {
   datacenters = ["dc1"]
 
+  priority = 20
+
   constraint {
     attribute = "${node.class}"
     value = "worker"
