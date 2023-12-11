@@ -55,9 +55,7 @@ const config: UserConfig = {
     }),
     UnheadVite(),
     ssr({ disableAutoFullBuild: true }),
-    legacy({
-      modernPolyfills: ['web.structured-clone'], // used by vega-lite but not widely supported yet
-    }),
+    legacy(),
     process.env.VITE_GIT_REV != undefined ? sentryVitePlugin({
       release: {
         name: `brawltimeninja@${process.env.VITE_GIT_REV}`,
