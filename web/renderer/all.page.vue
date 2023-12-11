@@ -30,7 +30,11 @@ export default defineComponent({
     const route = useRoute()
     const Layout = computed(() => {
       const layout = route.meta.layout as string ?? 'default'
-      return layouts[`/layouts/${layout}.vue`]
+      const path = `../layouts/${layout}.vue`
+      if (!(path in layouts)) {
+        throw new Error('Layout cannot be loaded: ' + path)
+      }
+      return layouts[path]
     })
 
     const i18n = useI18n()
