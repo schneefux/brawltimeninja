@@ -9,6 +9,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 import Pages from 'vite-plugin-pages'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import { vavite } from 'vavite'
+import legacy from '@vitejs/plugin-legacy'
 import manifest from './manifest'
 
 const config: UserConfig = {
@@ -54,6 +55,9 @@ const config: UserConfig = {
     }),
     UnheadVite(),
     ssr({ disableAutoFullBuild: true }),
+    legacy({
+      modernPolyfills: ['web.structured-clone'], // used by vega-lite but not widely supported yet
+    }),
     process.env.VITE_GIT_REV != undefined ? sentryVitePlugin({
       release: {
         name: `brawltimeninja@${process.env.VITE_GIT_REV}`,

@@ -33,7 +33,6 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import BShimmer from './b-shimmer.vue'
 import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
-import 'core-js/actual/structured-clone' // used by vega-lite but not widely supported yet -> polyfill it
 
 export default defineComponent({
   components: {
