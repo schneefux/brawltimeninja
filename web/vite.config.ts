@@ -69,7 +69,9 @@ const config: UserConfig = {
       },
       telemetry: false,
     }) : undefined,
-    visualizer(),
+    visualizer({
+      gzipSize: true
+    }),
   ],
   assetsInclude: ['assets/content/**/*.md'],
   build: {
