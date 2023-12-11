@@ -69,7 +69,7 @@ export default defineComponent({
       const duoZ = (props.player.duoVictories - duoMu) / duoSigma
 
       // TODO create an endpoint?
-      const allAchievements = [{
+      const achievements = [{
         metric: i18n.t('metric.highestTrophies'),
         percentile: ztable(trophiesZ),
       }, {
@@ -85,10 +85,6 @@ export default defineComponent({
         metric: i18n.t('metric.duoVictories'),
         percentile: ztable(duoZ),
       }].sort((a1, a2) => a2.percentile - a1.percentile)
-
-      const goodAchievements = allAchievements
-        .filter(a => a.percentile >= 0.5)
-      const achievements = goodAchievements.length == 0 ? allAchievements.slice(0, 1) : goodAchievements
 
       function formatPercentile(p: number): string {
         let base = 10
