@@ -1,12 +1,19 @@
 import { renderToString } from '@vue/server-renderer'
 import { dangerouslySkipEscape, escapeInject } from 'vike/server'
 import { createApp } from './error-app'
-import type { PageContext } from '../../renderer/types'
+import type { PageContext } from './types'
 import { renderSSRHead } from '@unhead/ssr'
 
-export { onRenderHtml }
+export { passToClient }
+export { render }
 
-async function onRenderHtml(pageContext: PageContext) {
+const passToClient = [
+  'errorWhileRendering',
+  'errorMessage',
+  'statusCode',
+]
+
+async function render(pageContext: PageContext) {
   const { app, head } = createApp(pageContext)
 
   const string = await renderToString(app)

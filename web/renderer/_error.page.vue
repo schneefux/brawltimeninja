@@ -6,11 +6,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ErrorLayout from '../../layouts/error.vue'
+import ErrorLayout from '~/layouts/error.vue'
 import '~/assets/css/tailwind.css'
 import '~/assets/css/transitions.css'
 import '~/assets/css/fonts.css'
-import Error from '../error.vue'
+import Error from '../pages/error.vue'
 
 export default defineComponent({
   components: {

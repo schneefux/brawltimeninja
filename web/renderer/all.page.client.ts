@@ -11,9 +11,9 @@ import {
   RewriteFrames as RewriteFramesIntegration,
 } from '@sentry/integrations'
 
-export { onRenderClient }
+export { render }
 
-async function onRenderClient(pageContext: PageContext) {
+async function render(pageContext: PageContext) {
   const params = createApp(pageContext)
 
   Sentry.init({
