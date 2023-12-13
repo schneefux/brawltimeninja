@@ -11,6 +11,10 @@ import {
   RewriteFrames as RewriteFramesIntegration,
 } from '@sentry/integrations'
 
+// polyfills
+import 'core-js/stable/structured-clone' // used by vega-lite
+import 'core-js/stable/object/from-entries'
+
 export { render }
 
 async function render(pageContext: PageContext) {
