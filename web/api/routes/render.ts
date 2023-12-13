@@ -11,6 +11,9 @@ import { BrawltimeKlickerService } from "../../plugins/klicker.service";
 import { tagToId } from "../../lib/util";
 import isbot from 'isbot'
 import { PlayerTotals } from "../../stores/brawlstars";
+import { TRPCError } from "@trpc/server";
+import { RequestError } from "../lib/request";
+import { Player } from "~/model/Api";
 
 const router = express.Router();
 
@@ -71,7 +74,19 @@ router.get(
 router.get(
   "/profile/:tag/:brawler.png",
   asyncWrapper(async (req, res) => {
-    const player = await brawlStarsApiService.getPlayerStatistics(req.params.tag, false, true);
+    let player!: Player
+
+    try {
+      player = await brawlStarsApiService.getPlayerStatistics(req.params.tag, false, true);
+    } catch (err) {
+      if (err instanceof TRPCError) {
+        console.error(err);
+        res.status(err.code == 'NOT_FOUND' ? 404 : 503).send(err.message);
+        return;
+      }
+      throw err;
+    }
+
     if (!(req.params.brawler in player.brawlers)) {
       res.status(404).send("Player does not own this brawler");
       return;

@@ -67,7 +67,7 @@ export function request<T>(
           console.error(error, error.response)
 
           throw new TRPCError({
-            code: 'PRECONDITION_FAILED',
+            code: 'INTERNAL_SERVER_ERROR', // TODO trpc does not support 503
             message: error.response.reason,
             cause: error,
           })
