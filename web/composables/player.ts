@@ -40,7 +40,7 @@ export async function useLoadAndValidatePlayer(urlPrefix: string) {
           return
         }
         if (err.data?.httpStatus >= 400) {
-          error({ statusCode: err.data.httpStatus, message: i18n.t('error.api-unavailable') })
+          error({ statusCode: 503, message: i18n.t('error.api-unavailable') })
           return
         }
       }

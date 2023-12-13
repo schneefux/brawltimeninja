@@ -45,12 +45,10 @@ export type PageContextCustom = {
   vueQueryState: DehydratedState
   piniaState: string
   sentry: typeof SentryTypes,
-  errorWhileRendering?: Error
   envConfig: Config
   validated: null | boolean
   statusCode?: number
   redirectTo?: string
-  errorMessage?: string
   responseHeaders: Record<string, string>
   server: {
     host: string
@@ -58,6 +56,8 @@ export type PageContextCustom = {
     requestHeaders: Record<string, string>
   }
   localeMessages: Partial<Record<LocaleIso, Record<string, string>>>
+  abortStatusCode?: number
+  abortReason?: string
 }
 
 type PageContextServer = PageContextBuiltInServer<Page> & PageContextCustom

@@ -17,10 +17,12 @@
       </b-button>
     </p>
     <client-only>
-      <p v-if="error != undefined" class="mt-8 text-left text-sm">
-        <span>Error details:</span>
-        <pre class="max-w-xl whitespace-normal">{{ error }}</pre>
-      </p>
+      <div class="mt-8 flex justify-center">
+        <p v-if="error != undefined" class="text-left text-sm">
+          <span>Error details:</span>
+          <pre class="max-w-xl whitespace-normal">{{ error }}</pre>
+        </p>
+      </div>
     </client-only>
   </main>
 </template>
@@ -35,19 +37,19 @@ export default defineComponent({
     BButton,
   },
   props: {
-    routeNotFound: {
+    routeNotFound: { // set by catch-all route configured below
       type: Boolean,
       required: false
     },
   },
   setup(props) {
     const pageContext = usePageContext()
-    if (props.routeNotFound) {
-      pageContext.statusCode = 404
+    if (pageContext.abortStatusCode == undefined && props.routeNotFound) {
+      pageContext.abortStatusCode = 404 // set status code returned by server
     }
 
-    const notFound = computed(() => pageContext.statusCode == 404)
-    const error = computed(() => pageContext.errorWhileRendering)
+    const notFound = computed(() => pageContext.abortStatusCode == 404)
+    const error = computed(() => pageContext.abortReason)
 
     return {
       notFound,

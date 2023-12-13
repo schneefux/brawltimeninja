@@ -10,11 +10,14 @@ import Cookies from 'js-cookie'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
 import { AppI18n } from "~/renderer/app";
 import { Locale } from '~/locales';
-import { RenderErrorPage } from "vike/RenderErrorPage";
+import { render } from 'vike/abort';
 
 /*
  * Nuxt 2 backwards compatibility composables
  */
+
+type ErrorStatusCode = 401 | 403 | 404 | 410 | 429 | 500 | 503
+type RedirectStatusCode = 301 | 302
 
 export function useAsync<T>(fun: () => Promise<T>, key: ComputedRef<string>|MaybeRef<string>): Ref<T|undefined> {
   const { suspense, data } = useQuery({
@@ -120,8 +123,8 @@ export function useMeta(fun: () => ReactiveHead) {
 }
 interface ValidateContext {
   params: Record<string, string|string[]>
-  redirect: (status: number, url: string) => void
-  error: (e: { statusCode: number, message: string }) => void
+  redirect: (status: RedirectStatusCode, url: string) => void
+  error: (e: { statusCode: ErrorStatusCode, message: string }) => void
 }
 export async function useValidate(cb: (context: ValidateContext) => Promise<boolean|undefined>) {
   const pageContext = usePageContext()
@@ -135,15 +138,12 @@ export async function useValidate(cb: (context: ValidateContext) => Promise<bool
 
     pageContext.validated = true
 
-    const error = (e: { statusCode: number, message: string }) => {
+    const error = (e: { statusCode: ErrorStatusCode, message: string }) => {
       if (import.meta.env.SSR) {
-        throw RenderErrorPage({
-          pageContext: {
-            statusCode: e.statusCode,
-            errorMessage: e.message,
-          },
-        })
+        throw render(e.statusCode, e.message)
       } else {
+        pageContext.abortReason = e.message
+        pageContext.abortStatusCode = e.statusCode
         router.replace({
           name: 'error',
           params: { pathMatch: route.path.substring(1).split('/') },
@@ -152,7 +152,7 @@ export async function useValidate(cb: (context: ValidateContext) => Promise<bool
         })
       }
     }
-    const redirect = (status: number, url: string) => {
+    const redirect = (status: RedirectStatusCode, url: string) => {
       if (import.meta.env.SSR) {
         pageContext.statusCode = status
         pageContext.redirectTo = url
