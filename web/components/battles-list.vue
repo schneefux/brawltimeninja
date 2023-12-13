@@ -1,7 +1,7 @@
 <template>
   <b-scrolling-list
-    v-if="player.battles.length > 0"
-    :items="player.battles"
+    v-if="battles.length > 0"
+    :items="battles"
     :cell-rows="2"
     :cell-columns="4"
     key-id="timestamp"
@@ -22,17 +22,17 @@
     </template>
 
     <template v-slot:item="battle">
-      <player-battle
+      <battle
         :battle="battle"
-        :player-tag="player.tag"
-      ></player-battle>
+        :highlight-tags="highlightTags"
+      ></battle>
     </template>
   </b-scrolling-list>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Player } from '~/model/Api'
+import { Battle } from '~/model/Api'
 import { BScrollingList } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
 
@@ -41,9 +41,13 @@ export default defineComponent({
     BScrollingList,
   },
   props: {
-    player: {
-      type: Object as PropType<Player>,
+    battles: {
+      type: Object as PropType<Battle[]>,
       required: true
+    },
+    highlightTags: {
+      type: Array as PropType<string[]>,
+      default: []
     },
   },
   setup(props) {

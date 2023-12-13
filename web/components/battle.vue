@@ -40,7 +40,7 @@
             :rel="mate.brawlerTrophies == undefined || mate.brawlerTrophies < 400 ? 'nofollow' : ''"
             :to="localePath(`/profile/${mate.tag}`)"
             :class="{
-              'border-2 border-gray-300 ': mate.tag == playerTag,
+              'border-2 border-gray-300 ': highlightTags.includes(mate.tag),
               'mx-1 rounded-sm ': team.length != 2,
             }"
             class="w-14 h-16 bg-background/75 p-px relative overflow-hidden text-xs flex flex-col gap-y-px"
@@ -66,7 +66,7 @@
             <span
               class="h-4 whitespace-nowrap overflow-hidden text-ellipsis"
               :class="{
-                'text-primary-400': mate.tag != playerTag,
+                'text-primary-400': !highlightTags.includes(mate.tag),
               }">{{ mate.name }}</span>
             </router-link>
         </div>
@@ -89,9 +89,9 @@ export default defineComponent({
       type: Object as PropType<Battle>,
       required: true,
     },
-    playerTag: {
-      type: String,
-      required: true,
+    highlightTags: {
+      type: Array as PropType<string[]>,
+      default: [],
     },
   },
   setup(props) {

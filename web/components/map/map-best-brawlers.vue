@@ -12,12 +12,11 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
 import { SliceValue } from '@schneefux/klicker/types'
-import { VRoll, BShimmer, CQuery } from '@schneefux/klicker/components'
+import { VRoll, CQuery } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
     VRoll,
-    BShimmer,
     CQuery,
   },
   props: {

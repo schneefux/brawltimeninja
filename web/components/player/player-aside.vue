@@ -120,7 +120,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, onMounted } from 'vue'
-import { BKvTable } from '@schneefux/klicker/components'
+import { BCard, BKvTable } from '@schneefux/klicker/components'
 import { Player } from "~/model/Api"
 import { Row } from "@schneefux/klicker/components/ui/b-kv-table.vue"
 import { useApi, useSentry } from '~/composables/compat'
@@ -134,6 +134,7 @@ import { ProfileTrackingStatus } from '~/api/services/ProfileUpdaterService'
 export default defineComponent({
   components: {
     BKvTable,
+    BCard,
   },
   props: {
     player: {

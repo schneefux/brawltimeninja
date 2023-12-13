@@ -112,6 +112,20 @@
     "club": "Club",
     "club.meta.description": "{club} Brawl Stars Club.",
     "club.meta.title": "{club} Brawl Stars Club",
+    "club.type": "Type",
+    "club.type.open": "Open",
+    "club.type.closed": "Closed",
+    "club.type.inviteOnly": "Invite Only",
+    "club.required-trophies": "Required Trophies",
+    "club.description": "Description",
+    "club.members": "Members",
+    "club.common-battle-log": "Latest Club Battles",
+    "club.member-activity": "Most Recently Active Players",
+    "club.retention.title": "Activity Overview",
+    "club.retention.retention": "% of members",
+    "club.retention.days-ago": "latest battle later than",
+    "club.load-activity": "Load club activity data",
+    "metric.latest-battle": "Latest Battle",
     "competition-map": "Competition Map | Competition Maps",
     "competition-winner": "Competition Winner | Competition Winners",
     "cookie-consent.ads": "Customization of advertisements",
@@ -595,5 +609,6 @@
     "metric.mode": "Mode",
     "metric.map": "Map",
     "prodigy-ad.title": "Power League Prodigy",
-    "prodigy-ad.description": "Try Power League Prodigy, the interactive Power League guide powered by Brawl Time Ninja."
+    "prodigy-ad.description": "Try Power League Prodigy, the interactive Power League guide powered by Brawl Time Ninja.",
+    "metric.members": "Members"
 }

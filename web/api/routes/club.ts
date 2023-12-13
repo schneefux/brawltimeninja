@@ -1,3 +1,4 @@
+import z from 'zod'
 import { tagWithoutHashType } from '../schema/types'
 import BrawlstarsService from '../services/BrawlstarsService'
 import { publicProcedure, router } from '../trpc'
@@ -10,5 +11,11 @@ export const clubRouter = router({
     .query(async ({ input, ctx }) => {
       ctx.res.set('Cache-Control', 'public, max-age=180')
       return await brawlstarsService.getClubStatistics(input)
-    })
+    }),
+  activityStatisticsByTags: publicProcedure
+    .input(z.array(tagWithoutHashType))
+    .query(async ({ input, ctx }) => {
+      ctx.res.set('Cache-Control', 'public, max-age=180')
+      return await brawlstarsService.getClubActivityStatistics(input)
+    }),
 })

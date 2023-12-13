@@ -1,76 +1,165 @@
 <template>
   <b-page
     v-if="club != undefined"
-    class="max-w-md"
+    :title="$t('club.meta.title', { club: club.name })"
   >
-    <b-card :title="club.name">
-      <template v-slot:content>
-        <blockquote id="description" class="mt-2 italic">
-          {{ club.description }}
-        </blockquote>
-
-        <table id="table" class="mt-2 w-full">
-          <thead>
-            <tr class="h-8 border-b border-gray-600 text-left">
-              <th scope="col">
-                {{ $t('metric.name') }}
-              </th>
-              <th scope="col">
-                {{ $t('metric.club-role') }}
-              </th>
-              <th scope="col">
-                {{ $t('metric.trophies') }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="member in club.members"
-              :key="member.tag"
-              class="pt-1"
-            >
-              <th scope="row" class="pr-2 text-left">
-                <router-link
-                  :to="localePath(`/profile/${member.tag}`)"
-                  :title="member.name"
-                  @click.stop
-                >
-                  <media-img
-                    :path="`/avatars/${member.icon.id}`"
-                    size="200"
-                    clazz="h-8 w-8 mr-1 inline object-contain"
-                  ></media-img>
-                  <span>{{ member.name }}</span>
-                </router-link>
-              </th>
-              <td>
-                {{ capitalize(member.role).replace('VicePresident', 'Vice President') }}
-              </td>
-              <td class="text-center">
-                {{ member.trophies }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <b-split-dashboard class="mt-8 lg:mt-0">
+      <template v-slot:aside>
+        <div class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8">
+          <club-aside
+            id="aside"
+            :club="club"
+            v-observe-visibility="{
+              callback: makeVisibilityCallback('aside'),
+              once: true,
+            }"
+            class="!h-auto"
+          ></club-aside>
+        </div>
       </template>
-    </b-card>
+
+      <b-page-section
+        id="description"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('description'),
+          once: true,
+        }"
+        :title="$t('club.description')"
+      >
+        <b-card>
+          <template v-slot:content>
+            <blockquote class="prose dark:prose-invert italic">
+              {{ club.description }}
+            </blockquote>
+          </template>
+        </b-card>
+      </b-page-section>
+
+      <b-page-section :title="$t('club.members')">
+        <club-member-table
+          :club="club"
+          class="max-w-md"
+        ></club-member-table>
+      </b-page-section>
+
+      <b-page-section
+        id="battles"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('battles'),
+          once: true,
+        }"
+        :title="$t('club.common-battle-log')"
+        lazy
+      >
+        <battles-list
+          v-if="commonBattles.length > 0"
+          :battles="commonBattles"
+          :highlight-tags="memberTags"
+          class="mt-8"
+          @interact="trackInteraction('battles')"
+        ></battles-list>
+        <b-shimmer
+          v-else-if="loading"
+          height-px="318"
+          loading
+        ></b-shimmer>
+        <div v-else>
+          <p class="prose dark:prose-invert">
+            {{ $t('state.no-data') }}
+          </p>
+          <b-button
+            v-if="clubActivityStatistics == undefined"
+            v-observe-visibility="{
+              callback: loadClubActivityStatistics,
+              once: true,
+            }"
+            class="mt-3"
+            primary
+            md
+            @click="loadClubActivityStatistics()"
+          >{{ $t('club.load-activity') }}</b-button>
+        </div>
+      </b-page-section>
+
+      <b-page-section
+        id="retention"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('retention'),
+          once: true,
+        }"
+        :title="$t('club.retention.title')"
+        lazy
+      >
+        <club-retention-graph
+          :loading="loading"
+          :club-activity-statistics="clubActivityStatistics"
+          class="max-w-md"
+        ></club-retention-graph>
+      </b-page-section>
+
+      <b-page-section
+        :title="$t('club.member-activity')"
+      >
+        <club-activity-table
+          :loading="loading"
+          :club="club"
+          :club-activity-statistics="clubActivityStatistics"
+          class="max-w-md"
+        ></club-activity-table>
+      </b-page-section>
+    </b-split-dashboard>
   </b-page>
 </template>
 
 <script lang="ts">
+import { ObserveVisibility } from 'vue-observe-visibility'
 import { useApi, useBlockingAsync, useCacheHeaders, useMeta, useSentry } from '~/composables/compat'
-import { capitalize, tagPattern } from '~/lib/util'
-import { defineComponent } from 'vue'
+import { tagPattern } from '~/lib/util'
+import { defineComponent, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { TRPCClientError } from '@trpc/client'
+import { BPage, BPageSection, BSplitDashboard, BCard, BScrollingDashboard, BDashboardCell, BBigstat, BShimmer } from '@schneefux/klicker/components'
+import { useTrackScroll } from '~/composables/gtag'
+import { ClubActivityStatistics } from '~/model/Api'
 
 export default defineComponent({
+  directives: {
+    ObserveVisibility,
+  },
+  components: {
+    BScrollingDashboard,
+    BSplitDashboard,
+    BDashboardCell,
+    BPageSection,
+    BShimmer,
+    BBigstat,
+    BPage,
+    BCard,
+  },
   async setup() {
     const i18n = useI18n()
     const $api = useApi()
     const sentry = useSentry()
 
     useCacheHeaders()
+
+    const memberTags = computed(() => club.value.members.map(m => m.tag))
+
+    const clubActivityStatistics = ref<ClubActivityStatistics>()
+    const loading = ref(false)
+    const loadClubActivityStatistics = async () => {
+      if (loading.value) {
+        return
+      }
+
+      loading.value = true
+      try {
+        clubActivityStatistics.value = await $api.club.activityStatisticsByTags.query(memberTags.value)
+      } catch (err) {
+        sentry.captureException(err)
+      }
+      loading.value = false
+    }
 
     const club = await useBlockingAsync(async ({ params, redirect, error }) => {
       const tag = (params.tag as string).toUpperCase()
@@ -112,9 +201,19 @@ export default defineComponent({
       }
     })
 
+    const { makeVisibilityCallback, trackInteraction } = useTrackScroll('club')
+
+    const commonBattles = computed(() => clubActivityStatistics.value?.commonBattles ?? [])
+
     return {
       club,
-      capitalize,
+      loading,
+      memberTags,
+      commonBattles,
+      trackInteraction,
+      makeVisibilityCallback,
+      clubActivityStatistics,
+      loadClubActivityStatistics,
     }
   },
 })

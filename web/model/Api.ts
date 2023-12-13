@@ -71,3 +71,9 @@ export interface Leaderboard {
   metric: string
   entries: LeaderboardEntry[]
 }
+
+export interface ClubActivityStatistics {
+  lastActive: Record<string, Date|undefined>
+  commonBattles: Battle[]
+  battlesByMode: Record<string, number>
+}

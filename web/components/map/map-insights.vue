@@ -27,7 +27,7 @@
 import { computed, defineComponent, PropType, toRefs } from 'vue'
 import useTopNTitle from '~/composables/top-n-title'
 import { SliceValue, CubeComparingQuery, CubeQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
-import { VRoll, BShimmer, CQuery, BButton, BDashboardCell } from '@schneefux/klicker/components'
+import { VRoll, CQuery, BDashboardCell } from '@schneefux/klicker/components'
 import { camelToKebab } from '~/lib/util'
 import { getMapName } from '~/composables/map'
 import { useI18n } from 'vue-i18n'
@@ -45,9 +45,7 @@ export default defineComponent({
   components: {
     BDashboardCell,
     VRoll,
-    BShimmer,
     CQuery,
-    BButton,
   },
   props: {
     slices: {

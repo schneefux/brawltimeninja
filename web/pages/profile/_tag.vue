@@ -163,11 +163,12 @@
           {{ $t('player.battle-log.description') }}
         </p>
 
-        <player-battles
-          :player="player"
+        <battles-list
+          :battles="player.battles"
+          :player-tag="player.tag"
           class="mt-8"
           @interact="trackInteraction('battles')"
-        ></player-battles>
+        ></battles-list>
       </b-page-section>
 
       <b-page-section
@@ -226,7 +227,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useCacheHeaders, useMeta, useSelfOrigin } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
-import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
+import { BPage, BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { useBrawlstarsStore } from '~/stores/brawlstars'
 import { useI18n } from 'vue-i18n'
 import { useLoadAndValidatePlayer, usePlayerRender } from '~/composables/player'
@@ -237,7 +238,9 @@ export default defineComponent({
   },
   components: {
     BSplitDashboard,
+    BPageSection,
     BScrollSpy,
+    BPage,
   },
   async setup() {
     const i18n = useI18n()

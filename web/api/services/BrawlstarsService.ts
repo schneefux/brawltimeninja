@@ -1,6 +1,6 @@
-import { brawlerId, capitalize } from '../../lib/util'
+import { brawlerId, capitalize, parseApiTime } from '../../lib/util'
 import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../../model/Brawlstars'
-import { Battle, Brawler, Player, ActiveEvent } from '../../model/Api'
+import { Battle, Brawler, Player, ActiveEvent, ClubActivityStatistics } from '../../model/Api'
 import { request } from '../lib/request'
 import { StarlistEvent } from '../../model/Starlist'
 import ClickerService from './ClickerService'
@@ -89,25 +89,8 @@ export default class BrawlstarsService {
     return response.items
   }
 
-  public async getPlayerStatistics(tag: string, store: boolean, skipBattlelog = false) {
-    const battleLogDummy: BattleLog = {
-      items: [],
-      paging: [],
-    }
-
-    const battleLog = skipBattlelog ? battleLogDummy : await request<BattleLog>(
-      'players/%23' + tag + '/battlelog',
-      apiOfficialUrl,
-      'fetch_player_battles',
-      { },
-      { 'Authorization': 'Bearer ' + tokenOfficial },
-      1000,
-    ).catch(() => battleLogDummy);
-
-    // fetch player after battle log to prevent race condition
-    // where a brawler is used in battle log,
-    // but not available in player.brawlers yet
-    const player = await request<BrawlstarsPlayer>(
+  private async getPlayer(tag: string): Promise<BrawlstarsPlayer> {
+    return request<BrawlstarsPlayer>(
       'players/%23' + tag,
       apiOfficialUrl,
       'fetch_player',
@@ -115,145 +98,167 @@ export default class BrawlstarsService {
       { 'Authorization': 'Bearer ' + tokenOfficial },
       1000,
     );
+  }
 
-    battleLog.items.forEach(b => {
-      b.battle.teams?.forEach(t => {
-        t.forEach(p => {
-          // FIXME API bug 2022-07-11, brawler trophies may be -1
-          if (p.brawler.trophies == -1) {
-            p.brawler.trophies = undefined
-          }
+  private async getPlayerBattleLog(tag: string): Promise<BattleLog> {
+    return request<BattleLog>(
+      'players/%23' + tag + '/battlelog',
+      apiOfficialUrl,
+      'fetch_player_battles',
+      { },
+      { 'Authorization': 'Bearer ' + tokenOfficial },
+      1000,
+    )
+  }
 
-          // FIXME API bug 2022-12-20, brawler power may be -1
-          if (p.brawler.power == -1) {
-            p.brawler.power = 0 // probably not correct
-          }
-
-          // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
-          p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
-        })
-      })
-
-      if (b.battle.starPlayer != undefined) {
+  private transformBattle(b: BattleLog['items'][0]): Battle {
+    b.battle.teams?.forEach(t => {
+      t.forEach(p => {
         // FIXME API bug 2022-07-11, brawler trophies may be -1
-        if (b.battle.starPlayer.brawler.trophies == -1) {
-          b.battle.starPlayer.brawler.trophies = undefined
+        if (p.brawler.trophies == -1) {
+          p.brawler.trophies = undefined
         }
 
         // FIXME API bug 2022-12-20, brawler power may be -1
-        if (b.battle.starPlayer.brawler.power == -1) {
-          b.battle.starPlayer.brawler.power = 0 // probably not correct
+        if (p.brawler.power == -1) {
+          p.brawler.power = 0 // probably not correct
         }
 
         // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
-        b.battle.starPlayer.brawler.name = b.battle.starPlayer.brawler.name.replace(/\s/g, ' ')
-      }
-
-      b.battle.players?.forEach((p: BattlePlayer | BattlePlayerMultiple) => {
-        if ('brawler' in p) {
-          // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
-          p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
-        }
-        if ('brawlers' in p) {
-          // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
-          p.brawlers.forEach(b => b.name = b.name.replace(/\s/g, ' '))
-        }
+        p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
       })
     })
+
+    if (b.battle.starPlayer != undefined) {
+      // FIXME API bug 2022-07-11, brawler trophies may be -1
+      if (b.battle.starPlayer.brawler.trophies == -1) {
+        b.battle.starPlayer.brawler.trophies = undefined
+      }
+
+      // FIXME API bug 2022-12-20, brawler power may be -1
+      if (b.battle.starPlayer.brawler.power == -1) {
+        b.battle.starPlayer.brawler.power = 0 // probably not correct
+      }
+
+      // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
+      b.battle.starPlayer.brawler.name = b.battle.starPlayer.brawler.name.replace(/\s/g, ' ')
+    }
+
+    b.battle.players?.forEach((p: BattlePlayer | BattlePlayerMultiple) => {
+      if ('brawler' in p) {
+        // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
+        p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
+      }
+      if ('brawlers' in p) {
+        // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
+        p.brawlers.forEach(b => b.name = b.name.replace(/\s/g, ' '))
+      }
+    })
+
+    const transformPlayer = (player: BattlePlayer|BattlePlayerMultiple) => {
+      if ('brawler' in player) {
+        return [{
+          tag: player.tag.replace('#', ''),
+          name: player.name,
+          brawler: brawlerId(player.brawler),
+          brawlerTrophies: player.brawler.trophies,
+          isBigbrawler: b.battle.bigBrawler === undefined ? false : b.battle.bigBrawler.tag == player.tag,
+        }]
+      }
+      if ('brawlers' in player) {
+        return player.brawlers.map(brawler => ({
+          tag: player.tag.replace('#', ''),
+          name: player.name,
+          brawler: brawlerId(brawler),
+          brawlerTrophies: brawler.trophies,
+          isBigbrawler: b.battle.bigBrawler === undefined ? false : b.battle.bigBrawler.tag == player.tag,
+        }))
+      }
+      return []
+    }
+
+    let result = undefined as undefined|string;
+    let victory = undefined as undefined|boolean;
+
+    // TODO battle log database was cleared 2020-10-22,
+    // all workarounds from before that date can be removed
+
+    // 2020-10-22, competition maps: event={id: 0, map: null}
+    if (b.event.id == 0 && b.event.map == null) {
+      // TODO detect competition winner based on mode rotation
+      b.event.map = 'Competition Entry'
+    }
+
+    b.event.id = b.event.id || 0
+    b.event.map = b.event.map || ''
+    // FIXME since 2020-10-22, battle.event.mode is missing - patch it back
+    // FIXME since 2022-01, battle.event.mode may be "unknown"
+    b.event.mode = b.event.mode != undefined && b.event.mode != 'unknown' ? b.event.mode : b.battle.mode
+
+    // FIXME API bug 2020-07-26
+    if (['roboRumble', 'bigGame'].includes(b.event.mode) && b.battle.result == undefined) {
+      // 'duration' is 1 (loss) or N/A (win)
+      b.battle.result = b.battle.duration == undefined ? 'victory' : 'defeat'
+      delete b.battle.duration
+    }
+
+    if (b.battle.duration !== undefined) {
+      // bossfight, gem grab, ...
+      const minutes = Math.floor(b.battle.duration / 60);
+      const seconds = b.battle.duration % 60;
+      result = `${minutes}m ${seconds}s`;
+    }
+    if (b.battle.result !== undefined) {
+      // 3v3
+      result = capitalize(b.battle.result);
+      victory = b.battle.result == 'victory'
+    }
+    if (b.battle.rank !== undefined) {
+      // showdown
+      result = `Rank ${b.battle.rank}`;
+      // solo
+      if (b.battle.players) {
+        victory = b.battle.rank <= b.battle.players.length / 2;
+      }
+      // duo
+      if (b.battle.teams) {
+        victory = b.battle.rank <= b.battle.teams.length / 2;
+      }
+    }
+
+    const teamsWithoutBigBrawler = (b.battle.teams !== undefined ? b.battle.teams : b.battle.players!.map((p) => [p]));
+    const teams = b.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[b.battle.bigBrawler]]) : teamsWithoutBigBrawler;
+
+    return {
+      timestamp: parseApiTime(b.battleTime),
+      event: b.event,
+      result,
+      victory,
+      trophyChange: b.battle.trophyChange,
+      teams: teams.map(t => t.flatMap(t => transformPlayer(t))),
+    } as Battle
+  }
+
+  public async getPlayerStatistics(tag: string, store: boolean, skipBattlelog = false) {
+    const battleLogDummy: BattleLog = {
+      items: [],
+      paging: [],
+    }
+
+    const battleLog = skipBattlelog ? battleLogDummy : await this.getPlayerBattleLog(tag).catch(() => battleLogDummy);
+
+    // fetch player after battle log to prevent race condition
+    // where a brawler is used in battle log,
+    // but not available in player.brawlers yet
+    const player = await this.getPlayer(tag);
+
+    // FIXME API bug 2022-03-15, payload has no battle
+    const battles = battleLog.items.filter(b => b.battle != undefined).map(b => this.transformBattle(b));
 
     player.brawlers.forEach(b => {
       // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
       b.name = b.name.replace(/\s/g, ' ')
     })
-
-    // FIXME API bug 2022-03-15, payload has no battle
-    const battles = battleLog.items.filter(battle => battle.battle != undefined).map((battle) => {
-      const transformPlayer = (player: BattlePlayer|BattlePlayerMultiple) => {
-        if ('brawler' in player) {
-          return [{
-            tag: player.tag.replace('#', ''),
-            name: player.name,
-            brawler: brawlerId(player.brawler),
-            brawlerTrophies: player.brawler.trophies,
-            isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
-          }]
-        }
-        if ('brawlers' in player) {
-          return player.brawlers.map(brawler => ({
-            tag: player.tag.replace('#', ''),
-            name: player.name,
-            brawler: brawlerId(brawler),
-            brawlerTrophies: brawler.trophies,
-            isBigbrawler: battle.battle.bigBrawler === undefined ? false : battle.battle.bigBrawler.tag == player.tag,
-          }))
-        }
-        return []
-      }
-
-      let result = undefined as undefined|string;
-      let victory = undefined as undefined|boolean;
-
-      // TODO battle log database was cleared 2020-10-22,
-      // all workarounds from before that date can be removed
-
-      // 2020-10-22, competition maps: event={id: 0, map: null}
-      if (battle.event.id == 0 && battle.event.map == null) {
-        // TODO detect competition winner based on mode rotation
-        battle.event.map = 'Competition Entry'
-      }
-
-      battle.event.id = battle.event.id || 0
-      battle.event.map = battle.event.map || ''
-      // FIXME since 2020-10-22, battle.event.mode is missing - patch it back
-      // FIXME since 2022-01, battle.event.mode may be "unknown"
-      battle.event.mode = battle.event.mode != undefined && battle.event.mode != 'unknown' ? battle.event.mode : battle.battle.mode
-
-      // FIXME API bug 2020-07-26
-      if (['roboRumble', 'bigGame'].includes(battle.event.mode) && battle.battle.result == undefined) {
-        // 'duration' is 1 (loss) or N/A (win)
-        battle.battle.result = battle.battle.duration == undefined ? 'victory' : 'defeat'
-        delete battle.battle.duration
-      }
-
-      if (battle.battle.duration !== undefined) {
-        // bossfight, gem grab, ...
-        const minutes = Math.floor(battle.battle.duration / 60);
-        const seconds = battle.battle.duration % 60;
-        result = `${minutes}m ${seconds}s`;
-      }
-      if (battle.battle.result !== undefined) {
-        // 3v3
-        result = capitalize(battle.battle.result);
-        victory = battle.battle.result == 'victory'
-      }
-      if (battle.battle.rank !== undefined) {
-        // showdown
-        result = `Rank ${battle.battle.rank}`;
-        // solo
-        if (battle.battle.players) {
-          victory = battle.battle.rank <= battle.battle.players.length / 2;
-        }
-        // duo
-        if (battle.battle.teams) {
-          victory = battle.battle.rank <= battle.battle.teams.length / 2;
-        }
-      }
-
-      const time = battle.battleTime;
-      const isoDate = `${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(6, 8)}T${time.slice(9, 11)}:${time.slice(11, 13)}:${time.slice(13)}`;
-
-      const teamsWithoutBigBrawler = (battle.battle.teams !== undefined ? battle.battle.teams : battle.battle.players!.map((p) => [p]));
-      const teams = battle.battle.bigBrawler !== undefined ? teamsWithoutBigBrawler.concat([[battle.battle.bigBrawler]]) : teamsWithoutBigBrawler;
-
-      return {
-        timestamp: new Date(Date.parse(isoDate)),
-        event: battle.event,
-        result,
-        victory,
-        trophyChange: battle.battle.trophyChange,
-        teams: teams.map(t => t.flatMap(t => transformPlayer(t))),
-      } as Battle
-    }).sort((b1, b2) => (b2.timestamp as Date).valueOf() - (b1.timestamp as Date).valueOf());
 
     if (store && this.clicker && battleLog.items.length > 0) {
       console.log('store battles for ' + tag)
@@ -286,5 +291,43 @@ export default class BrawlstarsService {
     club.tag = club.tag.replace(/^#/, '')
     club.members.forEach(m => m.tag = m.tag.replace(/^#/, ''))
     return club
+  }
+
+  public async getClubActivityStatistics(tags: string[]): Promise<ClubActivityStatistics> {
+    // tags without hash
+
+    const lastActive: Record<string, Date> = {}
+    const commonBattlesMap: Record<string, Battle> = {}
+    const battlesByMode: Record<string, number> = {}
+
+    for (let tag of tags) {
+      const battleData = await this.getPlayerBattleLog(tag).catch(() => ({ items: [] }))
+      const battles = battleData.items.map(b => this.transformBattle(b))
+
+      const timestamps = battles.map(b => b.timestamp).sort()
+      lastActive[tag] = timestamps[0]
+
+      battles.forEach(b => {
+        const battleTags = b.teams.flatMap(t => t.map(p => p.tag))
+        const commonTagsLength = tags.filter(t => battleTags.includes(t)).length
+        if (commonTagsLength > 1) {
+          commonBattlesMap[b.timestamp.toISOString()] = b
+        }
+
+        if (!(b.event.mode in battlesByMode)) {
+          battlesByMode[b.event.mode] = 0
+        }
+        battlesByMode[b.event.mode]++
+      })
+    }
+
+    const commonBattles = [...Object.values(commonBattlesMap)]
+      .sort((b1, b2) => b2.timestamp.valueOf() - b1.timestamp.valueOf())
+
+    return {
+      lastActive,
+      commonBattles,
+      battlesByMode,
+    }
   }
 }
