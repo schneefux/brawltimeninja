@@ -49,19 +49,23 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const response = props.response as CubeResponse
-    const timestamps = response.data.map(e => new Date(Date.parse(e.dimensions[response.query.dimensionsIds[0]])))
-    const trophies = response.data.map(e => e.metricsRaw[response.query.metricsIds[0]] as number)
+    const data = computed(() => {
+      const response = props.response as CubeResponse
+      return response.data.map(e => ({
+        timestamp: new Date(Date.parse(e.dimensions[response.query.dimensionsIds[0]])),
+        trophies: e.metricsRaw[response.query.metricsIds[0]] as number,
+      })).sort((e1, e2) => e2.timestamp.valueOf() - e1.timestamp.valueOf())
+    })
 
     const getTrophyDiffToDaysAgo = (daysAgo: number, now: Date) => {
       const then = new Date(now)
       then.setDate(now.getDate() - daysAgo)
 
-      const index = timestamps.findIndex(t => t <= then)
-      if (index == -1) {
+      const entry = data.value.find(e => e.timestamp <= then)
+      if (entry == undefined) {
         return undefined
       }
-      return props.currentTrophies - trophies[index]
+      return props.currentTrophies - entry.trophies
     }
 
     const { t } = useI18n()
