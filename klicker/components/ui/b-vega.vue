@@ -23,6 +23,8 @@
     >
       <fa :icon="faDownload"></fa>
     </button>
+
+    <slot></slot>
   </div>
 </template>
 

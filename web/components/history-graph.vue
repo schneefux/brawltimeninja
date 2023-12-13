@@ -4,7 +4,15 @@
       <v-lineplot
         v-bind="{ ...$attrs, ...data }"
         :card="card"
-      ></v-lineplot>
+      >
+        <div class="absolute top-2 right-2">
+          <history-graph-annotations
+            v-if="currentTrophies != undefined"
+            v-bind="data"
+            :current-trophies="currentTrophies"
+          ></history-graph-annotations>
+        </div>
+      </v-lineplot>
     </template>
 
     <template v-slot:empty>
@@ -32,13 +40,15 @@ export default defineComponent({
     },
     brawler: {
       type: String,
+      required: false
     },
     playerTag: {
       type: String,
       required: true
     },
-    raw: {
-      type: Boolean
+    currentTrophies: {
+      type: Number,
+      required: false
     },
   },
   setup(props) {

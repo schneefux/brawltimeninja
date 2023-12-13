@@ -8,12 +8,12 @@
     <template v-slot:content>
       <p class="flex items-center">
         <span
-          class="text-xl"
           :class="{
             'text-green-400': moe <= 0.01,
             'text-orange-400': moe > 0.01 && moe <= 0.025,
             'text-red-400': moe > 0.025,
           }"
+          class="text-xl"
         >{{ moePercent }}</span>
         <span class="ml-2 text-base">
           <template v-if="moe <= 0.005">

@@ -610,5 +610,8 @@
     "metric.map": "Map",
     "prodigy-ad.title": "Power League Prodigy",
     "prodigy-ad.description": "Try Power League Prodigy, the interactive Power League guide powered by Brawl Time Ninja.",
-    "metric.members": "Members"
+    "metric.members": "Members",
+    "player.history.today": "today",
+    "player.history.week": "week",
+    "player.history.month": "month"
 }

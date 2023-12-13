@@ -17,7 +17,9 @@
         :card="card"
         :loading="loading"
         :response="response"
-      ></component>
+      >
+        <slot></slot>
+      </component>
     </b-dashboard-cell>
   </div>
   <b-dashboard-cell
@@ -33,7 +35,9 @@
       :card="card"
       :loading="loading"
       :response="response"
-    ></component>
+    >
+      <slot></slot>
+    </component>
   </b-dashboard-cell>
 </template>
 

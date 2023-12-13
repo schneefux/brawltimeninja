@@ -42,6 +42,7 @@
           <history-graph
             :brawler="brawler.name"
             :player-tag="playerTag"
+            :current-trophies="brawler.trophies"
           ></history-graph>
         </div>
 

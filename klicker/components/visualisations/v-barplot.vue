@@ -14,7 +14,9 @@
           :show-download="card != undefined"
           full-width
           full-height
-        ></b-vega>
+        >
+          <slot></slot>
+        </b-vega>
 
         <b-paginator
           v-if="pageSize != undefined && values.length > pageSize"

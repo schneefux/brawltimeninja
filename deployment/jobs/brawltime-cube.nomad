@@ -166,8 +166,8 @@ job "brawltime-cube" {
         CUBEJS_REFRESH_WORKER = true
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
         # increase number of connections to clickhouse
-        CUBEJS_CONCURRENCY = "100"
-        CUBEJS_DB_MAX_POOL = "512"
+        CUBEJS_CONCURRENCY = "50"
+        CUBEJS_DB_MAX_POOL = "128"
         CUBEJS_LOG_LEVEL = "info"
         CUBEJS_DB_QUERY_TIMEOUT = "2m"
       }

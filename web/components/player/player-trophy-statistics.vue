@@ -8,6 +8,7 @@
       lazy
     >
       <history-graph
+        :current-trophies="player.trophies"
         :player-tag="player.tag"
         :card="{}"
       >

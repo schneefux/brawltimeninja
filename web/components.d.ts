@@ -64,6 +64,7 @@ declare module 'vue' {
     Experiment: typeof import('./components/experiment.vue')['default']
     GadgetStarpowerDisclaimer: typeof import('./components/gadget-starpower-disclaimer.vue')['default']
     HistoryGraph: typeof import('./components/history-graph.vue')['default']
+    HistoryGraphAnnotations: typeof import('./components/history-graph-annotations.vue')['default']
     InstallButton: typeof import('./components/install-button.vue')['default']
     InstallCard: typeof import('./components/install-card.vue')['default']
     Likert: typeof import('./components/quiz/likert.vue')['default']
