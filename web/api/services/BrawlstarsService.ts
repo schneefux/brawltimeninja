@@ -76,6 +76,12 @@ export default class BrawlstarsService {
 
   public async getPlayerRanking(countryCode: string) {
     const response = await this.apiRequest<{ items: PlayerRanking[] }>(`rankings/${countryCode}/players`, 'fetch_player_rankings')
+    response.items.forEach(i => {
+      if (i.trophies == 1) {
+        // FIXME 2023-12-13: players above 100k trophies return '1'
+        i.trophies = 100000
+      }
+    })
     return response.items
   }
 
