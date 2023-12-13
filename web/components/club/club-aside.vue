@@ -34,17 +34,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, onMounted } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { BCard, BKvTable } from '@schneefux/klicker/components'
-import { Club } from "~/model/Api"
+import { Club } from "~/model/Brawlstars"
 import { Row } from "@schneefux/klicker/components/ui/b-kv-table.vue"
-import { useApi, useSentry } from '~/composables/compat'
-import clubIcon from '~/assets/images/icon/club.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
-import victoryIcon from '~/assets/images/icon/victories.png'
-import levelIcon from '~/assets/images/icon/level.png'
 import { useI18n } from 'vue-i18n'
-import { ProfileTrackingStatus } from '~/api/services/ProfileUpdaterService'
 
 export default defineComponent({
   components: {
@@ -59,9 +54,6 @@ export default defineComponent({
   },
   setup(props) {
     const i18n = useI18n()
-    const sentry = useSentry()
-
-    const $api = useApi()
 
     const clubData = computed(() => ({
       ...props.club,
@@ -113,10 +105,7 @@ export default defineComponent({
     return {
       rows,
       clubData,
-      clubIcon,
       trophyIcon,
-      victoryIcon,
-      levelIcon,
     }
   },
 })
