@@ -165,7 +165,7 @@
 
         <battles-list
           :battles="player.battles"
-          :player-tag="player.tag"
+          :highlight-tags="[player.tag]"
           class="mt-8"
           @interact="trackInteraction('battles')"
         ></battles-list>
