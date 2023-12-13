@@ -83,7 +83,7 @@ export function request<T>(
 
         if (error.response.status == 429) {
           throw new TRPCError({
-            code: 'TIMEOUT', // TODO tRPC does not support 429
+            code: 'TOO_MANY_REQUESTS',
             message: error.response.reason,
             cause: error,
           })
@@ -102,7 +102,7 @@ export function request<T>(
         stats.increment(metricName + '.timeout')
 
         throw new TRPCError({
-          code: 'TIMEOUT', // TODO tRPC does not support 429
+          code: 'TOO_MANY_REQUESTS',
           message: 'API took too long to respond',
           cause: error,
         })
