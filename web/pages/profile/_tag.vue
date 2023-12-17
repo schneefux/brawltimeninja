@@ -398,6 +398,7 @@ export default defineComponent({
         if (totals.picks == 0) {
           return null
         }
+        return totals
       } catch (err) {
         return null
       }
