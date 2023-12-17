@@ -57,6 +57,10 @@ function createRouter(i18n: AppI18n, pageContext: PageContext, head: VueHeadClie
     history: import.meta.env.SSR ? createMemoryHistory() : createWebHistory(),
     routes: localizeRoutes(routes),
     scrollBehavior(to, from, savedPosition) {
+      if (savedPosition) {
+        return savedPosition
+      }
+
       if (to.path == from.path) {
         return
       }
