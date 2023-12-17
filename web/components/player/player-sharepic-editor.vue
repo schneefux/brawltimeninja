@@ -147,7 +147,7 @@
 <script lang="ts">
 import { Player } from '~/model/Api'
 import { event } from 'vue-gtag'
-import { computed, defineComponent, PropType, ref, watchEffect, watch, toRef } from 'vue'
+import { computed, defineComponent, PropType, ref, watch, toRef } from 'vue'
 import { useConfig, useSelfOrigin } from '~/composables/compat'
 import { capitalizeWords } from '~/lib/util'
 import { BCard, BSelect, BButton, BScrollingList, BLightbox, Fa } from '@schneefux/klicker/components'
@@ -226,7 +226,7 @@ export default defineComponent({
     const selectedBrawlerId = ref<string>()
     const { bestBrawlerId, playerRenderUrl } = usePlayerRender(toRef(props, 'player'), selectedBrawlerId, selectedBackground)
 
-    watchEffect(() => {
+    watch(bestBrawlerId, () => {
       if (selectedBrawlerId.value == undefined) {
         selectedBrawlerId.value = bestBrawlerId.value
       }
