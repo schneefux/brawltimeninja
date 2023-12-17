@@ -73,7 +73,7 @@
         :title="$t('info')"
       >
         <p class="prose dark:prose-invert max-w-none">
-          {{ $t('player.disclaimer', { battles: playerTotals != undefined ? playerTotals.picks : 25 }) }}
+          {{ $t('player.disclaimer', { battles: playerTotals?.picks ?? player.battles.length }) }}
         </p>
 
         <install-card
@@ -150,7 +150,7 @@
 
       <b-page-section
         id="battles"
-        v-if="playerTotals != undefined && playerTotals.picks > 0"
+        v-if="player.battles.length > 0"
         ref="battlesSection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('battles'),
@@ -224,13 +224,16 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { useCacheHeaders, useMeta, useSelfOrigin } from '~/composables/compat'
+import { useAsync, useCacheHeaders, useMeta, useSelfOrigin } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
 import { BPage, BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
-import { useBrawlstarsStore } from '~/stores/brawlstars'
+import { PlayerTotals, useBrawlstarsStore } from '~/stores/brawlstars'
 import { useI18n } from 'vue-i18n'
 import { useLoadAndValidatePlayer, usePlayerRender } from '~/composables/player'
+import { useKlicker } from '@schneefux/klicker/composables'
+import { tagToId } from '~/lib/util'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   directives: {
@@ -244,11 +247,11 @@ export default defineComponent({
   },
   async setup() {
     const i18n = useI18n()
+    const route = useRoute()
+    const klicker = useKlicker()
 
     const store = useBrawlstarsStore()
-
     const player = computed(() => store.player!)
-    const playerTotals = computed(() => store.playerTotals!)
 
     const { playerRenderUrl } = usePlayerRender(player)
 
@@ -320,6 +323,36 @@ export default defineComponent({
       title: i18n.t('player.records.title'),
       element: sectionRefs.recordsSection.value?.$el,
     }])
+
+    const playerTotals = useAsync(async () => {
+        // calculate player totals from battle log
+        const picks = player.value.battles.length
+        const trophyChanges = player.value.battles
+          .map((battle) => battle.trophyChange)
+          .filter((trophyChange): trophyChange is number => trophyChange != undefined)
+        const trophyChange = trophyChanges.length == 0 ?
+          0 : trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
+        const winRate = player.value.battles.length == 0 ?
+          0 : player.value.battles.filter((battle) => battle.victory).length / player.value.battles.length
+
+      return klicker.query({
+        cubeId: 'battle',
+        dimensionsIds: [],
+        metricsIds: ['picks', 'winRate', 'trophyChange'],
+        slices: {
+          playerId: [tagToId(player.value.tag)],
+        },
+        sortId: 'picks',
+      }).catch(() => ({
+        data: [{
+          metricsRaw: {
+            picks,
+            trophyChange,
+            winRate,
+          },
+        }],
+      })).then(response => response.data[0].metricsRaw as PlayerTotals)
+    }, computed(() => `player-totals-${route.params.tag}`))
 
     await useLoadAndValidatePlayer('/profile/')
 
