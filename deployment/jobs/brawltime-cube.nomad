@@ -25,7 +25,7 @@ job "brawltime-cube" {
   }
 
   group "cube" {
-    count = 2
+    count = 3
 
     restart {
       mode = "delay"
@@ -34,7 +34,7 @@ job "brawltime-cube" {
 
     scaling {
       enabled = true
-      min = 2
+      min = 3
       max = 16
 
       policy {
@@ -106,8 +106,8 @@ job "brawltime-cube" {
         PORT = "${NOMAD_PORT_http}"
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
         # increase number of connections to clickhouse
-        CUBEJS_CONCURRENCY = "100"
-        CUBEJS_DB_MAX_POOL = "512"
+        CUBEJS_CONCURRENCY = "20"
+        CUBEJS_DB_MAX_POOL = "128"
         CUBEJS_LOG_LEVEL = "info"
         CUBEJS_DB_QUERY_TIMEOUT = "2m"
       }
@@ -123,7 +123,7 @@ job "brawltime-cube" {
             CUBEJS_CUBESTORE_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
           {{ end }}
         EOF
-        destination = "secrets/db.env"
+        destination = "local/db.env"
         env = true
       }
 
@@ -166,7 +166,7 @@ job "brawltime-cube" {
         CUBEJS_REFRESH_WORKER = true
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
         # increase number of connections to clickhouse
-        CUBEJS_CONCURRENCY = "50"
+        CUBEJS_CONCURRENCY = "20"
         CUBEJS_DB_MAX_POOL = "128"
         CUBEJS_LOG_LEVEL = "info"
         CUBEJS_DB_QUERY_TIMEOUT = "2m"
@@ -183,7 +183,7 @@ job "brawltime-cube" {
             CUBEJS_CUBESTORE_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
           {{ end }}
         EOF
-        destination = "secrets/db.env"
+        destination = "local/db.env"
         env = true
       }
 

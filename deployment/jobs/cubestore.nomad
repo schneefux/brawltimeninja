@@ -59,9 +59,9 @@ job "cubestore" {
       }
 
       resources {
-        cpu = 2048 # mean 768 but peaks up to 4k
-        memory = 2048
-        memory_max = 3072
+        cpu = 5120
+        memory = 3072
+        memory_max = 3584
       }
     }
   }

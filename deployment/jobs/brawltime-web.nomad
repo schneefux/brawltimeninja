@@ -36,7 +36,7 @@ job "brawltime-web" {
 
     scaling {
       enabled = true
-      min = 2 # 1 backup in case the other fails
+      min = 3 # at least 1 backup in case the other fails
       max = 16
 
       policy {
@@ -130,22 +130,33 @@ job "brawltime-web" {
 
       # FIXME containers do not respect host's DNS settings
       # https://github.com/hashicorp/nomad/issues/12894
-      # unset CUBE_URL when a router is available to disable queries
+
+      # web can run without clickhouse, cube and mysql
+      # -> set CLICKHOUSE_URL/MYSQL only when they are available
+      # -> set CUBE_URL only when a router and CH are available (as cube depends on CH)
       template {
         data = <<-EOF
-          {{ with service "clickhouse" }}
+          {{ $clickhouse_servers := service "clickhouse" }}
+          {{ with $clickhouse_servers }}
             CLICKHOUSE_URL = "http://{{ with index . 0 }}{{ .Address }}:{{ .Port }}{{ end }}"
+          {{ end }}
+          {{ $cube_servers := service "brawltime-cube" }}
+          {{ if and ($clickhouse_servers) ($cube_servers) }}
+            CUBE_URL = "https://cube.${var.domain}"
           {{ end }}
           {{ with service "mariadb" }}
             MYSQL_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
             MYSQL_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
           {{ end }}
-          {{ with service "brawltime-cube" }}
-            CUBE_URL = "https://cube.${var.domain}"
-          {{ end }}
         EOF
-        destination = "secrets/db.env"
+        destination = "local/db.env"
         env = true
+        splay = "1m" # wait random amount of time to prevent all instances restarting at the same time
+        # wait for the consul cluster to be consistent
+        wait {
+          min = "10s"
+          max = "1m"
+        }
       }
 
       template {
