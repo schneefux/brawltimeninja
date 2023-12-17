@@ -4,7 +4,7 @@
     v-model="popupOpen"
     :input-class="inputClass"
     container-class=""
-    popup-class="top-14 bottom-14 lg:bottom-0 h-[calc(100vh-2*3.5rem)] lg:h-[calc(100vh-3.5rem)] w-screen lg:max-w-md"
+    popup-class="top-14 bottom-14 lg:bottom-0 h-[calc(100vh-2*3.5rem)] lg:h-[calc(100vh-3.5rem)] w-screen lg:max-w-md z-30"
     @enter="goToFirstResult"
   >
     <template v-slot="{ query }">
