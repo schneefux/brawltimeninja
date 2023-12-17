@@ -10,8 +10,8 @@
         v-for="entry in previewItems"
         :key="`${entry.from}-${(entry.item as Record<string, string>)[keyId]}`"
         :class="{
-          'border-primary-400 text-text': entry.from <= state.end && entry.to >= state.start,
-          'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !(entry.from <= state.end && entry.to >= state.start),
+          'border-primary-400 text-text': entry.from < state.end && entry.to >= state.start,
+          'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !(entry.from < state.end && entry.to >= state.start),
         }"
         class="block py-2 px-3 whitespace-nowrap transition duration-100 ease-in-out border-b-2 empty:hidden flex-shrink-0 cursor-pointer"
         @click="scrollTo(entry.from)"
@@ -42,7 +42,7 @@
       ></b-shimmer>
 
       <b-shimmer
-        v-if="list.length > 0 && renderBounds.start > 0"
+        v-if="renderBounds.start > 0"
         :style="{
           'grid-column-start': 1,
           'grid-column-end': renderBounds.start * columnsPerItem + 1,
@@ -69,9 +69,9 @@
       </b-dashboard-cell>
 
       <b-shimmer
-        v-if="list.length > 0 && renderBounds.end < items.length - 1"
+        v-if="renderBounds.end < items.length"
         :style="{
-          'grid-column-start': (renderBounds.end + 1) * columnsPerItem + 1,
+          'grid-column-start': renderBounds.end * columnsPerItem + 1,
           'grid-column-end': items.length * columnsPerItem + 1,
           'grid-row-start': `span ${cellRows}`,
           'grid-row-end': `span ${cellRows}`,
@@ -172,7 +172,7 @@ export default defineComponent({
      */
     const state = ref({
       start: 0,
-      end: props.renderAtLeast, // by default, 1 element is visible
+      end: props.renderAtLeast,
     })
 
     const renderBounds = ref({
@@ -181,7 +181,7 @@ export default defineComponent({
     })
 
     const list = computed(() => props.items
-      .slice(renderBounds.value.start, renderBounds.value.end + 1)
+      .slice(renderBounds.value.start, renderBounds.value.end)
       .map((item, index) => ({
         item,
         index: renderBounds.value.start + index,
@@ -281,11 +281,11 @@ export default defineComponent({
 
       state.value = {
         start: Math.max(Math.floor(startIndex), 0),
-        end: Math.min(Math.floor(endIndex), props.items.length - 1),
+        end: Math.min(Math.floor(endIndex) + 1, props.items.length),
       }
       renderBounds.value = {
         start: Math.max(Math.floor(startIndex - overscanLeft), 0),
-        end: Math.min(Math.floor(endIndex + overscanRight), props.items.length - 1),
+        end: Math.min(Math.floor(endIndex + overscanRight + 1), props.items.length),
       }
 
       if (preview.value != undefined) {

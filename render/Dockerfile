@@ -6,7 +6,7 @@ COPY . .
 RUN yarn run build
 
 FROM mcr.microsoft.com/playwright:v1.40.1-jammy
-RUN apt-get -y update && apt-get install -y fonts-freefont-ttf fonts-noto-color-emoji
+RUN apt-get -y update && apt-get install -y fonts-noto fonts-noto-color-emoji
 ENV NODE_ENV=production
 WORKDIR /app
 COPY package.json yarn.lock .
