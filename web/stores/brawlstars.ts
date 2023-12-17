@@ -42,6 +42,7 @@ export const useBrawlstarsStore = defineStore('brawlstars', {
   }),
   actions: {
     async loadPlayer(tag: string) {
+      this.player = undefined
       this.player = await this.api.player.byTag.query(tag)
     },
   },

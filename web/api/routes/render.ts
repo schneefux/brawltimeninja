@@ -12,7 +12,6 @@ import { tagToId } from "../../lib/util";
 import isbot from 'isbot'
 import { PlayerTotals } from "../../stores/brawlstars";
 import { TRPCError } from "@trpc/server";
-import { RequestError } from "../lib/request";
 import { Player } from "~/model/Api";
 
 const router = express.Router();
@@ -49,7 +48,7 @@ router.get(
   "/profile/:tag/:brawler.svg",
   asyncWrapper(async (req, res) => {
     const player = await brawlStarsApiService.getPlayerStatistics(req.params.tag, false, true);
-    if (!(req.params.brawler in player.brawlers)) {
+    if (req.params.brawler != 'best' && !(req.params.brawler in player.brawlers)) {
       res.status(404).send("Player does not own this brawler");
       return;
     }
@@ -87,7 +86,7 @@ router.get(
       throw err;
     }
 
-    if (!(req.params.brawler in player.brawlers)) {
+    if (req.params.brawler != 'best' && !(req.params.brawler in player.brawlers)) {
       res.status(404).send("Player does not own this brawler");
       return;
     }

@@ -52,11 +52,16 @@ export default class ProfileView {
   async render(
     player: Player,
     playerTotals: PlayerTotals | undefined,
-    brawlerId: string,
+    brawlerId: string | 'best',
     backgroundFilename: string,
     mediaUrl: string,
   ): Promise<string> {
     await this.compileTemplate();
+
+    if (brawlerId == 'best') {
+      brawlerId = Object.entries(player.brawlers)
+        .sort(([id1, b1], [id2, b2]) => b2.trophies - b1.trophies)[0][0]
+    }
 
     const brawler = player.brawlers[brawlerId];
 

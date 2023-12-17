@@ -1,7 +1,6 @@
 <template>
   <b-page
-    v-if="player != undefined"
-    :title="$t('player.meta.title', { name: player.name })"
+    :title="$t('player.meta.title', { name: player?.name ?? '#' + playerTag })"
   >
     <ad
       ad-slot="9429125351"
@@ -11,7 +10,13 @@
     <b-split-dashboard class="mt-8 lg:mt-0">
       <template v-slot:aside>
         <div class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8">
+          <b-shimmer
+            v-if="player == undefined"
+            height-px="512"
+            loading
+          ></b-shimmer>
           <player-aside
+            v-else
             id="aside"
             :player="player"
             v-observe-visibility="{
@@ -59,6 +64,7 @@
       >
         <player-trophy-statistics
           :player="player"
+          :player-tag="playerTag"
           :player-totals="playerTotals"
           @interact="trackInteraction('trophies')"
         ></player-trophy-statistics>
@@ -73,13 +79,14 @@
         :title="$t('info')"
       >
         <p class="prose dark:prose-invert max-w-none">
-          {{ $t('player.disclaimer', { battles: playerTotals?.picks ?? player.battles.length }) }}
+          {{ $t('player.disclaimer', { battles: playerTotals?.picks ?? '…' }) }}
         </p>
 
         <install-card
           class="mt-8 max-w-md"
         ></install-card>
         <review-card
+          v-if="player != undefined && playerTotals != undefined"
           class="mt-8 max-w-md"
         ></review-card>
       </b-page-section>
@@ -103,7 +110,14 @@
           {{ $t('player.brawlers.description') }}
         </p>
 
+        <b-shimmer
+          v-if="player == undefined"
+          height-px="456"
+          class="mt-4"
+          loading
+        ></b-shimmer>
         <player-brawlers
+          v-else
           :player="player"
           class="mt-4"
           @interact="trackInteraction('brawlers')"
@@ -121,6 +135,7 @@
         lazy
       >
         <player-sharepic-editor
+          :player-tag="playerTag"
           :player="player"
           @interact="trackInteraction('sharepic')"
         ></player-sharepic-editor>
@@ -150,7 +165,7 @@
 
       <b-page-section
         id="battles"
-        v-if="player.battles.length > 0"
+        v-if="player == undefined || player.battles.length > 0"
         ref="battlesSection"
         v-observe-visibility="{
           callback: makeVisibilityCallback('battles'),
@@ -163,9 +178,16 @@
           {{ $t('player.battle-log.description') }}
         </p>
 
+        <b-shimmer
+          v-if="player == undefined"
+          height-px="318"
+          class="mt-8"
+          loading
+        ></b-shimmer>
         <battles-list
+          v-else
           :battles="player.battles"
-          :highlight-tags="[player.tag]"
+          :highlight-tags="[playerTag]"
           class="mt-8"
           @interact="trackInteraction('battles')"
         ></battles-list>
@@ -185,7 +207,14 @@
           {{ $t('player.modes.description') }}
         </p>
 
+        <b-shimmer
+          v-if="player == undefined"
+          height-px="288"
+          class="mt-4"
+          loading
+        ></b-shimmer>
         <player-mode-winrates
+          v-else
           :player="player"
           :battles="player.battles"
           class="mt-4"
@@ -207,7 +236,14 @@
           {{ $t('player.records.description') }}
         </p>
 
+        <b-shimmer
+          v-if="player == undefined"
+          class="mt-8"
+          height-px="112"
+          loading
+        ></b-shimmer>
         <player-percentiles
+          v-else
           :player="player"
           class="mt-8"
           @interact="trackInteraction('records')"
@@ -227,7 +263,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useAsync, useCacheHeaders, useMeta, useSelfOrigin } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
-import { BPage, BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
+import { BPage, BSplitDashboard, BScrollSpy, BPageSection, BShimmer } from '@schneefux/klicker/components'
 import { PlayerTotals, useBrawlstarsStore } from '~/stores/brawlstars'
 import { useI18n } from 'vue-i18n'
 import { useLoadAndValidatePlayer, usePlayerRender } from '~/composables/player'
@@ -243,6 +279,7 @@ export default defineComponent({
     BSplitDashboard,
     BPageSection,
     BScrollSpy,
+    BShimmer,
     BPage,
   },
   async setup() {
@@ -251,11 +288,11 @@ export default defineComponent({
     const klicker = useKlicker()
 
     const store = useBrawlstarsStore()
-    const player = computed(() => store.player!)
-
-    const { playerRenderUrl } = usePlayerRender(player)
+    const player = computed(() => store.player)
 
     const origin = useSelfOrigin()
+    const playerTag = computed(() => route.params.tag as string)
+    const playerRenderUrl = usePlayerRender(playerTag)
 
     useCacheHeaders()
     useMeta(() => {
@@ -324,40 +361,55 @@ export default defineComponent({
       element: sectionRefs.recordsSection.value?.$el,
     }])
 
-    const playerTotals = useAsync(async () => {
-        // calculate player totals from battle log
-        const picks = player.value.battles.length
-        const trophyChanges = player.value.battles
-          .map((battle) => battle.trophyChange)
-          .filter((trophyChange): trophyChange is number => trophyChange != undefined)
-        const trophyChange = trophyChanges.length == 0 ?
-          0 : trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length
-        const winRate = player.value.battles.length == 0 ?
-          0 : player.value.battles.filter((battle) => battle.victory).length / player.value.battles.length
+    const playerTotalsFallback = computed(() => {
+      if (player.value == undefined) {
+        return undefined
+      }
 
-      return klicker.query({
-        cubeId: 'battle',
-        dimensionsIds: [],
-        metricsIds: ['picks', 'winRate', 'trophyChange'],
-        slices: {
-          playerId: [tagToId(player.value.tag)],
-        },
-        sortId: 'picks',
-      }).catch(() => ({
-        data: [{
-          metricsRaw: {
-            picks,
-            trophyChange,
-            winRate,
+      // calculate player totals from battle log
+      const picks = player.value.battles.length
+      const trophyChanges = player.value.battles
+        .map((battle) => battle.trophyChange)
+        .filter((trophyChange): trophyChange is number => trophyChange != undefined)
+      const trophyChange = trophyChanges.length > 0 ?
+        trophyChanges.reduce((sum, t) => sum + t, 0) / trophyChanges.length : 0
+      const winRate = player.value.battles.length > 0 ?
+        player.value.battles.filter((battle) => battle.victory).length / player.value.battles.length : 0
+
+      return {
+        picks,
+        trophyChange,
+        winRate,
+      }
+    })
+
+    const playerTotalsKlicker = useAsync(async () => {
+      try {
+        const response = await klicker.query({
+          cubeId: 'battle',
+          dimensionsIds: [],
+          metricsIds: ['picks', 'winRate', 'trophyChange'],
+          slices: {
+            playerId: [tagToId(playerTag.value)],
           },
-        }],
-      })).then(response => response.data[0].metricsRaw as PlayerTotals)
-    }, computed(() => `player-totals-${route.params.tag}`))
+          sortId: 'picks',
+        })
+        const totals = response.data[0].metricsRaw as unknown as PlayerTotals
+        if (totals.picks == 0) {
+          return null
+        }
+      } catch (err) {
+        return null
+      }
+    }, computed(() => `player-totals-${playerTag.value}`))
+
+    const playerTotals = computed(() => playerTotalsKlicker.value ?? playerTotalsFallback.value ?? undefined)
 
     await useLoadAndValidatePlayer('/profile/')
 
     return {
       player,
+      playerTag,
       playerTotals,
       makeVisibilityCallback,
       trackInteraction,

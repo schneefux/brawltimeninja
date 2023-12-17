@@ -8,8 +8,8 @@
       lazy
     >
       <history-graph
-        :current-trophies="player.trophies"
-        :player-tag="player.tag"
+        :current-trophies="player?.trophies"
+        :player-tag="playerTag"
         :card="{}"
       >
         <template v-slot:empty>
@@ -31,9 +31,9 @@
       hide-empty
     >
       <b-bigstat
-        v-if="brawlersUnlocked < totalBrawlers"
+        v-if="accountRating != undefined && accountRating.brawlersUnlocked < totalBrawlers"
         :title="$t('metric.potentialTrophies')"
-        :value="Math.floor(trophiesGoal).toLocaleString()"
+        :value="Math.floor(accountRating.trophiesGoal).toLocaleString()"
         :tooltip="$t('metric.potentialTrophies.subtext')"
       ></b-bigstat>
     </b-dashboard-cell>
@@ -43,10 +43,9 @@
       hide-empty
     >
       <b-bigstat
-        v-if="hasPlayerTotals"
         :title="$t('metric.recentWinrate')"
-        :value="Math.floor(playerTotals!.winRate * 100) + '%'"
-        :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals!.picks })"
+        :value="playerTotals != undefined ? Math.floor(playerTotals.winRate * 100) + '%' : '…'"
+        :tooltip="$t('metric.recentWinrate.description', { battles: playerTotals?.picks ?? 0 })"
       ></b-bigstat>
     </b-dashboard-cell>
 
@@ -55,16 +54,15 @@
       hide-empty
     >
       <b-bigstat
-        v-if="hasPlayerTotals && !isNaN(playerTotals!.trophyChange)"
         :title="$t('metric.averageTrophies')"
-        :value="playerTotals!.trophyChange.toFixed(2)"
+        :value="playerTotals != undefined && !isNaN(playerTotals.trophyChange) ? playerTotals.trophyChange.toFixed(2) : '…'"
       ></b-bigstat>
     </b-dashboard-cell>
 
     <b-dashboard-cell :columns="2">
       <b-bigstat
         :title="$t('metric.accountRating')"
-        :value="rating"
+        :value="accountRating != undefined ? accountRating.rating : '…'"
         tooltip=""
       >
         <template v-slot:tooltip>
@@ -84,9 +82,8 @@
       hide-empty
     >
       <b-bigstat
-        v-if="hasPlayerTotals"
         :title="$t('metric.wins')"
-        :value="Math.floor(playerTotals!.winRate * playerTotals!.picks)"
+        :value="playerTotals != undefined ? Math.floor(playerTotals.winRate * playerTotals.picks) : '…'"
       ></b-bigstat>
     </b-dashboard-cell>
 
@@ -95,9 +92,8 @@
       hide-empty
     >
       <b-bigstat
-        v-if="hasPlayerTotals"
         :title="$t('metric.losses')"
-        :value="Math.floor((1 - playerTotals!.winRate) * playerTotals!.picks)"
+        :value="playerTotals != undefined ? Math.floor((1 - playerTotals.winRate) * playerTotals.picks) : '…'"
       ></b-bigstat>
     </b-dashboard-cell>
   </b-scrolling-dashboard>
@@ -118,9 +114,13 @@ export default defineComponent({
     BDashboardCell,
   },
   props: {
+    playerTag: {
+      type: String,
+      required: true
+    },
     player: {
       type: Object as PropType<Player>,
-      required: true
+      required: false
     },
     playerTotals: {
       type: Object as PropType<PlayerTotals>,
@@ -131,18 +131,13 @@ export default defineComponent({
     const store = useBrawlstarsStore()
 
     const totalBrawlers = computed<number>(() => store.totalBrawlers)
-    const accountRating = computed(() => calculateAccountRating(props.player, totalBrawlers.value))
-    const brawlersUnlocked = computed(() => accountRating.value.brawlersUnlocked)
-    const trophiesGoal = computed(() => accountRating.value.trophiesGoal)
-    const rating = computed(() => accountRating.value.rating)
+    const accountRating = computed(() => props.player != undefined ? calculateAccountRating(props.player, totalBrawlers.value) : undefined)
 
     const hasPlayerTotals = computed(() => props.playerTotals != undefined && props.playerTotals.picks > 0)
 
     return {
-      trophiesGoal,
+      accountRating,
       totalBrawlers,
-      rating,
-      brawlersUnlocked,
       ratingPercentiles,
       hasPlayerTotals,
     }

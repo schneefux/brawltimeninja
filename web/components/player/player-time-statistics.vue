@@ -44,7 +44,7 @@
 import { Player } from '~/model/Api'
 import { xpToHours } from '~/lib/util'
 import { BScrollingDashboard, BBigstat, BDashboardCell, Fa } from '@schneefux/klicker/components'
-import { ref, computed, defineComponent, onMounted, PropType } from 'vue'
+import { ref, computed, defineComponent, onMounted, watch, PropType } from 'vue'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { useI18n } from 'vue-i18n'
 
@@ -63,7 +63,7 @@ export default defineComponent({
   props: {
     player: {
       type: Object as PropType<Player>,
-      required: true
+      required: false
     },
   },
   setup(props) {
@@ -73,7 +73,21 @@ export default defineComponent({
     const i18n = useI18n()
 
     const startCounter = () => {
-      const playerHours = Math.max(hours.value, 1)
+      if (props.player == undefined) {
+        if (hourCounter.value != undefined) {
+          hourCounter.value.textContent = '…'
+        }
+        for (const counterRef of Object.values(counterRefs.value)) {
+          if (counterRef != undefined) {
+            counterRef.textContent = '…'
+          }
+        }
+
+        return
+      }
+
+      const hours = xpToHours(props.player.expPoints)
+      const playerHours = Math.max(hours, 1)
       const animationDuration = 3000
 
       const setCounters = (hoursSpent: number) => {
@@ -108,9 +122,9 @@ export default defineComponent({
       animateHours()
     }
 
+    watch(() => props.player, () => startCounter())
     onMounted(() => startCounter())
 
-    const hours = computed(() => xpToHours(props.player.expPoints))
     const funStats = computed<Record<string, FunStat>>(() => ({
       recharges: {
         // measured with AccuBattery on my phone

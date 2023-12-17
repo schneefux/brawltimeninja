@@ -89,6 +89,7 @@ export default defineComponent({
       type: Object as PropType<Battle>,
       required: true,
     },
+    /* without hash */
     highlightTags: {
       type: Array as PropType<string[]>,
       default: [],

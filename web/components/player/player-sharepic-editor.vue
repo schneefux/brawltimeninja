@@ -207,9 +207,13 @@ export default defineComponent({
     BindOnce,
   },
   props: {
+    playerTag: {
+      type: String,
+      required: true
+    },
     player: {
       type: Object as PropType<Player>,
-      required: true
+      required: false
     },
   },
   setup(props, { emit }) {
@@ -224,13 +228,10 @@ export default defineComponent({
 
     const selectedBackground = ref(backgroundIds[0])
     const selectedBrawlerId = ref<string>()
-    const { bestBrawlerId, playerRenderUrl } = usePlayerRender(toRef(props, 'player'), selectedBrawlerId, selectedBackground)
+    const playerTag = computed(() => props.playerTag)
+    const playerRenderUrl = usePlayerRender(playerTag, selectedBrawlerId, selectedBackground)
 
-    watch(bestBrawlerId, () => {
-      if (selectedBrawlerId.value == undefined) {
-        selectedBrawlerId.value = bestBrawlerId.value
-      }
-    })
+    watch(playerTag, () => selectedBrawlerId.value = undefined)
 
     const onClickEdit = () => {
       emit('interact')
@@ -238,7 +239,7 @@ export default defineComponent({
     }
 
     const origin = useSelfOrigin()
-    const playerUrl = computed(() => `${origin}/player/${props.player.tag}?utm_source=share&utm_medium=image&utm_campaign=hype-stats`)
+    const playerUrl = computed(() => `${origin}/player/${playerTag.value}?utm_source=share&utm_medium=image&utm_campaign=hype-stats`)
 
     const onShare = () => {
       emit('interact')
@@ -275,7 +276,7 @@ export default defineComponent({
     })
 
     const brawlers = computed(() => Object.fromEntries(
-      Object.entries(props.player.brawlers)
+      Object.entries(props.player?.brawlers ?? {})
         .map(([id, brawler]) => [id, capitalizeWords(brawler.name.toLowerCase())])
     ))
 
