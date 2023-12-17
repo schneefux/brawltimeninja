@@ -17,7 +17,10 @@ job "brawltime-cron" {
         command = "/usr/bin/curl"
         args = [
           "-X", "POST",
-          "https://brawltime.ninja/api/cron"
+          "-H", "Host: brawltime.ninja",
+          "-v",
+          "-k",
+          "https://10.0.0.2/api/cron"
         ]
       }
 
