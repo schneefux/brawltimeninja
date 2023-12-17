@@ -8,6 +8,7 @@ import { renderSSRHead } from '@unhead/ssr'
 import SuperJSON from 'superjson'
 import Sentry from '@sentry/vue'
 import { getTraduoraToken, TraduoraToken } from '~/locales'
+import { render as abortRender } from 'vike/abort';
 
 export { onBeforeRender }
 export { passToClient }
@@ -88,6 +89,9 @@ async function render(pageContext: PageContextBuiltInServer & PageContext) {
   let string = await renderToString(app)
   if (firstError) {
     throw firstError
+  }
+  if (pageContext.abortStatusCode != undefined) {
+    throw abortRender(pageContext.abortStatusCode, pageContext.abortReason)
   }
 
   const payload = await renderSSRHead(head)

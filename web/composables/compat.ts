@@ -10,7 +10,6 @@ import Cookies from 'js-cookie'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
 import { AppI18n } from "~/renderer/app";
 import { Locale } from '~/locales';
-import { render } from 'vike/abort';
 
 /*
  * Nuxt 2 backwards compatibility composables
@@ -139,26 +138,19 @@ export async function useValidate(cb: (context: ValidateContext) => Promise<bool
     pageContext.validated = true
 
     const error = (e: { statusCode: ErrorStatusCode, message: string }) => {
-      if (import.meta.env.SSR) {
-        throw render(e.statusCode, e.message)
-      } else {
-        pageContext.abortReason = e.message
-        pageContext.abortStatusCode = e.statusCode
-        router.replace({
-          name: 'error',
-          params: { pathMatch: route.path.substring(1).split('/') },
-          query: route.query,
-          hash: route.hash,
-        })
-      }
+      pageContext.abortReason = e.message
+      pageContext.abortStatusCode = e.statusCode
+      router.replace({
+        name: 'error',
+        params: { pathMatch: route.path.substring(1).split('/') },
+        query: route.query,
+        hash: route.hash,
+      })
     }
     const redirect = (status: RedirectStatusCode, url: string) => {
-      if (import.meta.env.SSR) {
-        pageContext.statusCode = status
-        pageContext.redirectTo = url
-      } else {
-        router.replace(url)
-      }
+      pageContext.statusCode = status
+      pageContext.redirectTo = url
+      router.replace(url)
     }
 
     const context: ValidateContext = { params: route.params, redirect, error }
@@ -173,12 +165,20 @@ export async function useValidate(cb: (context: ValidateContext) => Promise<bool
     pageContext.validated = false
     pageContext.statusCode = undefined
     pageContext.redirectTo = undefined
+    if (!import.meta.env.SSR) {
+      pageContext.abortReason = undefined
+      pageContext.abortStatusCode = undefined
+    }
     await runValidate(to)
   })
   onBeforeRouteLeave(() => {
     pageContext.validated = false
     pageContext.statusCode = undefined
     pageContext.redirectTo = undefined
+    if (!import.meta.env.SSR) {
+      pageContext.abortReason = undefined
+      pageContext.abortStatusCode = undefined
+    }
   })
 
   await runValidate(route)
