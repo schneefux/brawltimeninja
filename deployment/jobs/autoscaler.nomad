@@ -25,7 +25,7 @@ job "autoscaler" {
         # artifacts are owned by nobody and nomad-hcloud-autoscaler misses the x flag
         # copy the artifact, chmod it, then start the agent
         # workaround for https://github.com/hashicorp/nomad/issues/2625
-        image = "hashicorp/nomad-autoscaler:0.3.7"
+        image = "hashicorp/nomad-autoscaler:0.4.0-beta.1"
         entrypoint = []
         command = "/bin/sh"
         ports = ["http"]
@@ -101,21 +101,59 @@ job "autoscaler" {
               # it will keep creating new ones
               evaluation_interval = "10m"
 
-              check "node-cpu" {
+              check "high_node-cpu" {
                 source = "nomad-apm"
                 query = "percentage-allocated_cpu"
+                group = "cpu-allocated"
+                query_window = "10m"
 
-                strategy "target-value" {
-                  target = 60
+                strategy "threshold" {
+                  upper_bound = 100
+                  lower_bound = 80
+                  within_bounds_trigger = 1
+                  delta = 1
                 }
               }
 
-              check "node-memory" {
+              check "low_node-cpu" {
+                source = "nomad-apm"
+                query = "percentage-allocated_cpu"
+                group = "cpu-allocated"
+                query_window = "10m"
+
+                strategy "threshold" {
+                  upper_bound = 40
+                  lower_bound = 0
+                  within_bounds_trigger = 1
+                  delta = -1
+                }
+              }
+
+              check "high_node-memory" {
                 source = "nomad-apm"
                 query = "percentage-allocated_memory"
+                group = "memory-allocated"
+                query_window = "10m"
 
-                strategy "target-value" {
-                  target = 60
+                strategy "threshold" {
+                  upper_bound = 100
+                  lower_bound = 60
+                  within_bounds_trigger = 1
+                  delta = 1
+                }
+              }
+
+              check "low_node-memory" {
+                source = "nomad-apm"
+                query = "percentage-allocated_memory"
+                group = "memory-allocated"
+                query_window = "10m"
+
+                strategy "threshold" {
+                  upper_bound = 40
+                  lower_bound = 0
+                  within_bounds_trigger = 1
+                  delta = -1
                 }
               }
 
@@ -173,24 +211,6 @@ job "autoscaler" {
           path = "/v1/health"
           interval = "10s"
           timeout = "2s"
-        }
-      }
-
-      # workaround until autoscaler v0.4 is released: restart on policy read error
-      # https://github.com/hashicorp/nomad-autoscaler/issues/519#issuecomment-1753467556
-      service {
-        check {
-          type = "script"
-          command = "/bin/sh"
-          args = ["-c", "! tail -n 1 alloc/logs/autoscaler.stderr.0 | grep -q 'policy_manager.policy_handler: timeout: failed to read policy in time'"]
-          interval = "60s"
-          timeout = "10s"
-
-          check_restart {
-            limit = 3
-            grace = "90s"
-            ignore_warnings = false
-          }
         }
       }
     }
