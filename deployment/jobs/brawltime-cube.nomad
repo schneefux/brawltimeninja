@@ -42,7 +42,7 @@ job "brawltime-cube" {
           source = "nomad-apm"
           group = "cpu-allocated-cube"
           query = "avg_cpu-allocated"
-          query_window = "10m"
+          query_window = "2m" # react fast to long queries blocking a worker
 
           strategy "threshold" {
             upper_bound = 100
@@ -56,10 +56,10 @@ job "brawltime-cube" {
           source = "nomad-apm"
           group = "cpu-allocated-cube"
           query = "avg_cpu-allocated"
-          query_window = "10m"
+          query_window = "2m"
 
           strategy "threshold" {
-            upper_bound = 40
+            upper_bound = 20 # keep the worker for a while
             lower_bound = 0
             within_bounds_trigger = 1
             delta = -1
@@ -89,7 +89,7 @@ job "brawltime-cube" {
 
       check {
         type = "http"
-        path = "/livez"
+        path = "/readyz"
         interval = "10s"
         timeout = "2s"
 
@@ -125,6 +125,12 @@ job "brawltime-cube" {
         EOF
         destination = "local/db.env"
         env = true
+        splay = "1m" # wait random amount of time to prevent all instances restarting at the same time
+        # wait for the consul cluster to be consistent
+        wait {
+          min = "10s"
+          max = "1m"
+        }
       }
 
       config {

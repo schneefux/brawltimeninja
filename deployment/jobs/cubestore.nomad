@@ -10,7 +10,6 @@ job "cubestore" {
 
   group "cubestore" {
     network {
-      # TODO load balance multiple routers via traefik?
       port "http" {}
 
       port "db" {}
@@ -27,7 +26,7 @@ job "cubestore" {
       check {
         type = "http"
         port = "status"
-        path = "/livez"
+        path = "/readyz"
         interval = "10s"
         timeout = "2s"
 
@@ -51,7 +50,8 @@ job "cubestore" {
       }
 
       config {
-        image = "cubejs/cubestore:v0.34"
+        # FIXME there is a memory leak in the rate limiter https://github.com/cube-js/cube/issues/7545
+        image = "cubejs/cubestore:v0.34.33"
         ports = ["http", "db", "router", "status"]
         volumes = [
           "cubestore:/cube/data",
@@ -59,9 +59,9 @@ job "cubestore" {
       }
 
       resources {
-        cpu = 5120
-        memory = 3072
-        memory_max = 3584
+        cpu = 1024 # avg 390 with peaks up to ~2.3k
+        memory = 2048
+        memory_max = 3072
       }
     }
   }

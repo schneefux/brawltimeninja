@@ -107,12 +107,12 @@ variable "servers" {
       location = "nbg1"
     }
     colt = {
-      server_type = "cpx21"
+      server_type = "cx31"
       class = "database"
       location = "nbg1"
     }
     dynamike = {
-      server_type = "cpx31"
+      server_type = "cx41"
       class = "database"
       location = "nbg1"
     }
@@ -308,22 +308,6 @@ resource "cloudflare_record" "media" {
 resource "cloudflare_record" "cube" {
   zone_id = var.cloudflare_zone_id
   name = "cube"
-  proxied = true
-  type = "CNAME"
-  value = "brawltime.ninja"
-}
-
-resource "cloudflare_record" "deckroyale" {
-  zone_id = var.cloudflare_zone_id
-  name = "deckroyale"
-  proxied = true
-  type = "CNAME"
-  value = "brawltime.ninja"
-}
-
-resource "cloudflare_record" "cube-deckroyale" {
-  zone_id = var.cloudflare_zone_id
-  name = "cube-deckroyale"
   proxied = true
   type = "CNAME"
   value = "brawltime.ninja"

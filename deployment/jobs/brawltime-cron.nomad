@@ -5,7 +5,7 @@ job "brawltime-cron" {
   priority = 10
 
   periodic {
-    cron = "@hourly"
+    cron = "*/5 * * * *"
     prohibit_overlap = true
   }
 

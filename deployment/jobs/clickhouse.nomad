@@ -99,9 +99,9 @@ job "clickhouse" {
       }
 
       resources {
-        cpu = 7168
-        memory = 7168
-        memory_max = 7168
+        cpu = 4096 # avg 1.6k with peaks up to 10k (max)
+        memory = 12288
+        memory_max = 14336
       }
     }
   }

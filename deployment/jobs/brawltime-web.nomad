@@ -61,7 +61,7 @@ job "brawltime-web" {
           query_window = "10m"
 
           strategy "threshold" {
-            upper_bound = 40
+            upper_bound = 20
             lower_bound = 0
             within_bounds_trigger = 1
             delta = -1
