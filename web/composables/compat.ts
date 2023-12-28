@@ -24,7 +24,8 @@ export function useAsync<T>(fun: () => Promise<T>, key: ComputedRef<string>|Mayb
     queryFn: fun,
     placeholderData: keepPreviousData,
   })
-  onServerPrefetch(suspense)
+  // FIXME workaround for https://github.com/TanStack/query/issues/6606
+  onServerPrefetch(() => suspense().catch(() => {}))
   return data
 }
 

@@ -44,7 +44,8 @@ function install(app: App, options: Options) {
         queryFn: handler,
         placeholderData: keepPreviousData,
       })
-      onServerPrefetch(query.suspense)
+      // FIXME workaround for https://github.com/TanStack/query/issues/6606
+      onServerPrefetch(() => query.suspense().catch(() => {}))
 
       return {
         loading: query.isFetching,

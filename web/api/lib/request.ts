@@ -1,13 +1,8 @@
-import { fetch, Agent } from 'undici' // for keepalive support
 import { URLSearchParams, URL } from 'url'
 import StatsD from 'hot-shots'
 import { TRPCError } from '@trpc/server'
 
 const stats = new StatsD({ prefix: 'brawltime.api.' })
-
-const agent = new Agent({
-  keepAliveTimeout: 90*60,
-})
 
 export class RequestError extends Error {
   constructor(public response: {
@@ -30,10 +25,6 @@ export function request<T>(
   const urlParams = new URLSearchParams(params)
   url.search = urlParams.toString()
   const urlStr = url.toString()
-  const controller = new AbortController()
-  const timeout = setTimeout(() => {
-    controller.abort()
-  }, timeoutMs)
 
   stats.increment(metricName + '.run')
   const fun = () => fetch(urlStr, {
@@ -41,8 +32,7 @@ export function request<T>(
         'Accept-Encoding': 'gzip, deflate, br',
         ...headers,
       },
-      dispatcher: agent,
-      signal: controller.signal,
+      signal: AbortSignal.timeout(timeoutMs),
     })
     .then(response => {
       if (!response.ok) {
@@ -98,7 +88,7 @@ export function request<T>(
         })
       }
 
-      if (error instanceof DOMException && error.name == 'AbortError') {
+      if (error instanceof DOMException && error.name == 'TimeoutError') {
         stats.increment(metricName + '.timeout')
 
         throw new TRPCError({
@@ -111,7 +101,6 @@ export function request<T>(
       stats.increment(metricName + '.error')
       throw error
     })
-    .finally(() => clearTimeout(timeout))
 
   return stats.asyncTimer<[], T>(fun, metricName + '.timer')()
 }

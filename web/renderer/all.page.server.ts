@@ -9,6 +9,7 @@ import SuperJSON from 'superjson'
 import Sentry from '@sentry/vue'
 import { getTraduoraToken, TraduoraToken } from '~/locales'
 import { render as abortRender } from 'vike/abort';
+import { Dispatcher, Agent } from 'undici'
 
 export { onBeforeRender }
 export { passToClient }
@@ -25,6 +26,21 @@ const passToClient = [
   'refs',
   'localeMessages',
 ]
+
+// lower the fetch timeouts so that SSR is not blocked by requests
+if (import.meta.env.SSR) {
+  const setGlobalDispatcher = (d: Dispatcher) => (<any> global)[Symbol.for('undici.globalDispatcher.1')] = d
+  if (setGlobalDispatcher) {
+    const agent = new Agent({
+      bodyTimeout: parseInt(process.env.FETCH_HEADERS_TIMEOUT ?? '') || 3000,
+      headersTimeout: parseInt(process.env.FETCH_BODY_TIMEOUT ?? '') || 3000,
+    })
+    setGlobalDispatcher(agent);
+  } else {
+    console.warn('undici setGlobalDispatcher is not available, cannot configure timeouts')
+  }
+}
+
 
 let cachedTraduoraToken: TraduoraToken | undefined = undefined
 async function onBeforeRender(pageContext: PageContext) {
