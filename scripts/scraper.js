@@ -32,9 +32,9 @@ async function main() {
   const brawlerPages = await wtf.getCategoryPages("Category:Brawlers", {domain: DOMAIN, path:"api.php"})
   const brawlerNames = brawlerPages.map(brawlerPage => brawlerPage.title);
 
-  const oneMonthAgo = new Date();
-  oneMonthAgo.setDate(oneMonthAgo.getDate() - 28);
-  const oneMonthAgoStr = oneMonthAgo.toISOString().substring(0, 10)
+  const previously = new Date();
+  previously.setDate(previously.getDate() - 14);
+  const previouslyStr = previously.toISOString().substring(0, 10)
   
   // get ids of starpowers and gadgets
   const starpowerQuery = new URLSearchParams({
@@ -45,7 +45,7 @@ async function main() {
       "filters": [{
         "member": "battle.season_dimension",
         "operator": "afterDate",
-        "values": [oneMonthAgoStr]
+        "values": [previouslyStr]
       }, {
         "member": "battle.starpower_dimension",
         "operator": "notEquals",
@@ -63,7 +63,7 @@ async function main() {
       "filters": [{
         "member": "battle.season_dimension",
         "operator": "afterDate",
-        "values": [oneMonthAgoStr]
+        "values": [previouslyStr]
       }, {
         "member": "battle.gadget_dimension",
         "operator": "notEquals",
