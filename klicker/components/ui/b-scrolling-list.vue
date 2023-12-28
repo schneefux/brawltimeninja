@@ -41,16 +41,19 @@
         loading
       ></b-shimmer>
 
-      <b-shimmer
-        v-if="renderBounds.start > 0"
-        :style="{
-          'grid-column-start': 1,
-          'grid-column-end': renderBounds.start * columnsPerItem + 1,
-          'grid-row-start': `span ${cellRows}`,
-          'grid-row-end': `span ${cellRows}`,
-        }"
-        loading
-      ></b-shimmer>
+      <template v-if="renderBounds.start > 0">
+        <b-shimmer
+          v-for="offset in (renderBounds.start - 1)"
+          :key="`start-${offset}`"
+          :style="{
+            'grid-column-start': (offset - 1) * columnsPerItem + 1,
+            'grid-column-end': offset * columnsPerItem + 1,
+            'grid-row-start': `span ${cellRows}`,
+            'grid-row-end': `span ${cellRows}`,
+          }"
+          loading
+        ></b-shimmer>
+      </template>
 
       <b-dashboard-cell
         v-for="entry in list"
@@ -68,16 +71,19 @@
         ></slot>
       </b-dashboard-cell>
 
-      <b-shimmer
-        v-if="renderBounds.end < items.length"
-        :style="{
-          'grid-column-start': renderBounds.end * columnsPerItem + 1,
-          'grid-column-end': items.length * columnsPerItem + 1,
-          'grid-row-start': `span ${cellRows}`,
-          'grid-row-end': `span ${cellRows}`,
-        }"
-        loading
-      ></b-shimmer>
+      <template v-if="renderBounds.end < items.length">
+        <b-shimmer
+          v-for="offset in (items.length - renderBounds.end)"
+          :key="`end-${offset}`"
+          :style="{
+            'grid-column-start': (renderBounds.end + offset - 1) * columnsPerItem + 1,
+            'grid-column-end': (renderBounds.end + offset) * columnsPerItem + 1,
+            'grid-row-start': `span ${cellRows}`,
+            'grid-row-end': `span ${cellRows}`,
+          }"
+          loading
+        ></b-shimmer>
+      </template>
     </b-scrolling-dashboard>
   </div>
 </template>
