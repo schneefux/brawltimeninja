@@ -274,10 +274,7 @@ export default defineComponent({
     const $config = useConfig()
 
     const route = useRoute()
-    const brawlerId = computed(() => {
-      // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return route.params.brawler as string ?? ''
-    })
+    const brawlerId = computed(() => route.params.brawler as string)
 
     // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)
     const brawlerName = computed(() => capitalizeWords(brawlerId.value.replace(/__/g, '. ').replace(/_/g, ' ')))

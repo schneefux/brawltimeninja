@@ -45,8 +45,7 @@ export default defineComponent({
       if (route.fullPath.endsWith('/trophies')) {
         return 'trophies'
       }
-      // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return route.params.metric ?? ''
+      return route.params.metric as string
     })
 
     useCacheHeaders()
