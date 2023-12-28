@@ -28,7 +28,10 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute()
-    const metric = computed(() => route.params.metric as string)
+    const metric = computed(() => {
+      // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
+      return route.params.metric as string ?? ''
+    })
 
     const currentSeason = formatClickhouseDate(getTodaySeasonEnd())
     const query = computed<CubeQuery>(() => ({

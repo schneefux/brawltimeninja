@@ -102,6 +102,10 @@ export default defineComponent({
     const route = useRoute()
 
     const event = useAsync(async () => {
+      if (route.params.mode == undefined || route.params.map == undefined) {
+        return null
+      }
+
       const mode = kebabToCamel(route.params.mode as string)
       const map = deslugify(route.params.map as string)
       const events = await $klicker.query({
