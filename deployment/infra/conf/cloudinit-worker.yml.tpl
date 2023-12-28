@@ -40,6 +40,8 @@ write_files:
 
         reserved {
           reserved_ports = "22"
+          cpu = 200
+          memory = 300
         }
 
         node_class = "${class}"

@@ -62,7 +62,7 @@ job "clickhouse" {
       }
 
       config {
-        image = "clickhouse/clickhouse-server:23.11-alpine"
+        image = "clickhouse/clickhouse-server:23.12-alpine"
         network_mode = "host"
 
         volumes = [
@@ -99,7 +99,7 @@ job "clickhouse" {
       }
 
       resources {
-        cpu = 4096 # avg 1.6k with peaks up to 10k (max)
+        cpu = 4096 # peaks up to max capacity
         memory = 12288
         memory_max = 14336
       }

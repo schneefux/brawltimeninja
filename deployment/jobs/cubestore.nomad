@@ -51,7 +51,7 @@ job "cubestore" {
 
       config {
         # FIXME there is a memory leak in the rate limiter https://github.com/cube-js/cube/issues/7545
-        image = "cubejs/cubestore:v0.34.33"
+        image = "cubejs/cubestore:v0.34.0"
         ports = ["http", "db", "router", "status"]
         volumes = [
           "cubestore:/cube/data",
@@ -59,9 +59,10 @@ job "cubestore" {
       }
 
       resources {
-        cpu = 1024 # avg 390 with peaks up to ~2.3k
-        memory = 2048
-        memory_max = 3072
+        #cpu = 1024 # avg 390 with peaks up to ~2.3k
+        cpu = 2048
+        memory = 3072
+        memory_max = 3584
       }
     }
   }

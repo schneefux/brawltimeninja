@@ -41,8 +41,6 @@ write_files:
       server {
         enabled = true
         bootstrap_expect = 3
-        # workaround for autoscaler's node_purge not working
-        node_gc_threshold = "30m"
       }
 
       client {
@@ -56,6 +54,8 @@ write_files:
 
         reserved {
           reserved_ports = "22"
+          cpu = 200
+          memory = 300
         }
 
         node_class = "${class}"

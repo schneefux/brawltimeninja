@@ -32,9 +32,46 @@ async function main() {
   const brawlerPages = await wtf.getCategoryPages("Category:Brawlers", {domain: DOMAIN, path:"api.php"})
   const brawlerNames = brawlerPages.map(brawlerPage => brawlerPage.title);
 
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setDate(oneMonthAgo.getDate() - 28);
+  const oneMonthAgoStr = oneMonthAgo.toISOString().substring(0, 10)
+  
   // get ids of starpowers and gadgets
-  const brawltimeNinjaStarpowerJSONFull = await fetch("https://cube.brawltime.ninja/cubejs-api/v1/load?query=%7B%22measures%22%3A%5B%22battle.starpowerName_measure%22%5D%2C%22dimensions%22%3A%5B%22battle.brawler_dimension%22%2C%22battle.starpower_dimension%22%5D%2C%22filters%22%3A%5B%7B%22member%22%3A%22battle.season_dimension%22%2C%22operator%22%3A%22afterDate%22%2C%22values%22%3A%5B%222023-10-01%22%5D%7D%2C%7B%22member%22%3A%22battle.starpower_dimension%22%2C%22operator%22%3A%22notEquals%22%2C%22values%22%3A%5B%220%22%5D%7D%5D%7D&queryType=multi").then(response => response.json())
-  const brawltimeNinjaGadgetJSONFull = await fetch("https://cube.brawltime.ninja/cubejs-api/v1/load?query=%7B%22measures%22%3A%5B%22battle.gadgetName_measure%22%5D%2C%22dimensions%22%3A%5B%22battle.brawler_dimension%22%2C%22battle.gadget_dimension%22%5D%2C%22filters%22%3A%5B%7B%22member%22%3A%22battle.season_dimension%22%2C%22operator%22%3A%22afterDate%22%2C%22values%22%3A%5B%222023-10-01%22%5D%7D%2C%7B%22member%22%3A%22battle.gadget_dimension%22%2C%22operator%22%3A%22notEquals%22%2C%22values%22%3A%5B%220%22%5D%7D%5D%7D&queryType=multi").then(response => response.json())
+  const starpowerQuery = new URLSearchParams({
+    queryType: 'multi',
+    query: JSON.stringify({
+      "measures": ["battle.starpowerName_measure"],
+      "dimensions": ["battle.brawler_dimension", "battle.starpower_dimension"],
+      "filters": [{
+        "member": "battle.season_dimension",
+        "operator": "afterDate",
+        "values": [oneMonthAgoStr]
+      }, {
+        "member": "battle.starpower_dimension",
+        "operator": "notEquals",
+        "values": ["0"]
+      }]
+    })
+  })
+  const brawltimeNinjaStarpowerJSONFull = await fetch("https://cube.brawltime.ninja/cubejs-api/v1/load?" + starpowerQuery.toString()).then(response => response.json())
+
+  const gadgetQuery = new URLSearchParams({
+    queryType: 'multi',
+    query: JSON.stringify({
+      "measures": ["battle.gadgetName_measure"],
+      "dimensions": ["battle.brawler_dimension", "battle.gadget_dimension"],
+      "filters": [{
+        "member": "battle.season_dimension",
+        "operator": "afterDate",
+        "values": [oneMonthAgoStr]
+      }, {
+        "member": "battle.gadget_dimension",
+        "operator": "notEquals",
+        "values": ["0"]
+      }]
+    })
+  })
+  const brawltimeNinjaGadgetJSONFull = await fetch("https://cube.brawltime.ninja/cubejs-api/v1/load?" + gadgetQuery.toString()).then(response => response.json())
 
   const brawltimeNinjaStarpowerJSON = brawltimeNinjaStarpowerJSONFull["results"][0]["data"]
   const brawltimeNinjaGadgetJSON = brawltimeNinjaGadgetJSONFull["results"][0]["data"]
@@ -422,7 +459,7 @@ async function main() {
 
     // skins
     const SKINS_RELATIVE_PATH = "skins/"
-    const skinSectionDepth = wtfBrawler.sections()[skinSectionID].json()['depth']
+    const skinSectionDepth = skinSectionID in wtfBrawler.sections() ? wtfBrawler.sections()[skinSectionID].json()['depth'] : 0
     let skinSections = []
     for (let sectionID = skinSectionID; sectionID <= lastSectionID; sectionID++) {
      const section = wtfBrawler.sections()[sectionID].json()
