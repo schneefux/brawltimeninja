@@ -295,7 +295,7 @@ export default defineComponent({
         .catch(() => {
           console.error('Could not fetch scraped data for brawler', brawlerId.value)
           return null
-        }), `scraped-data-${brawlerId.value}`)
+        }), computed(() => `scraped-data-${brawlerId.value}`))
 
     const sectionRefs = {
       overviewSection: ref<InstanceType<typeof BPageSection>>(),

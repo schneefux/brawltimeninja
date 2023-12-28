@@ -3,14 +3,14 @@ import { capitalizeWords, formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd,
 import { EventMetadata } from "~/plugins/klicker.service"
 import { SliceValue } from "@schneefux/klicker/types"
 import { differenceInMinutes, parseISO, subWeeks, format } from "date-fns"
-import { computed } from "vue"
+import { computed, MaybeRef, Ref, ref, unref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useAsync, useApi } from "./compat"
 
-export function useAllEvents(slices: SliceValue = {}) {
+export function useAllEvents(slices: MaybeRef<SliceValue> = ref({})) {
   const $klicker = useKlicker()
   const i18n = useI18n()
-  const key = `active-events-${JSON.stringify(slices)}`
+  const key = computed(() => `active-events-${JSON.stringify(unref(slices))}`)
 
   const events = useAsync(() => $klicker.query({
     cubeId: 'map',
@@ -19,7 +19,7 @@ export function useAllEvents(slices: SliceValue = {}) {
     slices: {
       season: [formatClickhouseDate(getMonthSeasonEnd())],
       mapNotLike: ['Competition'],
-      ...slices,
+      ...unref(slices),
     },
     sortId: 'map',
   }), key)
@@ -45,25 +45,26 @@ export function useAllEvents(slices: SliceValue = {}) {
   return mappedEvents
 }
 
-export function useActiveEvents(metricsIds: string[] = [], slices: SliceValue = {}, maxage: number|null = 60) {
+export function useActiveEvents(metricsIds: MaybeRef<string[]> = ref([]), slices: MaybeRef<SliceValue> = ref({}), maxage: number|null = 60) {
   const $klicker = useKlicker()
   const $api = useApi()
-  const key = `active-events-${metricsIds.join('-')}-${JSON.stringify(slices)}-${maxage}`
+  const key = computed(() => `active-events-${unref(metricsIds).join('-')}-${JSON.stringify(unref(slices))}-${maxage}`)
 
   const events = useAsync(() => $klicker.query({
     cubeId: 'map',
     dimensionsIds: ['mode', 'map', 'powerplay'],
-    metricsIds: ['eventId', 'timestamp', ...metricsIds],
+    metricsIds: ['eventId', 'timestamp', ...unref(metricsIds)],
     slices: {
       season: [formatClickhouseDate(getTodaySeasonEnd())],
-      ...slices,
+      ...unref(slices),
     },
     sortId: 'timestamp',
     limit: 20,
   }), key)
 
+  const starlistKey = computed(() => `active-events-starlist-${unref(metricsIds).join('-')}-${JSON.stringify(unref(slices))}-${maxage}`)
   const starlistData = useAsync(async () => await $api.events.active.query()
-    .catch(() => ({ current: [], upcoming: [] })), key + '-starlist')
+    .catch(() => ({ current: [], upcoming: [] })), starlistKey)
 
   const lastEvents = computed<EventMetadata[]>(() => {
     const lastEvents = events.value?.data
@@ -93,21 +94,23 @@ export function useActiveEvents(metricsIds: string[] = [], slices: SliceValue = 
   return lastEvents
 }
 
-export function useAllSeasons(limitWeeks: number = 8) {
-  const limit = subWeeks(new Date(), limitWeeks)
+export function useAllSeasons(limitWeeks: MaybeRef<number> = ref(8)) {
   const i18n = useI18n()
   const $klicker = useKlicker()
-  const key = `all-seasons-${limitWeeks}`
+  const key = computed(() => `all-seasons-${unref(limitWeeks)}`)
 
-  const data = useAsync(() => $klicker.query({
-    cubeId: 'map',
-    dimensionsIds: ['season'],
-    metricsIds: [],
-    slices: {
-      season: [formatClickhouseDate(getSeasonEnd(limit))],
-    },
-    sortId: 'season',
-  }), key)
+  const data = useAsync(() => {
+    const limit = subWeeks(new Date(), unref(limitWeeks))
+    return $klicker.query({
+      cubeId: 'map',
+      dimensionsIds: ['season'],
+      metricsIds: [],
+      slices: {
+        season: [formatClickhouseDate(getSeasonEnd(limit))],
+      },
+      sortId: 'season',
+    })
+  }, key)
 
   const seasons = computed<{ id: string, name: string }[]>(() => data.value?.data
     .map(e => {
@@ -146,9 +149,9 @@ export function useAllModes() {
   return modesMapped
 }
 
-export function useAllMaps(mode?: string) {
+export function useAllMaps(mode: MaybeRef<string|undefined> = ref()) {
   const $klicker = useKlicker()
-  const key = `all-maps-${mode}`
+  const key = computed(() => `all-maps-${unref(mode) ?? 'all'}`)
 
   const maps = useAsync(() => $klicker.query({
     cubeId: 'map',
@@ -156,8 +159,8 @@ export function useAllMaps(mode?: string) {
     metricsIds: ['eventId'],
     slices: {
       season: [formatClickhouseDate(getMonthSeasonEnd())],
-      ...(mode != undefined ? {
-        mode: [mode],
+      ...(unref(mode) != undefined ? {
+        mode: [unref(mode)],
       } : {}),
     },
     sortId: 'picks',

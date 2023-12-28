@@ -75,10 +75,7 @@ export default defineComponent({
 
     const route = useRoute()
 
-    const mode = computed(() => {
-      // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return kebabToCamel(route.params.mode as string ?? '')
-    })
+    const mode = computed(() => kebabToCamel(route.params.mode as string))
     const events = useActiveEvents([], {
       mode: [mode.value],
     }, null)
