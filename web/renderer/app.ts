@@ -107,7 +107,9 @@ function createApp(pageContext: PageContext) {
       queries: {
         staleTime: 1000 * 60 * 5, // reuse data without firing a new request if it is less than 5 minutes old
         refetchInterval: 1000 * 60 * 5, // refetch data every 5 minutes
-        gcTime: !import.meta.env.SSR ? undefined : 1000 * 60 * 1, // remove data from cache if unused for 1 minute
+        // SSR: cache is not shared between clients, set gcTime to Infinity to clear it immediately
+        // on client, keep data for 5min
+        gcTime: import.meta.env.SSR ? Infinity : 1000 * 60 * 5,
         refetchOnMount: true,
         refetchOnWindowFocus: true,
         refetchOnReconnect: true,
