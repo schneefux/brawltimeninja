@@ -35,6 +35,7 @@ job "traefik" {
 
     service {
       name = "traefik"
+      provider = "nomad"
       port = "traefik_http"
 
       check {

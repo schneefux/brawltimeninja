@@ -33,6 +33,7 @@ job "nginx" {
 
     service {
       name = "nginx"
+      provider = "nomad"
       port = "nginx_http"
 
       check {
@@ -48,6 +49,7 @@ job "nginx" {
 
     service {
       name = "nginx-ssl"
+      provider = "nomad"
       port = "nginx_https"
 
       check {
@@ -110,7 +112,7 @@ job "nginx" {
 
         #change_mode = "signal"
         #change_signal = "SIGHUP"
-        # wait for the consul cluster to be consistent
+        # wait for the cluster to be consistent
         wait {
           min = "10s"
           max = "5m"

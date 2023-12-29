@@ -26,6 +26,7 @@ job "mariadb" {
 
     service {
       name = "mariadb"
+      provider = "nomad"
       port = "db"
 
       check {

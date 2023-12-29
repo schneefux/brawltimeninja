@@ -76,6 +76,7 @@ job "brawltime-web" {
 
     service {
       name = "brawltime-web"
+      provider = "nomad"
       port = "http"
 
       tags = [
@@ -136,15 +137,15 @@ job "brawltime-web" {
       # -> set CUBE_URL only when a router and CH are available (as cube depends on CH)
       template {
         data = <<-EOF
-          {{ $clickhouse_servers := service "clickhouse" }}
+          {{ $clickhouse_servers := nomadService "clickhouse" }}
           {{ with $clickhouse_servers }}
             CLICKHOUSE_URL = "http://{{ with index . 0 }}{{ .Address }}:{{ .Port }}{{ end }}"
           {{ end }}
-          {{ $cube_servers := service "brawltime-cube" }}
+          {{ $cube_servers := nomadService "brawltime-cube" }}
           {{ if and ($clickhouse_servers) ($cube_servers) }}
             CUBE_URL = "https://cube.${var.domain}"
           {{ end }}
-          {{ with service "mariadb" }}
+          {{ with nomadService "mariadb" }}
             MYSQL_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
             MYSQL_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
           {{ end }}
@@ -152,7 +153,7 @@ job "brawltime-web" {
         destination = "local/db.env"
         env = true
         splay = "1m" # wait random amount of time to prevent all instances restarting at the same time
-        # wait for the consul cluster to be consistent
+        # wait for the cluster to be consistent
         wait {
           min = "10s"
           max = "1m"
@@ -186,9 +187,11 @@ job "brawltime-web" {
       }
 
       resources {
-        cpu = 796
-        memory = 796
-        memory_max = 1024
+        #memory = 796
+        #memory_max = 1024
+        cpu = 2048
+        memory = 1280
+        memory_max = 1536
       }
     }
   }

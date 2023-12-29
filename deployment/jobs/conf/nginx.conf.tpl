@@ -99,7 +99,13 @@ http {
   # A change to this configuration file triggers an nginx reload.
   # Include a timestamp so that nginx reloads when the certbot job
   # renews the certificate.
-  # Certificates last updated: {{ keyOrDefault "certs/last-update" "never" }}
+  {{ if nomadVarExists "letsencrypt" }}
+  {{ with nomadVar "letsencrypt" }}
+  # Certificates last updated: {{ .last_update }}
+  {{ end }}
+  {{ else }}
+  # Certificates last updated: never
+  {{ end }}
   ssl_certificate {{ env "SSL_PATH" }}/fullchain.pem;
   ssl_certificate_key {{ env "SSL_PATH" }}/privkey.pem;
 
@@ -139,7 +145,7 @@ http {
 
   upstream traefik {
     least_conn;
-    {{- range service "traefik" }}
+    {{- range nomadService "traefik" }}
     server {{ .Address }}:{{ .Port }};
     {{- else }}
     server 127.0.0.1:65535;

@@ -24,6 +24,7 @@ job "traduora" {
 
     service {
       name = "traduora"
+      provider = "nomad"
       port = "http"
 
       tags = [
@@ -59,7 +60,7 @@ job "traduora" {
 
       template {
         data = <<-EOF
-          {{ with service "mariadb" }}
+          {{ with nomadService "mariadb" }}
           TR_DB_HOST={{ with index . 0 }}{{ .Address }}{{ end }}
           TR_DB_PORT={{ with index . 0}}{{ .Port }}{{ end }}
           {{ end }}

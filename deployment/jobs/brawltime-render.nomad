@@ -75,6 +75,7 @@ job "brawltime-render" {
 
     service {
       name = "brawltime-render"
+      provider = "nomad"
       port = "http"
 
       tags = [

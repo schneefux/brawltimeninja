@@ -69,7 +69,7 @@ job "certbot" {
 
       config {
         command = "bash"
-        args = ["-c", "consul kv put certs/last-update $(date --iso-8601=second)"]
+        args = ["-c", "nomad var put -force letsencrypt \"last_update=$(date --iso-8601=second)\""]
       }
 
       resources {

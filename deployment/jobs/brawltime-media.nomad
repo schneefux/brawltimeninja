@@ -103,6 +103,7 @@ job "brawltime-media" {
 
     service {
       name = "brawltime-media"
+      provider = "nomad"
       port = "http"
 
       tags = [
@@ -181,6 +182,7 @@ job "brawltime-media" {
 
     service {
       name = "brawltime-media-sftp"
+      provider = "nomad"
       port = "ssh"
 
       tags = [

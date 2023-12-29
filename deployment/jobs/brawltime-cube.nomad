@@ -80,6 +80,7 @@ job "brawltime-cube" {
 
     service {
       name = "brawltime-cube"
+      provider = "nomad"
       port = "http"
 
       tags = [
@@ -112,13 +113,12 @@ job "brawltime-cube" {
         CUBEJS_DB_QUERY_TIMEOUT = "2m"
       }
 
-      # FIXME container does not use host's DNS setting
       template {
         data = <<-EOF
-          {{ with service "clickhouse" }}
+          {{ with nomadService "clickhouse" }}
             CUBEJS_DB_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
           {{ end }}
-          {{ with service "cubestore" }}
+          {{ with nomadService "cubestore" }}
             CUBEJS_CUBESTORE_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
             CUBEJS_CUBESTORE_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
           {{ end }}
@@ -126,7 +126,7 @@ job "brawltime-cube" {
         destination = "local/db.env"
         env = true
         splay = "1m" # wait random amount of time to prevent all instances restarting at the same time
-        # wait for the consul cluster to be consistent
+        # wait for the cluster to be consistent
         wait {
           min = "10s"
           max = "1m"
@@ -178,13 +178,12 @@ job "brawltime-cube" {
         CUBEJS_DB_QUERY_TIMEOUT = "2m"
       }
 
-      # FIXME container does not use host's DNS setting
       template {
         data = <<-EOF
-          {{ with service "clickhouse" }}
+          {{ with nomadService "clickhouse" }}
             CUBEJS_DB_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
           {{ end }}
-          {{ with service "cubestore" }}
+          {{ with nomadService "cubestore" }}
             CUBEJS_CUBESTORE_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
             CUBEJS_CUBESTORE_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
           {{ end }}

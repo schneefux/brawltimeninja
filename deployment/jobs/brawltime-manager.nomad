@@ -76,6 +76,7 @@ job "brawltime-manager" {
 
     service {
       name = "brawltime-manager"
+      provider = "nomad"
       port = "http"
 
       tags = [
@@ -112,7 +113,7 @@ job "brawltime-manager" {
           "database": {
             "client": "mysql2",
             "connection": {
-              {{ with service "mariadb" }}
+              {{ with nomadService "mariadb" }}
               "host": "{{ with index . 0 }}{{ .Address }}{{ end }}",
               "port": {{ with index . 0 }}{{ .Port }}{{ end }},
               {{ end }}

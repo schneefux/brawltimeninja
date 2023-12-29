@@ -204,6 +204,7 @@ job "autoscaler" {
 
       service {
         name = "autoscaler"
+        provider = "nomad"
         port = "http"
 
         check {

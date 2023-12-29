@@ -21,6 +21,7 @@ job "cubestore" {
 
     service {
       name = "cubestore"
+      provider = "nomad"
       port = "http"
 
       check {

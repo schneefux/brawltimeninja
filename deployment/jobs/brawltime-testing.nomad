@@ -33,6 +33,7 @@ job "brawltime-testing" {
 
     service {
       name = "brawltime-testing"
+      provider = "nomad"
       port = "http"
 
       tags = [

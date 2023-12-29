@@ -34,6 +34,7 @@ job "clickhouse" {
 
     service {
       name = "clickhouse"
+      provider = "nomad"
       port = "http"
 
       check {
