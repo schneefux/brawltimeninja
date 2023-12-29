@@ -94,43 +94,49 @@ async function onBeforeRender(pageContext: PageContext) {
 async function render(pageContext: PageContextBuiltInServer & PageContext) {
   const { app, head, pinia, router, queryClient } = createApp(pageContext)
 
-  let firstError: unknown = undefined
-  app.config.errorHandler = (err) => {
-    firstError = firstError ?? err
-    return false
-  }
-  router.push(pageContext.urlOriginal)
-  await router.isReady()
+  try {
+    let firstError: unknown = undefined
+    app.config.errorHandler = (err) => {
+      firstError = firstError ?? err
+      return false
+    }
 
-  let string = await renderToString(app)
-  if (firstError) {
-    throw firstError
-  }
-  if (pageContext.abortStatusCode != undefined) {
-    throw abortRender(pageContext.abortStatusCode, pageContext.abortReason)
-  }
+    router.push(pageContext.urlOriginal)
+    await router.isReady()
 
-  const payload = await renderSSRHead(head)
-  const vueQueryState = dehydrate(queryClient)
-  const piniaState = SuperJSON.stringify(pinia.state.value)
+    let string = await renderToString(app)
 
-  const documentHtml = escapeInject`<!DOCTYPE html>
-    <html${dangerouslySkipEscape(payload.htmlAttrs)}>
-      <head>
-        ${dangerouslySkipEscape(payload.headTags)}
-      </head>
-      <body${dangerouslySkipEscape(payload.bodyAttrs)}>
-        ${dangerouslySkipEscape(payload.bodyTagsOpen)}
-        <div id="app">${dangerouslySkipEscape(string)}</div>
-        ${dangerouslySkipEscape(payload.bodyTags)}
-      </body>
-    </html>`
+    if (firstError) {
+      throw firstError
+    }
+    if (pageContext.abortStatusCode != undefined) {
+      throw abortRender(pageContext.abortStatusCode, pageContext.abortReason)
+    }
 
-  return {
-    documentHtml,
-    pageContext: {
-      vueQueryState,
-      piniaState,
-    },
+    const payload = await renderSSRHead(head)
+    const vueQueryState = dehydrate(queryClient)
+    const piniaState = SuperJSON.stringify(pinia.state.value)
+
+    const documentHtml = escapeInject`<!DOCTYPE html>
+      <html${dangerouslySkipEscape(payload.htmlAttrs)}>
+        <head>
+          ${dangerouslySkipEscape(payload.headTags)}
+        </head>
+        <body${dangerouslySkipEscape(payload.bodyAttrs)}>
+          ${dangerouslySkipEscape(payload.bodyTagsOpen)}
+          <div id="app">${dangerouslySkipEscape(string)}</div>
+          ${dangerouslySkipEscape(payload.bodyTags)}
+        </body>
+      </html>`
+
+    return {
+      documentHtml,
+      pageContext: {
+        vueQueryState,
+        piniaState,
+      },
+    }
+  } finally {
+    queryClient.clear() // trigger garbage collection
   }
 }
