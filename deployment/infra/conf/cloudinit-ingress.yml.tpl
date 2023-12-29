@@ -4,8 +4,8 @@ runcmd:
   - sed -i -e '/^\(#\|\)PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
   - mkdir -p /opt/nomad/volumes/certs
   - chown -R nomad:nomad /opt/nomad/volumes
-  - systemctl enable nomad consul
-  - systemctl start nomad consul
+  - systemctl enable nomad
+  - systemctl start nomad
   - DD_AGENT_MAJOR_VERSION=7 DD_API_KEY=${datadog_api_key} DD_SITE="datadoghq.com" bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
   - usermod -a -G docker dd-agent
   - "echo \"dogstatsd_non_local_traffic: true\napm_config:\n  apm_non_local_traffic: true\" >> /etc/datadog-agent/datadog.yaml"
@@ -18,16 +18,9 @@ apt:
 packages:
   - apt-transport-https
   - nomad
-  - consul
   - mariadb-client
   - jq
 write_files:
-  - path: /etc/systemd/resolved.conf
-    content: |
-      [Resolve]
-      DNS=127.0.0.1:8600
-      DNSSEC=false
-      Domains=~consul
   - path: /etc/nomad.d/nomad.hcl
     content: |
       advertise {
@@ -38,9 +31,20 @@ write_files:
       datacenter = "dc1"
       data_dir = "/opt/nomad"
 
+      consul {
+        # do not attempt to sync services with consul
+        auto_advertise = false
+      }
+
       server {
         enabled = true
         bootstrap_expect = 3
+
+        # TODO use auto-join https://developer.hashicorp.com/nomad/docs/configuration/server_join#go-netaddrs-configurations
+        # - figure out how to retrieve the private IP via hcloud CLI
+        server_join {
+          retry_join = ["10.0.0.2", "10.0.0.3", "10.0.0.4"]
+        }
       }
 
       client {
@@ -59,6 +63,10 @@ write_files:
         }
 
         node_class = "${class}"
+
+        server_join {
+          retry_join = ["10.0.0.2", "10.0.0.3", "10.0.0.4"]
+        }
       }
 
       plugin "docker" {
@@ -74,19 +82,6 @@ write_files:
         disable_hostname = true
         collection_interval = "10s"
       }
-  - path: /etc/consul.d/consul.hcl
-    content: |
-      advertise_addr = "{{ GetPrivateInterfaces | include \"address\" \"10.0.0.*\" | attr \"address\" }}"
-      client_addr = "0.0.0.0"
-      datacenter = "dc1"
-      data_dir = "/opt/consul"
-
-      ui_config {
-        enabled = true
-      }
-
-      server = true
-      bootstrap_expect = 3
   # disable userland proxy to (hopefully) fix network issues
   - path: /etc/docker/daemon.json
     content: |

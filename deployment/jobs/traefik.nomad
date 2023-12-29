@@ -49,7 +49,6 @@ job "traefik" {
       }
 
       # 4646: default Nomad port
-      # 8500: default Consul port
       tags = [
         "traefik.enable=true",
         "traefik.http.middlewares.auth.basicauth.users=${var.basic_auth}",
@@ -62,11 +61,6 @@ job "traefik" {
         "traefik.http.routers.nomad-dashboard.rule=Host(`nomad.${var.domain}`)",
         "traefik.http.routers.nomad-dashboard.service=nomad-dashboard",
         "traefik.http.routers.nomad-dashboard.middlewares=auth",
-
-        "traefik.http.services.consul-dashboard.loadbalancer.server.port=8500",
-        "traefik.http.routers.consul-dashboard.rule=Host(`consul.${var.domain}`)",
-        "traefik.http.routers.consul-dashboard.service=consul-dashboard",
-        "traefik.http.routers.consul-dashboard.middlewares=auth",
 
         # default to 503
         "traefik.http.services.unavailable.loadbalancer.server.port=0",
