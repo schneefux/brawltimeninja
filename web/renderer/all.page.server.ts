@@ -137,6 +137,11 @@ async function render(pageContext: PageContextBuiltInServer & PageContext) {
       },
     }
   } finally {
-    queryClient.clear() // trigger garbage collection
+    // queryClient.cancelQueries() // TODO: cancel queries after timeout
+    // TODO to do that, implement abort signal inside useAsync and cube queries, currently this is a no-op
+    // (challenging - cubejs is not designed to abort queries)
+
+    // trigger garbage collection
+    queryClient.clear()
   }
 }
