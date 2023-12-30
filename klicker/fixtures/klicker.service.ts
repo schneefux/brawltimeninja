@@ -2,7 +2,7 @@ import { KlickerService } from '../service'
 import config from './klicker.cubes'
 import en from './en.json'
 import { provide, Ref, shallowRef } from 'vue'
-import { KlickerConfigInjectionKey } from '../composables/klicker'
+import { AsyncQuery, KlickerConfigInjectionKey } from '../composables/klicker'
 
 export function translate(key: string) {
   if (key in en) {
@@ -32,7 +32,7 @@ export function decorator(story, { parameters }) {
       provide(KlickerConfigInjectionKey, {
         klicker,
         translate,
-        useQuery: function<T, E>(key: Ref<string>, handler: () => Promise<T>) {
+        useQuery: function<T, E>(key: Ref<string>, handler: () => Promise<T>): AsyncQuery<T, E> {
           const data = shallowRef<T|null>(null) // https://github.com/vuejs/core/issues/1324#issuecomment-859766527
           const error = shallowRef<E|null>(null)
           const loading = shallowRef(false)
