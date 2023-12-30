@@ -81,6 +81,10 @@ const config: UserConfig = {
       '~': path.resolve(__dirname),
     },
   },
+  define: {
+    // enable hydration mismatch details in production build (TODO: disable later)
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true'
+  }
 }
 
 export default config
