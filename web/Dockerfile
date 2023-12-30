@@ -21,9 +21,9 @@ COPY . .
 RUN yarn run build
 
 FROM node:21
-## use jemalloc to reduce memory consumption
-#RUN apt-get update && apt-get install -y libjemalloc-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
-#ENV LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libjemalloc.so"
+# use jemalloc to reduce memory consumption
+RUN apt-get update && apt-get install -y libjemalloc-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
+ENV LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libjemalloc.so"
 ENV NODE_ENV=production
 ARG SENTRY_DSN=''
 ENV SENTRY_DSN=$SENTRY_DSN
