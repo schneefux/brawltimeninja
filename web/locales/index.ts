@@ -1,5 +1,7 @@
 import { Config } from "~/renderer/types"
 
+const LOCALE_CACHE_MINUTES = 60
+
 export type LocaleCode = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl'
 export type LocaleIso = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl'
 
@@ -96,41 +98,42 @@ export async function getTraduoraToken(
   }
 }
 
-const traduoraCache = new Map<LocaleCode, {
+async function getTraduoraStrings(localeCode: LocaleCode, traduoraConfig: NonNullable<Config['traduora']>) {
+  // in Traduora, Ukrainian is uk (not ua)
+  return await fetch(`${traduoraConfig.url}/api/v1/projects/${traduoraConfig.projectId}/exports?locale=${localeCode}&format=jsonflat`, {
+    headers: {
+      'Authorization': `Bearer ${traduoraConfig.token}`,
+    },
+  }).then(r => r.json() as Promise<Record<string, string>>)
+}
+
+const localeCache = new Map<LocaleCode, {
   strings: Record<string, string>,
   expirationDate: Date
 }>()
-async function getTraduoraStrings(localeCode: LocaleCode, traduoraConfig: NonNullable<Config['traduora']>) {
-  // in Traduora, Ukrainian is uk (not ua)
-  const cache = traduoraCache.get(localeCode)
+async function loadLocale(locale: Locale, config: Config) {
+  const cache = localeCache.get(locale.code)
   if (cache == undefined || cache.expirationDate <= new Date()) {
-    const strings = await fetch(`${traduoraConfig.url}/api/v1/projects/${traduoraConfig.projectId}/exports?locale=${localeCode}&format=jsonflat`, {
-      headers: {
-        'Authorization': `Bearer ${traduoraConfig.token}`,
-      },
-    }).then(r => r.json() as Promise<Record<string, string>>)
+    const localStrings = await import(`../locales/${locale.code}.json`)
+      .catch(() => ({ default: {} })) as { default: Record<string, string> }
+    const mediaStrings = locale.supported ? await fetch(config.mediaUrl + '/translations/' + locale.iso + '.json')
+      .then(r => r.json())
+      .catch(() => ({})) as Record<string, string> : {}
+    const traduoraStrings = config.traduora != undefined ? await getTraduoraStrings(locale.code, config.traduora).catch(() => ({})) : {}
+    const strings = Object.assign({}, localStrings.default, mediaStrings, traduoraStrings)
+    const filteredStrings = Object.fromEntries(
+      Object.entries(strings).filter(([key, value]) => value != '')
+    )
+
     const expirationDate = new Date()
-    expirationDate.setSeconds(expirationDate.getSeconds() + 60) // cache for 1min
-    traduoraCache.set(localeCode, {
-      strings,
+    expirationDate.setMinutes(expirationDate.getMinutes() + LOCALE_CACHE_MINUTES)
+    localeCache.set(locale.code, {
+      strings: filteredStrings,
       expirationDate,
     })
   }
-  return traduoraCache.get(localeCode)!.strings
-}
 
-async function loadLocale(locale: Locale, config: Config) {
-  const localStrings = await import(`../locales/${locale.code}.json`)
-    .catch(() => ({ default: {} })) as { default: Record<string, string> }
-  const mediaStrings = locale.supported ? await fetch(config.mediaUrl + '/translations/' + locale.iso + '.json')
-    .then(r => r.json())
-    .catch(() => ({})) as Record<string, string> : {}
-  const traduoraStrings = config.traduora != undefined ? await getTraduoraStrings(locale.code, config.traduora).catch(() => ({})) : {}
-  const strings = Object.assign({}, localStrings.default, mediaStrings, traduoraStrings)
-  const filteredStrings = Object.fromEntries(
-    Object.entries(strings).filter(([key, value]) => value != '')
-  )
-  return filteredStrings
+  return localeCache.get(locale.code)!.strings
 }
 
 // merge both locale maps to send fewer strings to the client
