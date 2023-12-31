@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import { faGooglePlay } from '@fortawesome/free-brands-svg-icons'
+import { faGooglePlay } from '@fortawesome/free-brands-svg-icons/faGooglePlay'
 import { defineComponent } from 'vue'
 import { BCard, BButton, Fa } from '@schneefux/klicker/components'
 import { useReview } from '~/composables/app'
