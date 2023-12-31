@@ -4,7 +4,10 @@
     :class="{
       'hide-empty': hideEmpty && visible,
     }"
-    :style="`--rows: ${rows}; --columns: ${columns};`"
+    :style="{
+      '--rows': rows,
+      '--columns': columns,
+    }"
     class="dashboard__cell"
   >
     <slot v-if="visible"></slot>
@@ -14,8 +17,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
-
-// :style object syntax does not work for some reason - Nuxt silently swallows the variables
 
 export default defineComponent({
   props: {
