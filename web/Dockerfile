@@ -45,4 +45,4 @@ RUN rm ./.npmrc
 ENV PORT=80
 EXPOSE 80
 USER node
-CMD [ "node", "--heapsnapshot-signal=SIGUSR2", "./dist/server/index.mjs" ]
+CMD [ "node", "--heapsnapshot-signal=SIGUSR2",  "--diagnostic-dir=/tmp/diags", "./dist/server/index.mjs" ]
