@@ -143,6 +143,5 @@ async function render(pageContext: PageContextBuiltInServer & PageContext) {
 
     // trigger garbage collection
     queryClient.clear()
-    queryClient.unmount() // FIXME attempt to work around a memory leak
   }
 }
