@@ -1,5 +1,7 @@
 <template>
+  <!-- FIXME on route transition, playerTag becomes undefined (Vue bug) -->
   <b-page
+    v-if="playerTag != undefined"
     :title="$t('player.meta.title', { name: player?.name ?? '#' + playerTag })"
   >
     <ad
