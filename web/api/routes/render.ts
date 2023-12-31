@@ -13,6 +13,8 @@ import isbot from 'isbot'
 import { PlayerTotals } from "../../stores/brawlstars";
 import { TRPCError } from "@trpc/server";
 import { Player } from "~/model/Api";
+import StatsD from 'hot-shots'
+const stats = new StatsD({ prefix: 'brawltime.api.' })
 
 const router = express.Router();
 
@@ -94,6 +96,8 @@ router.get(
     const isBot = isbot(req.headers['user-agent'] || '')
     const playerTotals = isBot ? undefined : await getPlayerTotals(req.params.tag)
 
+    const renderStart = performance.now()
+
     const svg = await profileView.render(
       player,
       playerTotals,
@@ -119,6 +123,8 @@ router.get(
 
     const pngData = resvg.render();
     const pngBuffer = pngData.asPng();
+
+    stats.timing('render.profile.timer', performance.now() - renderStart)
 
     res.type("png");
     res.header("Cache-Control", "public, max-age=600");

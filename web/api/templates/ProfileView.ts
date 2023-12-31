@@ -1,14 +1,31 @@
 import Handlebars from "handlebars";
+import fsSync from "fs";
 import fs from "fs/promises";
-import url from "url";
 import path from "path";
+import os from "os";
+import crypto from "crypto";
 import { Player } from "~/model/Api";
 import { calculateAccountRating, totalBrawlers, xpToHours } from "../../lib/util";
 import { PlayerTotals } from "~/stores/brawlstars";
+import { fetch, Agent } from "undici";
 
 export default class ProfileView {
   private template: any;
-  private cache: Map<string, string> = new Map();
+  private cacheDir: string;
+  private agent: Agent;
+
+  constructor() {
+    this.cacheDir = fsSync.mkdtempSync(path.join(os.tmpdir(), 'brawltime-profile-view-'));
+
+    process.on('beforeExit', () => {
+      fsSync.rmSync(this.cacheDir, { recursive: true, force: true });
+    });
+
+    this.agent = new Agent({
+      bodyTimeout: 30000,
+      headersTimeout: 30000,
+    })
+  }
 
   private async compileTemplate() {
     if (this.template == undefined) {
@@ -18,17 +35,21 @@ export default class ProfileView {
   }
 
   private async readIcon(name: string): Promise<string> {
-    if (this.cache.has(name)) {
-      return this.cache.get(name)!;
-    }
-
     const filePath = new URL(`../../assets/images/icon/${name}`, import.meta.url).pathname
-    const filetype = path.extname(filePath) == '.png' ? 'png' : 'jpeg';
-    const data = `data:image/${filetype};base64,${
-      await fs.readFile(filePath, { encoding: "base64" })
+    return this.readImageAsDataURI(filePath);
+  }
+
+  private urlToFilename(url: string): string {
+    const ext = path.extname(new URL(url).pathname).split('.').pop();
+    const hash = crypto.createHash('md5').update(url).digest('hex');
+    return `${hash}.${ext}`;
+  }
+
+  private async readImageAsDataURI(imagePath: string): Promise<string> {
+    const filetype = path.extname(imagePath) == '.png' ? 'png' : 'jpeg';
+    return `data:image/${filetype};base64,${
+      await fs.readFile(imagePath, { encoding: "base64" })
     }`;
-    this.cache.set(name, data);
-    return data
   }
 
   private async readRemote(u: string | undefined): Promise<string> {
@@ -37,15 +58,21 @@ export default class ProfileView {
       return "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
     }
 
-    if (this.cache.has(u)) {
-      return this.cache.get(u)!;
+    const cacheFilePath = path.join(this.cacheDir, this.urlToFilename(u))
+    if (fsSync.existsSync(cacheFilePath)) {
+      const stats = await fs.stat(cacheFilePath);
+
+      // expire after 24h
+      if (Date.now() < stats.mtimeMs + 24 * 60 * 60 * 1000) {
+        return this.readImageAsDataURI(cacheFilePath);
+      }
     }
 
-    const res = await fetch(u);
+    const res = await fetch(u, { dispatcher: this.agent });
     const buffer = Buffer.from(await res.arrayBuffer());
-    const filetype = path.extname(url.parse(u).pathname!) == '.png' ? 'png' : 'jpeg';
+    const filetype = path.extname(new URL(u).pathname) == '.png' ? 'png' : 'jpeg';
     const data = `data:image/${filetype};base64,${buffer.toString("base64")}`;
-    this.cache.set(u, data);
+    fs.writeFile(cacheFilePath, buffer);
     return data;
   }
 
