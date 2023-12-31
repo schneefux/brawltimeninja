@@ -3,7 +3,7 @@
 -- Database schema
 --
 
-CREATE DATABASE default IF NOT EXISTS;
+CREATE DATABASE IF NOT EXISTS default;
 
 CREATE TABLE default.schema_migrations
 (
