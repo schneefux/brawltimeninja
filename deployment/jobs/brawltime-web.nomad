@@ -84,6 +84,10 @@ job "brawltime-web" {
         "traefik.http.routers.brawltime-web.rule=Host(`${var.domain}`)",
         "traefik.http.routers.brawltime-web-www.rule=Host(`www.${var.domain}`)",
       ]
+      canary_tags = [
+        # do not route via traefik
+        "canary=true",
+      ]
 
       check {
         type = "http"
@@ -142,7 +146,13 @@ job "brawltime-web" {
             CLICKHOUSE_URL = "http://{{ with index . 0 }}{{ .Address }}:{{ .Port }}{{ end }}"
           {{ end }}
           {{ $cube_servers := nomadService "brawltime-cube" }}
-          {{ if and ($clickhouse_servers) ($cube_servers) }}
+          {{ $cube_online := false }}
+          {{- range $cube_servers }}
+            {{- if not (contains .Tags "canary")}}
+              {{- $cube_online = true}}
+            {{- end}}
+          {{- end}}
+          {{ if and ($clickhouse_servers) ($cube_online) }}
             CUBE_URL = "https://cube.${var.domain}"
           {{ end }}
           {{ with nomadService "mariadb" }}
@@ -189,7 +199,7 @@ job "brawltime-web" {
       resources {
         #memory = 796
         #memory_max = 1024
-        cpu = 2048
+        cpu = 1536
         memory = 1280
         memory_max = 1536
       }

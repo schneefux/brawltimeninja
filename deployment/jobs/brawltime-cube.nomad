@@ -87,6 +87,10 @@ job "brawltime-cube" {
         "traefik.enable=true",
         "traefik.http.routers.brawltime-cube.rule=Host(`cube.${var.domain}`)",
       ]
+      canary_tags = [
+        # do not route via traefik
+        "canary=true",
+      ]
 
       check {
         type = "http"
