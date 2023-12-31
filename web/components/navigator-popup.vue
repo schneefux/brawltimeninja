@@ -178,7 +178,7 @@ export default defineComponent({
                 .filter(e => e.mode == m)
                 .map(e => ({
                   id: e.key,
-                  name: getMapName(e.id, e.map)!,
+                  name: getMapName(i18n, e.id, e.map)!,
                   target: localePath(`/tier-list/mode/${camelToKebab(m)}/map/${slugify(e.map)}`),
                   children: mapViewTabs.map(tab => ({
                     id: `${e.key}#${tab}`,

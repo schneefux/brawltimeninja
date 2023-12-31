@@ -91,7 +91,7 @@ export default defineComponent({
           return true
         }
 
-        const mapName = getMapName(e.id, e.map) ?? ''
+        const mapName = getMapName(i18n, e.id, e.map) ?? ''
         return mapName.toLowerCase().includes(nameFilter.value.toLowerCase())
       })
       .map(e => ({
@@ -121,7 +121,7 @@ export default defineComponent({
           }
           if (a.mode == b.mode) {
             // same mode: sort by map name
-            return getMapName(a.id, a.map)!.localeCompare(getMapName(b.id, b.map)!, i18n.locale.value)
+            return getMapName(i18n, a.id, a.map)!.localeCompare(getMapName(i18n, b.id, b.map)!, i18n.locale.value)
           }
         }
 

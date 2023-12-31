@@ -73,7 +73,7 @@
 import { defineComponent, computed, ref } from 'vue'
 import { deslugify, kebabToCamel } from '~/lib/util'
 import { BSplitDashboard, BCard, BLightbox, Fa } from '@schneefux/klicker/components'
-import { getMapName } from '~/composables/map'
+import { useMapName } from '~/composables/map'
 import MapViews from '~/components/map/map-views.vue'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
 import { useAsync, useCacheHeaders, useConfig, useMeta, useValidate } from '~/composables/compat'
@@ -151,11 +151,7 @@ export default defineComponent({
 
     const showImage = computed(() => event.value?.id != undefined && event.value.map != 'Competition Entry')
 
-    const mapName = computed(() => {
-      if (event.value != undefined) {
-        return getMapName(event.value.id, event.value.map)
-      }
-    })
+    const mapName = useMapName(computed(() => event.value?.id), computed(() => event.value?.map))
 
     const lightboxOpen = ref(false)
 

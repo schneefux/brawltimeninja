@@ -1,9 +1,7 @@
 import { computed, Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-export const getMapName = (id: string|number|undefined, name: string|undefined) => {
-  const i18n = useI18n()
-
+export const getMapName = (i18n: ReturnType<typeof useI18n>, id: string|number|undefined, name: string|undefined) => {
   if (id == undefined) {
     return name
   }
@@ -22,5 +20,7 @@ export const getMapName = (id: string|number|undefined, name: string|undefined) 
 }
 
 export const useMapName = (id: Ref<string|number|undefined>|undefined, name: Ref<string|undefined>|undefined) => {
-  return computed(() => getMapName(id?.value, name?.value))
+  const i18n = useI18n()
+
+  return computed(() => getMapName(i18n, id?.value, name?.value))
 }

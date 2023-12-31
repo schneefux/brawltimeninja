@@ -144,7 +144,7 @@ export default defineComponent({
         return map
       }
 
-      return getMapName(mapRecord.id, map)
+      return getMapName(i18n, mapRecord.id, map)
     })
 
     const onSelectModeMap = (value: { mode?: string, map?: string }) => {

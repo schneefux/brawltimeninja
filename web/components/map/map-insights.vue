@@ -82,7 +82,7 @@ export default defineComponent({
 
       const mode = props.slices.mode[0] as string
       const title = i18n.t('map.insights.compare-to.mode', { mode: i18n.t('mode.' + mode) })
-      const testName = getMapName(props.eventId, props.slices.map[0])
+      const testName = getMapName(i18n, props.eventId, props.slices.map[0])
       const referenceName = i18n.t('mode.' + mode)
 
       templates.push({

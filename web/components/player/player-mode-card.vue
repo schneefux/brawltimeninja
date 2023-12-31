@@ -50,7 +50,7 @@ import { camelToKebab, slugify, tagToId } from '~/lib/util'
 import { EventMetadata } from '~/plugins/klicker.service'
 import { winRateMetric } from '~/lib/klicker.cubes'
 import { BKvTable } from '@schneefux/klicker/components'
-import { getMapName } from '~/composables/map'
+import { useMapName } from '~/composables/map'
 import { useAsync } from '~/composables/compat'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
@@ -151,11 +151,7 @@ export default defineComponent({
     const winRate = computed(() => stats.value.picks > 5 ? $klicker.format(winRateMetric, stats.value.winRate) : '?')
 
     const i18n = useI18n()
-    const mapName = computed(() => {
-      if (activeMap.value != undefined) {
-        return getMapName(activeMap.value.id, activeMap.value.map)
-      }
-    })
+    const mapName = useMapName(computed(() => activeMap.value?.id), computed(() => activeMap.value?.map))
 
     const kvTableRows = computed(() => ([{
       title: i18n.t('metric.winRate'),

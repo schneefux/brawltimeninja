@@ -21,7 +21,7 @@ export default function useTopNTitle(i18nPrefix: string, sliceRef: Ref<SliceValu
     }
     return i18n.t(i18nPrefix + '.for.map', {
       mode: i18n.t('mode.' + mode),
-      map: getMapName(id?.value, map),
+      map: getMapName(i18n, id?.value, map),
       ...args?.value,
     })
   })
