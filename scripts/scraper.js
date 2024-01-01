@@ -321,7 +321,7 @@ async function main() {
       base = parseInt(base)
       const statsPerLevel = []
       for (let level = 0; level < 11; level++) {
-        statsPerLevel.push(base + level*(base/20))
+        statsPerLevel.push(base + level*(base/10))
       }
       return statsPerLevel
     }
