@@ -1,7 +1,7 @@
 <template>
   <div class="inline-flex items-center">
     <media-img
-      :path="`/gears/${row.dimensionsRaw.gear.gearName.toLowerCase().replace(/ /g, '_')}_1`"
+      :path="`/gears/${row.dimensionsRaw.gear.gearName.toLowerCase().replace(/ /g, '_')}`"
       :alt="row.dimensions.gear"
       size="80"
       clazz="h-8"
