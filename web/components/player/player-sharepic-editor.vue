@@ -156,43 +156,26 @@ import { faCheck, faExpand } from '@fortawesome/free-solid-svg-icons'
 import { BindOnce, generateId } from '@schneefux/klicker/directives'
 import { useI18n } from 'vue-i18n'
 
-const backgroundIds = [
-  'BlueSkull_Default.jpg',
-  'Brawloween2020.jpg',
-  'HolidayGetaway.jpg',
-  'Lyn21OX_background.jpg',
-  'StarrForce.jpg',
-  'StarrPark.jpg',
-  'background_GW22_2.jpg',
-  'background_brawlywood.jpg',
-  'background_cyberweek.jpg',
-  'bg_biodome.jpg',
-  'bg_bt21.jpg',
-  'bg_deepsea.jpg',
-  'bg_easter2022.jpg',
-  'bg_lantern2022.jpg',
-  'bg_starrforce_villains.jpg',
-  'bg_stuntshow.jpg',
-  'brawlball.jpg',
-  'brawlentines_bg.jpg',
-  'brawlidays2021_bg.jpg',
-  'clashroyale.jpg',
-  'goldenweek.jpg',
-  'goldenweek2.jpg',
-  'halloween.jpg',
-  'lny2022_bg.jpg',
-  'maplebarley.jpg',
-  'moonfestival_2021.jpg',
-  'onceuponabrawl.jpg',
-  'pirate.jpg',
-  'robots.jpg',
-  'season1-taras-bazaar.jpg',
-  'season2-summer-of-monsters.jpg',
-  'summer_2021.jpg',
-  'supercell.jpg',
-  'yearofthepig.jpg',
-  'yearoftherat.jpg',
-]
+// TODO add this to update_assets.sh
+/*
+// visit https://fankit.supercell.com/d/YvtsWV4pUQVm/game-assets?asset-type18=Lobby+Backgrounds
+// sort by most recent, scroll to bottom
+  const backgrounds = [...document.querySelectorAll("[data-test-id='image-preview']")].map(img => ({ url: img.src.replace(/\?width=\d+/, ''), name: img.alt }))
+  console.log(backgrounds.map(o => `curl "${o.url}" -o "${o.name}.png"`).join('\n'))
+// execute it
+// fix filenames
+find . -type f -name "*.png" -exec file {} \; | grep -i "jpeg" | awk -F: '{print $1}' | while read -r file; do
+    new_name="${file%.png}.jpg"
+    mv "$file" "$new_name"
+    echo "Renamed $file to $new_name"
+done
+
+// update ids:
+  console.log(JSON.stringify(backgrounds.map(o => `${o.name}.jpg`)))
+// put brawl_stars_lobby first
+*/
+
+const backgroundIds = ["brawl_stars_lobby.jpg","superbrawl_lobby.jpg","cartoon_lobby.jpg","carnaval_lobby.jpg","brawlidays2023_lobby.jpg","lny24_lobby.jpg","warriorsjourney_lobby.jpg","circus_lobby.jpg","brawloween_lobby.jpg","university_lobby.jpg","mechaedgar_lobby.jpg","velocirapids_2023_lobby.jpg","phoenix_lobby.jpg","football2023_lobby.jpg","enchanted_forest_lobby.jpg","cursed_pirates_lobby.jpg","bt21_lobby.jpg","worst_bunch_lobby.jpg","biodome_lobby.jpg","stuntshow_lobby.jpg","deepsea_lobby.jpg","backdrop_screen.jpg","rumble_jungle_lobby.jpg","olympus_lobby.jpg","golden_week_lobby.jpg","popstar_lobby.jpg","masks_lobby.jpg","lantern_2023_lobby.jpg","mystery_at_the_hub_lobby.jpg","easter_2023_lobby.jpg","ghost_station_lobby.jpg","action_heroes_lobby.jpg","lny2023_lobby.jpg","darkmas_lobby.jpg","candyland_lobby.jpg","candyland_rainbow_lobby.jpg","brawliversary4_lobby.jpg","brawlentines2023_lobby.jpg","cyber_week_lobby.jpg","easter_lobby.jpg","moon_festival_lobby.jpg","clashroyale_lobby.jpg","brawlywood_lobby.jpg","biodome_lobby.jpg","lunar_new_year_bull_lobby.jpg","starr_force_lobby.jpg","lunar_new_year_rat.jpg","golden_week_2_lobby.jpg","luner_new_year_pig_lobby.jpg","summer_of_monsters_lobby.jpg","brawlentines_lobby.jpg","lunar_new_year_lobby.jpg","brawloween02_lobby.jpg","summer_lobby.jpg","starr_park_lobby.jpg","robots_lobby.jpg","brawloween01_lobby.jpg","pirate_lobby.jpg","brawlidays2021_lobby.jpg","brawl_ball_lobby.jpg","once_upon_a_brawl_lobby.jpg","maple_barley_lobby.jpg","lantern_brawl_lobby.jpg","tara_bazaar_lobby.jpg","winter_lobby.jpg","golden_week_lobby.jpg","supercell_lobby.jpg","brawloween_2022_lobby.jpg","mortis_mecha_lobby.jpg","moon_festival_2022_lobby.jpg","robot_factory_season_lobby.jpg"]
 
 export default defineComponent({
   components: {
