@@ -73,6 +73,7 @@
               <component
                 :is="linkComponent"
                 :to="titleLink || link"
+                @click.stop
               >
                 {{ title }}
               </component>
@@ -93,6 +94,7 @@
               <component
                 :is="linkComponent"
                 :to="subtitleLink"
+                @click.stop
               >
                 {{ subtitle }}
               </component>
@@ -217,6 +219,7 @@ export default defineComponent({
 
     const onClickCaptured = (e: Event) => {
       if (attrs.onClick != undefined) {
+        console.log('click capture, on click')
         e.stopPropagation();
         (<any> attrs).onClick()
         return
@@ -225,6 +228,7 @@ export default defineComponent({
 
     const onClick = (e: Event) => {
       if (props.link != undefined) {
+        console.log('click, on click')
         e.stopPropagation()
         navigate(props.link)
         return
@@ -233,6 +237,7 @@ export default defineComponent({
 
     const onClickHeader = (e: Event) => {
       if (attrs.onClickHeader != undefined) {
+        console.log('click header, on click header')
         e.stopPropagation();
         (<any>attrs).onClickHeader()
         return
