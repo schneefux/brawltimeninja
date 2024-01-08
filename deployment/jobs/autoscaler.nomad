@@ -164,7 +164,7 @@ job "autoscaler" {
                 # scale-in will not work with this line uncommented
                 #datacenter = "dc01"
                 node_class = "worker"
-                node_purge = "true"
+                node_purge = "true" # not working
                 #dry-run = "true"
                 hcloud_location = "nbg1"
                 hcloud_image = "docker-ce"
@@ -185,6 +185,8 @@ job "autoscaler" {
                 hcloud_labels = "firewall=true,nomad_class=worker"
                 # id of hetzner network brawltime-net
                 hcloud_networks = "${var.brawltime_net_id}"
+                hcloud_public_net_enable_ipv4 = "false" # not working
+                hcloud_public_net_enable_ipv6 = "true"
               }
             }
           }

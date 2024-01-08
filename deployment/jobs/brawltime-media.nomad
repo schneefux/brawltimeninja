@@ -21,18 +21,9 @@ job "brawltime-media" {
 
   priority = 80
 
-/*
-  affinity {
+  constraint {
     attribute = "${node.class}"
     value = "worker"
-  }
-*/
-
-  # workaround for limited support for scaling jobs with single writer nodes
-  # https://github.com/hashicorp/nomad/issues/10157
-  constraint {
-    attribute = "${attr.unique.hostname}"
-    value = "brawltime-colt"
   }
 
   # disabled, scaling is currently not working with volume

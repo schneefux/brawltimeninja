@@ -122,9 +122,8 @@ job "brawltime-cube" {
           {{ with nomadService "clickhouse" }}
             CUBEJS_DB_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
           {{ end }}
-          {{ with nomadService "cubestore" }}
-            CUBEJS_CUBESTORE_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
-            CUBEJS_CUBESTORE_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
+          {{ with nomadService "redis" }}
+            CUBEJS_REDIS_URL = "redis://{{ with index . 0 }}{{ .Address }}:{{ .Port }}{{ end }}"
           {{ end }}
         EOF
         destination = "local/db.env"
@@ -148,7 +147,8 @@ job "brawltime-cube" {
       }
 
       resources {
-        cpu = 512
+        #cpu = 512
+        cpu = 1024
         memory = 384
         memory_max = 768
       }
@@ -187,9 +187,8 @@ job "brawltime-cube" {
           {{ with nomadService "clickhouse" }}
             CUBEJS_DB_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
           {{ end }}
-          {{ with nomadService "cubestore" }}
-            CUBEJS_CUBESTORE_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
-            CUBEJS_CUBESTORE_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
+          {{ with nomadService "redis" }}
+            CUBEJS_REDIS_URL = "redis://{{ with index . 0 }}{{ .Address }}:{{ .Port }}{{ end }}"
           {{ end }}
         EOF
         destination = "local/db.env"

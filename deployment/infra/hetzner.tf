@@ -112,7 +112,7 @@ variable "servers" {
       location = "nbg1"
     }
     dynamike = {
-      server_type = "cx41"
+      server_type = "cpx31"
       class = "database"
       location = "nbg1"
     }

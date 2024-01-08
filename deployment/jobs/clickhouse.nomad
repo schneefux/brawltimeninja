@@ -6,6 +6,11 @@ job "clickhouse" {
     value = "database"
   }
 
+  affinity {
+    attribute = "${attr.unique.hostname}"
+    value = "brawltime-dynamike"
+  }
+
   priority = 100 # move all other services to get this one running!
 
   group "clickhouse" {
@@ -100,9 +105,9 @@ job "clickhouse" {
       }
 
       resources {
-        cpu = 4096 # peaks up to max capacity
-        memory = 12288
-        memory_max = 14336
+        cpu = 7168 # peaks up to max capacity
+        memory = 7168
+        memory_max = 7168
       }
     }
   }
