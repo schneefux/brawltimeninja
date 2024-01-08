@@ -35,7 +35,7 @@
               </router-link>
             </th>
             <td>
-              {{ row.lastActiveFormatted }}
+              <relative-time :timestamp="row.lastActive" add-suffix></relative-time>
             </td>
           </tr>
         </tbody>
@@ -46,11 +46,9 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue'
-import { formatDistanceToNow } from 'date-fns'
 import { BCard } from '@schneefux/klicker/components'
 import { Club } from '~/model/Brawlstars'
 import { ClubActivityStatistics } from '~/model/Api'
-import { useDateFnLocale } from '~/composables/date-fns'
 
 export default defineComponent({
   components: {
@@ -71,18 +69,11 @@ export default defineComponent({
     },
   },
   async setup(props) {
-    const { locale } = useDateFnLocale()
-    const toRelativeTime = (time: Date|undefined) => time != undefined ? formatDistanceToNow(time, {
-      addSuffix: true,
-      locale: locale.value,
-    }) : undefined
-
     const rows = computed(() => props.club.members.map(m => ({
       tag: m.tag,
       name: m.name,
       iconId: m.icon.id,
       lastActive: props.clubActivityStatistics?.lastActive[m.tag],
-      lastActiveFormatted: toRelativeTime(props.clubActivityStatistics?.lastActive[m.tag]) ?? '',
     })).sort((m1, m2) => {
       if (m1.lastActive === undefined && m2.lastActive === undefined) {
         return 0;

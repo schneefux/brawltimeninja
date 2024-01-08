@@ -113,6 +113,7 @@ declare module 'vue' {
     QuizResultCard: typeof import('./components/quiz/quiz-result-card.vue')['default']
     QuizResultSharepic: typeof import('./components/quiz/quiz-result-sharepic.vue')['default']
     RangeSliderSelect: typeof import('./components/range-slider-select.vue')['default']
+    RelativeTime: typeof import('./components/relative-time.vue')['default']
     ReviewCard: typeof import('./components/review-card.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

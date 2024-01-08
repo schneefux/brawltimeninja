@@ -19,7 +19,7 @@
             />
           </span>
         </div>
-        <span><client-only>{{ relativeTime }}</client-only></span>
+        <relative-time :timestamp="battle.timestamp" add-suffix></relative-time>
       </div>
     </template>
 
@@ -78,8 +78,6 @@
 <script lang="ts">
 import { Battle } from '~/model/Api'
 import { computed, defineComponent, PropType } from 'vue'
-import { formatDistanceToNow } from 'date-fns'
-import { useDateFnLocale } from '~/composables/date-fns'
 import powerPlayIcon from '~/assets/images/icon/power_play_optimized.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 
@@ -102,15 +100,8 @@ export default defineComponent({
         && (props.battle.victory && props.battle.trophyChange > 11 || !props.battle.victory && props.battle.trophyChange > 3)
     })
 
-    const { locale } = useDateFnLocale()
-    const relativeTime = computed(() => formatDistanceToNow(props.battle.timestamp, {
-      addSuffix: true,
-      locale: locale.value,
-    }))
-
     return {
       isPowerplay,
-      relativeTime,
       powerPlayIcon,
       trophyIcon,
     }

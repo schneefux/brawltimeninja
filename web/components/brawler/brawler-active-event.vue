@@ -8,11 +8,15 @@
       v-if="end != undefined"
       v-slot:infobar
     >
-      <p class="text-right">
-        <client-only>
-          {{ $t('time.ends-in', { time: timeTillEnd }) }}
-        </client-only>
-      </p>
+      <i18n-t
+        keypath="time.ends-in"
+        tag="p"
+        class="text-right"
+      >
+        <template v-slot:time>
+          <relative-time :timestamp="endTimestamp" add-suffix></relative-time>
+        </template>
+      </i18n-t>
     </template>
 
     <template v-slot:content>
@@ -28,8 +32,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { formatDistanceToNow, parseISO } from 'date-fns'
-import { useDateFnLocale } from '~/composables/date-fns'
+import { parseISO } from 'date-fns'
 
 export default defineComponent({
   props: {
@@ -55,15 +58,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { locale } = useDateFnLocale()
-    const timeTillEnd = computed(() => {
-      if (props.end == undefined) {
-        return ''
-      }
-      return formatDistanceToNow(parseISO(props.end), {
-        locale: locale.value,
-      })
-    })
+    const endTimestamp = computed(() => props.end != undefined ? parseISO(props.end) : undefined)
 
     const slices = computed(() => ({
       map: [props.map],
@@ -71,7 +66,7 @@ export default defineComponent({
     }))
 
     return {
-      timeTillEnd,
+      endTimestamp,
       slices,
     }
   },

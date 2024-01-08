@@ -12,14 +12,24 @@
         <span v-if="powerplay">
           {{ $t('power-play') }}
         </span>
-        <span v-else-if="endDate != undefined">
-          <client-only>
-            {{ endDateString }}
-          </client-only>
-        </span>
-        <span v-else-if="startDate != undefined">
-          {{ startDateString }}
-        </span>
+        <i18n-t
+          v-else-if="endDate != undefined"
+          keypath="time.ends-in"
+          tag="span"
+        >
+          <template v-slot:time>
+            <relative-time :timestamp="endDateTimestamp"></relative-time>
+          </template>
+        </i18n-t>
+        <i18n-t
+          v-else-if="endDate != undefined"
+          keypath="time.starts-in"
+          tag="span"
+        >
+          <template v-slot:time>
+            <relative-time :timestamp="startDateTimestamp"></relative-time>
+          </template>
+        </i18n-t>
       </div>
     </template>
 
@@ -34,10 +44,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue'
-import { parseISO, formatDistanceToNow } from 'date-fns'
+import { parseISO } from 'date-fns'
 import { SliceValue } from '@schneefux/klicker/types'
-import { useDateFnLocale } from '~/composables/date-fns'
-import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   props: {
@@ -63,37 +71,16 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const i18n = useI18n()
-    const { locale } = useDateFnLocale()
-
     const mode = computed(() => props.slices.mode?.[0])
     const map = computed(() => props.slices.map?.[0])
-    const endDateString = computed(() => {
-      if (props.endDate == undefined) {
-        return ''
-      }
-
-      const date = parseISO(props.endDate)
-      const dist = formatDistanceToNow(date, {
-        locale: locale.value,
-      })
-
-      return i18n.t('time.ends-in', { time: dist })
-    })
-    const startDateString = computed(() => {
-      if (props.startDate == undefined) {
-        return ''
-      }
-
-      const date = parseISO(props.startDate)
-      return 'starts in ' + formatDistanceToNow(date)
-    })
+    const endDateTimestamp = computed(() => props.endDate != undefined ? parseISO(props.endDate) : undefined)
+    const startDateTimestamp = computed(() => props.startDate != undefined ? parseISO(props.startDate) : undefined)
 
     return {
       mode,
       map,
-      endDateString,
-      startDateString,
+      endDateTimestamp,
+      startDateTimestamp,
     }
   },
 })
