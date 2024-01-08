@@ -46,6 +46,7 @@
 import { defineComponent, PropType, computed } from 'vue'
 import { parseISO } from 'date-fns'
 import { SliceValue } from '@schneefux/klicker/types'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   props: {
@@ -71,6 +72,8 @@ export default defineComponent({
     },
   },
   setup(props) {
+    useI18n()
+
     const mode = computed(() => props.slices.mode?.[0])
     const map = computed(() => props.slices.map?.[0])
     const endDateTimestamp = computed(() => props.endDate != undefined ? parseISO(props.endDate) : undefined)

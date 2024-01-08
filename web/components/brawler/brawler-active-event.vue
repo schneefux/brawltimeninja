@@ -33,6 +33,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { parseISO } from 'date-fns'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   props: {
@@ -58,6 +59,8 @@ export default defineComponent({
     },
   },
   setup(props) {
+    useI18n()
+
     const endTimestamp = computed(() => props.end != undefined ? parseISO(props.end) : undefined)
 
     const slices = computed(() => ({
