@@ -70,7 +70,6 @@ async function onBeforeRender(pageContext: PageContext) {
     renderUrl: process.env.RENDER_URL ?? '',
     optimizeId: process.env.OPTIMIZE_ID ?? '',
     ga4Id: process.env.GA4_ID ?? '',
-    uaId: process.env.UA_ID ?? '',
     adsensePubid: process.env.ADSENSE_PUBID ?? '',
     playwireRampPublisherId: process.env.PLAYWIRE_RAMP_PUBLISHER_ID ?? '',
     playwireRampSiteId: process.env.PLAYWIRE_RAMP_SITE_ID ?? '',

@@ -19,7 +19,6 @@ interface Config {
   renderUrl: string
   optimizeId: string
   ga4Id: string
-  uaId: string
   adsensePubid: string
   sentryDsn: string
   playwireRampPublisherId: string

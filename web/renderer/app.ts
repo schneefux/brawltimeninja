@@ -166,10 +166,6 @@ function createApp(pageContext: PageContext) {
       params: gtagParams,
     },
     includes: [ {
-      // old property
-      id: pageContext.envConfig.uaId,
-      params: gtagParams,
-    }, {
       id: pageContext.envConfig.playwireRampGa4Id,
       params: {
         'send_page_view': false,
