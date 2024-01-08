@@ -93,6 +93,17 @@ async function onBeforeRender(pageContext: PageContext) {
 async function render(pageContext: PageContextBuiltInServer & PageContext) {
   const { app, head, pinia, router, queryClient } = createApp(pageContext)
 
+  // FIXME memory leak caused by
+  // https://github.com/vikejs/vike/blob/834c74f09bfcdf097f8990368e4abb2c624469e2/vike/shared/hooks/executeHook.ts#L71
+  //  - maybe resolved when migrating to vike v1 style paths?
+  const userHookErrorsCache: Map<object, any> = (<any>global.__vike ?? {})['utils/executeHook.ts']?.userHookErrors
+  if (userHookErrorsCache != undefined && userHookErrorsCache.size > 0) {
+    console.warn(`FIXME clearing ${userHookErrorsCache.size} items from vike's error cache`)
+    userHookErrorsCache.clear()
+  }
+  // to reproduce the leak locally, uncomment & `while true; do curl localhost:3000; done`
+  //throw { err: Math.random() }
+
   try {
     let firstError: unknown = undefined
     app.config.errorHandler = (err) => {
