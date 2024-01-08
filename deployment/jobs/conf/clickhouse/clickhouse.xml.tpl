@@ -39,8 +39,8 @@
     <!-- Don't exit if ipv6 or ipv4 unavailable, but listen_host with this protocol specified -->
     <!-- <listen_try>0</listen_try> -->
 
-    <!-- Allow listen on same address:port -->
-    <!-- <listen_reuse_port>0</listen_reuse_port> -->
+    <!-- Allow listen IPv4 and IPv6 on same address:port -->
+    <listen_reuse_port>1</listen_reuse_port>
 
     <!-- <listen_backlog>64</listen_backlog> -->
 
@@ -157,4 +157,7 @@
     -->
     <!-- <max_table_size_to_drop>0</max_table_size_to_drop> -->
     <!-- <max_partition_size_to_drop>0</max_partition_size_to_drop> -->
+    <merge_tree>
+        <max_suspicious_broken_parts>500</max_suspicious_broken_parts>
+    </merge_tree>
 </yandex>
