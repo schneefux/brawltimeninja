@@ -10,15 +10,10 @@
       >
         <template v-slot:item="voiceline">
           <div class="h-full flex flex-col items-center justify-between gap-y-2">
-            <b-button
+            <media-audio
+              :path="voiceline.path.replace(/\.ogg/, '')"
               class="leading-none"
-              @click="play(voiceline)"
-            >
-              <fa
-                :icon="faPlayCircle"
-                class="text-3xl"
-              ></fa>
-            </b-button>
+            ></media-audio>
             <q
               v-if="voiceline.description != undefined"
               class="text-center"
@@ -36,36 +31,19 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
-import { BScrollingList, BDashboardCell, BCard, BButton, Fa } from '@schneefux/klicker/components'
-import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
-import { useConfig } from '~/composables/compat'
+import { BScrollingList, BDashboardCell, BCard } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
     BScrollingList,
     BDashboardCell,
-    BButton,
     BCard,
-    Fa,
   },
   props: {
     scrapedData: {
       type: Object as PropType<ScrapedBrawler>,
       required: false
     },
-  },
-  setup() {
-    const $config = useConfig()
-
-    const play = (voiceline: ScrapedBrawler['voicelines'][0]) => {
-      const audio = new Audio($config.mediaUrl + voiceline.path)
-      audio.play()
-    }
-
-    return {
-      play,
-      faPlayCircle,
-    }
   },
 })
 </script>

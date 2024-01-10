@@ -85,6 +85,7 @@ declare module 'vue' {
     MapViews: typeof import('./components/map/map-views.vue')['default']
     MapWinrateUserateChart: typeof import('./components/map/map-winrate-userate-chart.vue')['default']
     MBrawler: typeof import('./components/klicker/m-brawler.vue')['default']
+    MediaAudio: typeof import('./components/media-audio.vue')['default']
     MediaImg: typeof import('./components/media-img.vue')['default']
     MediaImgIcon: typeof import('./components/media-img-icon.vue')['default']
     MetricInfo: typeof import('./components/metric-info.vue')['default']
