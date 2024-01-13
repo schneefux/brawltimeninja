@@ -9,7 +9,7 @@ import ProfileView from "../templates/ProfileView";
 import BrawlstarsService from "../services/BrawlstarsService";
 import { BrawltimeKlickerService } from "../../plugins/klicker.service";
 import { tagToId } from "../../lib/util";
-import isbot from 'isbot'
+import { isbot } from 'isbot'
 import { PlayerTotals } from "../../stores/brawlstars";
 import { TRPCError } from "@trpc/server";
 import { Player } from "~/model/Api";
