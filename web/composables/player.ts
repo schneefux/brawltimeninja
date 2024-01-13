@@ -65,5 +65,5 @@ export async function useLoadAndValidatePlayer(urlPrefix: string) {
 // tag without hash
 export function usePlayerRender(playerTag: Ref<string>, selectedBrawlerId?: Ref<string|undefined>, selectedBackground?: Ref<string>) {
   return computed(
-    () => `/api/render/profile/${playerTag.value}/${selectedBrawlerId?.value ?? 'best'}.png?background=${selectedBackground?.value ?? 'BlueSkull_Default.jpg'}`)
+    () => `/api/render/profile/${playerTag.value}/${selectedBrawlerId?.value ?? 'best'}.png?background=${selectedBackground?.value ?? 'brawl_stars_lobby.jpg'}`)
 }
