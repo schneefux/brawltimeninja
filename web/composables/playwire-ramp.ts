@@ -3,7 +3,7 @@ import { watch } from "vue"
 import { useMeta } from "./compat";
 
 export type TaggedType = 'leaderboard_atf' | 'leaderboard_btf' | 'med_rect_atf' | 'med_rect_btf' | 'sky_atf' | 'sky_btf'
-export type TaglessType = 'corner_ad_video' | 'site_skin' | 'flex_leaderboard' | 'right_rail' | 'bottom_rail' | 'left_rail' | 'in_content' | 'sidebar' | 'sticky_sidebar'
+export type TaglessType = 'trendi_video' | 'corner_ad_video' | 'site_skin' | 'flex_leaderboard' | 'right_rail' | 'bottom_rail' | 'left_rail' | 'in_content' | 'sidebar' | 'sticky_sidebar'
 
 interface TaggedUnit {
   type: TaggedType
@@ -37,6 +37,7 @@ declare global {
 
 export function usePlaywireRamp(publisherId: string, siteId: string) {
   const outOfPageUnits = ([
+    'trendi_video',
     'corner_ad_video',
     'site_skin',
     'flex_leaderboard',
