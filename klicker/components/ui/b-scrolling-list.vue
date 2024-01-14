@@ -186,10 +186,7 @@ export default defineComponent({
 
       const { pxPerItem, pxGap } = columnStyle.value
       const x = index * pxPerItem + index * pxGap
-      setTimeout(() => {
       container.value.wrapper.scrollLeft = x
-      console.log(x, container.value.wrapper.scrollLeft)
-      }, 0)
     }
 
     /**
