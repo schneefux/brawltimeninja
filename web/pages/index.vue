@@ -228,7 +228,7 @@ export default defineComponent({
 
     const tag = ref<string|undefined>()
     const events = useActiveEvents([], {
-      powerplay: ['0'],
+      powerplay: ['false'],
     })
 
     const cleanedTag = computed(() =>

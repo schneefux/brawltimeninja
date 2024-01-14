@@ -137,7 +137,7 @@ export default defineComponent({
     const allEvents = useAllEvents()
 
     const allPowerLeagueEvents = useAllEvents({
-      powerplay: ['1'],
+      powerplay: ['true'],
     })
 
     useCacheHeaders()

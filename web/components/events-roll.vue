@@ -104,10 +104,10 @@ export default defineComponent({
       }))
       .sort((a, b) => {
         // 'all-all' first
-        if (a.key == 'all') {
+        if (a.mode == 'all') {
           return -1
         }
-        if (b.key == 'all') {
+        if (b.mode == 'all') {
           return +1
         }
 

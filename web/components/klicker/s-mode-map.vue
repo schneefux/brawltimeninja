@@ -2,8 +2,10 @@
   <div>
     <b-fake-select @open="lightboxOpen = true">
       <template v-slot:preview>
-        <span class="w-full text-left">
-          {{ mode != undefined ? $t('mode.' + mode) : $t('option.all-modes') }} - {{ map != undefined ? mapName : $t('option.all-maps') }}
+        <span class="w-48 text-left truncate">
+          <template v-if="selectedActiveNonPowerLeagueMaps">{{ $t('option.all-maps') }}: {{ $t('events.active.title') }}</template>
+          <template v-else-if="selectedActivePowerLeagueMaps">{{ $t('option.all-maps') }}: {{ $t('events.powerleague.title') }}</template>
+          <template v-else>{{ mode != undefined ? $t('mode.' + mode) + ' - ' : '' }}{{ mapNames ?? $t('option.all-maps') }}</template>
         </span>
       </template>
     </b-fake-select>
@@ -23,18 +25,44 @@
             :mode-filter-default="mode"
           >
             <template v-slot="{ event }">
-              <event-picture-card
-                v-if="!event.key.startsWith('all')"
-                :mode="event.mode"
-                :map="event.map"
-                :event-id="event.id"
-                :class="{
-                  'bg-primary-400 rounded-2xl': mode == event.mode && map == event.map,
-                }"
-                @click.capture.prevent.stop="onSelectModeMap({ mode: event.mode, map: event.map })"
-              ></event-picture-card>
+              <b-card
+                v-if="event.key == 'all'"
+                :title="$t('option.all-maps')"
+              >
+                <template v-slot:content>
+                  <div class="pt-8 space-y-4 text-center">
+                    <b-button
+                      :dark="!(mode == undefined && map == undefined)"
+                      :primary="mode == undefined && map == undefined"
+                      class="w-full"
+                      md
+                      @click.capture.prevent="onSelectModeMap({})"
+                    >
+                      {{ $t('option.all-maps') }}
+                    </b-button>
+                    <b-button
+                      :dark="!selectedActiveNonPowerLeagueMaps"
+                      :primary="selectedActiveNonPowerLeagueMaps"
+                      class="w-full"
+                      md
+                      @click.capture.prevent="onSelectAllActiveMaps()"
+                    >
+                      {{ $t('option.all-maps') }}: {{ $t('events.active.title') }}
+                    </b-button>
+                    <b-button
+                      :dark="!selectedActivePowerLeagueMaps"
+                      :primary="selectedActivePowerLeagueMaps"
+                      class="w-full"
+                      md
+                      @click.capture.prevent="onSelectAllPowerLeagueMaps()"
+                    >
+                      {{ $t('option.all-maps') }}: {{ $t('events.powerleague.title') }}
+                    </b-button>
+                  </div>
+                </template>
+              </b-card>
               <event-card
-                v-else-if="event.key != 'all'"
+                v-else-if="event.key.startsWith('all-mode-')"
                 :mode="event.mode"
                 :class="{
                   'bg-primary-400 rounded-2xl': mode == event.mode && map == 'all',
@@ -49,19 +77,16 @@
                   </p>
                 </template>
               </event-card>
-              <b-card
+              <event-picture-card
                 v-else
+                :mode="event.mode"
+                :map="event.map"
+                :event-id="event.id"
                 :class="{
-                  'bg-primary-400 rounded-2xl': mode == 'all' && map == 'all',
+                  'bg-primary-400 rounded-2xl': mode == event.mode && map == event.map,
                 }"
-                @click.capture.prevent="onSelectModeMap({})"
-              >
-                <template v-slot:content>
-                  <p class="pt-4 h-full flex flex-col justify-center items-center">
-                    {{ $t('option.all-modes') }} - {{ $t('option.all-maps') }}
-                  </p>
-                </template>
-              </b-card>
+                @click.capture.prevent.stop="onSelectModeMap({ mode: event.mode, map: event.map })"
+              ></event-picture-card>
             </template>
           </events-roll>
         </template>
@@ -74,15 +99,16 @@
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { getMapName } from '~/composables/map'
-import { BFakeSelect, BLightbox } from '@schneefux/klicker/components'
+import { BFakeSelect, BLightbox, BButton } from '@schneefux/klicker/components'
 import { EventMetadata } from '~/plugins/klicker.service'
-import { useAllEvents } from '~/composables/dimension-values'
+import { useActiveEvents, useAllEvents } from '~/composables/dimension-values'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
     BFakeSelect,
     BLightbox,
+    BButton,
   },
   props: {
     modelValue: {
@@ -101,6 +127,16 @@ export default defineComponent({
     const map = computed(() => (props.modelValue.map ?? [])[0])
 
     const allEvents = useAllEvents()
+    const activeNonPowerLeagueEvents = useActiveEvents([], { powerplay: ['false'] })
+    const activeNonPowerLeagueMaps = computed(() => activeNonPowerLeagueEvents.value.map(e => e.map))
+    const activePowerLeagueEvents = useActiveEvents([], { powerplay: ['true'] })
+    const activePowerLeagueMaps = computed(() => activePowerLeagueEvents.value.map(e => e.map))
+
+    const stringArraysEqual = (a1: (string|undefined)[], a2: (string|undefined)[]) => a1.slice().sort().toString() == a2.slice().sort().toString()
+    const selectedActivePowerLeagueMaps = computed(() => stringArraysEqual(props.modelValue.map ?? [], activePowerLeagueMaps.value))
+    const selectedActiveNonPowerLeagueMaps = computed(() => stringArraysEqual(props.modelValue.map ?? [], activeNonPowerLeagueMaps.value))
+
+    // events (incl. placeholders) are sorted by events-roll
     const allEventsAndSummaries = computed<EventMetadata[]>(() => {
       const modes = [...new Set(allEvents.value.map(e => e.mode))]
       return (<EventMetadata[]>[]).concat(
@@ -113,7 +149,7 @@ export default defineComponent({
           metrics: {},
         }],
         modes.map(m => ({
-          key: `all-${m}`,
+          key: `all-mode-${m}`,
           id: '0',
           map: i18n.t('option.all-maps'),
           mode: m,
@@ -124,27 +160,16 @@ export default defineComponent({
       )
     })
 
-    const mapName = computed(() => {
-      const map = (props.modelValue.map ?? [])[0]
-      if (map == undefined) {
-        return ''
+    const mapNames = computed(() => {
+      const maps = props.modelValue.map ?? []
+      if (maps[0] == undefined) {
+        return undefined
       }
 
-      const mode = (props.modelValue.mode ?? [])[0]
-      if (mode == undefined) {
-        return ''
-      }
-
-      if (allEvents.value.length == 0) {
-        return map
-      }
-
-      const mapRecord = allEvents.value.find(e => e.map == map && e.mode == mode)
-      if (mapRecord == undefined) {
-        return map
-      }
-
-      return getMapName(i18n, mapRecord.id, map)
+      return maps.map(m => {
+        const mapRecord = allEvents.value?.find(e => e.map == m)
+        return getMapName(i18n, mapRecord?.id, m)
+      }).join(', ')
     })
 
     const onSelectModeMap = (value: { mode?: string, map?: string }) => {
@@ -155,15 +180,35 @@ export default defineComponent({
       lightboxOpen.value = false
     }
 
+    const onSelectAllActiveMaps = () => {
+      props.onInput({
+        mode: [],
+        map: activeNonPowerLeagueMaps.value,
+      })
+      lightboxOpen.value = false
+    }
+
+    const onSelectAllPowerLeagueMaps = () => {
+      props.onInput({
+        mode: [],
+        map: activePowerLeagueMaps.value,
+      })
+      lightboxOpen.value = false
+    }
+
     const lightboxOpen = ref(false)
 
     return {
       mode,
       map,
       onSelectModeMap,
+      onSelectAllActiveMaps,
+      onSelectAllPowerLeagueMaps,
+      selectedActivePowerLeagueMaps,
+      selectedActiveNonPowerLeagueMaps,
       allEventsAndSummaries,
       lightboxOpen,
-      mapName,
+      mapNames,
     }
   },
 })
