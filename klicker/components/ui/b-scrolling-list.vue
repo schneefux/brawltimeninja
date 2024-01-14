@@ -41,19 +41,28 @@
         loading
       ></b-shimmer>
 
-      <template v-if="renderBounds.start > 0">
-        <b-shimmer
-          v-for="offset in (renderBounds.start - 1)"
-          :key="`start-${offset}`"
-          :style="{
-            'grid-column-start': (offset - 1) * columnsPerItem + 1,
-            'grid-column-end': offset * columnsPerItem + 1,
-            'grid-row-start': `span ${cellRows}`,
-            'grid-row-end': `span ${cellRows}`,
-          }"
-          loading
-        ></b-shimmer>
-      </template>
+      <!-- fill the whole grid to preserve the space -->
+      <!-- render a single div + a single shimmer for small DOM = good performance -->
+      <div
+        v-if="renderBounds.start - 1 > 0"
+        :style="{
+          'grid-column-start': 1,
+          'grid-column-end': ((renderBounds.start - 1) - 1) * columnsPerItem + 1,
+          'grid-row-start': `span ${cellRows}`,
+          'grid-row-end': `span ${cellRows}`,
+        }"
+      ></div>
+
+      <b-shimmer
+        v-if="renderBounds.start > 0"
+        :style="{
+          'grid-column-start': ((renderBounds.start - 1) - 1) * columnsPerItem + 1,
+          'grid-column-end': (renderBounds.start - 1) * columnsPerItem + 1,
+          'grid-row-start': `span ${cellRows}`,
+          'grid-row-end': `span ${cellRows}`,
+        }"
+        loading
+      ></b-shimmer>
 
       <b-dashboard-cell
         v-for="entry in list"
@@ -71,19 +80,26 @@
         ></slot>
       </b-dashboard-cell>
 
-      <template v-if="renderBounds.end < items.length">
-        <b-shimmer
-          v-for="offset in (items.length - renderBounds.end)"
-          :key="`end-${offset}`"
-          :style="{
-            'grid-column-start': (renderBounds.end + offset - 1) * columnsPerItem + 1,
-            'grid-column-end': (renderBounds.end + offset) * columnsPerItem + 1,
-            'grid-row-start': `span ${cellRows}`,
-            'grid-row-end': `span ${cellRows}`,
-          }"
-          loading
-        ></b-shimmer>
-      </template>
+      <b-shimmer
+        v-if="renderBounds.end < items.length"
+        :style="{
+          'grid-column-start': ((renderBounds.end + 1) - 1) * columnsPerItem + 1,
+          'grid-column-end': (renderBounds.end + 1) * columnsPerItem + 1,
+          'grid-row-start': `span ${cellRows}`,
+          'grid-row-end': `span ${cellRows}`,
+        }"
+        loading
+      ></b-shimmer>
+
+      <div
+        v-if="renderBounds.end + 1 < items.length"
+        :style="{
+          'grid-column-start': (((renderBounds.end + 1) + 1) - 1) * columnsPerItem + 1,
+          'grid-column-end': items.length * columnsPerItem + 1,
+          'grid-row-start': `span ${cellRows}`,
+          'grid-row-end': `span ${cellRows}`,
+        }"
+      ></div>
     </b-scrolling-dashboard>
   </div>
 </template>
@@ -170,7 +186,10 @@ export default defineComponent({
 
       const { pxPerItem, pxGap } = columnStyle.value
       const x = index * pxPerItem + index * pxGap
+      setTimeout(() => {
       container.value.wrapper.scrollLeft = x
+      console.log(x, container.value.wrapper.scrollLeft)
+      }, 0)
     }
 
     /**
