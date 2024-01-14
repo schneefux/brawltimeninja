@@ -104,7 +104,7 @@ export function useInstall(source: string) {
         'event_category': 'app',
         'event_label': 'ios',
       })
-      router.push(localePath('/install/ios'))
+      await router.push(localePath('/install/ios'))
       return
     }
   }

@@ -24,8 +24,8 @@ export const useSyncQueryAndRoute = (config: Config, defaultCubeId: string) => {
     get() {
       return $klicker.convertLocationToQuery(config, defaultCubeId, mapRouteQuery(route))
     },
-    set(q: CubeQuery|CubeComparingQuery) {
-      router.replace($klicker.convertQueryToLocation(q))
+    async set(q: CubeQuery|CubeComparingQuery) {
+      await router.replace($klicker.convertQueryToLocation(q))
     }
   })
 }
@@ -42,8 +42,8 @@ export const useSyncSlicesAndRoute = (defaults: Ref<CubeQuery|CubeComparingQuery
         slices: $klicker.convertLocationToSlices(mapRouteQuery(route), defaults.value.slices)
       }
     },
-    set(q: CubeQuery|CubeComparingQuery) {
-      router.replace($klicker.convertSlicesToLocation(q.slices, defaults.value.slices))
+    async set(q: CubeQuery|CubeComparingQuery) {
+      await router.replace($klicker.convertSlicesToLocation(q.slices, defaults.value.slices))
     }
   })
 }

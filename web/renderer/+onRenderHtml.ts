@@ -20,7 +20,7 @@ async function onRenderHtml(pageContext: PageContextBuiltInServer & PageContext)
       return false
     }
 
-    router.push(pageContext.urlOriginal)
+    await router.push(pageContext.urlOriginal)
     await router.isReady()
 
     let string = await renderToString(app)

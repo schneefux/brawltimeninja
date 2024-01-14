@@ -28,9 +28,9 @@ export default defineComponent({
       get() {
         return i18n.locale.value as LocaleIso
       },
-      set(iso: LocaleIso) {
+      async set(iso: LocaleIso) {
         const locale = locales.find(l => l.iso == iso)!
-        switchToLocale(locale, true)
+        await switchToLocale(locale, true)
       }
     })
 

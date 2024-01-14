@@ -78,7 +78,7 @@ export function useSwitchToLocale() {
   const router = useRouter()
   const i18n = useI18n()
 
-  const switchToLocale = (locale: Locale, userInitiated: boolean = false) => {
+  const switchToLocale = async (locale: Locale, userInitiated: boolean = false) => {
     if (userInitiated) {
       Cookies.set(i18nCookieName, locale.code)
     }
@@ -88,7 +88,7 @@ export function useSwitchToLocale() {
     const currentCode = locales.find(l => l.iso == i18n.locale.value)!.code
     const urlWithoutLocale = (firstPath == currentCode) ? '/' + urlPaths.slice(2).join('/') : route.fullPath
     const newPath = `${locale.iso == i18n.fallbackLocale.value ? '' : '/' + locale.code}` + urlWithoutLocale
-    router.push(newPath)
+    await router.push(newPath)
   }
 
   const filteredLocales = locales.filter(l => l.show)
@@ -138,27 +138,27 @@ export async function useValidate(cb: (context: ValidateContext) => Promise<bool
 
     pageContext.validated = true
 
-    const error = (e: { statusCode: ErrorStatusCode, message: string }) => {
+    const error = async (e: { statusCode: ErrorStatusCode, message: string }) => {
       pageContext.abortReason = e.message
       pageContext.abortStatusCode = e.statusCode
-      router.replace({
+      await router.replace({
         name: 'error',
         params: { pathMatch: route.path.substring(1).split('/') },
         query: route.query,
         hash: route.hash,
       })
     }
-    const redirect = (status: RedirectStatusCode, url: string) => {
+    const redirect = async (status: RedirectStatusCode, url: string) => {
       pageContext.statusCode = status
       pageContext.redirectTo = url
-      router.replace(url)
+      await router.replace(url)
     }
 
     const context: ValidateContext = { params: route.params, redirect, error }
     const isValid = await cb(context)
 
     if (isValid === false) {
-      error({ statusCode: 404, message: 'Not found' })
+      await error({ statusCode: 404, message: 'Not found' })
     }
   }
 

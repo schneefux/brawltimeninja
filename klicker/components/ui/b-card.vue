@@ -226,11 +226,11 @@ export default defineComponent({
       }
     }
 
-    const onClick = (e: Event) => {
+    const onClick = async (e: Event) => {
       if (props.link != undefined) {
         console.log('click, on click')
         e.stopPropagation()
-        navigate(props.link)
+        await navigate(props.link)
         return
       }
     }

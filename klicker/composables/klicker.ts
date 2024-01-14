@@ -20,7 +20,7 @@ export interface PluginConfig {
    * - It should log errors to Sentry
    */
   useQuery: <T, E>(key: Ref<string>, handler: () => Promise<T>) => AsyncQuery<T, E>
-  navigate: (path: string) => void
+  navigate: (path: string) => Promise<void>
   /**
    * Requirements:
    *  - It should support the "to" property

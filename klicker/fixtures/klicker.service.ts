@@ -56,7 +56,7 @@ export function decorator(story, { parameters }) {
             refresh,
           }
         },
-        navigate: (path: string) => {
+        navigate: async (path: string) => {
           alert('Navigating to ' + path)
         },
         managerUrl: '',

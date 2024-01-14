@@ -322,7 +322,7 @@ export default defineComponent({
 
       preferencesStore.userTag = cleanedTag.value
 
-      router.push(localePath(`/profile/${cleanedTag.value}`))
+      await router.push(localePath(`/profile/${cleanedTag.value}`))
     }
 
     useCacheHeaders()

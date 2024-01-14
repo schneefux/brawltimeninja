@@ -46,7 +46,7 @@ export default defineComponent({
 
     const navigatorPopup = ref<InstanceType<typeof NavigatorPopup>>()
     const router = useRouter()
-    const goToFirstResult = () => {
+    const goToFirstResult = async () => {
       const navigator = navigatorPopup.value?.navigator
       if (navigator == undefined) {
         return
@@ -58,7 +58,7 @@ export default defineComponent({
         .find((l): l is string => l != undefined)
 
       if (firstLink != undefined) {
-        router.push(firstLink)
+        await router.push(firstLink)
       }
     }
 

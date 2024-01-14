@@ -49,21 +49,21 @@ export default defineComponent({
 
     const router = useRouter()
     const localePath = useLocalePath()
-    const jumpToModeMap = (slices: Partial<SliceValue>) => {
+    const jumpToModeMap = async (slices: Partial<SliceValue>) => {
       const mode = (slices.mode ?? [])[0]
       const map = (slices.map ?? [])[0]
 
       if (mode == undefined) {
-        router.push(localePath('/tier-list/brawler'))
+        await router.push(localePath('/tier-list/brawler'))
         return
       }
 
       if (map == undefined) {
-        router.push(localePath(`/tier-list/mode/${camelToKebab(mode)}`))
+        await router.push(localePath(`/tier-list/mode/${camelToKebab(mode)}`))
         return
       }
 
-      router.push(localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`))
+      await router.push(localePath(`/tier-list/mode/${camelToKebab(mode)}/map/${slugify(map)}`))
     }
 
     const i18n = useI18n()

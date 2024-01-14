@@ -54,7 +54,9 @@ function install(app: App, options: Options) {
         refresh: async () => { await query.refetch() },
       }
     },
-    navigate: (to) => options.router.push(to),
+    navigate: async (to) => {
+      await options.router.push(to)
+    },
     linkComponent: 'router-link',
   })
 }
