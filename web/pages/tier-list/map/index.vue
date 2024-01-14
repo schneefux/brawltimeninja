@@ -45,10 +45,14 @@
         }"
         lazy
       >
-        <events-roll
-          :events="allPowerLeagueEvents || []"
-          with-data
-        ></events-roll>
+        <b-button
+          :to="localePath('/tier-list/power-league')"
+          class="mt-4"
+          primary
+          sm
+        >
+          {{ $t('action.open.tier-list.powerleague') }}
+        </b-button>
       </b-page-section>
 
       <ad

@@ -72,12 +72,10 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
 import { deslugify, kebabToCamel } from '~/lib/util'
-import { BSplitDashboard, BCard, BLightbox, Fa } from '@schneefux/klicker/components'
+import { BSplitDashboard, BCard, BLightbox, BPage, BPageSection, Fa } from '@schneefux/klicker/components'
 import { useMapName } from '~/composables/map'
-import MapViews from '~/components/map/map-views.vue'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
 import { useAsync, useCacheHeaders, useConfig, useMeta, useValidate } from '~/composables/compat'
-import { useRoute } from 'vue-router'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
 import { useRouteParams } from '~/composables/route-params'
@@ -94,7 +92,8 @@ export default defineComponent({
     BSplitDashboard,
     BLightbox,
     BCard,
-    MapViews,
+    BPage,
+    BPageSection,
   },
   async setup() {
     const $klicker = useKlicker()

@@ -4,23 +4,13 @@
     :elevation="elevation"
   >
     <template v-slot:actions>
-      <div class="space-x-2">
-        <b-button
-          :to="localePath(`/team-builder`)"
-          primary
-          sm
-        >
-          {{ $t('action.open.draft-tool') }}
-        </b-button>
-
-        <b-button
-          :to="localePath(`/tier-list/brawler`)"
-          primary
-          sm
-        >
-          {{ $t('action.open.tier-list.brawler') }}
-        </b-button>
-      </div>
+      <b-button
+        :to="localePath(`/tier-list/brawler`)"
+        primary
+        sm
+      >
+        {{ $t('action.open.tier-list.brawler') }}
+      </b-button>
     </template>
 
     <template v-slot:content>

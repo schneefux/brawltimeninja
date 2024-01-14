@@ -505,10 +505,12 @@
     "draft-tool.grid-title": "Add Brawlers to your team",
     "draft-tool.title": "Brawl Stars Team Builder",
     "draft-tool.subtitle": "How to build the best Team of Brawlers",
-    "draft-tool.description": "Use the Draft Tool during Power League or in the Lobby to find the best Brawler composition. Each Brawler shows their Win Rate with the selected composition. The data is updated when you add Brawlers to your team.",
+    "draft-tool.description": "Use the Team Builder during Power League or in the Lobby to find the best Brawler composition. Each Brawler shows their Win Rate with the selected composition. The data is updated when you add Brawlers to your team.",
     "draft-tool.meta.title": "Brawl Stars Team Builder",
     "draft-tool.meta.description": "Interactive Brawl Stars Pick Guide. Build the best Brawler composition. Calculate the Win Rate for your Team. Improve in Lobbies and in Power League using statistics.",
     "action.open.draft-tool": "Open Team Builder",
+    "draft-tool.title.short": "Team Builder",
+    "draft-tool.description.short": "Use the Team Builder during Power League Draft to find the best Brawler composition.",
     "nav.Team Builder": "Team Builder",
     "nav.Install": "Install",
     "install.title": "Adding Brawl Time Ninja to your Home Screen",
@@ -622,5 +624,10 @@
     "feedback.email": "Your E-Mail (optional)",
     "feedback.description": "Description",
     "feedback.success": "Thank you for your feedback!",
-    "action.submit": "Submit"
+    "action.submit": "Submit",
+    "tier-list.powerleague.title": "Brawl Stars Power League Statistics",
+    "tier-list.powerleague.description": "Brawl Stars' Power League is a competitive mode unlocked at 4500 Trophies. Participate in unlimited 3v3 matches and reap rewards based on your performance. Use the statistics below to maximize your winning odds with win rates for all Power League maps by finding the best Brawlers for your team.",
+    "tier-list.powerleague.meta.title": "Power League Maps",
+    "tier-list.powerleague.meta.description": "Brawl Stars Power League Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all Power League maps and improve your draft.",
+    "action.open.tier-list.powerleague": "Open Power League Tier List"
 }

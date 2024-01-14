@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { camelToKebab, kebabToCamel } from '~/lib/util'
-import { BTextbox, BDashboardCell } from '@schneefux/klicker/components'
+import { BDashboardCell, BPage, BPageSection, } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { defineComponent, computed } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
@@ -67,7 +67,8 @@ export default defineComponent({
     ObserveVisibility,
   },
   components: {
-    BTextbox,
+    BPage,
+    BPageSection,
     BDashboardCell,
   },
   setup() {
