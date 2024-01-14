@@ -67,7 +67,7 @@ async function startServer() {
       sentry: Sentry,
     }
     const pageContext = await renderPage<PageContext, typeof pageContextInit>(pageContextInit)
-    if (pageContext.errorWhileRendering) {
+    if (pageContext.errorWhileRendering && (<any> pageContext.errorWhileRendering).message != 'AbortRender') {
       Sentry.captureException(pageContext.errorWhileRendering)
     }
     if (pageContext.responseHeaders != undefined) {
