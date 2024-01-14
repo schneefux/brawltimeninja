@@ -47,7 +47,7 @@
         v-if="renderBounds.start - 1 > 0"
         :style="{
           'grid-column-start': 1,
-          'grid-column-end': `span ${(renderBounds.start - 1) * columnsPerItem - 1}`,
+          'grid-column-end': (renderBounds.start - 1) * columnsPerItem,
           'grid-row-start': `span ${cellRows}`,
           'grid-row-end': `span ${cellRows}`,
         }"
@@ -56,8 +56,8 @@
       <b-shimmer
         v-if="renderBounds.start > 0"
         :style="{
-          'grid-column-start': `span ${columnsPerItem}`,
-          'grid-column-end': renderBounds.start * columnsPerItem,
+          'grid-column-start': (renderBounds.start - 1) * columnsPerItem + 1,
+          'grid-column-end': `span ${columnsPerItem}`,
           'grid-row-start': `span ${cellRows}`,
           'grid-row-end': `span ${cellRows}`,
         }"
@@ -83,7 +83,7 @@
       <b-shimmer
         v-if="renderBounds.end < items.length"
         :style="{
-          'grid-column-start': (renderBounds.end) * columnsPerItem + 1,
+          'grid-column-start': renderBounds.end * columnsPerItem + 1,
           'grid-column-end': `span ${columnsPerItem}`,
           'grid-row-start': `span ${cellRows}`,
           'grid-row-end': `span ${cellRows}`,
@@ -95,7 +95,7 @@
         v-if="renderBounds.end + 1 < items.length"
         :style="{
           'grid-column-start': (renderBounds.end + 1) * columnsPerItem + 1,
-          'grid-column-end': items.length * columnsPerItem + 1,
+          'grid-column-end': items.length * columnsPerItem,
           'grid-row-start': `span ${cellRows}`,
           'grid-row-end': `span ${cellRows}`,
         }"
