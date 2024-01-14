@@ -106,14 +106,12 @@
     </template>
 
     <template v-slot:actions>
-      <div class="flex flex-wrap gap-2">
-        <b-button
-          v-if="canEnableTracking"
-          primary
-          sm
-          @click="enableTracking()"
-        >{{ $t('profile.tracking.enable') }}</b-button>
-      </div>
+      <b-button
+        v-if="canEnableTracking"
+        primary
+        sm
+        @click="enableTracking()"
+      >{{ $t('profile.tracking.enable') }}</b-button>
     </template>
   </b-card>
 </template>

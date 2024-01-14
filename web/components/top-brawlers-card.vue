@@ -4,7 +4,7 @@
     :elevation="elevation"
   >
     <template v-slot:actions>
-      <div class="flex flex-wrap justify-end gap-2">
+      <div class="space-x-2">
         <b-button
           :to="localePath(`/team-builder`)"
           primary

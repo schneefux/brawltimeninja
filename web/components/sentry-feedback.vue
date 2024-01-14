@@ -9,10 +9,13 @@
         <template v-slot:content>
           <form
             v-if="!success"
-            class="grid grid-cols-[max-content,1fr] gap-x-8 gap-y-4 items-center"
+            class="flex flex-col gap-y-2"
             @submit.prevent="submit()"
           >
-            <label v-bind-once="{ for: `${prefix}-name` }">
+            <label
+              v-bind-once="{ for: `${prefix}-name` }"
+              class="mt-3"
+            >
               {{ $t('feedback.name') }}
             </label>
             <b-textbox
@@ -21,7 +24,10 @@
               dark
             ></b-textbox>
 
-            <label v-bind-once="{ for: `${prefix}-email` }">
+            <label
+              v-bind-once="{ for: `${prefix}-email` }"
+              class="mt-3"
+            >
               {{ $t('feedback.email') }}
             </label>
             <b-textbox
@@ -30,22 +36,32 @@
               dark
             ></b-textbox>
 
-            <label v-bind-once="{ for: `${prefix}-comment` }">
+            <label
+              v-bind-once="{ for: `${prefix}-comment` }"
+              class="mt-3"
+            >
               {{ $t('feedback.description') }}
             </label>
             <b-textarea
               v-bind-once="{ id: `${prefix}-comment` }"
               v-model="comment"
+              rows="4"
               dark
             ></b-textarea>
 
-            <b-button
-              :disabled="loading"
-              type="submit"
-              class="mt-2 ml-auto col-start-2"
-              primary
-              md
-            >{{ $t('action.submit') }}</b-button>
+            <div class="mt-4 ml-auto space-x-2">
+              <b-button
+                dark
+                md
+                @click="lightboxOpen = false"
+              >{{ $t('action.close') }}</b-button>
+              <b-button
+                :disabled="loading"
+                type="submit"
+                primary
+                md
+              >{{ $t('action.submit') }}</b-button>
+            </div>
           </form>
           <p
             v-else
