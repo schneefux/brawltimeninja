@@ -86,19 +86,6 @@
           :events="allEvents"
         ></events-roll>
       </b-page-section>
-
-      <b-page-section
-        id="competition-winners"
-        :title="$t('tier-list.competition-winners.title')"
-        ref="competitionWinnersSection"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('competition-winners'),
-          once: true,
-        }"
-        lazy
-      >
-        <competition-winner-roll></competition-winner-roll>
-      </b-page-section>
     </b-split-dashboard>
 
     <ad
@@ -170,7 +157,6 @@ export default defineComponent({
       powerleagueSection: ref<InstanceType<typeof BPageSection>>(),
       upcomingSection: ref<InstanceType<typeof BPageSection>>(),
       seasonSection: ref<InstanceType<typeof BPageSection>>(),
-      competitionWinnersSection: ref<InstanceType<typeof BPageSection>>(),
     }
 
     const sections = computed(() => [{
@@ -189,10 +175,6 @@ export default defineComponent({
       id: 'season',
       title: i18n.t('events.season.title'),
       element: sectionRefs.seasonSection.value?.$el,
-    }, {
-      id: 'competition-winners',
-      title: i18n.t('tier-list.competition-winners.title'),
-      element: sectionRefs.competitionWinnersSection.value?.$el,
     }])
 
     return {
