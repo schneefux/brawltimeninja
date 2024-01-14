@@ -4,6 +4,7 @@
       <i18n-t
         keypath="fandom-attribution"
         tag="p"
+        scope="global"
       >
         <template v-slot:link>
           <a
@@ -31,7 +32,6 @@
 import { defineComponent, PropType } from 'vue'
 import { BCard } from '@schneefux/klicker/components'
 import { ScrapedBrawler } from '~/model/Web'
-import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
@@ -42,9 +42,6 @@ export default defineComponent({
       type: Object as PropType<ScrapedBrawler>,
       required: false
     },
-  },
-  setup() {
-    useI18n()
   },
 })
 </script>
