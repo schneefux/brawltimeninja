@@ -7,16 +7,20 @@ import { dehydrate } from '@tanstack/vue-query'
 import { renderSSRHead } from '@unhead/ssr'
 import SuperJSON from 'superjson'
 import { render } from 'vike/abort'
+import { SentryInjectionKey } from './sentry'
 
 export { onRenderHtml }
 
 async function onRenderHtml(pageContext: PageContextBuiltInServer & PageContext) {
   const { app, head, pinia, router, queryClient } = createApp(pageContext)
 
+  app.provide(SentryInjectionKey, pageContext.sentry as any)
+
   try {
     let firstError: unknown = undefined
     app.config.errorHandler = (err) => {
       firstError = firstError ?? err
+      pageContext.sentry.captureException(err)
       return false
     }
 

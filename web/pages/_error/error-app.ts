@@ -1,8 +1,11 @@
 import { createSSRApp } from 'vue'
 import type { PageContext } from '../../renderer/types'
-import { setPageContext } from '../../renderer/usePageContext'
+import { setPageContext } from '../../composables/page-context'
 import { createHead } from '@unhead/vue'
 import { ClientOnly } from '@schneefux/klicker/components'
+import { createI18n } from 'vue-i18n'
+import { defaultLocale, loadLocaleWithFallback } from '~/locales'
+import en from '~/locales/en.json'
 
 export { createApp }
 
@@ -12,6 +15,15 @@ function createApp(pageContext: PageContext) {
   const app = createSSRApp(Page)
 
   setPageContext(app, pageContext)
+
+  const i18n = createI18n({
+    legacy: false,
+    locale: defaultLocale.iso,
+    fallbackLocale: defaultLocale.iso,
+    availableLocales: [defaultLocale.iso],
+    messages: { en }
+  })
+  app.use(i18n)
 
   const themeColor = '#facc15' // yellow-400
   const head = createHead()

@@ -43,7 +43,7 @@ export type PageContextCustom = {
   refs: Record<string, unknown>
   vueQueryState: DehydratedState
   piniaState: string
-  sentry: typeof SentryTypes,
+  sentry: typeof SentryTypes
   envConfig: Config
   validated: null | boolean
   statusCode?: number

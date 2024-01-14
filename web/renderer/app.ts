@@ -3,7 +3,7 @@ import { QueryCache, QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import KlickerPlugin, { createClient as createKlickerClient } from '~/plugins/klicker'
 import TRPCPlugin, { createClient as createTrpcClient } from '~/plugins/trpc'
 import type { PageContext } from './types'
-import { setPageContext } from './usePageContext'
+import { setPageContext } from '../composables/page-context'
 import { createPinia } from 'pinia'
 import { createPersistedState } from 'pinia-plugin-persistedstate'
 import VueGtagPlugin, { event, query } from 'vue-gtag'
@@ -14,7 +14,7 @@ import { createHead } from '@unhead/vue'
 import { InferSeoMetaPlugin } from '@unhead/addons'
 import { defaultLocale, locales } from '~/locales'
 import { createRouter } from './router'
-import { localePath } from '~/composables/compat'
+import { localePath, useSentry } from '~/composables/compat'
 
 export { createApp }
 
@@ -120,7 +120,10 @@ function createApp(pageContext: PageContext) {
     },
     queryCache: new QueryCache({
       onError(err) {
-        pageContext.sentry.captureException(err)
+        app.runWithContext(() => {
+          const sentry = useSentry()
+          sentry?.captureException(err)
+        })
       },
     })
   })

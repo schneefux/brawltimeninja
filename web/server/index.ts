@@ -64,6 +64,7 @@ async function startServer() {
         port,
         requestHeaders: req.headers,
       },
+      sentry: Sentry,
     }
     const pageContext = await renderPage<PageContext, typeof pageContextInit>(pageContextInit)
     if (pageContext.errorWhileRendering) {

@@ -1,5 +1,5 @@
 import { isbot } from "isbot";
-import { usePageContext } from "~/renderer/usePageContext";
+import { usePageContext } from "~/composables/page-context";
 
 // currently unused
 export function isBot() {
