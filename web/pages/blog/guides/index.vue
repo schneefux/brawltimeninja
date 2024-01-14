@@ -18,7 +18,11 @@
           light
         >
           <template v-slot:preview>
-            <span class="text-gray-400 text-sm" >{{ post.createdAt }}</span>
+            <absolute-time
+              :timestamp="post.createdAt"
+              class="text-gray-400 text-sm"
+              format-str="PP"
+            ></absolute-time>
           </template>
 
           <template
@@ -55,25 +59,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
-import { format, parseISO } from 'date-fns'
+import { defineComponent } from 'vue'
 import { TocEntry } from '~/model/Web'
 import { useAsync, useCacheHeaders } from '~/composables/compat'
 
 export default defineComponent({
   setup() {
-    const toc = useAsync<{ default: TocEntry[] }>(() => import('~/assets/content/guides/toc.json'), 'toc-guides')
-
-    const posts = computed(() => {
-      if (toc.value == undefined) {
-        return undefined
-      }
-
-      return toc.value.default.map(p => ({
-        ...p,
-        createdAt: format(parseISO(p.createdAt), 'PP'),
-      }))
-    })
+    const posts = useAsync<TocEntry[]>(() => import('~/assets/content/guides/toc.json').then(d => d.default), 'toc-guides')
 
     useCacheHeaders()
 

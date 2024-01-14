@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AbsoluteTime: typeof import('./components/absolute-time.vue')['default']
     AccessoryTierList: typeof import('./components/accessory-tier-list.vue')['default']
     Ad: typeof import('./components/ad.vue')['default']
     AdblockBait: typeof import('./components/adblock-bait.vue')['default']

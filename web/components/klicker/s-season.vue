@@ -5,20 +5,36 @@
     dark
     sm
   >
-    <option
+    <i18n-t
       v-for="s in seasonsSince"
       :key="`since@${s.id}`"
       :value="`since@${s.id}`"
+      keypath="option.season-since"
+      tag="option"
     >
-      {{ $t('option.season-since', { season: s.name }) }}
-    </option>
-    <option
+      <template v-slot:season>
+        <absolute-time
+          tag=""
+          :timestamp="s.start"
+          format-str="PP"
+        ></absolute-time>
+      </template>
+    </i18n-t>
+    <i18n-t
       v-for="s in seasonsAt"
       :key="`at@${s.id}`"
       :value="`at@${s.id}`"
+      keypath="option.season-at"
+      tag="option"
     >
-      {{ $t('option.season-at', { season: s.name }) }}
-    </option>
+      <template v-slot:season>
+        <absolute-time
+          tag=""
+          :timestamp="s.start"
+          format-str="PP"
+        ></absolute-time>
+      </template>
+    </i18n-t>
   </b-select>
 </template>
 

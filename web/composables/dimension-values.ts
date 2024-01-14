@@ -112,16 +112,15 @@ export function useAllSeasons(limitWeeks: MaybeRef<number> = ref(8)) {
     })
   }, key)
 
-  const seasons = computed<{ id: string, name: string }[]>(() => data.value?.data
+  const seasons = computed<{ id: string, start: Date }[]>(() => data.value?.data
     .map(e => {
       const d = parseClickhouse(e.dimensionsRaw.season.season)
       return {
         id: formatClickhouseDate(d),
-        name: format(subWeeks(d, 2), 'PP') // seasons last 2 weeks
+        start: subWeeks(d, 2) // seasons last 2 weeks
       }
     })
-    .sort((e1, e2) => e1.id.localeCompare(e2.id, i18n.locale.value))
-    .reverse() ?? []
+    .sort((e1, e2) => e2.start.valueOf() - e1.start.valueOf()) ?? []
   )
 
   return seasons

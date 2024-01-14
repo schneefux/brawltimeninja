@@ -7,15 +7,18 @@
     itemscope
     no-filter
   >
-    <template v-slot:infobar><div
-      v-if="document.image"
-
-      :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${document.image}')`"
-      class="h-48 bg-cover bg-center"
-      itemprop="thumbnailUrl"
-    ></div></template>
-    <template v-slot:preview><span >{{ date }}</span></template>
-    <template v-slot:content><div >
+    <template v-slot:infobar>
+      <div
+        v-if="document.image"
+        :style="`background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${document.image}')`"
+        class="h-48 bg-cover bg-center"
+        itemprop="thumbnailUrl"
+      ></div>
+    </template>
+    <template v-slot:preview>
+      <absolute-time :timestamp="document.createdAt" format-str="PP"></absolute-time>
+    </template>
+    <template v-slot:content>
       <div
         v-html="document.body"
         ref="content"
@@ -29,7 +32,7 @@
           :src="lightboxImage"
         >
       </b-lightbox>
-    </div></template>
+    </template>
     <template
       v-if="document.author != undefined"
       v-slot:actions
@@ -54,9 +57,7 @@
 </template>
 
 <script lang="ts">
-import { format, parseISO } from 'date-fns'
-import { computed, defineComponent, onMounted, ref } from 'vue'
-import { useDateFnLocale } from '~/composables/date-fns'
+import { defineComponent, onMounted, ref } from 'vue'
 
 export default defineComponent({
   props: {
@@ -65,15 +66,10 @@ export default defineComponent({
       required: true
     },
   },
-  setup(props) {
+  setup() {
     const content = ref<HTMLElement>()
     const lightboxOpen = ref(false)
     const lightboxImage = ref('')
-
-    const { locale } = useDateFnLocale()
-    const date = computed(() => format(parseISO(props.document.createdAt), 'PP', {
-      locale: locale.value,
-    }))
 
     onMounted(() => {
       if (content.value != undefined) {
@@ -88,7 +84,6 @@ export default defineComponent({
 
     return {
       content,
-      date,
       lightboxOpen,
       lightboxImage,
     }

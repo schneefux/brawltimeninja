@@ -1,14 +1,12 @@
 <template>
-  <time :datetime="absoluteFormatted">
+  <time :datetime="absoluteISO">
     {{ relativeFormatted }}
   </time>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted, computed } from 'vue'
-import { formatDistanceToNow } from 'date-fns'
-import { useDateFnLocale } from '~/composables/date-fns'
-import { useIntervalFn } from '@vueuse/core'
+import { defineComponent, computed } from 'vue'
+import { useFormattedDistanceToNow } from '~/composables/date-fns'
 
 export default defineComponent({
   props: {
@@ -22,29 +20,16 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { locale } = useDateFnLocale()
-    // render now-relative timestamps only on client to prevent SSR hydration mismatches
-    const relativeFormatted = ref('…')
+    // render now-relative timestamps on client to prevent SSR hydration mismatches
+    const relativeFormatted = useFormattedDistanceToNow(computed(() => props.timestamp), {
+      addSuffix: computed(() => props.addSuffix),
+    })
 
-    const absoluteFormatted = computed(() => props.timestamp?.toISOString())
-
-    const updateFormatted = () => {
-      if (props.timestamp == undefined) {
-        relativeFormatted.value = 'never'
-      } else {
-        relativeFormatted.value = formatDistanceToNow(props.timestamp, {
-          addSuffix: true,
-          locale: locale.value,
-        })
-      }
-    }
-    useIntervalFn(updateFormatted, 60 * 1000)
-    watch(() => props.timestamp, updateFormatted)
-    onMounted(updateFormatted)
+    const absoluteISO = computed(() => props.timestamp?.toISOString())
 
     return {
       relativeFormatted,
-      absoluteFormatted,
+      absoluteISO,
     }
   },
 })
