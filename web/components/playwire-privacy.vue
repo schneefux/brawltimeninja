@@ -1,5 +1,7 @@
 <template>
   <div>
+    <h2>Playwire</h2>
+    <p>All or partial advertising on this Website or App is managed by Playwire LLC. If Playwire publisher advertising services are used, Playwire LLC may collect and use certain aggregated and anonymized data for advertising purposes. To learn more about the types of data collected, how data is used and your choices as a user, please visit <a href="https://www.playwire.com/privacy-policy" rel="nofollow">https://www.playwire.com/privacy-policy</a>.</p>
     <h2>Common ID Cookie</h2>
     <p id="cookieP">
       This site uses cookies and similar tracking technologies such as the Common ID cookie to provide its services. Cookies are important devices for measuring advertising effectiveness and ensuring a robust online advertising industry. The Common ID cookie stores a unique user id in the first party domain and is accessible to our ad partners. This simple ID that can be utilized to improve user matching, especially for delivering ads to iOS and MacOS browsers.
@@ -20,7 +22,6 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   setup() {
     useMeta(() => ({
-      title: 'Privacy',
       script: [ {
         innerHTML: `let optOutCounter = 0; function setCookie(cname,cvalue,exdays){var d = new Date();d.setTime(d.getTime()+(exdays*24*60*60*1000));var expires='expires='+d.toUTCString();document.cookie=cname+'='+cvalue+';'+expires+';path=/'; if(optOutCounter==0){ let cookieP = document.getElementById('cookieP'); var successCookie = document.createElement('h3'); successCookie.innerHTML = 'Optout Success!'; successCookie.setAttribute('style','color:green'); cookieP.appendChild(successCookie); optOutCounter ++ } };`,
       } ],

@@ -4,18 +4,24 @@
     class="light bg-background prose prose-sm sm:prose lg:prose-lg"
   >
     <copyright light></copyright>
-    <p>
-      Brawl Time Ninja allows you to check competitive and fun statistics for your Brawl Stars account. Read guides written by the community to improve your gameplay.
-      Brawl Time Ninja uses the official and unofficial Brawl Stars API. The service may be unreliable at times.
-    </p>
-    <p class="mt-2">
-      Send questions or feedback to <client-only><span>dev (at) {{ domain }}</span></client-only>. Built with ❤️ by <a href="https://schneefux.xyz">schneefux</a>. You can view this site's source code <a href="https://github.com/schneefux/brawltimeninja">on GitHub</a>.
-    </p>
-    <p class="mt-2">
-      With your consent, this site shares visitor data with Google Analytics and Google AdSense which store cookies. You can withdraw consent by deleting this site's settings in your browser or below.
+    <p class="mt-8">
+      Brawl Time Ninja allows you to check competitive and fun statistics for your Brawl Stars account.
+      Brawl Time Ninja uses the official Brawl Stars API. The service may be unreliable at times.
     </p>
 
-    <p>Icons by <a href="https://icons8.com/" rel="nofollow">Icons8</a> and <a href="https://fontawesome.com/" rel="nofollow">Font Awesome</a>.</p>
+    <h2>Contact</h2>
+
+    <p>
+      Send questions, feedback or advertising inquiries to <client-only><span>dev (at) {{ domain }}</span></client-only>.
+    </p>
+
+    <p>
+      Built with ❤️ by <a href="https://schneefux.xyz">schneefux</a>.
+      You can view this site's source code <a href="https://github.com/schneefux/brawltimeninja">on GitHub</a>.
+    </p>
+    <p>
+      With your consent, this site shares visitor data with some partners. You can withdraw consent by deleting this site's settings in your browser or below.
+    </p>
 
     <playwire-privacy></playwire-privacy>
 
@@ -49,6 +55,9 @@
     <p>We may update our Privacy Policy from time to time. Thus, we advise you to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page. These changes are effective immediately, after they are posted on this page.</p>
     <h2>Contact Us</h2>
     <p>If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us.</p>
+
+    <h1>Miscellaneous</h1>
+    <p>Icons by <a href="https://icons8.com/" rel="nofollow">Icons8</a> and <a href="https://fontawesome.com/" rel="nofollow">Font Awesome</a>.</p>
   </b-page>
 </template>
 
