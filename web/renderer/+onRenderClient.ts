@@ -15,9 +15,9 @@ import {
 import 'core-js/stable/structured-clone' // used by vega-lite
 import 'core-js/stable/object/from-entries'
 
-export { render }
+export { onRenderClient }
 
-async function render(pageContext: PageContext) {
+async function onRenderClient(pageContext: PageContext) {
   const params = createApp(pageContext)
 
   Sentry.init({

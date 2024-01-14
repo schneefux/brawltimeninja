@@ -1,6 +1,6 @@
 import { createSSRApp } from 'vue'
-import type { PageContext } from './types'
-import { setPageContext } from './usePageContext'
+import type { PageContext } from '../../renderer/types'
+import { setPageContext } from '../../renderer/usePageContext'
 import { createHead } from '@unhead/vue'
 import { ClientOnly } from '@schneefux/klicker/components'
 
