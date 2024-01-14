@@ -6,7 +6,13 @@
     :event-id="eventId"
     nobackground
   >
-    <template v-slot:preview></template>
+    <template
+      v-slot:infobar
+      v-if="active"
+    >
+      <p class="text-right">{{ $t('state.event-active') }}</p>
+    </template>
+    <template v-slot:preview><template></template></template>
     <template v-slot:content>
       <div class="pt-4 h-full flex flex-col justify-center">
         <map-img
@@ -38,6 +44,10 @@ export default defineComponent({
     eventId: {
       type: [String, Number],
       required: true
+    },
+    active: {
+      type: Boolean,
+      required: false
     },
   },
   setup(props) {

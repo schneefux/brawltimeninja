@@ -41,6 +41,7 @@
                       {{ $t('option.all-maps') }}
                     </b-button>
                     <b-button
+                      v-if="activeNonPowerLeagueEventsAvailable"
                       :dark="!selectedActiveNonPowerLeagueMaps"
                       :primary="selectedActiveNonPowerLeagueMaps"
                       class="w-full"
@@ -50,6 +51,7 @@
                       {{ $t('option.all-maps') }}: {{ $t('events.active.title') }}
                     </b-button>
                     <b-button
+                      v-if="activePowerLeagueEventsAvailable"
                       :dark="!selectedActivePowerLeagueMaps"
                       :primary="selectedActivePowerLeagueMaps"
                       class="w-full"
@@ -65,12 +67,11 @@
                 v-else-if="event.key.startsWith('all-mode-')"
                 :mode="event.mode"
                 :class="{
-                  'bg-primary-400 rounded-2xl': mode == event.mode && map == 'all',
+                  'bg-primary-400 rounded-2xl light': mode == event.mode,
                 }"
                 nobackground
                 @click.capture.prevent.stop="onSelectModeMap({ mode: event.mode })"
               >
-                <template v-slot:preview></template>
                 <template v-slot:content>
                   <p class="pt-4 h-full flex flex-col justify-center items-center">
                     {{ $t('option.all-maps') }}
@@ -82,8 +83,9 @@
                 :mode="event.mode"
                 :map="event.map"
                 :event-id="event.id"
+                :active="event.active"
                 :class="{
-                  'bg-primary-400 rounded-2xl': mode == event.mode && map == event.map,
+                  'bg-primary-400 rounded-2xl light': mode == event.mode && map == event.map,
                 }"
                 @click.capture.prevent.stop="onSelectModeMap({ mode: event.mode, map: event.map })"
               ></event-picture-card>
@@ -129,8 +131,10 @@ export default defineComponent({
     const allEvents = useAllEvents()
     const activeNonPowerLeagueEvents = useActiveEvents([], { powerplay: ['false'] })
     const activeNonPowerLeagueMaps = computed(() => activeNonPowerLeagueEvents.value.map(e => e.map))
+    const activeNonPowerLeagueEventsAvailable = computed(() => activeNonPowerLeagueEvents.value.length > 0)
     const activePowerLeagueEvents = useActiveEvents([], { powerplay: ['true'] })
     const activePowerLeagueMaps = computed(() => activePowerLeagueEvents.value.map(e => e.map))
+    const activePowerLeagueEventsAvailable = computed(() => activePowerLeagueEvents.value.length > 0)
 
     const stringArraysEqual = (a1: (string|undefined)[], a2: (string|undefined)[]) => a1.slice().sort().toString() == a2.slice().sort().toString()
     const selectedActivePowerLeagueMaps = computed(() => stringArraysEqual(props.modelValue.map ?? [], activePowerLeagueMaps.value))
@@ -139,7 +143,7 @@ export default defineComponent({
     // events (incl. placeholders) are sorted by events-roll
     const allEventsAndSummaries = computed<EventMetadata[]>(() => {
       const modes = [...new Set(allEvents.value.map(e => e.mode))]
-      return (<EventMetadata[]>[]).concat(
+      return (<(EventMetadata & { active: boolean })[]>[]).concat(
         [{
           key: 'all',
           id: '0',
@@ -147,6 +151,7 @@ export default defineComponent({
           mode: 'all',
           powerplay: false,
           metrics: {},
+          active: false,
         }],
         modes.map(m => ({
           key: `all-mode-${m}`,
@@ -155,8 +160,12 @@ export default defineComponent({
           mode: m,
           powerplay: false,
           metrics: {},
+          active: false,
         })),
-        allEvents.value,
+        allEvents.value.map(e => ({
+          ...e,
+          active: activePowerLeagueEvents.value.some(ee => e.id == ee.id) || activeNonPowerLeagueEvents.value.some(ee => e.id == ee.id),
+        })),
       )
     })
 
@@ -206,6 +215,8 @@ export default defineComponent({
       onSelectAllPowerLeagueMaps,
       selectedActivePowerLeagueMaps,
       selectedActiveNonPowerLeagueMaps,
+      activePowerLeagueEventsAvailable,
+      activeNonPowerLeagueEventsAvailable,
       allEventsAndSummaries,
       lightboxOpen,
       mapNames,

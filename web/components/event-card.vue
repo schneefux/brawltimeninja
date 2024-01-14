@@ -16,12 +16,14 @@
     </template>
 
     <template v-slot:preview>
-      <map-img
-        v-if="eventId != undefined && map != undefined"
-        :event-id="eventId"
-        :map="map"
-        clazz="h-12 w-12 object-contain"
-      ></map-img>
+      <slot name="preview">
+        <map-img
+          v-if="eventId != undefined && map != undefined"
+          :event-id="eventId"
+          :map="map"
+          clazz="h-12 w-12 object-contain"
+        ></map-img>
+      </slot>
     </template>
 
     <template v-if="'infobar' in $slots" v-slot:infobar>

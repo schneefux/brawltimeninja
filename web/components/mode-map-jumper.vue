@@ -50,8 +50,16 @@ export default defineComponent({
     const router = useRouter()
     const localePath = useLocalePath()
     const jumpToModeMap = async (slices: Partial<SliceValue>) => {
-      const mode = (slices.mode ?? [])[0]
-      const map = (slices.map ?? [])[0]
+      const modes = slices.mode ?? []
+      const maps = slices.map ?? []
+
+      if (maps.length > 1) {
+        await router.push(localePath('/tier-list/map'))
+        return
+      }
+
+      const mode = modes[0]
+      const map = maps[0]
 
       if (mode == undefined) {
         await router.push(localePath('/tier-list/brawler'))

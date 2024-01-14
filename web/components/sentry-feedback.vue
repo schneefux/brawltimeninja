@@ -4,6 +4,7 @@
       <b-card
         :loading="loading"
         :title="$t('feedback.title')"
+        :elevation="0"
       >
         <template v-slot:content>
           <form
