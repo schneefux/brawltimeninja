@@ -80,6 +80,7 @@ import { useAsync, useCacheHeaders, useConfig, useMeta, useValidate } from '~/co
 import { useRoute } from 'vue-router'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
+import { useRouteParams } from '~/composables/route-params'
 
 interface Map {
   id: string
@@ -99,15 +100,11 @@ export default defineComponent({
     const $klicker = useKlicker()
     const $config = useConfig()
     const i18n = useI18n()
-    const route = useRoute()
+    const routeParams = useRouteParams()
 
     const event = useAsync(async () => {
-      if (route.params.mode == undefined || route.params.map == undefined) {
-        return null
-      }
-
-      const mode = kebabToCamel(route.params.mode as string)
-      const map = deslugify(route.params.map as string)
+      const mode = kebabToCamel(routeParams.value!.mode as string)
+      const map = deslugify(routeParams.value!.map as string)
       const events = await $klicker.query({
         cubeId: 'map',
         slices: {
@@ -126,7 +123,7 @@ export default defineComponent({
         map,
         mode,
       } as Map
-    }, computed(() => `map-${route.params.mode}-${route.params.map}`))
+    }, computed(() => `map-${routeParams.value!.mode}-${routeParams.value!.map}`))
 
     useCacheHeaders()
     useMeta(() => {

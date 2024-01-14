@@ -78,8 +78,6 @@ export default defineComponent({
       target: localePath('/about'),
     }])
 
-    const route = useRoute()
-
     useMutationObserver(container, () => {
       // workaround for AdSense overriding min-height: 0px
       // https://weblog.west-wind.com/posts/2020/May/25/Fixing-Adsense-Injecting-height-auto-important-into-scrolled-Containers
@@ -103,7 +101,6 @@ export default defineComponent({
     useQuantcast(config.quantcastChoiceId)
 
     return {
-      route,
       links,
       container,
     }

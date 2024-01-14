@@ -35,18 +35,19 @@ import { useCacheHeaders, useMeta } from '~/composables/compat'
 import { defineComponent, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import { useRouteParams } from '~/composables/route-params'
 
 export default defineComponent({
   setup() {
     const i18n = useI18n()
 
     const route = useRoute()
+    const routeParams = useRouteParams()
     const metric = computed(() => {
-      if (route.fullPath.endsWith('/trophies')) {
+      if (route.path.endsWith('/trophies')) {
         return 'trophies'
       }
-      // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return route.params.metric ?? ''
+      return routeParams.value!.metric as string
     })
 
     useCacheHeaders()

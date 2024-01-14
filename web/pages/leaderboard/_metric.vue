@@ -20,6 +20,7 @@ import { CQuery, VTable } from '@schneefux/klicker/components'
 import { useRoute } from 'vue-router'
 import { useCacheHeaders } from '~/composables/compat'
 import { CubeQuery } from '@schneefux/klicker/types'
+import { useRouteParams } from '~/composables/route-params'
 
 export default defineComponent({
   components: {
@@ -27,11 +28,8 @@ export default defineComponent({
     VTable,
   },
   setup() {
-    const route = useRoute()
-    const metric = computed(() => {
-      // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return route.params.metric as string ?? ''
-    })
+    const routeParams = useRouteParams()
+    const metric = computed(() => routeParams.value!.metric as string)
 
     const currentSeason = formatClickhouseDate(getTodaySeasonEnd())
     const query = computed<CubeQuery>(() => ({

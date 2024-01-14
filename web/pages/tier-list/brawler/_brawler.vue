@@ -257,8 +257,8 @@ import { capitalizeWords } from '~/lib/util'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 import { ScrapedBrawler } from '~/model/Web'
-import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useRouteParams } from '~/composables/route-params'
 
 export default defineComponent({
   directives: {
@@ -273,11 +273,8 @@ export default defineComponent({
     const i18n = useI18n()
     const $config = useConfig()
 
-    const route = useRoute()
-    const brawlerId = computed(() => {
-      // FIXME when leaving the route, this computed property gets refreshed and brawler is undefined
-      return route.params.brawler as string ?? ''
-    })
+    const routeParams = useRouteParams()
+    const brawlerId = computed(() => routeParams.value!.brawler as string)
 
     // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)
     const brawlerName = computed(() => capitalizeWords(brawlerId.value.replace(/__/g, '. ').replace(/_/g, ' ')))

@@ -59,8 +59,8 @@ import { defineComponent, computed } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
 import { useMeta, useCacheHeaders } from '~/composables/compat'
 import { useActiveEvents } from '~/composables/dimension-values'
-import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useRouteParams } from '~/composables/route-params'
 
 export default defineComponent({
   directives: {
@@ -72,10 +72,9 @@ export default defineComponent({
   },
   setup() {
     const i18n = useI18n()
+    const routeParams = useRouteParams()
 
-    const route = useRoute()
-
-    const mode = computed(() => kebabToCamel(route.params.mode as string))
+    const mode = computed(() => kebabToCamel(routeParams.value!.mode as string))
     const events = useActiveEvents([], {
       mode: [mode.value],
     }, null)

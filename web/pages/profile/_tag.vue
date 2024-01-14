@@ -271,7 +271,7 @@ import { useI18n } from 'vue-i18n'
 import { useLoadAndValidatePlayer, usePlayerRender } from '~/composables/player'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { tagToId } from '~/lib/util'
-import { useRoute } from 'vue-router'
+import { useRouteParams } from '~/composables/route-params'
 
 export default defineComponent({
   directives: {
@@ -286,14 +286,14 @@ export default defineComponent({
   },
   async setup() {
     const i18n = useI18n()
-    const route = useRoute()
+    const routeParams = useRouteParams()
     const klicker = useKlicker()
 
     const store = useBrawlstarsStore()
     const player = computed(() => store.player)
 
     const origin = useSelfOrigin()
-    const playerTag = computed(() => route.params.tag as string)
+    const playerTag = computed(() => routeParams.value!.tag as string)
     const playerRenderUrl = usePlayerRender(playerTag)
 
     useCacheHeaders()
