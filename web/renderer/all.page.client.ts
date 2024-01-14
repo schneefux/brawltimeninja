@@ -33,6 +33,10 @@ async function render(pageContext: PageContext) {
         levels: ['error', 'assert']
       }),
       new HttpClientIntegration(),
+      new Sentry.BrowserTracing({
+        routingInstrumentation: Sentry.vueRouterInstrumentation(params.router),
+        tracePropagationTargets: ["localhost", /^https?:\/\/brawltime\.ninja/],
+      })
     ],
     ignoreErrors: [
       // ignore common errors triggered by ads
@@ -42,7 +46,9 @@ async function render(pageContext: PageContext) {
       'ox_esp',
       'Tyche blocked',
     ],
-    allowUrls: [/https?:\/\/brawltime\.ninja/]
+    allowUrls: [/https?:\/\/brawltime\.ninja/],
+    replaysOnErrorSampleRate: 0.001,
+    tracesSampleRate: 0.0001,
   })
   pageContext.sentry = Sentry as any
 

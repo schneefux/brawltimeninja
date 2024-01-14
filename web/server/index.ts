@@ -31,7 +31,6 @@ async function startServer() {
         levels: ['error', 'assert'],
       }),
     ],
-    tracesSampleRate: 1.0,
   })
   app.use(Sentry.Handlers.requestHandler())
 
