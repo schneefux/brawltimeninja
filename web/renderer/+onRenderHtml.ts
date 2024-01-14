@@ -24,16 +24,29 @@ async function onRenderHtml(pageContext: PageContextBuiltInServer & PageContext)
       return false
     }
 
-    await router.push(pageContext.urlOriginal)
-    await router.isReady()
+    let string: string
 
-    let string = await renderToString(app)
+    // FIXME rethink usage of abortStatusCode
+    if (pageContext.abortReason == undefined && pageContext.abortStatusCode == undefined) {
+      // render regular page
+      await router.push(pageContext.urlOriginal)
+      await router.isReady()
 
-    if (firstError) {
-      throw firstError
-    }
-    if (pageContext.abortStatusCode != undefined) {
-      throw render(pageContext.abortStatusCode, pageContext.abortReason)
+      string = await renderToString(app)
+
+      if (firstError) {
+        throw firstError
+      }
+      if (pageContext.abortStatusCode != undefined) {
+        throw render(pageContext.abortStatusCode, pageContext.abortReason)
+      }
+    } else {
+      // render error page
+      string = await renderToString(app)
+
+      if (firstError) {
+        throw firstError
+      }
     }
 
     const payload = await renderSSRHead(head)
