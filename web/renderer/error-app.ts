@@ -27,7 +27,7 @@ function createApp(pageContext: PageContext) {
     meta: [
       { name: 'theme-color', content: themeColor },
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     ],
   })
   app.use(head)

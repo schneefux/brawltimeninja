@@ -77,6 +77,8 @@ function createApp(pageContext: PageContext) {
       { rel: 'icon', href: '/icons/favicon.svg', type: 'image/svg+xml' },
       { rel: 'apple-touch-icon', href: '/icons/icon_x512.png', sizes: '512x512' },
       { rel: 'shortcut-icon', href: '/icons/maskable_icon_x48.png' },
+      { rel: 'preconnect', href: pageContext.envConfig.cubeUrl },
+      { rel: 'preconnect', href: pageContext.envConfig.mediaUrl },
       ...(locales.filter(l => l.show).map(l => ({
         rel: 'alternate',
         href: l.code == 'en' ? '/' : `/${l.code}`,
@@ -86,7 +88,7 @@ function createApp(pageContext: PageContext) {
     meta: [
       { name: 'theme-color', content: themeColor },
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     ],
   })
   app.use(head)

@@ -10,6 +10,7 @@
       <div id="logo" class="mx-auto relative">
         <img
           :src="logoWithCrownUrl"
+          alt="Logo"
           class="mx-auto mt-2 h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 object-contain"
         >
         <span

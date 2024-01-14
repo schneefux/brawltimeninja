@@ -6,6 +6,7 @@
       type="image/webp"
     >
     <img
+      loading="lazy"
       :src="src"
       :class="clazz"
       :style="ztyle"
