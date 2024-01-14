@@ -67,6 +67,9 @@ async function startServer() {
       },
     }
     const pageContext = await renderPage<PageContext, typeof pageContextInit>(pageContextInit)
+    if (pageContext.errorWhileRendering) {
+      Sentry.captureException(pageContext.errorWhileRendering)
+    }
     if (pageContext.responseHeaders != undefined) {
       res.set(pageContext.responseHeaders)
     }
