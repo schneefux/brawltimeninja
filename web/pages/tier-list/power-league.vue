@@ -75,6 +75,7 @@ import { useMeta, useCacheHeaders } from '~/composables/compat'
 import { useActiveEvents } from '~/composables/dimension-values'
 import { useI18n } from 'vue-i18n'
 import { EventMetadata } from '~/plugins/klicker.service'
+import { camelToKebab } from '~/lib/util'
 
 export default defineComponent({
   directives: {
@@ -117,7 +118,7 @@ export default defineComponent({
       title: i18n.t('draft-tool.title.short'),
       element: draftTool.value,
     }, ...[...Object.keys(eventsByMode.value)].map(mode => ({
-      id: mode,
+      id: camelToKebab(mode),
       title: i18n.t(`mode.${mode}`),
       element: modeSectionRefs.value[mode] ?? undefined,
     }))])
