@@ -1013,7 +1013,7 @@
   resolved "https://registry.yarnpkg.com/@brillout/require-shim/-/require-shim-0.1.2.tgz#a3a93e2f46608735d0363c7f38979fcd1bbfb2ad"
   integrity sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==
 
-"@brillout/vite-plugin-server-entry@^0.4.2":
+"@brillout/vite-plugin-server-entry@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@brillout/vite-plugin-server-entry/-/vite-plugin-server-entry-0.4.3.tgz#44de8f93479ba1f728a0e99e6877f514ad25a00c"
   integrity sha512-JDWFZOsSJfDo9511r7OJDeNON7x5mwIGNZCi1DQWaVuYK2cs9J/eD3Jwypg4M1ex9iAb/WvI+aSAEfsVGmNeMQ==
@@ -10613,16 +10613,16 @@ vega@^5.27.0:
     vega-voronoi "~4.2.2"
     vega-wordcloud "~4.1.4"
 
-vike@^0.4.156-commit-b89a01a:
-  version "0.4.156"
-  resolved "https://registry.yarnpkg.com/vike/-/vike-0.4.156.tgz#8be5ac66223567f1a360aace5d882e3cd97326f5"
-  integrity sha512-CaeG+clu+oLDKSv4B+6aOYoWNUb/URF6dK3/AeC9NJD0XvsfW8at1yQO5hA3M1SVWpe7c/tUGw1uYVgceT4JMw==
+vike@0.4.156-commit-b89a01a:
+  version "0.4.156-commit-b89a01a"
+  resolved "https://registry.yarnpkg.com/vike/-/vike-0.4.156-commit-b89a01a.tgz#31d36bf2091a3d2bc129de1118c159804f7cb23a"
+  integrity sha512-5TJ8Wwl8r1e8t+nHcewQXCth5sjmSd7KP0zKPo+yzw1R6CIzomadDhAqvW6OGMsyaCr5OC6uW2m2Og6C83IOEA==
   dependencies:
     "@brillout/import" "^0.2.3"
     "@brillout/json-serializer" "^0.5.8"
     "@brillout/picocolors" "^1.0.10"
     "@brillout/require-shim" "^0.1.2"
-    "@brillout/vite-plugin-server-entry" "^0.4.2"
+    "@brillout/vite-plugin-server-entry" "^0.4.3"
     acorn "^8.0.0"
     cac "^6.0.0"
     es-module-lexer "^1.0.0"

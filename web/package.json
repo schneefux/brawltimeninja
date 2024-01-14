@@ -49,7 +49,7 @@
     "superjson": "^2.2.1",
     "typescript": "^5.3.3",
     "undici": "^6.3.0",
-    "vike": "^0.4.156-commit-b89a01a",
+    "vike": "0.4.156-commit-b89a01a",
     "vite": "^5.0.11",
     "vue": "^3.4.13",
     "vue-gtag": "^2.0.1",
