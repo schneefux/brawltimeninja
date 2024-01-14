@@ -22,14 +22,22 @@
           <span>Error details:</span>
           <pre class="max-w-xl whitespace-normal">{{ error }}</pre>
         </p>
+
+        <b-button
+          class="mt-4"
+          md
+          dark
+          @click="feedbackModalOpen = true"
+        >{{ $t('feedback.bug-cta' )}}</b-button>
+        <sentry-feedback v-model="feedbackModalOpen"></sentry-feedback>
       </div>
     </client-only>
   </main>
 </template>
 
 <script lang="ts">
-import { usePageContext } from '~/renderer/usePageContext';
-import { defineComponent, computed } from 'vue'
+import { usePageContext } from '~/composables/page-context';
+import { defineComponent, computed, ref } from 'vue'
 import { BButton } from '@schneefux/klicker/components';
 
 export default defineComponent({
@@ -51,9 +59,12 @@ export default defineComponent({
     const notFound = computed(() => pageContext.abortStatusCode == 404)
     const error = computed(() => pageContext.abortReason)
 
+    const feedbackModalOpen = ref(false)
+
     return {
       notFound,
       error,
+      feedbackModalOpen,
     }
   },
 })

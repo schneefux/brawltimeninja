@@ -142,8 +142,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue'
-import { useKlickerConfig } from '../../composables/klicker'
+import { defineComponent, computed, inject } from 'vue'
+import { KlickerConfigInjectionKey } from '../../composables/klicker'
 import { generateId, BindOnce } from '../../directives/bind-once'
 
 export default defineComponent({
@@ -215,11 +215,12 @@ export default defineComponent({
   },
   setup(props, { slots, attrs }) {
     const renderTitle = computed(() => props.title != undefined || props.icon != undefined || 'preview' in slots)
-    const { navigate, linkComponent } = useKlickerConfig()
+    const klickerConfig = inject(KlickerConfigInjectionKey, undefined)
+
+    const linkComponent = computed(() => klickerConfig?.linkComponent ?? 'a')
 
     const onClickCaptured = (e: Event) => {
       if (attrs.onClick != undefined) {
-        console.log('click capture, on click')
         e.stopPropagation();
         (<any> attrs).onClick()
         return
@@ -228,16 +229,14 @@ export default defineComponent({
 
     const onClick = async (e: Event) => {
       if (props.link != undefined) {
-        console.log('click, on click')
         e.stopPropagation()
-        await navigate(props.link)
+        await klickerConfig?.navigate(props.link)
         return
       }
     }
 
     const onClickHeader = (e: Event) => {
       if (attrs.onClickHeader != undefined) {
-        console.log('click header, on click header')
         e.stopPropagation();
         (<any>attrs).onClickHeader()
         return
@@ -251,7 +250,6 @@ export default defineComponent({
       onClickHeader,
       onClickCaptured,
       renderTitle,
-      navigate,
       linkComponent,
       id,
     }

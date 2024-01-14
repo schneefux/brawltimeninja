@@ -121,6 +121,7 @@ declare module 'vue' {
     SAlly: typeof import('./components/klicker/s-ally.vue')['default']
     SBrawler: typeof import('./components/klicker/s-brawler.vue')['default']
     SCompetitionMaps: typeof import('./components/klicker/s-competition-maps.vue')['default']
+    SentryFeedback: typeof import('./components/sentry-feedback.vue')['default']
     ShareRenderButton: typeof import('./components/share-render-button.vue')['default']
     SModeMap: typeof import('./components/klicker/s-mode-map.vue')['default']
     SPlayerName: typeof import('./components/klicker/s-player-name.vue')['default']
