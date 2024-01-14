@@ -618,8 +618,8 @@
     "feedback.feedback-cta": "Submit an Idea",
     "feedback.bug-cta": "Report a Bug",
     "feedback.title": "Feedback",
-    "feedback.name": "Name (optional)",
-    "feedback.email": "E-Mail (optional)",
+    "feedback.name": "Your Name (optional)",
+    "feedback.email": "Your E-Mail (optional)",
     "feedback.description": "Description",
     "feedback.success": "Thank you for your feedback!",
     "action.submit": "Submit"

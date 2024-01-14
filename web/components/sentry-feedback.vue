@@ -21,6 +21,7 @@
             <b-textbox
               v-bind-once="{ id: `${prefix}-name` }"
               v-model="name"
+              autocomplete="given-name"
               dark
             ></b-textbox>
 
@@ -33,6 +34,7 @@
             <b-textbox
               v-bind-once="{ id: `${prefix}-email` }"
               v-model="email"
+              type="email"
               dark
             ></b-textbox>
 
@@ -46,6 +48,7 @@
               v-bind-once="{ id: `${prefix}-comment` }"
               v-model="comment"
               rows="4"
+              required
               dark
             ></b-textarea>
 
@@ -56,7 +59,7 @@
                 @click="lightboxOpen = false"
               >{{ $t('action.close') }}</b-button>
               <b-button
-                :disabled="loading"
+                :disabled="loading || comment.length == 0"
                 type="submit"
                 primary
                 md
@@ -113,7 +116,7 @@ export default defineComponent({
     const submit = async () => {
       loading.value = true
       const eventId = sentry.lastEventId() ?? sentry.captureMessage("User Feedback");
-      await (<any>sentry).captureUserFeedback({
+      await sentry.captureUserFeedback({
         event_id: eventId,
         name: name.value,
         email: email.value,
