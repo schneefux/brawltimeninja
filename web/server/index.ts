@@ -91,8 +91,10 @@ async function startServer() {
     }
     */
 
-    headers.forEach(([name, value]) => res.setHeader(name, value))
-    res.status(pageContext.statusCode ?? statusCode).send(body)
+    res.set(Object.fromEntries(headers))
+    res.set('document-policy', 'js-profiling')
+    res.status(pageContext.statusCode ?? statusCode)
+    res.send(body)
   })
 
   app.use(Sentry.Handlers.errorHandler())

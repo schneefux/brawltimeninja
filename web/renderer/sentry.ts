@@ -35,6 +35,7 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
         autoInject: false,
         showName: false,
       }),
+      new Sentry.BrowserProfilingIntegration(),
     ],
     ignoreErrors: [
       // ignore common errors triggered by ads
@@ -47,6 +48,7 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
     allowUrls: [/https?:\/\/brawltime\.ninja/],
     replaysOnErrorSampleRate: 0.01,
     tracesSampleRate: 0.001,
+    profilesSampleRate: 0.25, // relative to tracesSampleRate
   })
 
   app.provide(SentryInjectionKey, Sentry)
