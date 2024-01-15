@@ -19,14 +19,14 @@ import '~/assets/css/fonts.css'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
-if (import.meta.env.DEV) {
-  import('~/assets/css/development.css')
-}
-
 const layouts = import.meta.glob<ComponentPublicInstance>('../layouts/*.vue', { eager: true, import: 'default' })
 
 export default defineComponent({
   setup() {
+    if (import.meta.env.DEV) {
+      import('~/assets/css/development.css')
+    }
+
     const route = useRoute()
     const Layout = computed(() => {
       const layout = route.meta.layout as string ?? 'default'

@@ -101,8 +101,11 @@ export default defineComponent({
   @apply max-md:top-28 !important; /* 3rem (12) for scroll spy nav + 3.5rem (14) for sticky header + 0.5rem (2) padding */
 }
 
-main {
-  /* add padding to bottom of page so that the rail does not overlap any content */
-  @apply max-md:mb-[138px] !important; /* 106px for the rail + 32px (mb-8) as usual */
+/* add paddings to bottom of the page so that the rail (106px) does not overlap any content */
+#main {
+  @apply max-md:mb-[106px] !important;
+}
+#footer {
+  @apply md:pb-[calc(106px+16px)] !important;
 }
 </style>

@@ -19,7 +19,7 @@
       scraper
     ></ad>
 
-    <div class="fill-layout-height">
+    <div id="main" class="fill-layout-height">
       <slot></slot>
     </div>
 
