@@ -673,7 +673,7 @@ const brawlerMetric: Metric = {
   },
 }
 
-const highestTrophiesMetric: Metric = {
+const highestBrawlerTrophiesMetric: Metric = {
   id: 'highestTrophies',
   name: 'Highest Trophies',
   sign: -1,
@@ -684,7 +684,7 @@ const highestTrophiesMetric: Metric = {
   },
 }
 
-export const trophiesMetric: Metric = {
+export const brawlerTrophiesMetric: Metric = {
   id: 'trophies',
   name: 'Trophies',
   description: 'The amount of Trophies tells you how many trophies players have with this Brawler on average.',
@@ -1656,8 +1656,8 @@ const playerBrawlerMetrics = [
   // commonMetrics.brawlerId,
   brawlerMetric,
   powerMetric,
-  trophiesMetric,
-  highestTrophiesMetric,
+  brawlerTrophiesMetric,
+  highestBrawlerTrophiesMetric,
   starpowersMetric,
   gadgetsMetric,
   gearsMetric,
