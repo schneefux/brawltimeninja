@@ -2,6 +2,9 @@
   <component
     :is="Layout"
     :key="locale"
+    :class="{
+      'dev': isDev,
+    }"
   >
     <router-view v-slot="{ Component }">
       <Suspense>
@@ -16,6 +19,7 @@ import { defineComponent, ComponentPublicInstance, computed } from 'vue'
 import '~/assets/css/tailwind.css'
 import '~/assets/css/transitions.css'
 import '~/assets/css/fonts.css'
+import '~/assets/css/development.css'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
@@ -23,10 +27,6 @@ const layouts = import.meta.glob<ComponentPublicInstance>('../layouts/*.vue', { 
 
 export default defineComponent({
   setup() {
-    if (import.meta.env.DEV) {
-      import('~/assets/css/development.css')
-    }
-
     const route = useRoute()
     const Layout = computed(() => {
       const layout = route.meta.layout as string ?? 'default'
@@ -41,7 +41,10 @@ export default defineComponent({
     // put locale as key on the root component to force rerender on locale change
     const locale = computed(() => i18n.locale.value)
 
+    const isDev = import.meta.env.DEV
+
     return {
+      isDev,
       Layout,
       locale,
     }
