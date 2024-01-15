@@ -139,6 +139,10 @@ export default defineComponent({
           })),
         ),
       }, {
+        id: 'events-powerleague',
+        name: i18n.t('events.powerleague.title'),
+        target: localePath(`/tier-list/power-league`),
+      }, {
         id: 'events',
         name: i18n.t('nav.Events'),
         target: localePath('/tier-list/map'),
@@ -148,10 +152,6 @@ export default defineComponent({
             name: i18n.t('events.active.title'),
             target: localePath(`/tier-list/map#active`),
           }, {
-            id: 'events-powerleague',
-            name: i18n.t('events.powerleague.title'),
-            target: localePath(`/tier-list/map#powerleague`),
-          }, {
             id: 'events-upcoming',
             name: i18n.t('events.upcoming.title'),
             target: localePath(`/tier-list/map#upcoming`),
@@ -159,10 +159,6 @@ export default defineComponent({
             id: 'events-season',
             name: i18n.t('events.season.title'),
             target: localePath(`/tier-list/map#season`),
-          }, {
-            id: 'events-competition-winners',
-            name: i18n.t('tier-list.competition-winners.title'),
-            target: localePath(`/tier-list/map#competition-winners`),
           }],
           modes.value.map(m => ({
             id: m,
