@@ -1,79 +1,82 @@
 <template>
   <b-lightbox v-model="lightboxOpen">
     <div class="w-full max-w-md">
-      <b-card
-        :loading="loading"
-        :title="$t('feedback.title')"
-        :elevation="0"
-      >
-        <template v-slot:content>
-          <form
-            v-if="!success"
-            class="flex flex-col gap-y-2"
-            @submit.prevent="submit()"
-          >
-            <label
-              v-bind-once="{ for: `${prefix}-name` }"
-              class="mt-3"
+      <form @submit.prevent="submit()">
+        <b-card
+          :loading="loading"
+          :title="$t('feedback.title')"
+          :elevation="0"
+        >
+          <template v-slot:content>
+            <div
+              v-if="!success"
+              class="flex flex-col gap-y-2"
             >
-              {{ $t('feedback.name') }}
-            </label>
-            <b-textbox
-              v-bind-once="{ id: `${prefix}-name` }"
-              v-model="name"
-              autocomplete="given-name"
-              dark
-            ></b-textbox>
+              <label
+                v-bind-once="{ for: `${prefix}-name` }"
+                class="mt-3"
+              >
+                {{ $t('feedback.name') }}
+              </label>
+              <b-textbox
+                v-bind-once="{ id: `${prefix}-name` }"
+                v-model="name"
+                autocomplete="given-name"
+                dark
+              ></b-textbox>
 
-            <label
-              v-bind-once="{ for: `${prefix}-email` }"
-              class="mt-3"
+              <label
+                v-bind-once="{ for: `${prefix}-email` }"
+                class="mt-3"
+              >
+                {{ $t('feedback.email') }}
+              </label>
+              <b-textbox
+                v-bind-once="{ id: `${prefix}-email` }"
+                v-model="email"
+                type="email"
+                dark
+              ></b-textbox>
+
+              <label
+                v-bind-once="{ for: `${prefix}-comment` }"
+                class="mt-3"
+              >
+                {{ $t('feedback.description') }}
+              </label>
+              <b-textarea
+                v-bind-once="{ id: `${prefix}-comment` }"
+                v-model="comment"
+                rows="4"
+                required
+                dark
+              ></b-textarea>
+            </div>
+            <p
+              v-else
+              class="prose dark:prose-invert"
             >
-              {{ $t('feedback.email') }}
-            </label>
-            <b-textbox
-              v-bind-once="{ id: `${prefix}-email` }"
-              v-model="email"
-              type="email"
-              dark
-            ></b-textbox>
-
-            <label
-              v-bind-once="{ for: `${prefix}-comment` }"
-              class="mt-3"
-            >
-              {{ $t('feedback.description') }}
-            </label>
-            <b-textarea
-              v-bind-once="{ id: `${prefix}-comment` }"
-              v-model="comment"
-              rows="4"
-              required
-              dark
-            ></b-textarea>
-
-            <div class="mt-4 ml-auto space-x-2">
+              {{ $t('feedback.success') }}
+            </p>
+          </template>
+          <template v-slot:actions>
+            <div class="space-x-2">
               <b-button
                 dark
                 md
                 @click="lightboxOpen = false"
               >{{ $t('action.close') }}</b-button>
               <b-button
+                v-if="!success"
                 :disabled="loading || comment.length == 0"
                 type="submit"
                 primary
                 md
               >{{ $t('action.submit') }}</b-button>
             </div>
-          </form>
-          <p
-            v-else
-            class="prose dark:prose-invert"
-          >
-            {{ $t('feedback.success') }}
-          </p>
-        </template>
-      </b-card>
+          </template>
+        </b-card>
+      </form>
     </div>
   </b-lightbox>
 </template>
