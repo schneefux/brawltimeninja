@@ -75,10 +75,10 @@ job "redis" {
       }
 
       resources {
-        # for casemaker: 128 CPU, 256 RAM
-        cpu = 792
-        memory = 1024 # will not usually exceed the limit
-        memory_max = 1536
+        # reserve 3-4x to handle spikes
+        cpu = 1024 # typically 192
+        memory = 3072 # typically 768
+        memory_max = 3328
       }
     }
   }
