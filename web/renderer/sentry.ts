@@ -41,7 +41,7 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
       'Tyche blocked',
     ],
     allowUrls: [/https?:\/\/brawltime\.ninja/],
-    replaysOnErrorSampleRate: 0.1,
+    replaysOnErrorSampleRate: 0.01,
     tracesSampleRate: 0.01,
     profilesSampleRate: 0.25, // relative to tracesSampleRate
     trackComponents: true,
