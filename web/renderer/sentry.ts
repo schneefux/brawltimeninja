@@ -8,6 +8,7 @@ import {
   ReportingObserver as ReportingObserverIntegration,
   RewriteFrames as RewriteFramesIntegration,
 } from '@sentry/integrations'
+import { Feedback } from '@sentry-internal/feedback'
 
 export const SentryInjectionKey = Symbol('sentry') as InjectionKey<typeof Sentry>
 
@@ -29,7 +30,7 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
         routingInstrumentation: router != undefined ? Sentry.vueRouterInstrumentation(router) : undefined,
         tracePropagationTargets: ['localhost', /^https?:\/\/brawltime\.ninja/],
       }),
-      new Sentry.Feedback({
+      new Feedback({
         colorScheme: 'dark',
         showBranding: false,
         autoInject: false,

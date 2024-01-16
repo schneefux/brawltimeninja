@@ -118,13 +118,11 @@ export default defineComponent({
     const sentry = useSentry()
     const submit = async () => {
       loading.value = true
-      const eventId = sentry.lastEventId() ?? sentry.captureMessage("User Feedback");
-      await sentry.captureUserFeedback({
-        event_id: eventId,
+      await (<any> sentry).sendFeedback({
         name: name.value,
         email: email.value,
         comments: comment.value,
-      })
+      }, { includeReplay: true })
       loading.value = false
       success.value = true
     }

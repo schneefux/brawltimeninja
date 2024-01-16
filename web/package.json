@@ -16,6 +16,7 @@
     "@jacksongross/vue-tweet-embed": "^3.0.1",
     "@resvg/resvg-js": "^2.6.0",
     "@schneefux/klicker": "link:../klicker",
+    "@sentry-internal/feedback": "^7.93.0",
     "@sentry/integrations": "^7.93.0",
     "@sentry/vue": "^7.93.0",
     "@stdlib/stats-base-dists-chisquare-pdf": "^0.1.0",
