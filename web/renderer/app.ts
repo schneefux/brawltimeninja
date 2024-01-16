@@ -120,6 +120,12 @@ function createApp(pageContext: PageContext) {
     },
     queryCache: new QueryCache({
       onError(err) {
+        if (err.name == 'Error' && err.message.length == 0) {
+          // cube.js RequestError, ignore
+          // FIXME import it from cubejs and match the class
+          return
+        }
+
         app.runWithContext(() => {
           const sentry = useSentry()
           sentry?.captureException(err)
