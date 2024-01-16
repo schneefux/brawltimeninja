@@ -8,7 +8,6 @@ import {
   ReportingObserver as ReportingObserverIntegration,
   RewriteFrames as RewriteFramesIntegration,
 } from '@sentry/integrations'
-import { Feedback } from '@sentry-internal/feedback'
 
 export const SentryInjectionKey = Symbol('sentry') as InjectionKey<typeof Sentry>
 
@@ -31,6 +30,7 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
         tracePropagationTargets: ['localhost', /^https?:\/\/brawltime\.ninja/],
       }),
       new Sentry.BrowserProfilingIntegration(),
+      new Sentry.Replay(),
     ],
     ignoreErrors: [
       // ignore common errors triggered by ads
@@ -44,6 +44,7 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
     replaysOnErrorSampleRate: 0.1,
     tracesSampleRate: 0.01,
     profilesSampleRate: 0.25, // relative to tracesSampleRate
+    trackComponents: true,
   })
 
   app.provide(SentryInjectionKey, Sentry)
