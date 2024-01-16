@@ -30,7 +30,11 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
         tracePropagationTargets: ['localhost', /^https?:\/\/brawltime\.ninja/],
       }),
       new Sentry.BrowserProfilingIntegration(),
-      new Sentry.Replay(),
+      new Sentry.Replay({
+        maskAllText: false,
+        maskAllInputs: false,
+        blockAllMedia: false,
+      }),
     ],
     ignoreErrors: [
       // ignore common errors triggered by ads
