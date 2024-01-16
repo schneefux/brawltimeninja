@@ -30,12 +30,6 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
         routingInstrumentation: router != undefined ? Sentry.vueRouterInstrumentation(router) : undefined,
         tracePropagationTargets: ['localhost', /^https?:\/\/brawltime\.ninja/],
       }),
-      new Feedback({
-        colorScheme: 'dark',
-        showBranding: false,
-        autoInject: false,
-        showName: false,
-      }),
       new Sentry.BrowserProfilingIntegration(),
     ],
     ignoreErrors: [

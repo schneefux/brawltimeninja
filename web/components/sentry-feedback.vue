@@ -9,7 +9,7 @@
         >
           <template v-slot:content>
             <div
-              v-if="!success"
+              v-if="result == undefined"
               class="flex flex-col gap-y-2"
             >
               <label
@@ -56,7 +56,7 @@
               v-else
               class="prose dark:prose-invert"
             >
-              {{ $t('feedback.success') }}
+              {{ result == 'success' ? $t('feedback.success') : $t('feedback.error') }}
             </p>
           </template>
           <template v-slot:actions>
@@ -67,7 +67,7 @@
                 @click="lightboxOpen = false"
               >{{ $t('action.close') }}</b-button>
               <b-button
-                v-if="!success"
+                v-if="result == undefined"
                 :disabled="loading || comment.length == 0"
                 type="submit"
                 primary
@@ -82,11 +82,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import { BTextbox, BButton, BTextarea, BLightbox, BCard } from '@schneefux/klicker/components'
 import { useSentry } from '~/composables/compat'
 import { BindOnce, generateId } from '@schneefux/klicker/directives'
 import { useVModel } from '@vueuse/core'
+import type Feedback from '@sentry-internal/feedback'
 
 export default defineComponent({
   components: {
@@ -113,18 +114,36 @@ export default defineComponent({
     const name = ref('')
     const email = ref('')
     const comment = ref('')
-    const success = ref(false)
+    const result = ref<'success'|'error'>()
 
     const sentry = useSentry()
+
+    let FeedbackIntegration: typeof Feedback
+
+    onMounted(async () => {
+      FeedbackIntegration = await import('@sentry-internal/feedback')
+    })
+
     const submit = async () => {
       loading.value = true
-      await (<any> sentry).sendFeedback({
-        name: name.value,
-        email: email.value,
-        comments: comment.value,
-      }, { includeReplay: true })
+      result.value = undefined
+      if (FeedbackIntegration == undefined) {
+        result.value = 'error'
+      } else {
+        try {
+          await FeedbackIntegration.sendFeedback({
+            name: name.value,
+            email: email.value,
+            message: comment.value,
+          }, { includeReplay: true })
+          result.value = 'success'
+        } catch (err) {
+          sentry.captureException(err)
+          console.error(err)
+          result.value = 'error'
+        }
+      }
       loading.value = false
-      success.value = true
     }
 
     const lightboxOpen = useVModel(props, 'modelValue', emit)
@@ -136,9 +155,9 @@ export default defineComponent({
       email,
       prefix,
       submit,
+      result,
       comment,
       loading,
-      success,
       lightboxOpen,
     }
   },
