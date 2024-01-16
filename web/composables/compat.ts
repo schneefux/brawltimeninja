@@ -1,4 +1,4 @@
-import { computed, ComputedRef, inject, onServerPrefetch, Ref, toRef } from "vue"
+import { computed, ComputedRef, inject, onMounted, onServerPrefetch, Ref, toRef } from "vue"
 import { useQuery, keepPreviousData } from "@tanstack/vue-query";
 import { useI18n } from 'vue-i18n'
 import { usePageContext } from '~/composables/page-context'
@@ -105,7 +105,11 @@ export function useLocaleCookieRedirect() {
   const i18n = useI18n()
   const route = useRoute()
 
-  if (route.fullPath == '/' && !import.meta.env.SSR) {
+  onMounted(() => {
+    if (route.path != '/') {
+      return
+    }
+
     const userLanguage = navigator.languages[0] ?? navigator.language
 
     const cookieLocale = locales.find(l => Cookies.get(i18nCookieName) == l.code)
@@ -115,7 +119,7 @@ export function useLocaleCookieRedirect() {
     if (locale != undefined && locale.iso != i18n.locale.value) {
       switchToLocale(locale)
     }
-  }
+  })
 }
 
 export function useMeta(fun: () => ReactiveHead) {
