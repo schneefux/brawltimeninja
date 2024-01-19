@@ -175,12 +175,12 @@ export default defineComponent({
       nextTick(() => pageSize.value = calculatePageSize())
     }
 
-    useResizeObserver(wrapper, () => window.requestAnimationFrame(() => {
+    useResizeObserver(wrapper, ([ entry ]) => {
       if (wrapper.value == undefined) {
         return
       }
 
-      const pxWholeWidth = wrapper.value.getBoundingClientRect().width
+      const pxWholeWidth = entry.contentRect.width
       if (pxWholeWidth == pxPreviousWidth.value) {
         // wrapper width is same, skip update
         return
@@ -189,7 +189,7 @@ export default defineComponent({
       pxPreviousWidth.value = pxWholeWidth
 
       updatePageSize()
-    }))
+    })
 
     const previousItemsLength = ref(body.value.length)
     watch(() => body.value, () => {

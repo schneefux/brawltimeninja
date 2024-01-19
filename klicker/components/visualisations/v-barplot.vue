@@ -185,15 +185,15 @@ export default defineComponent({
     const pageSize = ref(values.value.length)
     const wrapper = ref<HTMLElement>()
 
-    useResizeObserver(wrapper, () => window.requestAnimationFrame(() => {
+    useResizeObserver(wrapper, ([ entry ]) => {
       if (wrapper.value == undefined) {
         return
       }
 
-      const pxAvailableWidth = wrapper.value.getBoundingClientRect().width - 100
+      const pxAvailableWidth = entry.contentRect.width - 100
       const pxPerBar = 12
       pageSize.value = Math.min(Math.max(Math.floor(pxAvailableWidth / pxPerBar), 1), values.value.length)
-    }))
+    })
 
     return {
       wrapper,

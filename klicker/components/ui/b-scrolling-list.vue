@@ -109,7 +109,7 @@ import { computed, defineComponent, onMounted, PropType, ref, nextTick } from 'v
 import BScrollingDashboard, { ScrollEvent } from './b-scrolling-dashboard.vue'
 import BDashboardCell from './b-dashboard-cell.vue'
 import BShimmer from './b-shimmer.vue'
-import { useMutationObserver } from '@vueuse/core'
+import { useIntersectionObserver } from '@vueuse/core'
 
 /**
  * Horizontally-scrolling dashboard with fixed-size, virtually scrolling items
@@ -210,7 +210,7 @@ export default defineComponent({
       }))
     )
 
-    const getColumnStyle = (wrapper: HTMLElement) => {
+    const getColumnStyle = (wrapper: HTMLElement, firstItemRect?: DOMRectReadOnly) => {
       const pxColumnWidth = parseInt(window.getComputedStyle(wrapper)
         .getPropertyValue('grid-auto-columns')
         .replace(/^.*?(\d+)px.*$/i, '$1'))
@@ -218,16 +218,12 @@ export default defineComponent({
       let pxPerItem = props.cellColumns * pxColumnWidth + (props.cellColumns - 1) * pxGap
       let columnsPerItem = props.cellColumns
 
-      const firstItem = Object.values(itemRefs.value)
-        .find(v => v != undefined)
-      if (firstItem != undefined) {
-        const firstItemElement = firstItem.$el
-
+      if (firstItemRect != undefined) {
         // items may stretch their columns so prefer the actual width over the default values
-        pxPerItem = firstItemElement.getBoundingClientRect().width
+        pxPerItem = firstItemRect.width
 
         // items may be squashed to take up fewer columns on smaller screens
-        columnsPerItem = parseInt(window.getComputedStyle(firstItemElement)
+        columnsPerItem = parseInt(window.getComputedStyle(firstItemRef.value!.$el)
           .getPropertyValue('grid-column-end')
           .replace(/(^.*?)(\d+)(.*$)/i, '$2'))
       }
@@ -253,19 +249,19 @@ export default defineComponent({
       pxGap: number,
     }>()
     const columnsPerItem = computed(() => columnStyle.value?.columnsPerItem ?? props.cellColumns)
-    const updateColumnWidths = () => {
+    const updateColumnWidths = (firstItemRect?: DOMRectReadOnly) => {
       if (container.value?.wrapper == undefined) {
-        nextTick(() => updateColumnWidths())
+        nextTick(() => updateColumnWidths(firstItemRect))
         return
       }
 
-      columnStyle.value = getColumnStyle(container.value.wrapper)
+      columnStyle.value = getColumnStyle(container.value.wrapper, firstItemRect)
     }
     onMounted(() => updateColumnWidths())
-    const containerWrapper = computed(() => container.value?.wrapper)
-    useMutationObserver(containerWrapper, () => updateColumnWidths(), {
-      childList: true,
-    })
+    const firstItemRef = computed(() => Object.values(itemRefs.value).find(v => v != undefined))
+    // use intersection observer to get the boundingClientRect without forcing reflow
+    // https://toruskit.com/blog/how-to-get-element-bounds-without-reflow/
+    useIntersectionObserver(firstItemRef, ([ entry ]) => updateColumnWidths(entry.boundingClientRect))
 
     const scrollSnap = ref(true)
     let timeout: NodeJS.Timeout

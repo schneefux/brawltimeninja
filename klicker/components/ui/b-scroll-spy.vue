@@ -157,7 +157,7 @@ export default defineComponent({
 
     const stopCallbacks = ref<(() => void)[]>([])
     const updateObservers = () => {
-      const topOffset = lgAndLarger.value ? 0 : navContainer.value!.getBoundingClientRect().bottom
+      const topOffset = lgAndLarger.value ? 0 : navContainer.value!.offsetHeight + navContainer.value!.offsetTop
 
       const newStopCallbacks: (() => void)[] = []
       for (const section of validSections.value) {
@@ -235,18 +235,14 @@ export default defineComponent({
 
     const toc = ref<HTMLElement>()
     const shouldStick = ref(false)
-    onMounted(() => {
-      const top = parseInt(window.getComputedStyle(navContainer.value!).top)
-
-      useIntersectionObserver(toc, ([{ isIntersecting }]) => {
-        if (isIntersecting) {
-          shouldStick.value = false
-        } else {
-          shouldStick.value = toc.value!.getBoundingClientRect().bottom < top
-        }
-      }, {
-        threshold: 0.0,
-      })
+    useIntersectionObserver(toc, ([ entry ]) => {
+      if (entry.isIntersecting) {
+        shouldStick.value = false
+      } else {
+        shouldStick.value = entry.boundingClientRect.bottom < navContainer.value!.offsetTop
+      }
+    }, {
+      threshold: 0.0,
     })
 
     return {
