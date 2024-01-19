@@ -63,17 +63,11 @@ export function useInstall(source: string) {
   const router = useRouter()
   const { isApp } = useIsApp()
 
-  const installable = computed(() => {
-    if (isApp.value) {
-      return false
+  const installable = ref(false)
+  onMounted(() => {
+    if (!isApp.value && (installPrompt.value !== undefined || detectAndroid() || detectIOS())) {
+      installable.value = true
     }
-    if (import.meta.env.SSR) {
-      return false
-    }
-    if (installPrompt.value !== undefined) {
-      return true
-    }
-    return detectAndroid() || detectIOS()
   })
 
   const install = async () => {
