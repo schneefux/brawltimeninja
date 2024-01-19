@@ -105,28 +105,26 @@ export default defineComponent({
 
     const arrivedLeft = ref<boolean>(true)
     const arrivedRight = ref<boolean>(true)
-    const onUpdate = (cause: 'scroll'|'rerender') => {
-      requestAnimationFrame(() => {
-        if (cause == 'scroll') {
-          emit(cause, {
-            x: scroll.x.value,
-            arrivedLeft: scroll.arrivedState.left,
-            arrivedRight: scroll.arrivedState.right,
-          })
-        }
-        if (cause == 'rerender') {
-          emit(cause, {
-            x: scroll.x.value,
-            arrivedLeft: scroll.arrivedState.left,
-            arrivedRight: scroll.arrivedState.right,
-          })
-        }
+    const onUpdate = (cause: 'scroll'|'rerender') => requestAnimationFrame(() => {
+      if (cause == 'scroll') {
+        emit(cause, {
+          x: scroll.x.value,
+          arrivedLeft: scroll.arrivedState.left,
+          arrivedRight: scroll.arrivedState.right,
+        })
+      }
+      if (cause == 'rerender') {
+        emit(cause, {
+          x: scroll.x.value,
+          arrivedLeft: scroll.arrivedState.left,
+          arrivedRight: scroll.arrivedState.right,
+        })
+      }
 
-        const scrollable = wrapper.value != undefined && wrapper.value.scrollWidth > wrapper.value.clientWidth
-        arrivedLeft.value = scroll.arrivedState.left || !scrollable
-        arrivedRight.value = scroll.arrivedState.right || !scrollable
-      })
-    }
+      const scrollable = wrapper.value != undefined && wrapper.value.scrollWidth > wrapper.value.clientWidth
+      arrivedLeft.value = scroll.arrivedState.left || !scrollable
+      arrivedRight.value = scroll.arrivedState.right || !scrollable
+    })
 
     const scroll = useScroll(wrapper, {
       onScroll: () => onUpdate('scroll'),

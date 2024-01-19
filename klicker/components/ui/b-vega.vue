@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import embed, { Result, VisualizationSpec } from 'vega-embed'
+import embed, { VisualizationSpec } from 'vega-embed'
 import Fa from '../fa.vue'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import BShimmer from './b-shimmer.vue'

@@ -175,7 +175,7 @@ export default defineComponent({
       nextTick(() => pageSize.value = calculatePageSize())
     }
 
-    useResizeObserver(wrapper, ([ entry ]) => {
+    useResizeObserver(wrapper, ([ entry ]) => window.requestAnimationFrame(() => {
       if (wrapper.value == undefined) {
         return
       }
@@ -189,7 +189,7 @@ export default defineComponent({
       pxPreviousWidth.value = pxWholeWidth
 
       updatePageSize()
-    })
+    }))
 
     const previousItemsLength = ref(body.value.length)
     watch(() => body.value, () => {
