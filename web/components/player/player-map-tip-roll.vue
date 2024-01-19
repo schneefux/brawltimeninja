@@ -56,28 +56,35 @@ export default defineComponent({
       sortId: 'winRate',
     }), `player-map-tips-${props.mode}-${props.map}`)
 
+    const trophiesByPlayerBrawler = computed(() => Object.fromEntries(
+      Object.values(props.playerBrawlers)
+        .map((b) => [b.name, b.trophies])
+    ))
+
     const transformedResponse = computed<CubeResponse|null>(() => {
       if (response.value == null) {
         return null
       }
 
-      // custom sort function
-
-      // score =
-      //   index [ brawlers owned by player, worst first ]
-      //     *
-      //   index [ brawler in map meta, best first ]
-      const worstBrawlers = Object.values(props.playerBrawlers).slice()
-        .sort((b1, b2) => b1.trophies - b2.trophies)
-      const bestBrawlers = response.value.data
+      const numberOfBrawlers = Object.keys(response.value.data).length
+      const globalRanks = Object.fromEntries(
+        response.value.data
+          .map(r => ({
+            name: r.dimensionsRaw.brawler.brawler,
+            winRate: r.metricsRaw.winRate as number,
+          }))
+          .sort((r1, r2) => r2.winRate - r1.winRate)
+          .map((r, index) => [r.name, index])
+      )
 
       function score(b: MetaGridEntry) {
-        const bestBrawlerIndex = bestBrawlers.indexOf(b)
-        const worstBrawler = worstBrawlers.find(bb => bb.name == b.dimensionsRaw.brawler.brawler)
-        if (worstBrawler == undefined) {
+        const brawlerName = b.dimensionsRaw.brawler.brawler
+        const globalRank = globalRanks[brawlerName]
+        const playerBrawlerTrophies = trophiesByPlayerBrawler.value[brawlerName]
+        if (playerBrawlerTrophies == undefined) {
           return 0
         }
-        return (worstBrawler.trophies + 1) * (bestBrawlerIndex / bestBrawlers.length + 1)
+        return (playerBrawlerTrophies + 1) * (globalRank / numberOfBrawlers + 1)
       }
 
       const data = response.value.data
