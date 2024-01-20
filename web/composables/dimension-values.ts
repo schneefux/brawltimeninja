@@ -95,7 +95,6 @@ export function useActiveEvents(metricsIds: MaybeRef<string[]> = ref([]), slices
 }
 
 export function useAllSeasons(limitWeeks: MaybeRef<number> = ref(8)) {
-  const i18n = useI18n()
   const $klicker = useKlicker()
   const key = computed(() => `all-seasons-${unref(limitWeeks)}`)
 

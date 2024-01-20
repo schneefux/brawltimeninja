@@ -64,7 +64,7 @@ export interface Metric<T=string|number> {
   formatter?: string
   d3formatter?: string
   sign: number
-  transform?: (entries: MetaGridEntry[]) => T[]
+  transform?: (entries: SerializableMetaGridEntry[]) => T[]
   /**
    * Vega.js encoding configuration
    * @see https://vega.github.io/vega-lite/docs/encoding.html
@@ -243,13 +243,26 @@ export interface ConfidenceInterval {
   upper: number
 }
 
-export interface MetaGridEntry {
+/** serializable types: no formatting */
+export interface SerializableMetaGridEntry {
   id: string
   dimensionsRaw: Record<string, Record<string, string>>
   metricsRaw: Record<string, number|string>
-  metricsCI: Record<string, ConfidenceInterval>
+  metricsCI?: Record<string, ConfidenceInterval>
+}
+
+/** adds formatting */
+export interface MetaGridEntry extends SerializableMetaGridEntry {
   dimensions: Record<string, string>
   metrics: Record<string, string>
+  metricsCI: Record<string, ConfidenceInterval>
+}
+
+export interface SerializableComparingMetaGridEntry extends SerializableMetaGridEntry {
+  test: {
+    reference: SerializableMetaGridEntry
+    difference: SerializableMetaGridEntryDiff
+  }
 }
 
 export interface ComparingMetaGridEntry extends MetaGridEntry {
@@ -263,11 +276,14 @@ export interface MetaGridEntryTiered extends MetaGridEntry {
   tier: string
 }
 
-export interface MetaGridEntryDiff {
+export interface SerializableMetaGridEntryDiff {
   differenceRaw: number
+  pValueRaw: number
+}
+
+export interface MetaGridEntryDiff extends SerializableMetaGridEntryDiff {
   difference: string
   annotatedDifference: string
-  pValueRaw: number
   pValueStars: string
 }
 
@@ -277,11 +293,25 @@ export interface AbstractCubeResponse<Q extends CubeQuery, M extends MetaGridEnt
   data: M[]
 }
 
+export interface AbstractSerializableCubeResponse<Q extends CubeQuery, S extends SerializableMetaGridEntry> {
+  kind: string
+  query: Q
+  data: S[]
+}
+
 export interface CubeResponse extends AbstractCubeResponse<CubeQuery, MetaGridEntry> {
   kind: 'response'
 }
 
+export interface SerializableCubeResponse extends AbstractSerializableCubeResponse<CubeQuery, SerializableMetaGridEntry> {
+  kind: 'response'
+}
+
 export interface CubeComparingResponse extends AbstractCubeResponse<CubeComparingQuery, ComparingMetaGridEntry> {
+  kind: 'comparingResponse'
+}
+
+export interface SerializableCubeComparingResponse extends AbstractSerializableCubeResponse<CubeComparingQuery, SerializableComparingMetaGridEntry> {
   kind: 'comparingResponse'
 }
 
@@ -300,14 +330,14 @@ export interface CubeQuery {
   name?: string
 }
 
-export type CubeQueryFilter = (e: MetaGridEntry) => boolean
+export type CubeQueryFilter = (e: SerializableMetaGridEntry) => boolean
 
 export interface CubeComparingQuery extends CubeQuery {
   comparing: true
   reference: CubeQuery
 }
 
-export type CubeComparingQueryFilter = (e: ComparingMetaGridEntry) => boolean
+export type CubeComparingQueryFilter = (e: SerializableComparingMetaGridEntry) => boolean
 
 export interface CubeQueryConfiguration {
   cube: Cube
@@ -388,12 +418,16 @@ export interface IKlickerService {
    * @param filter Filter to apply after client-side joins and transformations
    */
   query(query: CubeQuery, filter?: CubeQueryFilter): Promise<CubeResponse>
+  queryAsSerialized(query: CubeQuery, filter?: CubeQueryFilter): Promise<SerializableCubeResponse>
+  deserialize(serializedData: SerializableCubeResponse): CubeResponse
 
   /**
    * @param query Query specification
    * @param filter Filter to apply after client-side joins and transformations
    */
-  comparingQuery(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<CubeComparingResponse>
+  comparingQuery(query: CubeComparingQuery): Promise<CubeComparingResponse>
+  comparingQueryAsSerialized(query: CubeComparingQuery, filter: CubeComparingQueryFilter): Promise<SerializableCubeComparingResponse>
+  comparingDeserialize(serializedData: SerializableCubeComparingResponse): CubeComparingResponse
 
   convertQueryToLocation(query: CubeQuery|CubeComparingQuery): RouteQuery
   convertLocationToQuery(config: Config, defaultCubeId: string, route: RouteQuery): CubeQuery|CubeComparingQuery

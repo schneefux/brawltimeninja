@@ -1,4 +1,4 @@
-import { asSlice, Cube, MetaGridEntry, Dimension, Metric, Slice } from "@schneefux/klicker/types"
+import { asSlice, Cube, MetaGridEntry, Dimension, Metric, Slice, SerializableMetaGridEntry } from "@schneefux/klicker/types"
 import ChiSquaredPdf from "@stdlib/stats-base-dists-chisquare-pdf"
 import { formatClickhouseDate } from "./util"
 
@@ -19,10 +19,10 @@ const monthAgoSeason = formatClickhouseDate(getSeasonEnd(monthAgo))
  * Calculate $m.useRate / sum($m.useRate over all dimensions except brawler)
  */
 function percentageOver(metricId: string, overDimension: Dimension) {
-  const rowIdWithout = (row: MetaGridEntry) =>
+  const rowIdWithout = (row: SerializableMetaGridEntry) =>
     row.id.replace(`${overDimension.id}=${row.dimensionsRaw[overDimension.id][overDimension.naturalIdAttribute]};`, '')
 
-  return (entries: MetaGridEntry[]) => {
+  return (entries: SerializableMetaGridEntry[]) => {
     if (entries.length == 0 || !(overDimension.id in entries[0].dimensionsRaw)) {
       return entries.map(row => row.metricsRaw[metricId] as number)
     }

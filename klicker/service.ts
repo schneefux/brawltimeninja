@@ -1,4 +1,4 @@
-import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, IKlickerService, CubeQueryConfiguration, MetricRendererSpec, DimensionRendererSpec, RouteQuery } from "./types"
+import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, IKlickerService, CubeQueryConfiguration, MetricRendererSpec, DimensionRendererSpec, RouteQuery, SerializableCubeResponse, SerializableMetaGridEntry, SerializableCubeComparingResponse, SerializableComparingMetaGridEntry, SerializableMetaGridEntryDiff } from "./types"
 import { CubejsApi, Filter, ITransport, Query, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
@@ -276,9 +276,9 @@ export class KlickerService implements IKlickerService {
 
   /**
    * @param query Query specification
-   * @param filter Filter to apply after client-side joins and transformations
+   * @returns Response in an SSR-friendly format
    */
-  public async query(query: CubeQuery, filter?: CubeQueryFilter): Promise<CubeResponse> {
+  public async queryAsSerialized(query: CubeQuery, filter?: CubeQueryFilter): Promise<SerializableCubeResponse> {
     const config = this.findCubeQueryConfiguration(query)
 
     const metricsIds = (<string[]>[]).concat(
@@ -318,6 +318,24 @@ export class KlickerService implements IKlickerService {
     }
   }
 
+  deserialize(serializedData: SerializableCubeResponse): CubeResponse {
+    const config = this.findCubeQueryConfiguration(serializedData.query)
+
+    return {
+      ...serializedData,
+      data: this.formatMetaGridEntries(config, serializedData.data),
+    }
+  }
+
+  /**
+   * @param query Query specification
+   * @param filter Filter to apply after client-side joins and transformations
+   */
+  public async query(query: CubeQuery, filter?: CubeQueryFilter): Promise<CubeResponse> {
+    const rawData = await this.queryAsSerialized(query, filter)
+    return this.deserialize(rawData)
+  }
+
   /**
    * Send a query to cube.js
    */
@@ -325,11 +343,7 @@ export class KlickerService implements IKlickerService {
     return await this.cubejsApi.load(query)
   }
 
-  /**
-   * @param query Query specification
-   * @param filter Filter to apply after client-side joins and transformations
-   */
-  public async comparingQuery(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<CubeComparingResponse> {
+  public async comparingQueryAsSerialized(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<SerializableCubeComparingResponse> {
     // validate dimensions
     if (!query.reference.dimensionsIds.every(d => query.dimensionsIds.includes(d))) {
       throw new Error('Reference dataset must match or aggregate test dataset')
@@ -343,6 +357,37 @@ export class KlickerService implements IKlickerService {
       throw new Error('Can only compare queries with a single metric, reference query has too many metrics')
     }
 
+    // execute both queries
+    const { comparingMetric, reference, test } = this.splitComparingQuery(query)
+    const referenceResponse = await this.queryAsSerialized(reference)
+    const testResponse = await this.queryAsSerialized(test)
+
+    let data = this.compareMetaGridEntries(referenceResponse.data, testResponse.data, comparingMetric, query.reference.dimensionsIds)
+
+    // perform client-side sort & limit
+    if (query.sortId == 'difference') {
+      data.sort((d1, d2) => d2.test.difference.differenceRaw - d1.test.difference.differenceRaw)
+    }
+    if (query.sortId == 'pvalue') {
+      data.sort((d1, d2) => d1.test.difference.pValueRaw - d2.test.difference.pValueRaw)
+    }
+
+    if (filter) {
+      data = data.filter(filter)
+    }
+
+    if (query.limit) {
+      data = data.slice(0, query.limit)
+    }
+
+    return {
+      kind: 'comparingResponse',
+      query,
+      data,
+    }
+  }
+
+  private splitComparingQuery(query: CubeComparingQuery): { comparingMetric: Metric<string|number>, reference: CubeQuery, test: CubeQuery } {
     const cube = this.findCubeQueryConfiguration(query)
     const referenceCube = this.findCubeQueryConfiguration(query.reference)
 
@@ -367,53 +412,50 @@ export class KlickerService implements IKlickerService {
       throw new Error('Cannot sort ' + comparingMetric.id + ' by p value, no test defined')
     }
 
-    // execute both queries
-    const metricsIds = [comparingMetricId, ...(comparingMetric.statistics?.test?.requiresMetrics || [])]
+    const metricsIds = [comparingMetric.id, ...(comparingMetric.statistics?.test?.requiresMetrics || [])]
     const partialQuery = {
       metricsIds,
-      sortId: comparingMetricId,
-    }
-
-    const referenceResponse = await this.query({
-      cubeId: query.reference.cubeId,
-      dimensionsIds: query.reference.dimensionsIds,
-      slices: query.reference.slices,
-      ...partialQuery,
-    })
-    const testResponse = await this.query({
-      cubeId: query.cubeId,
-      dimensionsIds: query.dimensionsIds,
-      slices: query.slices,
-      ...partialQuery,
-    })
-
-    let data = this.compare(referenceResponse.data, testResponse.data, comparingMetric, query.reference.dimensionsIds)
-
-    // perform client-side sort & limit
-    if (query.sortId == 'difference') {
-      data.sort((d1, d2) => d2.test.difference.differenceRaw - d1.test.difference.differenceRaw)
-    }
-    if (query.sortId == 'pvalue') {
-      data.sort((d1, d2) => d1.test.difference.pValueRaw - d2.test.difference.pValueRaw)
-    }
-
-    if (filter) {
-      data = data.filter(filter)
-    }
-
-    if (query.limit) {
-      data = data.slice(0, query.limit)
+      sortId: comparingMetric.id,
     }
 
     return {
-      ...testResponse,
-      kind: 'comparingResponse',
-      query,
+      comparingMetric,
+      reference: {
+        cubeId: query.reference.cubeId,
+        dimensionsIds: query.reference.dimensionsIds,
+        slices: query.reference.slices,
+        ...partialQuery,
+      },
+      test: {
+        cubeId: query.cubeId,
+        dimensionsIds: query.dimensionsIds,
+        slices: query.slices,
+        ...partialQuery,
+      }
+    }
+  }
+
+  public comparingDeserialize(serializedData: SerializableCubeComparingResponse): CubeComparingResponse {
+    const { comparingMetric } = this.splitComparingQuery(serializedData.query)
+    console.time('fmt')
+    const data = this.formatComparingMetaGridEntries(serializedData.data, serializedData.query, comparingMetric)
+    console.timeEnd('fmt')
+    return {
+      ...serializedData,
       data,
     }
   }
 
-  private mapToMetaGridEntry(cube: Cube, dimensions: Dimension[], metrics: Metric[], resultSet: ResultSet): MetaGridEntry[] {
+  /**
+   * @param query Query specification
+   * @param filter Filter to apply after client-side joins and transformations
+   */
+  public async comparingQuery(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<CubeComparingResponse> {
+    const data = await this.comparingQueryAsSerialized(query, filter)
+    return this.comparingDeserialize(data)
+  }
+
+  private mapToMetaGridEntry(cube: Cube, dimensions: Dimension[], metrics: Metric[], resultSet: ResultSet): SerializableMetaGridEntry[] {
     // TODO consider refactoring to store it column-based (object of arrays) for performance
     const table = resultSet.rawData()
 
@@ -425,14 +467,14 @@ export class KlickerService implements IKlickerService {
         return ['quantitative', 'ordinal'].includes(type) ? parseFloat(row[key] as string) : row[key]
       }
 
-      const metricsRaw: MetaGridEntry['metricsRaw'] = {}
+      const metricsRaw: SerializableMetaGridEntry['metricsRaw'] = {}
       for (const m of metrics) {
         metricsRaw[m.id] = getValue(m.type, m.id + '_measure')
       }
 
-      const metricsCI: MetaGridEntry['metricsCI'] = {}
+      let metricsCI: SerializableMetaGridEntry['metricsCI'] = undefined
       for (const m of metrics) {
-        const mRaw: MetaGridEntry['metricsRaw'] = {
+        const mRaw: SerializableMetaGridEntry['metricsRaw'] = {
           [m.id]: metricsRaw[m.id],
         }
         let missingRequiredKey = false
@@ -446,6 +488,9 @@ export class KlickerService implements IKlickerService {
             mRaw[id] = parseFloat(row[key] as string)
           }
           if (!missingRequiredKey) {
+            if (metricsCI == undefined) {
+              metricsCI = {}
+            }
             metricsCI[m.id] = m.statistics?.ci?.ci(mRaw)
           }
         }
@@ -470,14 +515,14 @@ export class KlickerService implements IKlickerService {
         id += `${d.id}=${naturalId};`
       }
 
-      return <MetaGridEntry>{
+      return {
         id,
         metricsRaw,
-        metricsCI,
         dimensionsRaw,
-        metrics: {},
-        dimensions: {},
-      }
+        ...(metricsCI != undefined ? {
+          metricsCI,
+        } : {}),
+      } satisfies SerializableMetaGridEntry
     })
 
     // apply custom transformations
@@ -488,26 +533,37 @@ export class KlickerService implements IKlickerService {
       }
     }
 
-    // apply formatters
-    entries.forEach(entry => {
-      for (const m of metrics) {
-        entry.metrics[m.id] = this.format(m, entry.metricsRaw[m.id])
-      }
-
-      for (const d of dimensions) {
-        const naturalId = entry.dimensionsRaw[d.id][d.naturalIdAttribute]
-        const formatted = this.format(d, naturalId)
-        entry.dimensions[d.id] = formatted
-      }
-    })
-
     return entries
   }
 
-  private compare(referenceData: MetaGridEntry[], testData: MetaGridEntry[], comparing: Metric, referenceDimensionIds: string[]): ComparingMetaGridEntry[] {
+  private formatMetaGridEntries(config: CubeQueryConfiguration, entries: SerializableMetaGridEntry[]): MetaGridEntry[] {
+    // apply formatters
+    return entries.map(entry => {
+      const formattedMetrics: Record<string, string> = {}
+      for (const m of config.metrics) {
+        formattedMetrics[m.id] = this.format(m, entry.metricsRaw[m.id])
+      }
+
+      const formattedDimensions: Record<string, string> = {}
+      for (const d of config.dimensions) {
+        const naturalId = entry.dimensionsRaw[d.id][d.naturalIdAttribute]
+        const formatted = this.format(d, naturalId)
+        formattedDimensions[d.id] = formatted
+      }
+
+      return {
+        ...entry,
+        metrics: formattedMetrics,
+        metricsCI: entry.metricsCI ?? {},
+        dimensions: formattedDimensions,
+      }
+    })
+  }
+
+  private compareMetaGridEntries(referenceData: SerializableMetaGridEntry[], testData: SerializableMetaGridEntry[], comparing: Metric, referenceDimensionIds: string[]): SerializableComparingMetaGridEntry[] {
     // test data might aggregate reference data - calculate an ID to join them
-    const calculateId = (m: MetaGridEntry) => referenceDimensionIds.map(id => `${id}=${m.dimensions[id]};`).join('')
-    const referenceDataMap: Record<string, MetaGridEntry> = {}
+    const calculateId = (m: SerializableMetaGridEntry) => referenceDimensionIds.map(id => `${id}=${m.dimensionsRaw[id][id]};`).join('')
+    const referenceDataMap: Record<string, SerializableMetaGridEntry> = {}
     referenceData.forEach(r => referenceDataMap[calculateId(r)] = r)
 
     return testData
@@ -520,6 +576,36 @@ export class KlickerService implements IKlickerService {
         const pValue = comparing.statistics?.test?.test(referenceDataMap[calculateId(t)].metricsRaw, t.metricsRaw) || 1
         // apply Bonferroni correction (TODO use method with better accuracy)
         const correctedPValue = Math.min(1.0, pValue * testData.length)
+
+        const difference: SerializableMetaGridEntryDiff = {
+          differenceRaw: diff,
+          pValueRaw: correctedPValue,
+        }
+
+        return {
+          ...t,
+          test: {
+            reference,
+            difference,
+          },
+        } satisfies SerializableComparingMetaGridEntry
+      })
+  }
+
+  private formatComparingMetaGridEntries(entries: SerializableComparingMetaGridEntry[], query: CubeComparingQuery, comparing: Metric): ComparingMetaGridEntry[] {
+    const testConfig = this.findCubeQueryConfiguration(query)
+    const referenceConfig = this.findCubeQueryConfiguration(query.reference)
+
+    const testEntries = this.formatMetaGridEntries(testConfig, entries)
+    const referenceEntries = this.formatMetaGridEntries(referenceConfig, entries.map(e => e.test.reference))
+
+    return entries
+      .map((entry, index) => {
+        const testEntry = testEntries[index]
+        const referenceEntry = referenceEntries[index]
+
+        const diff = entry.test.difference.differenceRaw
+        const correctedPValue = entry.test.difference.pValueRaw
 
         const pStars = (pValue: number) => {
           if (pValue < 0.001) {
@@ -539,20 +625,19 @@ export class KlickerService implements IKlickerService {
 
         const diffFormatted = (diff > 0 ? '+' : '') + this.format(comparing, diff)
         const difference: MetaGridEntryDiff = {
-          differenceRaw: diff,
+          ...entry.test.difference,
           difference: diffFormatted,
           annotatedDifference: diffFormatted + pStars(correctedPValue),
-          pValueRaw: correctedPValue,
           pValueStars: pStars(correctedPValue),
         }
 
-        return <ComparingMetaGridEntry>{
-          ...t,
+        return {
+          ...testEntry,
           test: {
-            reference,
+            reference: referenceEntry,
             difference,
           },
-        }
+        } satisfies ComparingMetaGridEntry
       })
   }
 

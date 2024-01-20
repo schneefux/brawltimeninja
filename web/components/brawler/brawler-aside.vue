@@ -28,7 +28,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { CQuery, VKvTable } from '@schneefux/klicker/components'
-import { MetaGridEntry } from '@schneefux/klicker/types'
+import { CubeQueryFilter } from '@schneefux/klicker/types'
 
 export default defineComponent({
   components: {
@@ -54,7 +54,7 @@ export default defineComponent({
       slices: {},
     }))
 
-    const filter = computed(() => (e: MetaGridEntry) => e.dimensionsRaw.brawler.brawler == props.brawlerName.toUpperCase())
+    const filter = computed<CubeQueryFilter>(() => (e) => e.dimensionsRaw.brawler.brawler == props.brawlerName.toUpperCase())
 
     return {
       query,

@@ -52,7 +52,7 @@
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent } from "vue";
 import { BDashboardCell } from '@schneefux/klicker/components'
-import { MetaGridEntry } from "@schneefux/klicker/types";
+import { CubeQueryFilter } from "@schneefux/klicker/types";
 
 export default defineComponent({
   components: {
@@ -71,7 +71,7 @@ export default defineComponent({
       powerplay: ['false'],
     }))
 
-    const filter = computed(() => (e: MetaGridEntry) => e.dimensionsRaw.brawler.brawler == props.brawlerName.toUpperCase())
+    const filter = computed<CubeQueryFilter>(() => (e) => e.dimensionsRaw.brawler.brawler == props.brawlerName.toUpperCase())
 
     return {
       filter,
