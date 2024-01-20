@@ -5,6 +5,7 @@
     :link="mapPath"
     :event-id="eventId"
     nobackground
+    nopreview
   >
     <template
       v-slot:infobar
@@ -12,7 +13,6 @@
     >
       <p class="text-right">{{ $t('state.event-active') }}</p>
     </template>
-    <template v-slot:preview><template></template></template>
     <template v-slot:content>
       <div class="pt-4 h-full flex flex-col justify-center">
         <map-img

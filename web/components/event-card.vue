@@ -15,7 +15,7 @@
       <media-img-icon v-bind="data"></media-img-icon>
     </template>
 
-    <template v-slot:preview>
+    <template v-if="!nopreview" v-slot:preview>
       <slot name="preview">
         <map-img
           v-if="eventId != undefined && map != undefined"
@@ -68,6 +68,9 @@ export default defineComponent({
       type: [String, Number],
     },
     nobackground: {
+      type: Boolean
+    },
+    nopreview: {
       type: Boolean
     },
   },
