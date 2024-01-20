@@ -2,8 +2,8 @@ import { useKlicker } from "@schneefux/klicker/composables"
 import { capitalizeWords, formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd, parseClickhouse } from "~/lib/util"
 import { EventMetadata } from "~/plugins/klicker.service"
 import { SliceValue } from "@schneefux/klicker/types"
-import { differenceInMinutes, parseISO, subWeeks, format } from "date-fns"
-import { computed, MaybeRef, Ref, ref, unref } from "vue"
+import { differenceInMinutes, parseISO, subWeeks } from "date-fns"
+import { computed, MaybeRef, ref, unref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useAsync, useApi } from "./compat"
 
@@ -12,27 +12,32 @@ export function useAllEvents(slices: MaybeRef<SliceValue> = ref({})) {
   const i18n = useI18n()
   const key = computed(() => `active-events-${JSON.stringify(unref(slices))}`)
 
-  const events = useAsync(() => $klicker.query({
-    cubeId: 'map',
-    dimensionsIds: ['mode', 'map'],
-    metricsIds: ['eventId'],
-    slices: {
-      season: [formatClickhouseDate(getMonthSeasonEnd())],
-      mapNotLike: ['Competition'],
-      ...unref(slices),
-    },
-    sortId: 'map',
-  }), key)
+  const events = useAsync<EventMetadata[]>(async () => {
+    const data = await $klicker.query({
+      cubeId: 'map',
+      dimensionsIds: ['mode', 'map'],
+      metricsIds: ['eventId'],
+      slices: {
+        season: [formatClickhouseDate(getMonthSeasonEnd())],
+        mapNotLike: ['Competition'],
+        ...unref(slices),
+      },
+      sortId: 'map',
+    })
 
-  const mappedEvents = computed<EventMetadata[]>(() => (events.value?.data ?? [])
-    .map(e => ({
-      key: `${e.metricsRaw.eventId}-${e.dimensionsRaw.mode.mode}-${e.dimensionsRaw.map.map}`,
-      id: e.metricsRaw.eventId as string,
-      map: e.dimensionsRaw.map.map as string,
-      mode: e.dimensionsRaw.mode.mode as string,
-      powerplay: false,
-      metrics: {},
-    }))
+    return data.data
+      .map(e => ({
+        key: `${e.metricsRaw.eventId}-${e.dimensionsRaw.mode.mode}-${e.dimensionsRaw.map.map}`,
+        id: e.metricsRaw.eventId as string,
+        map: e.dimensionsRaw.map.map as string,
+        mode: e.dimensionsRaw.mode.mode as string,
+        powerplay: false,
+        metrics: {},
+      }))
+  }, key)
+
+  return computed(() => (events.value ?? [])
+    .slice()
     .sort((a, b) => {
       const sortMode = i18n.t('mode.' + a.mode).localeCompare(i18n.t('mode.' + b.mode), i18n.locale.value)
       if (sortMode != 0) {
@@ -41,8 +46,6 @@ export function useAllEvents(slices: MaybeRef<SliceValue> = ref({})) {
       return i18n.t('map.' + a.id).localeCompare(i18n.t('map.' + b.id), i18n.locale.value)
     })
   )
-
-  return mappedEvents
 }
 
 export function useActiveEvents(metricsIds: MaybeRef<string[]> = ref([]), slices: MaybeRef<SliceValue> = ref({}), maxage: number|null = 60) {
@@ -50,57 +53,53 @@ export function useActiveEvents(metricsIds: MaybeRef<string[]> = ref([]), slices
   const $api = useApi()
   const key = computed(() => `active-events-${unref(metricsIds).join('-')}-${JSON.stringify(unref(slices))}-${maxage}`)
 
-  const events = useAsync(() => $klicker.query({
-    cubeId: 'map',
-    dimensionsIds: ['mode', 'map', 'powerplay'],
-    metricsIds: ['eventId', 'timestamp', ...unref(metricsIds)],
-    slices: {
-      season: [formatClickhouseDate(getTodaySeasonEnd())],
-      ...unref(slices),
-    },
-    sortId: 'timestamp',
-    limit: 20,
-  }), key)
+  const lastEvents = useAsync<EventMetadata[]>(async () => {
+    const data = await $klicker.query({
+      cubeId: 'map',
+      dimensionsIds: ['mode', 'map', 'powerplay'],
+      metricsIds: ['eventId', 'timestamp', ...unref(metricsIds)],
+      slices: {
+        season: [formatClickhouseDate(getTodaySeasonEnd())],
+        ...unref(slices),
+      },
+      sortId: 'timestamp',
+      limit: 20,
+    })
 
-  const starlistKey = computed(() => `active-events-starlist-${unref(metricsIds).join('-')}-${JSON.stringify(unref(slices))}-${maxage}`)
-  const starlistData = useAsync(async () => await $api.events.active.query()
-    .catch(() => ({ current: [], upcoming: [] })), starlistKey)
-
-  const lastEvents = computed<EventMetadata[]>(() => {
-    const lastEvents = events.value?.data
+    return data.data
       .map(e => ({
         key: `${e.metricsRaw.eventId}-${e.dimensionsRaw.mode.mode}-${e.dimensionsRaw.map.map}-${e.dimensionsRaw.powerplay.powerplay}`,
         id: e.metricsRaw.eventId as string,
         map: e.dimensionsRaw.map.map as string,
         mode: e.dimensionsRaw.mode.mode as string,
         powerplay: e.dimensionsRaw.powerplay.powerplay == '1',
-        start: undefined as undefined|string,
-        end: undefined as undefined|string,
         metrics: e.metricsRaw,
       }))
       .filter(e => maxage == null || differenceInMinutes(new Date(), parseISO(e.metrics.timestamp as string)) <= maxage)
+  }, key)
 
-    starlistData.value?.current.forEach(s => {
-      const match = lastEvents?.find(e => e.id.toString() == s.id)
-      if (match) {
-        match.start = s.start
-        match.end = s.end
-      }
-    })
+  const starlistKey = computed(() => `active-events-starlist-${unref(metricsIds).join('-')}-${JSON.stringify(unref(slices))}-${maxage}`)
+  const starlistData = useAsync(async () => await $api.events.active.query()
+    .catch(() => ({ current: [], upcoming: [] })), starlistKey)
 
-    return lastEvents ?? []
-  })
+  return computed<EventMetadata[]>(() => lastEvents.value?.map(e => {
+    const brawlifyEvent = starlistData.value?.current.find(s => e.id.toString() == s.id)
 
-  return lastEvents
+    return {
+      ...e,
+      start: brawlifyEvent?.start,
+      end: brawlifyEvent?.end,
+    }
+  }) ?? [])
 }
 
 export function useAllSeasons(limitWeeks: MaybeRef<number> = ref(8)) {
   const $klicker = useKlicker()
   const key = computed(() => `all-seasons-${unref(limitWeeks)}`)
 
-  const data = useAsync(() => {
+  const data = useAsync(async () => {
     const limit = subWeeks(new Date(), unref(limitWeeks))
-    return $klicker.query({
+    const data = await $klicker.query({
       cubeId: 'map',
       dimensionsIds: ['season'],
       metricsIds: [],
@@ -109,91 +108,97 @@ export function useAllSeasons(limitWeeks: MaybeRef<number> = ref(8)) {
       },
       sortId: 'season',
     })
+
+    return data.data
+      .map(e => {
+        const d = parseClickhouse(e.dimensionsRaw.season.season)
+        return {
+          id: formatClickhouseDate(d),
+          start: subWeeks(d, 2) // seasons last 2 weeks
+        }
+      })
+      .sort((e1, e2) => e2.start.valueOf() - e1.start.valueOf()) ?? []
   }, key)
 
-  const seasons = computed<{ id: string, start: Date }[]>(() => data.value?.data
-    .map(e => {
-      const d = parseClickhouse(e.dimensionsRaw.season.season)
-      return {
-        id: formatClickhouseDate(d),
-        start: subWeeks(d, 2) // seasons last 2 weeks
-      }
-    })
-    .sort((e1, e2) => e2.start.valueOf() - e1.start.valueOf()) ?? []
-  )
-
-  return seasons
+  return computed(() => data.value ?? [])
 }
 
 export function useAllModes() {
   const $klicker = useKlicker()
   const i18n = useI18n()
 
-  const modes = useAsync(() => $klicker.query({
-    cubeId: 'map',
-    dimensionsIds: ['mode'],
-    metricsIds: [],
-    slices: {
-      season: [formatClickhouseDate(getMonthSeasonEnd())],
-    },
-    sortId: 'mode',
-  }), 'all-modes')
+  const modes = useAsync(async () => {
+    const data = await $klicker.query({
+      cubeId: 'map',
+      dimensionsIds: ['mode'],
+      metricsIds: [],
+      slices: {
+        season: [formatClickhouseDate(getMonthSeasonEnd())],
+      },
+      sortId: 'mode',
+    })
 
-  const modesMapped = computed<string[]>(() => modes.value?.data
-    .map(row => row.dimensionsRaw.mode.mode)
-    .sort((a, b) => i18n.t('mode.' + a).localeCompare(i18n.t('mode.' + b), i18n.locale.value)) ?? []
+    return data.data.map(row => row.dimensionsRaw.mode.mode)
+  }, 'all-modes')
+
+  return computed(() => (modes.value ?? [])
+    .slice()
+    .sort((a, b) => i18n.t('mode.' + a).localeCompare(i18n.t('mode.' + b), i18n.locale.value))
   )
-
-  return modesMapped
 }
 
 export function useAllMaps(mode: MaybeRef<string|undefined> = ref()) {
   const $klicker = useKlicker()
   const key = computed(() => `all-maps-${unref(mode) ?? 'all'}`)
 
-  const maps = useAsync(() => $klicker.query({
-    cubeId: 'map',
-    dimensionsIds: ['map'],
-    metricsIds: ['eventId'],
-    slices: {
-      season: [formatClickhouseDate(getMonthSeasonEnd())],
-      ...(unref(mode) != undefined ? {
-        mode: [unref(mode)],
-      } : {}),
-    },
-    sortId: 'picks',
-  }), key)
+  const maps = useAsync<{ battle_event_map: string, battle_event_id: number }[]>(async () => {
+    const data = await $klicker.query({
+      cubeId: 'map',
+      dimensionsIds: ['map'],
+      metricsIds: ['eventId'],
+      slices: {
+        season: [formatClickhouseDate(getMonthSeasonEnd())],
+        ...(unref(mode) != undefined ? {
+          mode: [unref(mode)],
+        } : {}),
+      },
+      sortId: 'picks',
+    })
 
-  const mappedMaps = computed<{ battle_event_map: string, battle_event_id: number }[]>(() =>
-    maps.value?.data.map(e => ({
+    return data.data.map(e => ({
       battle_event_id: e.metricsRaw.eventId as number,
       battle_event_map: e.dimensionsRaw.map.map as string,
-    })) ?? [])
+    }))
+  }, key)
 
-  return mappedMaps
+  return computed(() => maps.value ?? [])
 }
 
 export function useAllBrawlers() {
   const $klicker = useKlicker()
   const i18n = useI18n()
 
-  const brawlers = useAsync(() => $klicker.query({
-    cubeId: 'map',
-    dimensionsIds: ['brawler'],
-    metricsIds: [],
-    slices: {
-      season: [formatClickhouseDate(getTodaySeasonEnd())],
-    },
-    sortId: 'picks',
-  }), 'all-brawlers')
+  const brawlers = useAsync<{ id: string, name: string }[]>(async () => {
+    const data = await $klicker.query({
+      cubeId: 'map',
+      dimensionsIds: ['brawler'],
+      metricsIds: [],
+      slices: {
+        season: [formatClickhouseDate(getTodaySeasonEnd())],
+      },
+      sortId: 'picks',
+    })
 
-  const brawlersMapped = computed<{ id: string, name: string }[]>(() => brawlers.value?.data
-    .map(b => b.dimensionsRaw.brawler.brawler)
-    .sort((b1, b2) => b1.localeCompare(b2, i18n.locale.value))
-    .map(b => ({
-      id: b,
-      name: capitalizeWords(b.toLowerCase()),
-    })) ?? [])
+    return data.data
+      .map(b => b.dimensionsRaw.brawler.brawler)
+      .map(b => ({
+        id: b,
+        name: capitalizeWords(b.toLowerCase()),
+      }))
+  }, 'all-brawlers')
 
-  return brawlersMapped
+  return computed(() => (brawlers.value ?? [])
+    .slice()
+    .sort((b1, b2) => b1.name.localeCompare(b2.name, i18n.locale.value))
+  )
 }
