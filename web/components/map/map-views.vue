@@ -110,18 +110,6 @@
             </b-dashboard-cell>
 
             <b-dashboard-cell
-              :columns="6"
-              :rows="4"
-              hide-empty
-              lazy
-            >
-              <map-trend-chart
-                :event-id="eventId"
-                :slices="slices"
-              ></map-trend-chart>
-            </b-dashboard-cell>
-
-            <b-dashboard-cell
               :columns="3"
               :rows="2"
             >
