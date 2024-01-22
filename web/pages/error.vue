@@ -17,7 +17,7 @@
       </b-button>
     </p>
     <client-only>
-      <div class="mt-8 flex justify-center">
+      <div class="mt-8 flex flex-col items-center">
         <p v-if="error != undefined" class="text-left text-sm">
           <span>Error details:</span>
           <pre class="max-w-xl whitespace-normal">{{ error }}</pre>
