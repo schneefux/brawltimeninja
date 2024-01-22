@@ -70,6 +70,7 @@ import { brawlerScores, OEJTSEntry } from '~/lib/oejts'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { event } from 'vue-gtag'
 import { usePreferencesStore } from '~/stores/preferences'
+import { useSelfOrigin } from '~/composables/compat'
 
 export interface QuizResult {
   score: OEJTSEntry
@@ -110,9 +111,8 @@ export default defineComponent({
     })
     onMounted(() => store.personalityTestResult = mostSimilarBrawler.value?.name)
 
-    const quizRootUrl = computed(() => (!import.meta.env.SSR ? window.location.origin : '')
-      + '/quiz'
-      + '?utm_source=share&utm_medium=image&utm_campaign=quiz')
+    const selfOrigin = useSelfOrigin()
+    const quizRootUrl = computed(() => `${selfOrigin}/quiz?utm_source=share&utm_medium=image&utm_campaign=quiz`)
     const sharepicEmbedUrl = computed(() => {
       const params = new URLSearchParams({
         id: mostSimilarBrawler.value.id,

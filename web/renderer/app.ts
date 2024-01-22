@@ -14,7 +14,7 @@ import { createHead } from '@unhead/vue'
 import { InferSeoMetaPlugin } from '@unhead/addons'
 import { defaultLocale, locales } from '~/locales'
 import { createRouter } from './router'
-import { localePath, useSentry } from '~/composables/compat'
+import { getSelfOrigin, localePath, useSentry } from '~/composables/compat'
 
 export { createApp }
 
@@ -59,6 +59,7 @@ function createApp(pageContext: PageContext) {
       InferSeoMetaPlugin(),
     ],
   })
+  const selfOrigin = getSelfOrigin(pageContext)
   head.push({
     titleTemplate: (title) => title != undefined ? `${title} - Brawl Time Ninja` : 'Brawl Time Ninja',
     bodyAttrs: {
@@ -81,7 +82,7 @@ function createApp(pageContext: PageContext) {
       { rel: 'preconnect', href: pageContext.envConfig.mediaUrl },
       ...(locales.filter(l => l.show).map(l => ({
         rel: 'alternate',
-        href: l.code == 'en' ? '/' : `/${l.code}`,
+        href: l.code == 'en' ? selfOrigin : `${selfOrigin}/${l.code}`,
         hreflang: l.iso,
       }))),
     ],

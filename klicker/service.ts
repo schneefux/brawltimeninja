@@ -437,9 +437,7 @@ export class KlickerService implements IKlickerService {
 
   public comparingDeserialize(serializedData: SerializableCubeComparingResponse): CubeComparingResponse {
     const { comparingMetric } = this.splitComparingQuery(serializedData.query)
-    console.time('fmt')
     const data = this.formatComparingMetaGridEntries(serializedData.data, serializedData.query, comparingMetric)
-    console.timeEnd('fmt')
     return {
       ...serializedData,
       data,

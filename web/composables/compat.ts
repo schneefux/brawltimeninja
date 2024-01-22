@@ -11,6 +11,7 @@ import { onBeforeRouteLeave, onBeforeRouteUpdate, RouteLocationNormalized, useRo
 import { AppI18n } from "~/renderer/app";
 import { Locale } from '~/locales';
 import { SentryInjectionKey } from "~/renderer/sentry";
+import { PageContext } from "~/renderer/types";
 
 /*
  * Nuxt 2 backwards compatibility composables
@@ -211,11 +212,18 @@ export function useSentry() {
   return inject(SentryInjectionKey)!
 }
 
+export function getSelfOrigin(pageContext: PageContext) {
+  if (import.meta.env.SSR) {
+    const host = pageContext.server.requestHeaders['host']
+    return `https://${host}`
+  }
+  return window.location.origin
+}
+
 export function useSelfOrigin() {
   if (import.meta.env.SSR) {
     const pageContext = usePageContext()
-    const host = pageContext.server.requestHeaders['host']
-    return `https://${host}`
+    return getSelfOrigin(pageContext)
   }
   return window.location.origin
 }
