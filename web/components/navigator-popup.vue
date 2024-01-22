@@ -90,7 +90,7 @@ export default defineComponent({
           (brawlers.value ?? []).map(b => ({
             id: b.id,
             name: b.name,
-            target: `/tier-list/brawler/${brawlerId({ name: b.id })}`,
+            target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}`),
             children: [{
               id: `${b.id}#overview`,
               name: i18n.t('brawler.overview'),
