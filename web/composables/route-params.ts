@@ -8,10 +8,10 @@ import { useRoute, RouteParams } from 'vue-router';
 export const useRouteParams = () => {
   const route = useRoute()
 
-  const validRoutePath = route.path
+  const validRouteName = route.name // do not check the path here to allow navigation between the same page
   const params = ref<RouteParams>()
   watch(() => route.params, newParams => {
-    if (route.path != validRoutePath) {
+    if (route.name != validRouteName) {
       console.warn('Route params changed before component was unmounted, skipping param update')
       return
     }

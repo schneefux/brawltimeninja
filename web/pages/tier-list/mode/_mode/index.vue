@@ -76,9 +76,9 @@ export default defineComponent({
     const routeParams = useRouteParams()
 
     const mode = computed(() => kebabToCamel(routeParams.value!.mode as string))
-    const events = useActiveEvents([], {
+    const events = useActiveEvents([], computed(() => ({
       mode: [mode.value],
-    }, null)
+    })), null)
 
     const modePath = computed(() => `/tier-list/mode/${camelToKebab(mode.value)}`)
 
