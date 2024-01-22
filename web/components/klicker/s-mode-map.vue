@@ -67,7 +67,7 @@
                 v-else-if="event.key.startsWith('all-mode-')"
                 :mode="event.mode"
                 :class="{
-                  'bg-primary-400 rounded-2xl light': mode == event.mode,
+                  'bg-primary-400 rounded-2xl light': mode == event.mode && map == undefined,
                 }"
                 nobackground
                 @click.capture.prevent.stop="onSelectModeMap({ mode: event.mode })"
