@@ -105,9 +105,9 @@ job "clickhouse" {
       }
 
       resources {
-        cpu = 7168 # peaks up to max capacity
-        memory = 7168
-        memory_max = 7168
+        cpu = 14336 # typically 3-7k but peaks up to max capacity
+        memory = 14336 # requires 3-4GB for queries, rest is caching
+        memory_max = 14336
       }
     }
   }

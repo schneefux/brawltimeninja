@@ -25,7 +25,7 @@ job "brawltime-cube" {
   }
 
   group "cube" {
-    count = 3
+    count = 2
 
     restart {
       mode = "delay"
@@ -34,7 +34,7 @@ job "brawltime-cube" {
 
     scaling {
       enabled = true
-      min = 3
+      min = 2
       max = 16
 
       policy {
@@ -148,8 +148,8 @@ job "brawltime-cube" {
 
       resources {
         #cpu = 512
-        cpu = 1024
-        memory = 384
+        cpu = 1024 # typically 100-300
+        memory = 512
         memory_max = 768
       }
     }
