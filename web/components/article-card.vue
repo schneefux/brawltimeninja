@@ -15,7 +15,7 @@
         itemprop="thumbnailUrl"
       ></div>
     </template>
-    <template v-slot:preview>
+    <template v-if="document.createdAt" v-slot:preview>
       <absolute-time :timestamp="document.createdAt" format-str="PP"></absolute-time>
     </template>
     <template v-slot:content>

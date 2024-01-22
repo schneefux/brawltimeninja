@@ -17,7 +17,7 @@
           itemtype="http://schema.org/AnalysisNewsArticle"
           light
         >
-          <template v-slot:preview>
+          <template v-if="post.createdAt" v-slot:preview>
             <absolute-time
               :timestamp="post.createdAt"
               class="text-gray-400 text-sm"
