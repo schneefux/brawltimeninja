@@ -246,7 +246,7 @@ async function main() {
       console.log(brawlerName + " has no russian page")
     }
 
-    const brawlerId = brawlerName.replace(/\.| /g, '_').toLowerCase()
+    const brawlerId = brawlerName.replace(/\.| |&/g, '_').toLowerCase()
     const brawlerDirectory = BRAWLERS_DIR + brawlerId + "/"
     const brawlerVoicelineDirectory = brawlerDirectory + "voice-lines/"
     const brawlerPinDirectory = brawlerDirectory + "pins/"
