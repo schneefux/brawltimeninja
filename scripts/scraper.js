@@ -186,7 +186,8 @@ async function main() {
   function getSkinURLFromName(links, skinType, skinName) {
     const skinFileName = skinName.replaceAll(" ", "_")
     const brawlerFileName = skinType.replaceAll(" ", "_")
-    return links.find(link => link.includes(brawlerFileName) && link.includes(skinFileName))
+    const skinUrl = links.find(link => link.includes(brawlerFileName) && link.includes(skinFileName))
+    return skinUrl?.split('/smart')[0] // remove smart resizing parameters
   }
 
   function getAccessoryURLFromIndex(links, kind, brawlerName, index) {
