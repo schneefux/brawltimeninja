@@ -1,0 +1,11 @@
+__pycache__
+.ionide
+.vscode
+oldkey
+*notification.log*
+
+*.pub
+*.key
+download*.png
+download*.jpeg
+cutted*.png
