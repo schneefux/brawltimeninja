@@ -184,10 +184,13 @@ async function main() {
   }
 
   function getSkinURLFromName(links, skinType, skinName) {
-    const skinFileName = skinName.replaceAll(" ", "_")
-    const brawlerFileName = skinType.replaceAll(" ", "_")
-    const skinUrl = links.find(link => link.includes(brawlerFileName) && link.includes(skinFileName))
-    return skinUrl?.split('/smart')[0] // remove smart resizing parameters
+    const removeFunkyCharacters = (s) => s.toLowerCase().replace(/[^a-z]/g, "")
+    const skinFileName = removeFunkyCharacters(skinName)
+    const brawlerFileName = removeFunkyCharacters(skinType)
+    // perform fuzzy matching to find the link
+    const assetLinks = links.filter(l => l.startsWith('https://static.wikia.nocookie.net'))
+    const skinUrl = assetLinks.find(link => removeFunkyCharacters(link).includes(brawlerFileName) && removeFunkyCharacters(link).includes(skinFileName))
+    return skinUrl?.split('/smart')[0]?.split('/scale')[0] // remove resizing parameters
   }
 
   function getAccessoryURLFromIndex(links, kind, brawlerName, index) {
