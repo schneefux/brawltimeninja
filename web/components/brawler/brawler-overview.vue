@@ -5,7 +5,7 @@
       :columns="4"
     >
       <b-card
-        v-if="scrapedData != undefined"
+        v-if="scrapedData != undefined && brawlerId != undefined"
         :icon="`/brawlers/${brawlerId}/avatar`"
         :icon-alt="$t('brawler.avatar', { brawler: scrapedData.name })"
         :title="$t('brawler.statistics', { brawler: '' })"
@@ -74,7 +74,7 @@ export default defineComponent({
   props: {
     brawlerId: {
       type: String,
-      required: true
+      required: false
     },
     scrapedData: {
       type: Object as PropType<ScrapedBrawler>,

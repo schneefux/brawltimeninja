@@ -23,7 +23,7 @@
     <template v-slot:content>
       <div class="h-full flex flex-col justify-center">
         <brawler-kv-card
-          :brawler-name="brawlerName"
+          :brawler-metadata="brawlerMetadata"
           :slices="slices"
         ></brawler-kv-card>
       </div>
@@ -34,6 +34,8 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { parseISO } from 'date-fns'
+import { PropType } from 'vue'
+import { BrawlerMetadata } from '~/composables/dimension-values'
 
 export default defineComponent({
   props: {
@@ -50,8 +52,8 @@ export default defineComponent({
       type: [String, Number],
       required: true
     },
-    brawlerName: {
-      type: String,
+    brawlerMetadata: {
+      type: Object as PropType<BrawlerMetadata>,
       required: true
     },
     end: {

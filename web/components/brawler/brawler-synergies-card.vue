@@ -12,7 +12,7 @@
       <v-roll
         v-bind="data"
         :card="{
-          title: $t('brawler.synergy.title', { brawler }),
+          title: $t('brawler.synergy.title', { brawler: brawlerMetadata.name }),
         }"
       ></v-roll>
     </template>
@@ -24,6 +24,8 @@ import { defineComponent } from 'vue'
 import { CubeComparingQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { CQuery, VRoll } from '@schneefux/klicker/components'
 import { useI18n } from 'vue-i18n'
+import { BrawlerMetadata } from '~/composables/dimension-values'
+import { PropType } from 'vue'
 
 export default defineComponent({
   components: {
@@ -31,8 +33,8 @@ export default defineComponent({
     CQuery,
   },
   props: {
-    brawler: {
-      type: String,
+    brawlerMetadata: {
+      type: Object as PropType<BrawlerMetadata>,
       required: true
     },
   },
@@ -44,14 +46,14 @@ export default defineComponent({
       comparing: true,
       cubeId: 'brawlerAllies',
       slices: {
-        brawler: [props.brawler.toUpperCase()],
+        brawler: [props.brawlerMetadata.brawlstarsId],
       },
       dimensionsIds: ['brawler', 'ally'],
       metricsIds: ['winRate'],
       sortId: 'pvalue',
       limit: 8,
       reference: {
-        name: props.brawler,
+        name: props.brawlerMetadata.name,
         cubeId: 'map',
         slices: {},
         dimensionsIds: ['brawler'],

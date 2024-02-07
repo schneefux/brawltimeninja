@@ -7,6 +7,7 @@
       lazy
     >
       <lazy-map-trend-chart
+        v-if="brawlerBrawlstarsId != undefined"
         :slices="brawlerSlices"
         :dimensions="['trophyRange']"
         cube-id="map"
@@ -22,6 +23,7 @@
       lazy
     >
       <lazy-map-trend-chart
+        v-if="brawlerBrawlstarsId != undefined"
         :slices="brawlerSlices"
         :dimensions="['trophyRange']"
         cube-id="map"
@@ -37,6 +39,7 @@
       lazy
     >
       <lazy-map-trend-chart
+        v-if="brawlerBrawlstarsId != undefined"
         :slices="{ powerplay: ['false'] }"
         :filter="filter"
         :dimensions="['trophyRange', 'brawler']"
@@ -60,18 +63,18 @@ export default defineComponent({
     LazyMapTrendChart: defineAsyncComponent(() => import('~/components/map/map-trend-chart.vue'))
   },
   props: {
-    brawlerName: {
+    brawlerBrawlstarsId: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   setup(props) {
     const brawlerSlices = computed(() => ({
-      brawler: [props.brawlerName.toUpperCase()],
+      brawler: [props.brawlerBrawlstarsId],
       powerplay: ['false'],
     }))
 
-    const filter = computed<CubeQueryFilter>(() => (e) => e.dimensionsRaw.brawler.brawler == props.brawlerName.toUpperCase())
+    const filter = computed<CubeQueryFilter>(() => (e) => e.dimensionsRaw.brawler.brawler == props.brawlerBrawlstarsId)
 
     return {
       filter,

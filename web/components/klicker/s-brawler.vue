@@ -8,8 +8,8 @@
     <option value="">{{ $t('option.any-brawler') }}</option>
     <option
       v-for="b in brawlers"
-      :key="b.id"
-      :value="b.id"
+      :key="b.brawlstarsId"
+      :value="b.brawlstarsId"
     >{{ b.name }}</option>
   </b-select>
 </template>

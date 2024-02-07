@@ -25,7 +25,7 @@ export default defineComponent({
       type: String as PropType<'starpowers'|'gadgets'|'gears'>,
       required: true
     },
-    brawlerName: {
+    brawlerBrawlstarsId: {
       type: String,
       required: true
     },
@@ -54,7 +54,7 @@ export default defineComponent({
       dimensionsIds: ['brawler', dimensionMap[props.kind]],
       metricsIds: ['winRate'],
       slices: {
-        brawler: [props.brawlerName.toUpperCase()],
+        brawler: [props.brawlerBrawlstarsId],
         [sliceNeqMap[props.kind]]: ['0'],
       },
       sortId: 'pvalue',
@@ -65,7 +65,7 @@ export default defineComponent({
         dimensionsIds: ['brawler'],
         metricsIds: ['winRate'],
         slices: {
-          brawler: [props.brawlerName.toUpperCase()],
+          brawler: [props.brawlerBrawlstarsId],
           [sliceEqMap[props.kind]]: ['0'],
         },
         sortId: 'pvalue',

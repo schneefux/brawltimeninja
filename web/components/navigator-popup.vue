@@ -38,7 +38,7 @@ import { defineComponent, computed, ref } from 'vue'
 import { useVModel } from '@vueuse/core'
 import { Link } from '@schneefux/klicker/components/ui/b-navigator.vue'
 import { getMapName } from '~/composables/map'
-import { brawlerId, camelToKebab, slugify, tagPattern } from '~/lib/util'
+import { camelToKebab, slugify, tagPattern } from '~/lib/util'
 import { TocEntry } from '~/model/Web'
 import { useAsync, useLocalePath } from '~/composables/compat'
 import { useAllBrawlers, useAllEvents, useAllModes } from '~/composables/dimension-values'
@@ -88,53 +88,53 @@ export default defineComponent({
             target: localePath(`/tier-list/brawler#${tab}`),
           })),
           (brawlers.value ?? []).map(b => ({
-            id: b.id,
+            id: b.slug,
             name: b.name,
-            target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}`),
+            target: localePath(`/tier-list/brawler/${b.slug}`),
             children: [{
-              id: `${b.id}#overview`,
+              id: `${b.slug}#overview`,
               name: i18n.t('brawler.overview'),
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}#overview`),
+              target: localePath(`/tier-list/brawler/${b.slug}#overview`),
             }, {
-              id: `${b.id}#accessory`,
+              id: `${b.slug}#accessory`,
               name: i18n.t('brawler.accessories'),
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}#accessory`),
+              target: localePath(`/tier-list/brawler/${b.slug}#accessory`),
             }, {
-              id: `${b.id}#synergy`,
-              name: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: b }),
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}#synergy`),
+              id: `${b.slug}#synergy`,
+              name: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: b.name }),
+              target: localePath(`/tier-list/brawler/${b.slug}#synergy`),
             }, {
-              id: `${b.id}#maps`,
+              id: `${b.slug}#maps`,
               name: i18n.t('brawler.current-maps.title', { brawler: b.name }),
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}#maps`),
+              target: localePath(`/tier-list/brawler/${b.slug}#maps`),
             }, {
-              id: `${b.id}#modes`,
+              id: `${b.slug}#modes`,
               name: i18n.t('brawler.modes.title', { brawler: b.name }),
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}#modes`),
+              target: localePath(`/tier-list/brawler/${b.slug}#modes`),
             }, {
-              id: `${b.id}#trends`,
+              id: `${b.slug}#trends`,
               name: i18n.t('brawler.trends', { brawler: b.name }),
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}#trends`),
+              target: localePath(`/tier-list/brawler/${b.slug}#trends`),
             }, {
-              id: `${b.id}#trophies`,
+              id: `${b.slug}#trophies`,
               name: i18n.t('brawler.by-trophies', { brawler: b.name }),
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}#trophies`),
+              target: localePath(`/tier-list/brawler/${b.slug}#trophies`),
             }, {
-              id: `${b.id}#skins`,
+              id: `${b.slug}#skins`,
               name: i18n.t('skin', 2),
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}#skins`),
+              target: localePath(`/tier-list/brawler/${b.slug}#skins`),
             }, {
-              id: `${b.id}#pins`,
+              id: `${b.slug}#pins`,
               name: i18n.t('pin', 2),
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}#pins`),
+              target: localePath(`/tier-list/brawler/${b.slug}#pins`),
             }, {
-              id: `${b.id}#voicelines`,
+              id: `${b.slug}#voicelines`,
               name: i18n.t('voiceline', 2),
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}#voicelines`),
+              target: localePath(`/tier-list/brawler/${b.slug}#voicelines`),
             }, {
-              id: `${b.id}#balance`,
+              id: `${b.slug}#balance`,
               name: i18n.t('balance-changes'),
-              target: localePath(`/tier-list/brawler/${brawlerId({ name: b.id })}#balance`),
+              target: localePath(`/tier-list/brawler/${b.slug}#balance`),
             }],
           })),
         ),

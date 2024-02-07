@@ -1,10 +1,16 @@
 <template>
-  <b-card :title="brawlerName">
+  <b-card :title="brawlerMetadata?.name">
     <template v-slot:content>
       <div class="flex flex-col items-center">
+        <b-shimmer
+          v-if="brawlerMetadata == undefined"
+          height-px="192"
+          loading
+        ></b-shimmer>
         <media-img
-          :path="'/brawlers/' + brawlerId + '/model'"
-          :alt="brawlerName"
+          v-else
+          :path="`/brawlers/${brawlerMetadata.slug}/model`"
+          :alt="brawlerMetadata.name"
           clazz="h-48 object-contain"
           size="400"
         ></media-img>
@@ -26,23 +32,22 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { PropType, computed, defineComponent } from 'vue'
 import { CQuery, VKvTable } from '@schneefux/klicker/components'
 import { CubeQueryFilter } from '@schneefux/klicker/types'
+import { BrawlerMetadata } from '~/composables/dimension-values'
+import { BShimmer } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
     CQuery,
     VKvTable,
+    BShimmer,
   },
   props: {
-    brawlerId: {
-      type: String,
-      required: true
-    },
-    brawlerName: {
-      type: String,
-      required: true
+    brawlerMetadata: {
+      type: Object as PropType<BrawlerMetadata>,
+      required: false
     },
   },
   setup(props) {
@@ -54,7 +59,7 @@ export default defineComponent({
       slices: {},
     }))
 
-    const filter = computed<CubeQueryFilter>(() => (e) => e.dimensionsRaw.brawler.brawler == props.brawlerName.toUpperCase())
+    const filter = computed<CubeQueryFilter>(() => (e) => e.dimensionsRaw.brawler.brawler == props.brawlerMetadata?.brawlstarsId)
 
     return {
       query,

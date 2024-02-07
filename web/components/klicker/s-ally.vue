@@ -8,8 +8,8 @@
     <option value="">with any</option>
     <option
       v-for="b in brawlers"
-      :key="b.id"
-      :value="b.id"
+      :key="b.brawlstarsId"
+      :value="b.brawlstarsId"
     >with {{ b.name }}</option>
   </b-select>
 </template>

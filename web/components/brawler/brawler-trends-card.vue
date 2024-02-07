@@ -7,6 +7,7 @@
       lazy
     >
       <lazy-map-trend-chart
+        v-if="brawlerBrawlstarsId != undefined"
         :slices="slices"
         :dimensions="['day']"
         sort="day"
@@ -21,6 +22,7 @@
       lazy
     >
       <lazy-map-trend-chart
+        v-if="brawlerBrawlstarsId != undefined"
         :slices="slices"
         :dimensions="['day']"
         sort="day"
@@ -35,7 +37,8 @@
       lazy
     >
       <lazy-map-trend-chart
-        :filter="(e: any) => e.dimensionsRaw.brawler.brawler == brawlerName.toUpperCase()"
+        v-if="brawlerBrawlstarsId != undefined"
+        :filter="queryFilter"
         :dimensions="['day', 'brawler']"
         sort="day"
         metric="useRate"
@@ -55,18 +58,21 @@ export default defineComponent({
     LazyMapTrendChart: defineAsyncComponent(() => import('~/components/map/map-trend-chart.vue'))
   },
   props: {
-    brawlerName: {
+    brawlerBrawlstarsId: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   setup(props) {
     const slices = computed(() => ({
-      brawler: [props.brawlerName.toUpperCase()],
+      brawler: [props.brawlerBrawlstarsId],
     }))
+
+    const queryFilter = (e: any) => e.dimensionsRaw.brawler.brawler == props.brawlerBrawlstarsId
 
     return {
       slices,
+      queryFilter,
     }
   }
 })

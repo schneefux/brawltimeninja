@@ -1,13 +1,13 @@
 <template>
-  <b-page :title="brawlerName">
+  <b-page :title="brawlerMetadata?.name">
     <breadcrumbs
       id="breadcrumbs"
       :links="[{
         path: '/tier-list/brawler',
         name: $t('brawler', 2),
       }, {
-        path: `/tier-list/brawler/${brawlerId}`,
-        name: brawlerName,
+        path: `/tier-list/brawler/${brawlerMetadata?.slug}`,
+        name: brawlerMetadata?.name,
       }]"
       class="mt-4"
     ></breadcrumbs>
@@ -22,8 +22,7 @@
         <div class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8">
           <brawler-aside
             id="aside"
-            :brawler-id="brawlerId"
-            :brawler-name="brawlerName"
+            :brawler-metadata="brawlerMetadata"
             class="!h-auto"
           ></brawler-aside>
 
@@ -47,7 +46,7 @@
         }"
       >
         <brawler-overview
-          :brawler-id="brawlerId"
+          :brawler-id="brawlerMetadata?.slug"
           :scraped-data="scrapedData"
         ></brawler-overview>
       </b-page-section>
@@ -63,7 +62,7 @@
         lazy
       >
         <brawler-accessories
-          :brawler-name="brawlerName"
+          :brawler-metadata="brawlerMetadata"
           :scraped-data="scrapedData"
         ></brawler-accessories>
       </b-page-section>
@@ -71,7 +70,7 @@
       <b-page-section
         id="synergy"
         ref="synergySection"
-        :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName })"
+        :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerMetadata?.name })"
         v-observe-visibility="{
           callback: makeVisibilityCallback('synergies'),
           once: true,
@@ -79,14 +78,14 @@
         lazy
       >
         <brawler-synergies
-          :brawler-name="brawlerName"
+          :brawler-metadata="brawlerMetadata"
         ></brawler-synergies>
       </b-page-section>
 
       <b-page-section
         id="maps"
         ref="mapsSection"
-        :title="$t('brawler.current-maps.title', { brawler: brawlerName })"
+        :title="$t('brawler.current-maps.title', { brawler: brawlerMetadata?.name })"
         v-observe-visibility="{
           callback: makeVisibilityCallback('current-maps'),
           once: true,
@@ -94,14 +93,14 @@
         lazy
       >
         <brawler-active-events
-          :brawler-name="brawlerName"
+          :brawler-metadata="brawlerMetadata"
         ></brawler-active-events>
       </b-page-section>
 
       <b-page-section
         id="modes"
         ref="modesSection"
-        :title="$t('brawler.modes.title', { brawler: brawlerName })"
+        :title="$t('brawler.modes.title', { brawler: brawlerMetadata?.name })"
         v-observe-visibility="{
           callback: makeVisibilityCallback('modes'),
           once: true,
@@ -109,7 +108,7 @@
         lazy
       >
         <brawler-modes-stats
-          :brawler-name="brawlerName"
+          :brawler-metadata="brawlerMetadata"
         ></brawler-modes-stats>
 
         <p class="mt-4 prose dark:prose-invert text-text/75">
@@ -120,7 +119,7 @@
       <b-page-section
         id="trends"
         ref="trendsSection"
-        :title="$t('brawler.trends', { brawler: brawlerName })"
+        :title="$t('brawler.trends', { brawler: brawlerMetadata?.name })"
         v-observe-visibility="{
           callback: makeVisibilityCallback('trends'),
           once: true,
@@ -128,15 +127,13 @@
         lazy
       >
         <template v-slot:description>
-          <p
-            class="mt-4 prose dark:prose-invert text-text/75"
-          >
-            {{ $t('brawler.trend.description', { brawler: brawlerName }) }}
+          <p class="mt-4 prose dark:prose-invert text-text/75">
+            {{ $t('brawler.trend.description', { brawler: brawlerMetadata?.name }) }}
           </p>
         </template>
 
         <brawler-trends-card
-          :brawler-name="brawlerName"
+          :brawler-metadata="brawlerMetadata"
           class="mt-4"
         ></brawler-trends-card>
       </b-page-section>
@@ -144,7 +141,7 @@
       <b-page-section
         id="trophies"
         ref="trophiesSection"
-        :title="$t('brawler.by-trophies', { brawler: brawlerName })"
+        :title="$t('brawler.by-trophies', { brawler: brawlerMetadata?.name })"
         v-observe-visibility="{
           callback: makeVisibilityCallback('trophy-graphs'),
           once: true,
@@ -152,7 +149,7 @@
         lazy
       >
         <brawler-trophy-graphs
-          :brawler-name="brawlerName"
+          :brawler-brawlstars-id="brawlerMetadata?.brawlstarsId"
         ></brawler-trophy-graphs>
 
         <p class="mt-4 prose dark:prose-invert text-text/75">
@@ -253,12 +250,12 @@
 import { computed, defineComponent, ref } from 'vue'
 import { useAsync, useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { capitalizeWords } from '~/lib/util'
 import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 import { ScrapedBrawler } from '~/model/Web'
 import { useI18n } from 'vue-i18n'
 import { useRouteParams } from '~/composables/route-params'
+import { useAllBrawlers } from '~/composables/dimension-values'
 
 export default defineComponent({
   directives: {
@@ -275,15 +272,15 @@ export default defineComponent({
 
     const routeParams = useRouteParams()
     const brawlerId = computed(() => routeParams.value!.brawler as string)
+    const allBrawlers = useAllBrawlers()
 
-    // TODO this does not restore '.' (Mr. P) or '-' (8-Bit)
-    const brawlerName = computed(() => capitalizeWords(brawlerId.value.replace(/__/g, '. ').replace(/_/g, ' ')))
+    const brawlerMetadata = computed(() => allBrawlers.value.find(b => b.slug == brawlerId.value))
 
     useCacheHeaders()
     useMeta(() => ({
-      title: i18n.t('tier-list.brawler.meta.title', { brawler: brawlerName.value }),
+      title: i18n.t('tier-list.brawler.meta.title', { brawler: brawlerMetadata.value?.name }),
       meta: [
-        { hid: 'description', name: 'description', content: i18n.t('tier-list.brawler.meta.description', { brawler: brawlerName.value }) },
+        { hid: 'description', name: 'description', content: i18n.t('tier-list.brawler.meta.description', { brawler: brawlerMetadata.value?.name }) },
       ]
     }))
 
@@ -321,23 +318,23 @@ export default defineComponent({
       element: sectionRefs.accessorySection.value?.$el,
     }, {
       id: 'synergy',
-      title: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: brawlerName.value }),
+      title: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: brawlerMetadata.value?.name }),
       element: sectionRefs.synergySection.value?.$el,
     }, {
       id: 'maps',
-      title: i18n.t('brawler.current-maps.title', { brawler: brawlerName.value }),
+      title: i18n.t('brawler.current-maps.title', { brawler: brawlerMetadata.value?.name }),
       element: sectionRefs.mapsSection.value?.$el,
     }, {
       id: 'modes',
-      title: i18n.t('brawler.modes.title', { brawler: brawlerName.value }),
+      title: i18n.t('brawler.modes.title', { brawler: brawlerMetadata.value?.name }),
       element: sectionRefs.modesSection.value?.$el,
     }, {
       id: 'trends',
-      title: i18n.t('brawler.trends', { brawler: brawlerName.value }),
+      title: i18n.t('brawler.trends', { brawler: brawlerMetadata.value?.name }),
       element: sectionRefs.trendsSection.value?.$el,
     }, {
       id: 'trophies',
-      title: i18n.t('brawler.by-trophies', { brawler: brawlerName.value }),
+      title: i18n.t('brawler.by-trophies', { brawler: brawlerMetadata.value?.name }),
       element: sectionRefs.trophiesSection.value?.$el,
     }, {
       id: 'skins',
@@ -358,8 +355,7 @@ export default defineComponent({
     }])
 
     return {
-      brawlerId,
-      brawlerName,
+      brawlerMetadata,
       makeVisibilityCallback,
       scrapedData,
       sections,

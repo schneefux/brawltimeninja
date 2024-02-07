@@ -32,7 +32,8 @@
       :columns="4"
     >
       <brawler-accessory-roll
-        :brawler-name="brawlerName"
+        v-if="brawlerMetadata != undefined"
+        :brawler-brawlstars-id="brawlerMetadata.brawlstarsId"
         kind="gears"
       ></brawler-accessory-roll>
     </b-dashboard-cell>
@@ -56,6 +57,7 @@
 import { defineComponent, PropType } from 'vue'
 import { ScrapedBrawler } from '~/model/Web'
 import { BScrollingDashboard, BDashboardCell, BCard } from '@schneefux/klicker/components'
+import { BrawlerMetadata } from '~/composables/dimension-values';
 
 export default defineComponent({
   components: {
@@ -64,9 +66,9 @@ export default defineComponent({
     BCard,
   },
   props: {
-    brawlerName: {
-      type: String,
-      required: true
+    brawlerMetadata: {
+      type: Object as PropType<BrawlerMetadata>,
+      required: false
     },
     scrapedData: {
       type: Object as PropType<ScrapedBrawler>,

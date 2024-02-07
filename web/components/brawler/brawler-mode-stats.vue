@@ -2,7 +2,7 @@
   <event-card :mode="mode">
     <template v-slot:content>
       <brawler-kv-card
-        :brawler-name="brawlerName"
+        :brawler-metadata="brawlerMetadata"
         :slices="slices"
       ></brawler-kv-card>
     </template>
@@ -10,12 +10,14 @@
 </template>
 
 <script lang="ts">
+import { PropType } from 'vue';
 import { computed, defineComponent } from 'vue'
+import { BrawlerMetadata } from '~/composables/dimension-values';
 
 export default defineComponent({
   props: {
-    brawlerName: {
-      type: String,
+    brawlerMetadata: {
+      type: Object as PropType<BrawlerMetadata>,
       required: true
     },
     mode: {

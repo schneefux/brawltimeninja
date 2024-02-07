@@ -1,5 +1,5 @@
 import { useKlicker } from "@schneefux/klicker/composables"
-import { capitalizeWords, formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd, parseClickhouse } from "~/lib/util"
+import { brawlerId, capitalizeWords, formatClickhouseDate, getMonthSeasonEnd, getSeasonEnd, getTodaySeasonEnd, parseClickhouse } from "~/lib/util"
 import { EventMetadata } from "~/plugins/klicker.service"
 import { SliceValue } from "@schneefux/klicker/types"
 import { differenceInMinutes, parseISO, subWeeks } from "date-fns"
@@ -174,11 +174,20 @@ export function useAllMaps(mode: MaybeRef<string|undefined> = ref()) {
   return computed(() => maps.value ?? [])
 }
 
+export interface BrawlerMetadata {
+  /** URL-safe ID */
+  slug: string
+  /** used in the database */
+  brawlstarsId: string
+  /** formatted name */
+  name: string
+}
+
 export function useAllBrawlers() {
   const $klicker = useKlicker()
   const i18n = useI18n()
 
-  const brawlers = useAsync<{ id: string, name: string }[]>(async () => {
+  const brawlers = useAsync<BrawlerMetadata[]>(async () => {
     const data = await $klicker.query({
       cubeId: 'map',
       dimensionsIds: ['brawler'],
@@ -192,7 +201,8 @@ export function useAllBrawlers() {
     return data.data
       .map(b => b.dimensionsRaw.brawler.brawler)
       .map(b => ({
-        id: b,
+        slug: brawlerId({ name: b }),
+        brawlstarsId: b,
         name: capitalizeWords(b.toLowerCase()),
       }))
   }, 'all-brawlers')

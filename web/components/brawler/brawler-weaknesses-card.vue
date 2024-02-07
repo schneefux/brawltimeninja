@@ -3,14 +3,16 @@
     :query="query"
     :filter="filter"
   >
-    <template v-slot:empty><p  class="text-center">
-      {{ $t('state.no-data') }}
-    </p></template>
+    <template v-slot:empty>
+      <p class="text-center">
+        {{ $t('state.no-data') }}
+      </p>
+    </template>
     <template v-slot="data">
       <v-roll
         v-bind="data"
         :card="{
-          title: $t('brawler.weakness.title', { brawler }),
+          title: $t('brawler.weakness.title', { brawler: brawlerMetadata.name }),
         }"
       ></v-roll>
     </template>
@@ -22,6 +24,8 @@ import { defineComponent } from 'vue'
 import { CubeComparingQuery, CubeComparingQueryFilter } from '@schneefux/klicker/types'
 import { CQuery, VRoll } from '@schneefux/klicker/components'
 import { useI18n } from 'vue-i18n'
+import { PropType } from 'vue'
+import { BrawlerMetadata } from '~/composables/dimension-values'
 
 export default defineComponent({
   components: {
@@ -29,8 +33,8 @@ export default defineComponent({
     CQuery,
   },
   props: {
-    brawler: {
-      type: String,
+    brawlerMetadata: {
+      type: Object as PropType<BrawlerMetadata>,
       required: true
     },
   },
@@ -42,14 +46,14 @@ export default defineComponent({
       comparing: true,
       cubeId: 'brawlerEnemies',
       slices: {
-        brawler: [props.brawler.toUpperCase()],
+        brawler: [props.brawlerMetadata.brawlstarsId],
       },
       dimensionsIds: ['brawler', 'enemy'],
       metricsIds: ['winRate'],
       sortId: 'pvalue',
       limit: 8,
       reference: {
-        name: props.brawler,
+        name: props.brawlerMetadata.name,
         cubeId: 'map',
         slices: {},
         dimensionsIds: ['brawler'],

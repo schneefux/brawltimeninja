@@ -40,7 +40,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
-import { brawlerId } from '~/lib/util'
 import { BScrollingList, BCard } from '@schneefux/klicker/components'
 import { useAllBrawlers } from '~/composables/dimension-values'
 
@@ -57,7 +56,7 @@ export default defineComponent({
       }
 
       return allBrawlers.value.map(b => ({
-        id: brawlerId({ name: b.id }),
+        id: b.slug,
         name: b.name,
       }))
     })

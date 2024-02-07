@@ -13,8 +13,9 @@
     >
       <template v-slot:item="row">
         <brawler-mode-stats
+          v-if="brawlerMetadata != undefined"
           :mode="row.dimensionsRaw.mode.mode"
-          :brawler-name="brawlerName"
+          :brawler-metadata="brawlerMetadata"
           class="w-full h-full"
         ></brawler-mode-stats>
       </template>
@@ -30,15 +31,17 @@ import { BScrollingList } from '@schneefux/klicker/components'
 import { useAsync } from '~/composables/compat'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
+import { PropType } from 'vue'
+import { BrawlerMetadata } from '~/composables/dimension-values'
 
 export default defineComponent({
   components: {
     BScrollingList,
   },
   props: {
-    brawlerName: {
-      type: String,
-      required: true
+    brawlerMetadata: {
+      type: Object as PropType<BrawlerMetadata>,
+      required: false
     },
   },
   setup(props) {
@@ -49,7 +52,7 @@ export default defineComponent({
       return (await $klicker.query({
         cubeId: 'map',
         slices: {
-          brawler: [props.brawlerName.toUpperCase()],
+          brawler: [props.brawlerMetadata!.brawlstarsId],
         },
         dimensionsIds: ['mode'],
         metricsIds: ['winRateAdj'],
@@ -57,10 +60,16 @@ export default defineComponent({
       })).data as MetaGridEntry[]
     }
 
-    const data = useAsync(() => fetch(), computed(() => `brawler-modes-${props.brawlerName}`))
+    const data = useAsync(async () => {
+      if (props.brawlerMetadata == undefined) {
+        return null
+      }
+
+      return await fetch()
+    }, computed(() => `brawler-modes-${props.brawlerMetadata?.name}`))
 
     const description = computed(() => {
-      if (data.value == undefined || data.value.length == 0) {
+      if (data.value == undefined || data.value.length == 0 || props.brawlerMetadata == undefined) {
         return ''
       }
       const bestModes = data.value.slice().sort((e1, e2) => (e2.metricsRaw.winRateAdj as number) - (e1.metricsRaw.winRateAdj as number))
@@ -70,7 +79,7 @@ export default defineComponent({
       const viability = scaleInto(0, 1, 3, viableModes / bestModes.length)
 
       return i18n.t('brawler.modes.description', {
-        brawler: props.brawlerName,
+        brawler: props.brawlerMetadata.name,
         amount: i18n.t('rating.amount.' + viability),
         bestMode,
       })
