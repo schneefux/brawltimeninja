@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { usePageContext } from '~/composables/page-context'
 import { TrpcInjectionKey } from "~/plugins/trpc"
 import { useHead, ReactiveHead } from "@unhead/vue"
-import { locales } from "~/locales";
+import { LocaleCode, locales } from "~/locales";
 import { MaybeRef } from "@vueuse/shared";
 import Cookies from 'js-cookie'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouteLocationNormalized, useRoute, useRouter } from "vue-router";
@@ -52,6 +52,7 @@ export function ssrRef<T>(defaultValue: T|undefined, key: string) {
   return r
 }
 
+/** prepend locale */
 export function localePath(path: string, i18n: AppI18n) {
   if (i18n.locale.value == i18n.fallbackLocale.value) {
     return path
@@ -76,8 +77,8 @@ export function useConfig() {
 
 const i18nCookieName = 'i18n_redirected'
 export function useSwitchToLocale() {
-  const route = useRoute()
   const router = useRouter()
+  const route = useRoute()
   const i18n = useI18n()
 
   const switchToLocale = async (locale: Locale, userInitiated: boolean = false) => {
@@ -85,11 +86,8 @@ export function useSwitchToLocale() {
       Cookies.set(i18nCookieName, locale.code)
     }
 
-    const urlPaths = route.fullPath.split('/')
-    const firstPath = urlPaths[1]
-    const currentCode = locales.find(l => l.iso == i18n.locale.value)!.code
-    const urlWithoutLocale = (firstPath == currentCode) ? '/' + urlPaths.slice(2).join('/') : route.fullPath
-    const newPath = `${locale.iso == i18n.fallbackLocale.value ? '' : '/' + locale.code}` + urlWithoutLocale
+    const findLocale = (localeIso: string) => locales.find(l => l.iso == localeIso)!
+    const newPath = getPathWithLocale(route.fullPath, locale, findLocale(i18n.fallbackLocale.value as string))
     await router.push(newPath)
   }
 
@@ -226,4 +224,13 @@ export function useSelfOrigin() {
     return getSelfOrigin(pageContext)
   }
   return window.location.origin
+}
+
+/** replace locale in path */
+export function getPathWithLocale(fullPath: string, locale: Locale, fallbackLocale: Locale) {
+  const urlPaths = fullPath.split('/')
+  const firstPath = urlPaths[1] as LocaleCode
+  const validCodes = locales.map(l => l.code)
+  const urlWithoutLocale = validCodes.includes(firstPath) ? '/' + urlPaths.slice(2).join('/') : fullPath
+  return `${locale.iso == fallbackLocale.iso ? '' : '/' + locale.code}` + urlWithoutLocale
 }

@@ -1,25 +1,47 @@
 import { defaultLocale, loadLocaleWithFallback, locales } from '~/locales'
 import { MergeHead, VueHeadClient } from '@unhead/vue'
-import { createMemoryHistory, createRouter as _createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createMemoryHistory, createRouter as _createRouter, createWebHistory, RouteRecordRaw, RouteLocationNormalized } from 'vue-router'
 // @ts-ignore
 import routes from '~pages'
 import { AppI18n } from './app'
 import { Config, PageContext } from './types'
+import { getPathWithLocale, getSelfOrigin } from '~/composables/compat'
 
 export { createRouter }
 
 function createRouter(i18n: AppI18n, pageContext: PageContext, head: VueHeadClient<MergeHead>, config: Config) {
-  const updateLocale = async (locale: typeof locales[0]) => {
+  const origin = getSelfOrigin(pageContext)
+
+  const updateLocale = async (locale: typeof locales[0], to: RouteLocationNormalized) => {
+    const fallbackLocale = locales.find(l => l.iso == i18n.fallbackLocale.value)!
+
     head.push({
       htmlAttrs: {
         lang: locale.iso,
       },
+      link: [
+        {
+          rel: 'canonical',
+          href: origin + to.path, // without queries and hash
+        },
+        {
+          rel: 'alternate',
+          href: origin + getPathWithLocale(to.fullPath, fallbackLocale, fallbackLocale),
+          hreflang: 'x-default',
+        },
+        ...locales.filter(l => l.show).map(l => ({
+          rel: 'alternate',
+          href: origin + getPathWithLocale(to.fullPath, l, fallbackLocale),
+          hreflang: l.iso,
+        })),
+      ],
       meta: [
+        { property: 'og:url', content: origin + to.fullPath },
         { property: 'og:locale', content: locale.iso },
-        ...(locales.filter(l => l.show && l.iso != locale.iso).map(l => ({
+        ...locales.filter(l => l.show && l.iso != locale.iso).map(l => ({
           property: 'og:locale:alternate',
           content: l.iso,
-        }))),
+        })),
       ],
     })
 
@@ -47,7 +69,7 @@ function createRouter(i18n: AppI18n, pageContext: PageContext, head: VueHeadClie
     name: r.name != undefined ? (l.code == defaultLocale.code ? '' : l.code + '-') + r.name : undefined,
     children: r.children?.map((c: any) => localizeRoute(c, l, depth + 1)),
     beforeEnter: async (to, from) => {
-      await updateLocale(l)
+      await updateLocale(l, to)
     },
   } satisfies RouteRecordRaw)
 

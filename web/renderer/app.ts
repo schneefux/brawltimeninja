@@ -14,7 +14,7 @@ import { createHead } from '@unhead/vue'
 import { InferSeoMetaPlugin } from '@unhead/addons'
 import { defaultLocale, locales } from '~/locales'
 import { createRouter } from './router'
-import { getSelfOrigin, localePath, useSentry } from '~/composables/compat'
+import { localePath, useSentry } from '~/composables/compat'
 
 export { createApp }
 
@@ -59,7 +59,6 @@ function createApp(pageContext: PageContext) {
       InferSeoMetaPlugin(),
     ],
   })
-  const selfOrigin = getSelfOrigin(pageContext)
   head.push({
     titleTemplate: (title) => title != undefined ? `${title} - Brawl Time Ninja` : 'Brawl Time Ninja',
     bodyAttrs: {
@@ -80,11 +79,6 @@ function createApp(pageContext: PageContext) {
       { rel: 'shortcut-icon', href: '/icons/maskable_icon_x48.png' },
       { rel: 'preconnect', href: pageContext.envConfig.cubeUrl },
       { rel: 'preconnect', href: pageContext.envConfig.mediaUrl },
-      ...(locales.filter(l => l.show).map(l => ({
-        rel: 'alternate',
-        href: l.code == 'en' ? selfOrigin : `${selfOrigin}/${l.code}`,
-        hreflang: l.iso,
-      }))),
     ],
     meta: [
       { name: 'theme-color', content: themeColor },
