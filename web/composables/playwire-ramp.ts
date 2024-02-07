@@ -81,12 +81,12 @@ export function usePlaywireRamp(publisherId: string, siteId: string) {
         window.ramp.que = window.ramp.que || [];
         window.ramp.passiveMode = true;
       `.replace(/\s+/g, ' '),
-      tagPriority: 'critical',
+      tagPriority: 31,
     }, {
       key: 'playwire-ramp',
       src: `//cdn.intergient.com/${publisherId}/${siteId}/ramp.js`,
       async: true,
-      tagPriority: 'critical',
+      tagPriority: 31,
     } ],
   }))
 }

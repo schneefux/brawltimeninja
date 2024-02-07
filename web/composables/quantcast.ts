@@ -5,16 +5,10 @@ export function useQuantcast(quantcastChoiceId: string) {
 
   useMeta(() => ({
     script: [ {
-      key: 'quantcast-choice',
-      type: 'text/javascript',
-      async: true,
-      tagPriority: 'critical',
-      src: `https://cmp.inmobi.com/choice/${quantcastChoiceId}/${host}/choice.js?tag_version=V3`,
-    }, {
       key: 'quantcast-choice-init',
       type: 'text/javascript',
       async: true,
-      tagPriority: 'critical',
+      tagPriority: 29, // load before playwire-ramp
       innerHTML: `
 (function() {
   var uspTries = 0;
@@ -165,6 +159,12 @@ export function useQuantcast(quantcastChoiceId: string) {
   }
 })();
       `.replace(/\s+/g, ' '),
+    }, {
+      key: 'quantcast-choice',
+      type: 'text/javascript',
+      async: true,
+      tagPriority: 29,
+      src: `https://cmp.inmobi.com/choice/${quantcastChoiceId}/${host}/choice.js?tag_version=V3`,
     } ],
   }))
 }
