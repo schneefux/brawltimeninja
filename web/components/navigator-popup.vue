@@ -231,10 +231,6 @@ export default defineComponent({
         name: i18n.t('nav.Brawler Records'),
         target: localePath('/brawler-records'),
       }, {
-        id: 'barchartrace',
-        name: i18n.t('nav.Bar Chart Race'),
-        target: localePath('/bar-chart-race'),
-      }, {
         id: 'about',
         name: i18n.t('nav.About'),
         target: localePath('/about'),
