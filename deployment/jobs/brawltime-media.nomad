@@ -126,7 +126,7 @@ job "brawltime-media" {
         PORT = "${NOMAD_PORT_http}"
         ASSET_DIR = "/assets/"
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"
-        NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_LIMIT}" # excess capacity is for sharp
+        NODE_OPTIONS = "--max-old-space-size=${512}" # sharp will use about 300MB more
       }
 
       config {
@@ -141,8 +141,8 @@ job "brawltime-media" {
 
       resources {
         cpu = 512
-        memory = 512
-        memory_max = 768 # sharp will use as much memory as available
+        memory = 896
+        memory_max = 1024
       }
     }
 

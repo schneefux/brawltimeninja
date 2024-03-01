@@ -60,9 +60,9 @@ job "mariadb" {
       }
 
       resources {
-        cpu = 196
-        memory = 196
-        memory_max = 256
+        cpu = 512
+        memory = 256
+        memory_max = 512
       }
     }
   }

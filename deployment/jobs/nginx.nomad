@@ -120,9 +120,9 @@ job "nginx" {
       }
 
       resources {
-        cpu = 1536
-        memory = 512
-        memory_max = 1024
+        cpu = 1024
+        memory = 768
+        memory_max = 1280
       }
     }
   }
