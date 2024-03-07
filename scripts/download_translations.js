@@ -6,7 +6,6 @@ if (net.setDefaultAutoSelectFamily) {
 
 const { createWriteStream } = require('fs')
 const fs = require('fs').promises
-const { promisify } = require('util')
 const { pipeline } = require('stream/promises')
 
 const starlistUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v1/';

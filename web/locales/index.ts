@@ -1,9 +1,10 @@
+import { Cache } from "~/lib/cache"
 import { Config } from "~/renderer/types"
 
 const LOCALE_CACHE_MINUTES = 60
 
-export type LocaleCode = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl'
-export type LocaleIso = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl'
+export type LocaleCode = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl' | 'bn' | 'br' | 'cn' | 'cz' | 'fi' | 'fr' | 'hi' | 'jp' | 'kr' | 'lt' | 'nl' | 'pt' | 'sk' | 'sv' | 'tr' | 'vi' | 'zh'
+export type LocaleIso = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl' | 'bn' | 'br' | 'cn' | 'cz' | 'fi' | 'fr' | 'hi' | 'jp' | 'kr' | 'lt' | 'nl' | 'pt' | 'sk' | 'sv' | 'tr' | 'vi' | 'zh'
 
 export interface Locale {
   code: LocaleCode // traduora code
@@ -54,13 +55,132 @@ export const locales: Locale[] = [{
   iso: 'ru',
   file: 'ru.js',
   emoji: '🇷🇺',
-  show: false,
+  show: true,
   supported: true,
 }, {
   code: 'pl',
   iso: 'pl',
   file: 'pl.js',
   emoji: '🇵🇱',
+  show: true,
+  supported: true,
+}, {
+  code: 'bn',
+  iso: 'bn',
+  file: 'bn.js',
+  emoji: '🇧🇩',
+  show: true,
+  supported: true,
+}, {
+  code: 'br',
+  iso: 'br',
+  file: 'br.js',
+  emoji: '🇧🇷',
+  show: true,
+  supported: true,
+}, {
+  code: 'cn',
+  iso: 'cn',
+  file: 'cn.js',
+  emoji: '🇨🇳',
+  show: true,
+  supported: true,
+}, {
+  code: 'cz',
+  iso: 'cz',
+  file: 'cz.js',
+  emoji: '🇨🇿',
+  show: true,
+  supported: true,
+}, {
+  code: 'fi',
+  iso: 'fi',
+  file: 'fi.js',
+  emoji: '🇫🇮',
+  show: true,
+  supported: true,
+}, {
+  code: 'fr',
+  iso: 'fr',
+  file: 'fr.js',
+  emoji: '🇫🇷',
+  show: true,
+  supported: true,
+}, {
+  code: 'hi',
+  iso: 'hi',
+  file: 'hi.js',
+  emoji: '🇮🇳',
+  show: true,
+  supported: true,
+}, {
+  code: 'jp',
+  iso: 'jp',
+  file: 'jp.js',
+  emoji: '🇯🇵',
+  show: true,
+  supported: true,
+}, {
+  code: 'kr',
+  iso: 'kr',
+  file: 'kr.js',
+  emoji: '🇰🇷',
+  show: true,
+  supported: true,
+}, {
+  code: 'lt',
+  iso: 'lt',
+  file: 'lt.js',
+  emoji: '🇱🇹',
+  show: true,
+  supported: true,
+}, {
+  code: 'nl',
+  iso: 'nl',
+  file: 'nl.js',
+  emoji: '🇳🇱',
+  show: true,
+  supported: true,
+}, {
+  code: 'pt',
+  iso: 'pt',
+  file: 'pt.js',
+  emoji: '🇵🇹',
+  show: true,
+  supported: true,
+}, {
+  code: 'sk',
+  iso: 'sk',
+  file: 'sk.js',
+  emoji: '🇸🇰',
+  show: true,
+  supported: true,
+}, {
+  code: 'sv',
+  iso: 'sv',
+  file: 'sv.js',
+  emoji: '🇸🇪',
+  show: true,
+  supported: true,
+}, {
+  code: 'tr',
+  iso: 'tr',
+  file: 'tr.js',
+  emoji: '🇹🇷',
+  show: true,
+  supported: true,
+}, {
+  code: 'vi',
+  iso: 'vi',
+  file: 'vi.js',
+  emoji: '🇻🇳',
+  show: true,
+  supported: true,
+}, {
+  code: 'zh',
+  iso: 'zh',
+  file: 'zh.js',
+  emoji: '🇨🇳',
   show: true,
   supported: true,
 }]
@@ -107,13 +227,9 @@ async function getTraduoraStrings(localeCode: LocaleCode, traduoraConfig: NonNul
   }).then(r => r.json() as Promise<Record<string, string>>)
 }
 
-const localeCache = new Map<LocaleCode, {
-  strings: Record<string, string>,
-  expirationDate: Date
-}>()
+const localeCache = new Cache<LocaleCode, Record<string, string>>(LOCALE_CACHE_MINUTES)
 async function loadLocale(locale: Locale, config: Config) {
-  const cache = localeCache.get(locale.code)
-  if (cache == undefined || cache.expirationDate <= new Date()) {
+  return await localeCache.getOrUpdate(locale.code, async () => {
     const localStrings = await import(`../locales/${locale.code}.json`)
       .catch(() => ({ default: {} })) as { default: Record<string, string> }
     const mediaStrings = locale.supported ? await fetch(config.mediaUrl + '/translations/' + locale.iso + '.json')
@@ -121,19 +237,10 @@ async function loadLocale(locale: Locale, config: Config) {
       .catch(() => ({})) as Record<string, string> : {}
     const traduoraStrings = config.traduora != undefined ? await getTraduoraStrings(locale.code, config.traduora).catch(() => ({})) : {}
     const strings = Object.assign({}, localStrings.default, mediaStrings, traduoraStrings)
-    const filteredStrings = Object.fromEntries(
+    return Object.fromEntries(
       Object.entries(strings).filter(([key, value]) => value != '')
     )
-
-    const expirationDate = new Date()
-    expirationDate.setMinutes(expirationDate.getMinutes() + LOCALE_CACHE_MINUTES)
-    localeCache.set(locale.code, {
-      strings: filteredStrings,
-      expirationDate,
-    })
-  }
-
-  return localeCache.get(locale.code)!.strings
+  })
 }
 
 // merge both locale maps to send fewer strings to the client

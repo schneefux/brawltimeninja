@@ -10,9 +10,11 @@
   "license": "UNLICENSED",
   "dependencies": {
     "axios": "^0.27.2",
+    "js-yaml": "^4.1.0",
     "jsdom": "^20.0.3",
+    "openai": "^4.28.4",
     "string-similarity": "^4.0.4",
-    "wtf_wikipedia": "^10.0.5",
-    "wtf-plugin-api": "^1.0.1"
+    "wtf-plugin-api": "^1.0.1",
+    "wtf_wikipedia": "^10.0.5"
   }
 }
