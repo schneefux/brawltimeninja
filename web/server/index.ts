@@ -52,9 +52,11 @@ async function startServer() {
 
   app.use('/api', apiMiddleware)
 
+  /*
   app.get('/ads.txt', (req, res) => {
     res.redirect(301, '//config.playwire.com/dyn_ads/1024864/74021/ads.txt')
   })
+  */
 
   app.get('*', async (req, res, next) => {
     const pageContextInit = {
