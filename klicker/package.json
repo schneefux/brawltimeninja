@@ -28,7 +28,7 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
-    "@cubejs-client/core": "^0.34.37",
+    "@cubejs-client/core": "^0.35.0",
     "@feathersjs/authentication-client": "5.0.14",
     "@feathersjs/feathers": "5.0.14",
     "@feathersjs/rest-client": "5.0.14",
@@ -61,7 +61,7 @@
     "@storybook/testing-library": "^0.2.2",
     "@storybook/vue3-vite": "^7.6.8",
     "@types/d3-format": "^3.0.4",
-    "@types/node": "^20.11.0",
+    "@types/node": "^20.11.28",
     "@vitejs/plugin-vue": "^5.0.3",
     "autoprefixer": "^10.4.16",
     "babel-preset-typescript-vue3": "^2.0.17",

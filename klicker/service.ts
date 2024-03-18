@@ -1,5 +1,5 @@
 import { Config, VisualisationSpec, Cube, Dimension, Metric, MetaGridEntry, SliceValue, CubeQuery, ValueType, CubeResponse, CubeComparingQuery, CubeComparingResponse, MetaGridEntryDiff, ComparingMetaGridEntry, CubeQueryFilter, CubeComparingQueryFilter, SlicerSpec, StaticWidgetSpec, IKlickerService, CubeQueryConfiguration, MetricRendererSpec, DimensionRendererSpec, RouteQuery, SerializableCubeResponse, SerializableMetaGridEntry, SerializableCubeComparingResponse, SerializableComparingMetaGridEntry, SerializableMetaGridEntryDiff } from "./types"
-import { CubejsApi, Filter, ITransport, Query, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
+import { CubeApi, Filter, ITransport, Query, ResultSet, TQueryOrderObject } from "@cubejs-client/core"
 import * as d3format from "d3-format"
 import { format as formatDate, parseISO } from "date-fns"
 import defaultVisualisations from "./visualisations.js"
@@ -91,7 +91,7 @@ class HttpTransport implements ITransport<ResultSet> {
 }
 
 export class KlickerService implements IKlickerService {
-  private cubejsApi: CubejsApi
+  private cubejsApi: CubeApi
   public visualisations: VisualisationSpec[] = defaultVisualisations
   public staticWidgets: StaticWidgetSpec[] = defaultStaticWidgets
   public slicers: SlicerSpec[] = []
@@ -109,7 +109,7 @@ export class KlickerService implements IKlickerService {
   ) {
     const apiUrl = cubeUrl + '/cubejs-api/v1'
     // @ts-ignore
-    this.cubejsApi = new CubejsApi('', {
+    this.cubejsApi = new CubeApi('', {
       apiUrl,
       transport: new HttpTransport(apiUrl, fetchImplementation),
     })
