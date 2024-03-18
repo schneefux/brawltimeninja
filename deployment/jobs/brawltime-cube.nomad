@@ -39,27 +39,27 @@ job "brawltime-cube" {
 
       policy {
         check "high_cpu" {
+          # scale up as soon as all workers are currently busy with a long-running query
           source = "nomad-apm"
           group = "cpu-allocated-cube"
-          query = "avg_cpu-allocated"
-          query_window = "2m" # react fast to long queries blocking a worker
+          query = "min_cpu-allocated"
 
           strategy "threshold" {
             upper_bound = 100
-            lower_bound = 80
+            lower_bound = 60
             within_bounds_trigger = 1
             delta = 1
           }
         }
 
         check "low_cpu" {
+          # scale down when all workers are idle
           source = "nomad-apm"
           group = "cpu-allocated-cube"
-          query = "avg_cpu-allocated"
-          query_window = "2m"
+          query = "max_cpu-allocated"
 
           strategy "threshold" {
-            upper_bound = 20 # keep the worker for a while
+            upper_bound = 40
             lower_bound = 0
             within_bounds_trigger = 1
             delta = -1
@@ -147,7 +147,6 @@ job "brawltime-cube" {
       }
 
       resources {
-        #cpu = 512
         cpu = 1024 # typically 100-300
         memory = 512
         memory_max = 768

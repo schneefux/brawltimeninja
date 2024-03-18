@@ -76,9 +76,9 @@ job "redis" {
 
       resources {
         # reserve 3-4x to handle spikes
-        cpu = 1024 # typically 192
-        memory = 2560 # typically 768-2048
-        memory_max = 2816
+        cpu = 1024 # typically 200-800
+        memory = 3072 # typically 768-2048
+        memory_max = 3584
       }
     }
   }
