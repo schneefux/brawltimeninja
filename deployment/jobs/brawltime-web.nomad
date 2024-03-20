@@ -2,6 +2,7 @@ variable "sentry_dsn" {}
 variable "github_user" {}
 variable "github_token" {}
 variable "brawlapi_token" {}
+variable "openai_key" {}
 
 # git hash or "latest"
 variable "tag" {}
@@ -173,8 +174,9 @@ job "brawltime-web" {
       template {
         data = <<-EOF
           BRAWLAPI_TOKEN="${var.brawlapi_token}"
+          OPENAI_API_KEY="${var.openai_key}"
         EOF
-        destination = "secrets/brawlstars.env"
+        destination = "secrets/tokens.env"
         env = true
       }
 
