@@ -31,6 +31,15 @@ async function startServer() {
         levels: ['error', 'assert'],
       }),
     ],
+    ignoreErrors: [
+      // ignore errors that are not actionable
+      'HeadersTimeoutError',
+      'TimeoutError',
+      "it didn't finish after 30 seconds", // vike timeout
+      'You stumbled upon a bug in Vike',
+      'No such label', // console.time
+      'mraid.js', // triggered by ads
+    ],
     beforeSend(event, hint) {
       const error = hint.originalException as any
 

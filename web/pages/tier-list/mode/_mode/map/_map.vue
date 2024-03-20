@@ -188,11 +188,11 @@ export default defineComponent({
 
     const lightboxOpen = ref(false)
 
-    const aiReport = useAsync(async () => await $api.report.byModeMap.query({
+    const aiReport = useAsync(() => $api.report.byModeMap.query({
       localeIso: i18n.locale.value,
       mode: mode.value,
       map: map.value,
-    }), computed(() => `ai-report-${i18n.locale.value}-${mode.value}-${map.value}`))
+    }).catch(() => null), computed(() => `ai-report-${i18n.locale.value}-${mode.value}-${map.value}`))
 
     const { trackInteraction } = useTrackScroll('map')
 
