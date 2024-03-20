@@ -33,6 +33,8 @@ export default class ProfileUpdaterService {
       .onConflict('tag')
       .merge(['confirmed_at', 'last_updated_at', 'last_active_at'])
 
+    stats.increment('track.update.human')
+
     return await this.getProfileTrackingStatus(tag)
   }
 
@@ -51,6 +53,8 @@ export default class ProfileUpdaterService {
         last_active_at: lastActiveDate,
       })
       .where('tag', tag)
+
+    stats.increment('track.update.bot')
   }
 
   private getExpirationDate() {
