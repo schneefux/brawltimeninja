@@ -33,7 +33,7 @@ async function main() {
   const brawlerNames = brawlerPages.map(brawlerPage => brawlerPage.title);
 
   const previously = new Date();
-  previously.setDate(previously.getDate() - 14);
+  previously.setDate(previously.getDate());
   const previouslyStr = previously.toISOString().substring(0, 10)
   
   // get ids of starpowers and gadgets
@@ -44,7 +44,7 @@ async function main() {
       "dimensions": ["battle.brawler_dimension", "battle.starpower_dimension"],
       "filters": [{
         "member": "battle.season_dimension",
-        "operator": "afterDate",
+        "operator": "gte",
         "values": [previouslyStr]
       }, {
         "member": "battle.starpower_dimension",
@@ -62,7 +62,7 @@ async function main() {
       "dimensions": ["battle.brawler_dimension", "battle.gadget_dimension"],
       "filters": [{
         "member": "battle.season_dimension",
-        "operator": "afterDate",
+        "operator": "gte",
         "values": [previouslyStr]
       }, {
         "member": "battle.gadget_dimension",
