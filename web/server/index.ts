@@ -7,10 +7,10 @@ import apiMiddleware from '../api/index'
 import { PageContext } from '~/renderer/types'
 import * as Sentry from '@sentry/node'
 import {
-  Dedupe as DedupeIntegration,
-  CaptureConsole as CaptureConsoleIntegration,
-  ExtraErrorData as ExtraErrorDataIntegration,
-  RewriteFrames as RewriteFramesIntegration,
+  dedupeIntegration,
+  captureConsoleIntegration,
+  extraErrorDataIntegration,
+  rewriteFramesIntegration,
 } from '@sentry/integrations'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -24,10 +24,10 @@ async function startServer() {
     environment: process.env.NODE_ENV,
     release: process.env.SENTRY_RELEASE,
     integrations: [
-      new DedupeIntegration(),
-      new ExtraErrorDataIntegration(),
-      new RewriteFramesIntegration(),
-      new CaptureConsoleIntegration({
+      dedupeIntegration(),
+      extraErrorDataIntegration(),
+      rewriteFramesIntegration(),
+      captureConsoleIntegration({
         levels: ['error', 'assert'],
       }),
     ],

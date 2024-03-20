@@ -2,11 +2,11 @@ import { App, InjectionKey } from "vue"
 import { Router } from "vue-router"
 import * as Sentry from '@sentry/vue'
 import {
-  HttpClient as HttpClientIntegration,
-  CaptureConsole as CaptureConsoleIntegration,
-  ExtraErrorData as ExtraErrorDataIntegration,
-  ReportingObserver as ReportingObserverIntegration,
-  RewriteFrames as RewriteFramesIntegration,
+  httpClientIntegration,
+  captureConsoleIntegration,
+  extraErrorDataIntegration,
+  reportingObserverIntegration,
+  rewriteFramesIntegration,
 } from '@sentry/integrations'
 
 export const SentryInjectionKey = Symbol('sentry') as InjectionKey<typeof Sentry>
@@ -18,19 +18,20 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
     debug: import.meta.env.DEV,
     autoSessionTracking: true,
     integrations: [
-      new ExtraErrorDataIntegration(),
-      new ReportingObserverIntegration(),
-      new RewriteFramesIntegration(),
-      new CaptureConsoleIntegration({
+      extraErrorDataIntegration(),
+      reportingObserverIntegration(),
+      rewriteFramesIntegration(),
+      captureConsoleIntegration({
         levels: ['error', 'assert']
       }),
-      new HttpClientIntegration(),
-      new Sentry.BrowserTracing({
-        routingInstrumentation: router != undefined ? Sentry.vueRouterInstrumentation(router) : undefined,
+      httpClientIntegration(),
+      Sentry.browserTracingIntegration({
+        router,
         tracePropagationTargets: ['localhost', /^https?:\/\/brawltime\.ninja/],
+        enableInp: true,
       }),
-      new Sentry.BrowserProfilingIntegration(),
-      new Sentry.Replay({
+      Sentry.browserProfilingIntegration(),
+      Sentry.replayIntegration({
         maskAllText: false,
         maskAllInputs: false,
         blockAllMedia: false,
@@ -45,7 +46,7 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
       'Tyche blocked',
     ],
     allowUrls: [/https?:\/\/brawltime\.ninja/],
-    replaysSessionSampleRate: 0.001,
+    replaysSessionSampleRate: 0.0005,
     replaysOnErrorSampleRate: 0.01,
     tracesSampleRate: 0.01,
     profilesSampleRate: 0.25, // relative to tracesSampleRate
