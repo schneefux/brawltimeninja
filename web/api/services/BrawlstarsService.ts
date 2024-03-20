@@ -1,4 +1,4 @@
-import { brawlerId, capitalize, parseApiTime } from '../../lib/util'
+import { brawlerId, capitalize, parseApiTime, unformatMode } from '../../lib/util'
 import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../../model/Brawlstars'
 import { Battle, Brawler, Player, ActiveEvent, ClubActivityStatistics } from '../../model/Api'
 import { request } from '../lib/request'
@@ -64,7 +64,7 @@ export default class BrawlstarsService {
     const mapper = (events: StarlistEvent[]) => events.map((event) => ({
       id: event.map.id.toString(),
       map: event.map.name,
-      mode: event.map.gameMode.name,
+      mode: unformatMode(event.map.gameMode.name),
       start: event.startTime,
       end: event.endTime,
     }) as ActiveEvent);
