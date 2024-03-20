@@ -31,6 +31,17 @@ async function startServer() {
         levels: ['error', 'assert'],
       }),
     ],
+    beforeSend(event, hint) {
+      const error = hint.originalException as any
+
+      if (error && error.name == 'Error' && error.message.length == 0) {
+        // cube.js RequestError, ignore
+        // FIXME import it from cubejs and match the class
+        return null
+      }
+
+      return event
+    },
   })
   app.use(Sentry.Handlers.requestHandler())
 
