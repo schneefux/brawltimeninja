@@ -44,19 +44,13 @@ export default defineComponent({
     const onResult = (r: OEJTSEntry) => {
       triggered.value = true
       result.value = r
-      event('click', {
-        'event_category': 'quiz',
-        'event_label': 'end',
-      })
+      event('end_quiz')
     }
 
     const onRestart = () => {
       answers.value = undefined
       result.value = undefined
-      event('click', {
-        'event_category': 'quiz',
-        'event_label': 'restart',
-      })
+      event('restart_quiz_from_card')
     }
 
     return {

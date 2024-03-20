@@ -26,24 +26,17 @@ export default defineComponent({
         await navigator.share({
           url: window.location.href,
         })
-        event('click', {
-          'event_category': 'dashboard',
-          'event_label': 'share',
+        event('share', {
+          'content_type': 'dashboard',
         })
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {
-          event('cancel', {
-            'event_category': 'dashboard',
-            'event_label': 'share',
-          })
+          event('cancel_share_dashboard')
           return
         }
 
         console.error(err);
-        event('click', {
-          'event_category': 'dashboard',
-          'event_label': 'share_error',
-        })
+        event('error_share_dashboard')
       }
     }
 

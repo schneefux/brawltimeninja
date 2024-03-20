@@ -58,16 +58,10 @@ export default defineComponent({
       tagValid.value = tagPattern.test(cleanedTag.value)
 
       if (tagValid.value) {
-        event('search', {
-          'event_category': 'embed',
-          'event_label': 'success',
-        })
+        event('embedded_search_success')
       } else {
         e.preventDefault()
-        event('search', {
-          'event_category': 'embed',
-          'event_label': 'error_invalid',
-        })
+        event('embedded_search_invalid')
       }
 
       return tagValid.value

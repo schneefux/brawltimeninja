@@ -226,25 +226,18 @@ export default defineComponent({
 
     const onShare = () => {
       emit('interact')
-      event('click', {
-        'event_category': 'profile',
-        'event_label': 'share',
+      event('share', {
+        'content_type': 'profile',
       })
     }
     const onShareCancel = () => {
       emit('interact')
-      event('cancel', {
-        'event_category': 'profile',
-        'event_label': 'share',
-      })
+      event('cancel_share_sharepic')
     }
 
     const onDownload = () => {
       emit('interact')
-      event('click', {
-        'event_category': 'profile',
-        'event_label': 'download',
-      })
+      event('download_sharepic')
     }
 
     const i18n = useI18n()

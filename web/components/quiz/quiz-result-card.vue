@@ -124,15 +124,11 @@ export default defineComponent({
       return `/embed/quiz?${params.toString()}`
     })
 
-    const onShare = () => event('click', {
-      'event_category': 'quiz',
-      'event_label': 'share',
+    const onShare = () => event('share', {
+      'content_type': 'quiz',
     })
 
-    const onShareCancel = () => event('cancel', {
-      'event_category': 'quiz',
-      'event_label': 'share',
-    })
+    const onShareCancel = () => event('cancel_share_quiz')
 
     return {
       quizRootUrl,

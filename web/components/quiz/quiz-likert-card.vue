@@ -58,12 +58,6 @@ export default defineComponent({
     const next = () => {
       page.value++
 
-      event('step', {
-        'event_category': 'oejts',
-        'event_label': page.value.toString(),
-        'value': page.value,
-      })
-
       if (page.value == pages.value) {
         const result = Object.entries(oejtsAnswers.value).reduce((scores, [id, answer]) => id in oejtsScores ? ({
           ie: scores.ie + oejtsScores[id].ie * (answer - 2.5)/5,

@@ -269,10 +269,7 @@ export default defineComponent({
       error.value = undefined
 
       if (!tagPattern.test(cleanedTag.value)) {
-        event('search', {
-          'event_category': 'player',
-          'event_label': 'error_invalid',
-        })
+        event('search_tag_invalid')
         error.value = i18n.t('error.tag.invalid')
         const dropdown = helpDropdown.value!
         dropdown.setAttribute('open', '')
@@ -288,37 +285,25 @@ export default defineComponent({
         if (err instanceof TRPCClientError) {
           if (err.data?.httpStatus == 404) {
             error.value = i18n.t('error.tag.not-found')
-            event('search', {
-              'event_category': 'player',
-              'event_label': 'error_notfound',
-            })
+            event('search_not_found')
             return
           }
           if (err.data?.httpStatus >= 400) {
             error.value = i18n.t('error.api-unavailable')
-            event('search', {
-              'event_category': 'player',
-              'event_label': 'error_timeout',
-            })
+            event('search_timeout')
             return
           }
         }
 
         error.value = i18n.t('error.api-unavailable')
         sentry.captureException(err)
-        event('search', {
-          'event_category': 'player',
-          'event_label': 'error_api',
-        })
+        event('search_api_error')
         return
       } finally {
         loading.value = false
       }
 
-      event('search', {
-        'event_category': 'player',
-        'event_label': 'success',
-      })
+      event('search_success')
 
       preferencesStore.userTag = cleanedTag.value
 

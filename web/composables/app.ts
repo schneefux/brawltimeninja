@@ -67,47 +67,32 @@ export function useInstall(source: string) {
     if (pwaSupported) {
       installPrompt.value.prompt()
       const choice = await installPrompt.value.userChoice
-      event('prompt', {
-        'event_category': 'app',
-        'event_label': choice.outcome,
-      })
+      event(`prompt_install_${choice.outcome}`)
       clearInstallPrompt()
       return
     }
 
     if (detectAndroid()) {
       const referrer = '&referrer=utm_source%3Dwebsite%26utm_medium%3Dfallback'
-      event('redirect_store', {
-        'event_category': 'app',
-        'event_label': 'fallback',
-      })
+      event('redirect_android_store')
       window.open(`https://play.google.com/store/apps/details?id=${packageId}${referrer}`, '_blank')
       return
     }
 
     if (detectIOS()) {
-      event('redirect_guide', {
-        'event_category': 'app',
-        'event_label': 'ios',
-      })
+      event('redirect_ios_guide')
       await router.push(localePath('/install/ios'))
       return
     }
   }
 
   const dismissInstall = () => {
-    event('dismiss', {
-      'event_category': 'app',
-      'event_label': `install_${source}`,
-    })
+    event(`dismissed_install_${source}`)
     store.installBannerDismissed = true
     clearInstallPrompt()
   }
   const clickInstall = async () => {
-    event('click', {
-      'event_category': 'app',
-      'event_label': `install_${source}`,
-    })
+    event(`clicked_install_${source}`)
     await install()
   }
 
@@ -130,10 +115,7 @@ export function setInstallPrompt(prompt: any) {
 
 export function useInstallPromptListeners() {
   if (!import.meta.env.SSR) {
-    const installed = () => event('install', {
-      'event_category': 'app',
-      'event_label': 'install',
-    })
+    const installed = () => event('install')
 
     window.addEventListener('appinstalled', installed)
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -159,18 +141,12 @@ export function useReview() {
   })
 
   const dismissReview = () => {
-    event('dismiss', {
-      'event_category': 'app',
-      'event_label': 'review',
-    })
+    event('dismiss_review')
     store.reviewBannerDismissed = true
   }
 
   const clickReview = () => {
-    event('click', {
-      'event_category': 'app',
-      'event_label': 'review',
-    })
+    event('click_review')
     store.reviewBannerDismissed = true
     window.location.href = 'brawltime://review'
     setTimeout(() => window.open(`https://play.google.com/store/apps/details?id=${packageId}`, '_blank'), 1000)

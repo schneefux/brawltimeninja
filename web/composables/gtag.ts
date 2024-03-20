@@ -3,16 +3,16 @@ import { event } from "vue-gtag"
 export const useTrackScroll = (trackingPageId: string) => {
   const makeVisibilityCallback = (trackingId: string) => (visible: boolean, element: any) =>  {
     if (visible) {
-      event('scroll', {
-        'event_category': trackingPageId,
-        'event_label': trackingId,
+      event('scroll_visibility', {
+        'visible_page': trackingPageId,
+        'visible_section': trackingId,
       })
     }
   }
   const trackInteraction = (trackingId: string) => {
     event('interact', {
-      'event_category': trackingPageId,
-      'event_label': trackingId,
+      'interact_page': trackingPageId,
+      'interact_section': trackingId,
     })
   }
 

@@ -71,17 +71,11 @@ export default defineComponent({
 
     const onTrigger = (m: Record<string, number>) => {
       emit('update:modelValue', m)
-      event('click', {
-        'event_category': 'quiz',
-        'event_label': 'start',
-      })
+      event('start_quiz')
     }
     const onRestart = () => {
       emit('update:modelValue', {})
-      event('click', {
-        'event_category': 'quiz',
-        'event_label': 'restart_cta',
-      })
+      event('restart_quiz_from_cta')
     }
 
     return {
