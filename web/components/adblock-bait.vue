@@ -9,24 +9,17 @@
 
 <script lang="ts">
 import { ref, defineComponent, onMounted } from 'vue'
-import { event } from 'vue-gtag'
+import { set as gtagSet } from 'vue-gtag'
 
 export default defineComponent({
   setup() {
     const adblockBait = ref<HTMLElement>()
 
     onMounted(() => {
-      const adsBlocked = adblockBait.value!.clientHeight === 0
-      event('ads_blocked_dimension', {
-        'ads_blocked': adsBlocked,
-        'non_interaction': true,
-      })
+      const adsBlocked = adblockBait.value!.clientHeight === 0;
 
-      event('blocked', {
-        'event_category': 'ads',
-        'event_label': adsBlocked.toString(),
-        'value': adsBlocked ? 1 : 0,
-        'non_interaction': true,
+      (gtagSet as any)('user_properties', {
+        'ads_blocked': adsBlocked.toString(),
       })
     })
 

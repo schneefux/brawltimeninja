@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import Cookies from 'js-cookie'
-import { event } from 'vue-gtag'
+import { set as gtagSet } from 'vue-gtag'
 
 export default defineComponent({
   props: {
@@ -32,11 +32,10 @@ export default defineComponent({
         console.log('selected variant ' + selectedVariant + ' for experiment ' + props.experimentId)
       }
 
-      activeVariant.value = selectedVariant
+      activeVariant.value = selectedVariant;
 
-      event('test_group_dimension', {
+      (gtagSet as any)('user_properties', {
         'test_group': `${props.experimentId}-${activeVariant.value}`,
-        'non_interaction': true,
       })
 
       console.log('enabled variant ' + activeVariant.value + ' for experiment ' + props.experimentId)

@@ -150,20 +150,9 @@ function createApp(pageContext: PageContext) {
 
   app.config.globalProperties.localePath = (path: string) => localePath(path, i18n.global)
 
-  const gtagParams = {
-    optimize_id: pageContext.envConfig.optimizeId,
-    custom_map: {
-      'dimension1': 'branch',
-      'dimension2': 'ads_blocked',
-      'dimension3': 'is_pwa',
-      'dimension4': 'is_twa',
-      'dimension5': 'test_group',
-    },
-  }
   app.use(VueGtagPlugin, {
     config: {
       id: pageContext.envConfig.ga4Id,
-      params: gtagParams,
     },
     includes: [ {
       id: pageContext.envConfig.playwireRampGa4Id,

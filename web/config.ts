@@ -3,7 +3,6 @@ export interface Config {
   cubeUrl: string
   managerUrl: string
   renderUrl: string
-  optimizeId: string
   ga4Id: string
   adsensePubid: string
   sentryDsn: string
@@ -23,7 +22,6 @@ export const config: Config = {
   cubeUrl: process.env.CUBE_URL ?? '',
   managerUrl: process.env.MANAGER_URL ?? '',
   renderUrl: process.env.RENDER_URL ?? '',
-  optimizeId: process.env.OPTIMIZE_ID ?? '',
   ga4Id: process.env.GA4_ID ?? '',
   adsensePubid: process.env.ADSENSE_PUBID ?? '',
   playwireRampPublisherId: process.env.PLAYWIRE_RAMP_PUBLISHER_ID ?? '',
