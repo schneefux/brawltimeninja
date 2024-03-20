@@ -634,5 +634,7 @@
   "tier-list.powerleague.description": "Die Brawl Stars Power League ist ein Wettkampfmodus, der bei 4500 Trophäen freigeschaltet wird. Nimm an unbegrenzten 3v3-Matches teil und erhalte Belohnungen basierend auf deiner Leistung. Nutze die Statistiken unten, um deine Gewinnchancen mit Siegraten für alle Power League Karten zu maximieren, indem du die besten Brawler für dein Team findest.",
   "tier-list.powerleague.meta.title": "Power League Karten",
   "tier-list.powerleague.meta.description": "Brawl Stars Power League Tier-Liste mit Siegraten, Auswahlraten und Ranglisten. Finde die besten Brawler für alle Power League Karten und verbessere deinen Entwurf.",
-  "action.open.tier-list.powerleague": "Power League Tier-Liste öffnen"
+  "action.open.tier-list.powerleague": "Power League Tier-Liste öffnen",
+  "tier-list.map.report.title": "{title} Analyse",
+  "tier-list.map.report.summary": "Lerne, wie man die Daten von Brawl Time Ninja interpretiert, um öfter mit den besten Brawlern und Builds zu gewinnen."
 }

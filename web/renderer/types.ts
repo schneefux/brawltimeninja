@@ -2,35 +2,15 @@ export type { PageContextServer }
 export type { PageContextClient }
 export type { PageContext }
 export type { PageProps }
-export type { Config }
 
 import { DehydratedState } from '@tanstack/vue-query'
 import * as SentryTypes from '@sentry/core'
 import type { PageContextBuiltInServer } from 'vike/types'
 import type { ComponentPublicInstance } from 'vue'
 import { LocaleIso } from '~/locales'
+import { Config } from '~/config'
 
 type PageProps = Record<string, unknown>
-
-interface Config {
-  mediaUrl: string
-  cubeUrl: string
-  managerUrl: string
-  renderUrl: string
-  optimizeId: string
-  ga4Id: string
-  adsensePubid: string
-  sentryDsn: string
-  playwireRampPublisherId: string
-  playwireRampSiteId: string
-  playwireRampGa4Id: string
-  quantcastChoiceId: string
-  traduora?: {
-    url: string
-    projectId: string
-    token: string
-  }
-}
 
 type Page = ComponentPublicInstance // https://stackoverflow.com/questions/63985658/how-to-type-vue-instance-out-of-definecomponent-in-vue-3/63986086#63986086
 

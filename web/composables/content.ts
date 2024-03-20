@@ -4,6 +4,21 @@ import { useBlockingAsync } from './compat'
 
 const posts = import.meta.glob(`~/assets/content/**/*.md`, { as: 'raw' })
 
+function renderMarkdown(content: string) {
+  const md = new MarkdownIt({
+    html: true,
+  })
+
+  const splits = content.match(/^---(.*?)---(.*)/s)!
+  const frontmatter = yaml.load(splits[1]) as Record<string, any>
+  const body = md.render(splits[2])
+
+  return {
+    frontmatter,
+    body,
+  }
+}
+
 export async function usePost(folder: string) {
   return await useBlockingAsync<Record<string, any>>(async ({ params, error }) => {
     const path = `/assets/content/${folder}/${params.post as string}.md`
@@ -14,15 +29,10 @@ export async function usePost(folder: string) {
 
     try {
       const data = await posts[path]()
-      const md = new MarkdownIt({
-        html: true,
-      })
-      const splits = data.match(/^---(.*?)---(.*)/s)!
-      const frontmatter = yaml.load(splits[1]) as Record<string, any>
-      const markdown = md.render(splits[2])
+      const { body, frontmatter } = renderMarkdown(data)
 
       return {
-        body: markdown,
+        body,
         ...frontmatter,
         createdAt: frontmatter.createdAt.toISOString(),
       }

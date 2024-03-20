@@ -1,5 +1,5 @@
+import { Config } from "~/config"
 import { Cache } from "~/lib/cache"
-import { Config } from "~/renderer/types"
 
 const LOCALE_CACHE_MINUTES = 60
 
@@ -9,7 +9,6 @@ export type LocaleIso = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl' | 'bn' | 
 export interface Locale {
   code: LocaleCode // traduora code
   iso: LocaleIso // 2 letter ISO code, equal to or prefix of navigator.language
-  file: string
   emoji: string
   show: boolean
   supported: boolean // whether Brawl Stars supports this language
@@ -18,168 +17,144 @@ export interface Locale {
 export const locales: Locale[] = [{
   code: 'en',
   iso: 'en',
-  file: 'en.js',
   emoji: '🇬🇧',
   show: true,
   supported: true,
 }, {
   code: 'de',
   iso: 'de',
-  file: 'de.js',
   emoji: '🇩🇪',
   show: true,
   supported: true,
 }, {
   code: 'es',
   iso: 'es',
-  file: 'es.js',
   emoji: '🇪🇸',
   show: true,
   supported: true,
 }, {
   code: 'uk',
   iso: 'uk',
-  file: 'uk.js',
   emoji: '🇺🇦',
   show: true,
   supported: false,
 }, {
   code: 'it',
   iso: 'it',
-  file: 'it.js',
   emoji: '🇮🇹',
   show: true,
   supported: true,
 }, {
   code: 'ru',
   iso: 'ru',
-  file: 'ru.js',
   emoji: '🇷🇺',
   show: true,
   supported: true,
 }, {
   code: 'pl',
   iso: 'pl',
-  file: 'pl.js',
   emoji: '🇵🇱',
   show: true,
   supported: true,
 }, {
   code: 'bn',
   iso: 'bn',
-  file: 'bn.js',
   emoji: '🇧🇩',
   show: true,
   supported: true,
 }, {
   code: 'br',
   iso: 'br',
-  file: 'br.js',
   emoji: '🇧🇷',
   show: true,
   supported: true,
 }, {
   code: 'cn',
   iso: 'cn',
-  file: 'cn.js',
   emoji: '🇨🇳',
   show: true,
   supported: true,
 }, {
   code: 'cz',
   iso: 'cz',
-  file: 'cz.js',
   emoji: '🇨🇿',
   show: true,
   supported: true,
 }, {
   code: 'fi',
   iso: 'fi',
-  file: 'fi.js',
   emoji: '🇫🇮',
   show: true,
   supported: true,
 }, {
   code: 'fr',
   iso: 'fr',
-  file: 'fr.js',
   emoji: '🇫🇷',
   show: true,
   supported: true,
 }, {
   code: 'hi',
   iso: 'hi',
-  file: 'hi.js',
   emoji: '🇮🇳',
   show: true,
   supported: true,
 }, {
   code: 'jp',
   iso: 'jp',
-  file: 'jp.js',
   emoji: '🇯🇵',
   show: true,
   supported: true,
 }, {
   code: 'kr',
   iso: 'kr',
-  file: 'kr.js',
   emoji: '🇰🇷',
   show: true,
   supported: true,
 }, {
   code: 'lt',
   iso: 'lt',
-  file: 'lt.js',
   emoji: '🇱🇹',
   show: true,
   supported: true,
 }, {
   code: 'nl',
   iso: 'nl',
-  file: 'nl.js',
   emoji: '🇳🇱',
   show: true,
   supported: true,
 }, {
   code: 'pt',
   iso: 'pt',
-  file: 'pt.js',
   emoji: '🇵🇹',
   show: true,
   supported: true,
 }, {
   code: 'sk',
   iso: 'sk',
-  file: 'sk.js',
   emoji: '🇸🇰',
   show: true,
   supported: true,
 }, {
   code: 'sv',
   iso: 'sv',
-  file: 'sv.js',
   emoji: '🇸🇪',
   show: true,
   supported: true,
 }, {
   code: 'tr',
   iso: 'tr',
-  file: 'tr.js',
   emoji: '🇹🇷',
   show: true,
   supported: true,
 }, {
   code: 'vi',
   iso: 'vi',
-  file: 'vi.js',
   emoji: '🇻🇳',
   show: true,
   supported: true,
 }, {
   code: 'zh',
   iso: 'zh',
-  file: 'zh.js',
   emoji: '🇨🇳',
   show: true,
   supported: true,

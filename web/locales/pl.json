@@ -633,5 +633,7 @@
   "tier-list.powerleague.description": "Power League w Brawl Stars to tryb rywalizacyjny dostępny od 4500 Trofeów. Uczestnicz w nieograniczonych meczach 3v3 i zbieraj nagrody w zależności od swoich osiągnięć. Użyj poniższych statystyk, aby zwiększyć swoje szanse na wygraną, znajdując najlepszych zawodników do swojego zespołu na wszystkich mapach Power League.",
   "tier-list.powerleague.meta.title": "Mapy Power League",
   "tier-list.powerleague.meta.description": "Lista tierów Power League w Brawl Stars z procentami wygranych, częstotliwością wyboru i rankingami. Znajdź najlepszych zawodników do wszystkich map Power League i popraw swój draft.",
-  "action.open.tier-list.powerleague": "Otwórz listę tierów Power League"
+  "action.open.tier-list.powerleague": "Otwórz listę tierów Power League",
+  "tier-list.map.report.title": "Analiza {title}",
+  "tier-list.map.report.summary": "Dowiedz się, jak interpretować dane z Brawl Time Ninja, aby częściej wygrywać z najlepszymi Brawlerami i buildami."
 }

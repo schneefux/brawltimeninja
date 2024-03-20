@@ -26,7 +26,9 @@ function asyncWrapper(fn: RequestHandler) {
 
 const profileView = new ProfileView();
 const brawlStarsApiService = new BrawlstarsService();
-const klickerService = new BrawltimeKlickerService(process.env.CUBE_URL!, fetch);
+const CUBE_URL = process.env.CUBE_URL
+
+const klickerService = new BrawltimeKlickerService(CUBE_URL, fetch);
 
 async function getPlayerTotals(tag: string) {
   return await klickerService.query({

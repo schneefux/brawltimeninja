@@ -452,6 +452,8 @@
     "tier-list.map.meta.description": "Brawl Stars Tier List for {mode}: {map}. View the best Brawlers with Win Rates and Rankings.",
     "tier-list.map.meta.title": "{map} Tier List for Brawl Stars",
     "tier-list.map.title": "{map} Tier List for Brawl Stars",
+    "tier-list.map.report.title": "{title} Analysis",
+    "tier-list.map.report.summary": "Learn how to interpret the data from Brawl Time Ninja to win more often with the best Brawlers and Builds.",
     "tier-list.maps.description": "Open on a map to see the best Brawlers for all current and upcoming Brawl Stars Events and for Power League.",
     "tier-list.maps.meta.description": "Brawl Stars Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all maps.",
     "tier-list.maps.meta.title": "Active Maps in Brawl Stars",

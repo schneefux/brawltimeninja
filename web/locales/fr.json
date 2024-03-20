@@ -632,5 +632,7 @@
   "tier-list.powerleague.description": "La Ligue de Puissance Brawl Stars est un mode compétitif débloqué à 4500 Trophées. Participez à des matchs 3v3 illimités et récoltez des récompenses basées sur votre performance. Utilisez les statistiques ci-dessous pour maximiser vos chances de gagner avec les taux de victoire pour toutes les cartes de la Ligue de Puissance en trouvant les meilleurs Brawlers pour votre équipe.",
   "tier-list.powerleague.meta.title": "Cartes de la Ligue de Puissance",
   "tier-list.powerleague.meta.description": "Liste de niveaux de la Ligue de Puissance Brawl Stars avec Taux de Victoire, Taux de Choix et Classements. Trouvez les meilleurs Brawlers pour toutes les cartes de la Ligue de Puissance et améliorez votre draft.",
-  "action.open.tier-list.powerleague": "Ouvrir la Liste de Niveaux de la Ligue de Puissance"
+  "action.open.tier-list.powerleague": "Ouvrir la Liste de Niveaux de la Ligue de Puissance",
+  "tier-list.map.report.title": "Analyse de {title}",
+  "tier-list.map.report.summary": "Apprenez comment interpréter les données de Brawl Time Ninja pour gagner plus souvent avec les meilleurs Brawlers et Builds."
 }

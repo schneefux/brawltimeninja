@@ -20,13 +20,13 @@ export interface EventMetadata {
 }
 
 export class BrawltimeKlickerService extends KlickerService {
-  constructor(private cubeUrl: string, fetchImplementation: typeof fetch) {
+  constructor(private cubeUrl: string|undefined, fetchImplementation: typeof fetch) {
     if (!cubeUrl) {
       console.warn('CUBE_URL is not set, queries will be unavailable')
     }
 
     super(
-      cubeUrl,
+      cubeUrl!,
       config,
       visualisations,
       staticWidgets,

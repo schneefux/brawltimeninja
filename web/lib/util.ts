@@ -357,3 +357,50 @@ export function calculateAccountRating(player: Player, totalBrawlers: number) {
 }
 
 export const totalBrawlers = 73 // TODO get from an API
+
+export const calculateMoe = (sample: number) => {
+  // margin of error
+  // moe = z * standard error
+  // for binomial (normal approximation):
+  // moe = z * Math.sqrt(p*(1-p)/n)
+  // worst case, p=50%
+  // best case, n = sample / brawlers
+  // (assumes we are slicing Brawlers)
+  return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / totalBrawlers))
+}
+
+export const rateMoe = (moe: number) => {
+  if (moe <= 0.005) {
+    return 'perfect'
+  }
+  if (moe <= 0.01) {
+    return 'good'
+  }
+  if (moe <= 0.025) {
+    'mediocre'
+  }
+  return 'poor'
+}
+
+export const calculateGini = (useRates: number[]) => {
+  // calculate Gini coefficient
+  let absoluteDifference = 0
+  let arithmeticMean = 0
+  for (const u1 of useRates) {
+    arithmeticMean += u1 / useRates.length
+    for (const u2 of useRates) {
+      absoluteDifference += Math.abs(u1 - u2)
+    }
+  }
+  return absoluteDifference / (2 * Math.pow(useRates.length, 2) * arithmeticMean)
+}
+
+export const rateGini = (gini: number) => {
+  if (gini > 0.4) {
+    return 'very one-sided'
+  }
+  if (gini > 0.3) {
+    return 'one-sided'
+  }
+  return 'balanced'
+}

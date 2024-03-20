@@ -1,56 +1,45 @@
 <template>
-  <!-- always wrap in <client-only> -->
-  <div class="contents">
-    <slot v-if="activeVariant == '0'"></slot>
-    <slot
-      v-else
-      :name="activeVariant"
-    ></slot>
-  </div>
+  <slot :name="activeVariant"></slot>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
+import Cookies from 'js-cookie'
 import { event } from 'vue-gtag'
 
 export default defineComponent({
   props: {
     experimentId: {
       type: String,
-      required: true
+      required: true,
     },
     debug: {
       type: String
     },
   },
-  setup(props) {
-    const activeVariant = ref(props.debug || '0')
-    let callback: ((v: string) => void)|undefined = undefined
+  setup(props, { slots }) {
+    const activeVariant = ref(props.debug || '')
 
     onMounted(() => {
-      callback = (value) => {
-        value ??= '0' // deactivated -> undefined
-        console.log('enabling variant ' + value + ' for experiment ' + props.experimentId)
-        activeVariant.value = value
-      }
-      event('optimize.callback', {
-        name: props.experimentId,
-        callback,
-      })
-      // https://support.google.com/optimize/answer/7008840
-      event('optimize.activate', {
-        non_interaction: true,
-      })
-    })
+      // supports only a single experiment at the moment
 
-    onUnmounted(() => {
-      if (!import.meta.env.SSR && callback != undefined) {
-        event('optimize.callback', {
-          name: props.experimentId,
-          callback,
-          remove: true,
-        })
+      const cookieName = 'experiment'
+      let selectedVariant = Cookies.get(cookieName)
+      if (selectedVariant == undefined) {
+        const variants = Object.keys(slots)
+        selectedVariant = variants[Math.floor(Math.random() * variants.length)]
+        Cookies.set(cookieName, selectedVariant, { expires: 31 })
+        console.log('selected variant ' + selectedVariant + ' for experiment ' + props.experimentId)
       }
+
+      activeVariant.value = selectedVariant
+
+      event('test_group_dimension', {
+        'test_group': `${props.experimentId}-${activeVariant.value}`,
+        'non_interaction': true,
+      })
+
+      console.log('enabled variant ' + activeVariant.value + ' for experiment ' + props.experimentId)
     })
 
     return {

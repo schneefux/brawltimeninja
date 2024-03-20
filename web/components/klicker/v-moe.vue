@@ -16,18 +16,7 @@
           class="text-xl"
         >{{ moePercent }}</span>
         <span class="ml-2 text-base">
-          <template v-if="moe <= 0.005">
-            {{ $t('moe.perfect') }}
-          </template>
-          <template v-if="moe > 0.005 && moe <= 0.01">
-            {{ $t('moe.good') }}
-          </template>
-          <template v-if="moe > 0.01 && moe <= 0.025">
-            {{ $t('moe.mediocre') }}
-          </template>
-          <template v-if="moe > 0.025">
-            {{ $t('moe.poor') }}
-          </template>
+          {{ $t('moe.' + moeRating) }}
         </span>
       </p>
     </template>
@@ -39,7 +28,7 @@ import { computed, defineComponent } from 'vue'
 import { CubeResponse } from '@schneefux/klicker/types'
 import { VCardWrapper } from '@schneefux/klicker/components'
 import { VisualisationProps } from '@schneefux/klicker/props'
-import { useBrawlstarsStore } from '~/stores/brawlstars'
+import { calculateMoe, rateMoe } from '~/lib/util'
 
 export default defineComponent({
   components: {
@@ -49,23 +38,18 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
-    const store = useBrawlstarsStore()
-
     const moe = computed((): number => {
-      // margin of error
-      // moe = z * standard error
-      // for binomial (normal approximation):
-      // moe = z * Math.sqrt(p*(1-p)/n)
-      // worst case, p=50%
-      // best case, n = sample / brawlers
-      // (assumes we are slicing Brawlers)
-      const sample = (<CubeResponse>props.response).data.reduce((agg, c) => agg + (c.metricsRaw.picks as number), 0)
-      return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / store.totalBrawlers))
+      const sample = (<CubeResponse>props.response).data
+        .map(c => c.metricsRaw.picks as number)
+        .reduce((agg, p) => agg + p, 0)
+      return calculateMoe(sample)
     })
     const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')
+    const moeRating = computed(() => rateMoe(moe.value))
 
     return {
       moe,
+      moeRating,
       moePercent,
     }
   },

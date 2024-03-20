@@ -437,6 +437,7 @@ const powerDimension: Dimension = {
 
 const picks = 'SUM(picks)'
 const winRate = `toFloat64(AVG(battle_victory))`
+// TODO update this model at some point
 const zP = 'least((avg(brawler_trophyrange)-5)*(avg(brawler_trophyrange)-5)/100+0.55, 0.9)'
 
 const winRateMerged = `toFloat64(avgMerge(battle_victory_state))`
@@ -1164,7 +1165,7 @@ export const winRateMetric = makeWinRateMetric({
   type: 'avg',
 })
 
-const winRateAdjMergedMetric: Metric = {
+export const winRateAdjMergedMetric: Metric = {
   id: 'winRateAdj',
   name: 'Adjusted Win Rate',
   description: 'The Adjusted Win Rate tells you the % of battles a Brawler wins or ranks high. For Brawlers with few picks, this value is interpolated.',

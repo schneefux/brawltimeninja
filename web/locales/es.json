@@ -633,5 +633,7 @@
   "tier-list.powerleague.description": "La Liga de Poder de Brawl Stars es un modo competitivo desbloqueado a los 4500 Trofeos. Participa en partidos ilimitados 3v3 y obtén recompensas basadas en tu rendimiento. Usa las estadísticas a continuación para maximizar tus probabilidades de ganar con tasas de victoria para todos los mapas de la Liga de Poder encontrando los mejores Brawlers para tu equipo.",
   "tier-list.powerleague.meta.title": "Mapas de la Liga de Poder",
   "tier-list.powerleague.meta.description": "Lista de Niveles de la Liga de Poder de Brawl Stars con Tasas de Victoria, Tasas de Selección y Clasificaciones. Encuentra los mejores Brawlers para todos los mapas de la Liga de Poder y mejora tu selección.",
-  "action.open.tier-list.powerleague": "Abrir Lista de Niveles de la Liga de Poder"
+  "action.open.tier-list.powerleague": "Abrir Lista de Niveles de la Liga de Poder",
+  "tier-list.map.report.title": "Análisis de {title}",
+  "tier-list.map.report.summary": "Aprende a interpretar los datos de Brawl Time Ninja para ganar más a menudo con los mejores Brawlers y Builds."
 }

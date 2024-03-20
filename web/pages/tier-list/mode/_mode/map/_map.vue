@@ -10,11 +10,45 @@
       :event-id="event.id"
     ></mode-map-jumper>
 
-    <p id="description" class="prose dark:prose-invert">
-      {{ $t('tier-list.map.description', {
-        map: mapName,
-        mode: $t('mode.' + event.mode)
-      }) }}
+    <template v-if="aiReport != undefined">
+      <client-only>
+        <template v-slot:placeholder>
+          <ai-report-1
+            :timestamp="aiReport.timestamp"
+            :title="`${$t('mode.' + event.mode)} - ${mapName}`"
+            :content="aiReport.html"
+            @interact="trackInteraction('map-report-cta')"
+          ></ai-report-1>
+        </template>
+
+        <experiment experiment-id="map-report">
+          <template v-slot:none></template>
+          <template v-slot:cta>
+            <ai-report-1
+              :timestamp="aiReport.timestamp"
+              :title="`${$t('mode.' + event.mode)} - ${mapName}`"
+              :content="aiReport.html"
+              @interact="trackInteraction('map-report-cta')"
+            ></ai-report-1>
+          </template>
+          <template v-slot:fadeout>
+            <ai-report-2
+              :timestamp="aiReport.timestamp"
+              :title="`${$t('mode.' + event.mode)} - ${mapName}`"
+              :content="aiReport.html"
+              @interact="trackInteraction('map-report-fadeout')"
+            ></ai-report-2>
+          </template>
+        </experiment>
+      </client-only>
+    </template>
+
+    <p
+      v-else
+      id="description"
+      class="prose dark:prose-invert"
+    >
+      {{ $t('tier-list.map.description', { map: mapName, mode: $t('mode.' + event.mode) }) }}
     </p>
 
     <ad
@@ -75,10 +109,11 @@ import { deslugify, kebabToCamel } from '~/lib/util'
 import { BSplitDashboard, BCard, BLightbox, BPage, BPageSection, Fa } from '@schneefux/klicker/components'
 import { useMapName } from '~/composables/map'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
-import { useAsync, useCacheHeaders, useConfig, useMeta, useValidate } from '~/composables/compat'
+import { useApi, useAsync, useCacheHeaders, useConfig, useMeta, useValidate } from '~/composables/compat'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
 import { useRouteParams } from '~/composables/route-params'
+import { useTrackScroll } from '~/composables/gtag'
 
 interface Map {
   id: string
@@ -98,17 +133,19 @@ export default defineComponent({
   async setup() {
     const $klicker = useKlicker()
     const $config = useConfig()
+    const $api = useApi()
     const i18n = useI18n()
     const routeParams = useRouteParams()
 
+    const mode = computed(() => kebabToCamel(routeParams.value!.mode as string))
+    const map = computed(() => deslugify(routeParams.value!.map as string))
+
     const event = useAsync(async () => {
-      const mode = kebabToCamel(routeParams.value!.mode as string)
-      const map = deslugify(routeParams.value!.map as string)
       const events = await $klicker.query({
         cubeId: 'map',
         slices: {
-          mode: [mode],
-          map: [map],
+          mode: [mode.value],
+          map: [map.value],
         },
         dimensionsIds: [],
         metricsIds: ['eventId'],
@@ -119,10 +156,10 @@ export default defineComponent({
 
       return {
         id: event.metricsRaw.eventId,
-        map,
-        mode,
+        map: map.value,
+        mode: mode.value,
       } as Map
-    }, computed(() => `map-${routeParams.value!.mode}-${routeParams.value!.map}`))
+    }, computed(() => `map-${mode.value}-${map.value}`))
 
     useCacheHeaders()
     useMeta(() => {
@@ -151,6 +188,14 @@ export default defineComponent({
 
     const lightboxOpen = ref(false)
 
+    const aiReport = useAsync(async () => await $api.report.byModeMap.query({
+      localeIso: i18n.locale.value,
+      mode: mode.value,
+      map: map.value,
+    }), computed(() => `ai-report-${i18n.locale.value}-${mode.value}-${map.value}`))
+
+    const { trackInteraction } = useTrackScroll('map')
+
     await useValidate(async ({ params }) => {
       const mode = kebabToCamel(params.mode as string)
       const map = deslugify(params.map as string)
@@ -176,9 +221,11 @@ export default defineComponent({
     return {
       event,
       mapName,
+      aiReport,
       faExpand,
       showImage,
       lightboxOpen,
+      trackInteraction,
     }
   },
 })

@@ -23,7 +23,7 @@ export function useCurrentAndUpcomingEvents() {
     .map(e => ({
       id: e.id,
       map: e.map,
-      mode: unformatMode(e.mode),
+      mode: e.mode,
       key: `${e.id}-${e.mode}-${e.map}`,
       metrics: {},
       powerplay: false,

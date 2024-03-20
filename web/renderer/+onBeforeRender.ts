@@ -1,7 +1,8 @@
-import type { Config, PageContext } from './types'
+import type { PageContext } from './types'
 import Sentry from '@sentry/vue'
 import { getTraduoraToken, TraduoraToken } from '~/locales'
 import { Dispatcher, Agent } from 'undici'
+import { config, Config } from '~/config'
 
 export { onBeforeRender }
 
@@ -41,27 +42,13 @@ async function onBeforeRender(pageContext: PageContext) {
     }
   }
 
-  const config: Config = {
-    mediaUrl: process.env.MEDIA_URL ?? '',
-    cubeUrl: process.env.CUBE_URL ?? '',
-    managerUrl: process.env.MANAGER_URL ?? '',
-    renderUrl: process.env.RENDER_URL ?? '',
-    optimizeId: process.env.OPTIMIZE_ID ?? '',
-    ga4Id: process.env.GA4_ID ?? '',
-    adsensePubid: process.env.ADSENSE_PUBID ?? '',
-    playwireRampPublisherId: process.env.PLAYWIRE_RAMP_PUBLISHER_ID ?? '',
-    playwireRampSiteId: process.env.PLAYWIRE_RAMP_SITE_ID ?? '',
-    playwireRampGa4Id: process.env.PLAYWIRE_RAMP_GA4_ID ?? '',
-    quantcastChoiceId: process.env.QUANTCAST_CHOICE_ID ?? '',
-    sentryDsn: process.env.SENTRY_DSN ?? '',
-    traduora,
-  }
+  const envConfig = Object.assign({}, config, { traduora })
 
   const sentry = Sentry
 
   return {
     pageContext: {
-      envConfig: config, // "config" is internally used by VPS
+      envConfig, // "config" is internally used by VPS
       sentry,
       refs: {}, // for arbitrary data, see ssrRef()
     }

@@ -9,12 +9,14 @@ import { router } from './trpc'
 import renderRouter from './routes/render'
 import klickerRouter from './routes/klicker'
 import etag from 'etag'
+import { reportRouter, updateAllReports, updateReport } from './routes/report'
 
 const appRouter = router({
   player: playerRouter,
   club: clubRouter,
   rankings: rankingsRouter,
   events: eventsRouter,
+  report: reportRouter,
 })
 
 export type AppRouter = typeof appRouter
@@ -22,12 +24,43 @@ export type AppRouter = typeof appRouter
 const app = express()
 
 // TODO restrict to localhost
-app.post('/cron', async (req, res) => {
+app.post('/cron', async (req, res, next) => {
   console.time('running cron jobs')
-  const profileUpdater = await updateAllProfiles()
+  try {
+    const summary = await updateAllProfiles()
+    res.json(summary)
+  } catch (err) {
+    console.error(err)
+    next(err)
+  }
   console.timeEnd('running cron jobs')
+})
 
-  res.json({ profileUpdater })
+// TODO move to cron
+app.post('/update-reports', async (req, res, next) => {
+  console.time('reports update')
+  try {
+    const summary = await updateAllReports()
+    res.json(summary)
+  } catch (err) {
+    console.error(err)
+    next(err)
+  }
+  console.timeEnd('reports update')
+})
+
+// TODO remove, only for testing
+app.post('/update-report', express.json(), async (req, res, next) => {
+  console.time('report update')
+  try {
+    const { locale, mode, map } = req.body
+    const summary = await updateReport(locale as string, mode as string, map as string)
+    res.json(summary)
+  } catch (err) {
+    console.error(err)
+    next(err)
+  }
+  console.timeEnd('report update')
 })
 
 app.use('/render', renderRouter)
@@ -51,7 +84,7 @@ app.use(
         return {
           headers: {
             etag: etag(JSON.stringify(data)),
-            'cache-control': ctx.res.getHeader('cache-control') ?? 'public, max-age=0, stale-if-error=86400',
+            'cache-control': ctx.res.getHeader('cache-control') as string ?? 'public, max-age=0, stale-if-error=86400',
           },
         };
       }

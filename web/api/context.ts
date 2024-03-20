@@ -1,8 +1,8 @@
 import { inferAsyncReturnType } from '@trpc/server'
-import { CreateNextContextOptions } from '@trpc/server/adapters/next'
+import { CreateExpressContextOptions } from '@trpc/server/adapters/express'
 import { isbot } from 'isbot'
 
-export async function createContext(opts: CreateNextContextOptions) {
+export async function createContext(opts: CreateExpressContextOptions) {
   const isBot = isbot(opts.req.headers['user-agent'] || '')
 
   return {
