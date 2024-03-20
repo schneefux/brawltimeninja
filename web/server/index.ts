@@ -12,6 +12,7 @@ import {
   extraErrorDataIntegration,
   rewriteFramesIntegration,
 } from '@sentry/integrations'
+import { getHTTPStatusCodeFromError } from '@trpc/server/http'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const host = process.env.HOST || 'localhost'
@@ -42,6 +43,13 @@ async function startServer() {
     ],
     beforeSend(event, hint) {
       const error = hint.originalException as any
+
+      if (error && error.name == 'TRPCError') {
+        // ignore non-critical TRPC errors
+        if (getHTTPStatusCodeFromError(error) < 500) {
+          return null
+        }
+      }
 
       if (error && error.name == 'Error' && error.message.length == 0) {
         // cube.js RequestError, ignore
