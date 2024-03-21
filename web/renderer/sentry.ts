@@ -65,7 +65,8 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
 
       if (error == 'Hydration completed but contains mismatches.') {
         // ignore hydration mismatches when the page is auto-translated
-        const isAutoTranslated = !!document.querySelector('html.translated-ltr, head.translated-rtl, ya-tr-span, *[_msttexthash]')
+        // https://www.ctrl.blog/entry/detect-machine-translated-webpages.html
+        const isAutoTranslated = !!document.querySelector('html.translated-ltr, html.translated-rtl, ya-tr-span, *[_msttexthash], *[x-bergamot-translated]')
 
         if (isAutoTranslated) {
           return null
