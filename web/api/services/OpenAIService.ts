@@ -33,9 +33,9 @@ export default class OpenAIService {
       stats.timing('completion', performance.now() - completeStart)
       stats.increment('completion.success')
       if (response.usage != undefined) {
-        stats.histogram('completion_tokens', response.usage.completion_tokens)
-        stats.histogram('prompt_tokens', response.usage.prompt_tokens)
-        stats.histogram('total_tokens', response.usage.total_tokens)
+        stats.increment('completion_tokens', response.usage.completion_tokens)
+        stats.increment('prompt_tokens', response.usage.prompt_tokens)
+        stats.increment('total_tokens', response.usage.total_tokens)
         console.log('consumed tokens', response.usage)
       }
       return response.choices[0].message.content!
