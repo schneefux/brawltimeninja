@@ -140,6 +140,8 @@ declare module 'vue' {
     TopBrawlersCard: typeof import('./components/top-brawlers-card.vue')['default']
     TopPlayersCard: typeof import('./components/top-players-card.vue')['default']
     TrophySliderSelect: typeof import('./components/trophy-slider-select.vue')['default']
+    VenatusPlacement: typeof import('./components/venatus-placement.vue')['default']
+    VenatusRichMedia: typeof import('./components/venatus-rich-media.vue')['default']
     VGini: typeof import('./components/klicker/v-gini.vue')['default']
     VLastUpdate: typeof import('./components/klicker/v-last-update.vue')['default']
     VMediaImg: typeof import('./components/klicker/v-media-img.vue')['default']

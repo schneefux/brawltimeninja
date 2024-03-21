@@ -55,6 +55,15 @@
       </b-page-section>
 
       <b-page-section
+        id="instream"
+      >
+        <ad
+          instream
+          style="width: 100%; max-width: 400px;"
+        ></ad>
+      </b-page-section>
+
+      <b-page-section
         id="trophy"
         ref="trophySection"
         v-observe-visibility="{

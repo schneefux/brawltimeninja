@@ -38,19 +38,18 @@
     </b-web-footer>
 
     <adblock-bait></adblock-bait>
+    <venatus-rich-media></venatus-rich-media>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { useMutationObserver } from '@vueuse/core'
 import { BWebFooter } from '@schneefux/klicker/components'
 import { useInstallPromptListeners } from '~/composables/app'
 import { useI18n } from 'vue-i18n'
 import { useConfig, useLocaleCookieRedirect, useLocalePath } from '~/composables/compat'
-import { usePlaywireRamp } from '~/composables/playwire-ramp'
 import { useQuantcast } from '~/composables/quantcast'
-import { useAdsense } from '~/composables/adsense'
+import { useVenatus } from '~/composables/venatus'
 
 export default defineComponent({
   components: {
@@ -77,24 +76,12 @@ export default defineComponent({
       target: localePath('/about'),
     }])
 
-    useMutationObserver(container, () => {
-      // workaround for AdSense overriding min-height: 0px
-      // https://weblog.west-wind.com/posts/2020/May/25/Fixing-Adsense-Injecting-height-auto-important-into-scrolled-Containers
-      // wtf Google
-      container.value!.style.minHeight = ''
-    }, {
-      attributes: true,
-      attributeFilter: ['style'],
-    })
-
     useInstallPromptListeners()
     useLocaleCookieRedirect()
 
-    const enablePlaywire = config.playwireRampPublisherId != ''
-    if (enablePlaywire) {
-      usePlaywireRamp(config.playwireRampPublisherId, config.playwireRampSiteId)
-    } else {
-      useAdsense(config.adsensePubid)
+    const enableVenatus = config.venatusSiteId != ''
+    if (enableVenatus) {
+      useVenatus(config.venatusSiteId)
     }
 
     useQuantcast(config.quantcastChoiceId)

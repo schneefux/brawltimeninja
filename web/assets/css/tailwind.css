@@ -34,11 +34,6 @@
   .card-prop-label {
     @apply text-left;
   }
-
-  /** ad root-class */
-  .ad-section {
-    @apply mt-4 text-center;
-  }
 }
 
 /* purgecss start ignore */

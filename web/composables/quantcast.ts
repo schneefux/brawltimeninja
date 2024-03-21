@@ -8,7 +8,7 @@ export function useQuantcast(quantcastChoiceId: string) {
       key: 'quantcast-choice-init',
       type: 'text/javascript',
       async: true,
-      tagPriority: 29, // load before playwire-ramp
+      tagPriority: 29, // load before ad scripts
       innerHTML: `
 (function() {
   var uspTries = 0;

@@ -1,7 +1,3 @@
-.dev .adsbygoogle {
-  @apply bg-pink-400;
-}
-
-.dev .adsbyplaywire {
+.dev .vm-placement {
   @apply bg-pink-400;
 }

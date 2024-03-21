@@ -2,7 +2,7 @@ import { renderToString } from '@vue/server-renderer'
 import { dangerouslySkipEscape, escapeInject } from 'vike/server'
 import { createApp } from './app'
 import type { PageContext } from './types'
-import type { PageContextBuiltInServer } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 import { dehydrate } from '@tanstack/vue-query'
 import { renderSSRHead } from '@unhead/ssr'
 import SuperJSON from 'superjson'
@@ -11,7 +11,7 @@ import { SentryInjectionKey } from './sentry'
 
 export { onRenderHtml }
 
-async function onRenderHtml(pageContext: PageContextBuiltInServer & PageContext) {
+async function onRenderHtml(pageContext: PageContextServer & PageContext) {
   const { app, head, pinia, router, queryClient } = createApp(pageContext)
 
   app.provide(SentryInjectionKey, pageContext.sentry as any)

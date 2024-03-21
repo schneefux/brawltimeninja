@@ -6,7 +6,7 @@ import type { PageContext } from './types'
 import { setPageContext } from '../composables/page-context'
 import { createPinia } from 'pinia'
 import { createPersistedState } from 'pinia-plugin-persistedstate'
-import VueGtagPlugin, { event, query } from 'vue-gtag'
+import VueGtagPlugin, { query } from 'vue-gtag'
 import { createI18n, I18n } from 'vue-i18n'
 import { ClientOnly } from '@schneefux/klicker/components'
 import Adsense from '~/components/adsense.vue'
@@ -154,18 +154,8 @@ function createApp(pageContext: PageContext) {
     config: {
       id: pageContext.envConfig.ga4Id,
     },
-    includes: [ {
-      id: pageContext.envConfig.playwireRampGa4Id,
-      params: {
-        'send_page_view': false,
-      },
-    } ],
     onReady() {
       query('js', new Date())
-      event('ramp_js', {
-        'send_to': pageContext.envConfig.playwireRampGa4Id,
-        'pageview_id': `${Date.now()}`,
-      })
     },
   }, router)
 

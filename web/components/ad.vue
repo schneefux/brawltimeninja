@@ -1,96 +1,100 @@
 <template>
-  <client-only v-if="banner">
+  <template v-if="allowed">
     <div
-      v-if="allowed && !playwire"
+      v-if="banner"
       v-bind="$attrs"
       class="text-center -mx-4"
     >
-      <adsense
-        :data-ad-slot="adSlot"
-        :data-ad-region="adRegion"
-        data-ad-format=""
-        data-ad-client="ca-pub-6856963757796636"
-        class="banner-ad"
-      ></adsense>
+      <client-only>
+        <!-- Desktop - Article: 728x90, 970x90 -->
+        <venatus-placement
+          v-if="desktop"
+          ad-id="65f94ee2dd5aea6a13fd049f"
+          class="desktop-article"
+        ></venatus-placement>
+
+        <!-- Mobile - Leaderboard: 300x50, 320x50, 300x100, 320x100 -->
+        <venatus-placement
+          v-if="!desktop"
+          ad-id="65f94f6d767223575b4de5b3"
+          class="mobile-leaderboard"
+        ></venatus-placement>
+
+        <template v-slot:placeholder>
+          <div style="width: 100%; height: 100px;"></div>
+        </template>
+      </client-only>
     </div>
 
-    <template v-slot:placeholder>
-      <div
-        v-if="!playwire"
-        v-bind="$attrs"
-        class="adswrapper ad-section banner-ad"
-      ></div>
-    </template>
-  </client-only>
-  <client-only v-else-if="scraper">
-    <adsense
-      v-if="allowed && scraperFits && !playwire"
+    <!-- Desktop Side Rail: 300x250, 300x600, 160x600, 336x280 -->
+    <div
+      v-else-if="scraper"
       v-bind="$attrs"
-      :data-ad-slot="adSlot"
-      :data-ad-region="adRegion"
-      data-ad-format=""
-      data-ad-client="ca-pub-6856963757796636"
-      class="scraper-ad"
-    ></adsense>
+    >
+      <venatus-placement
+        v-if="desktop && sideRailMaxWidth >= 160"
+        ad-id="65f94d27767223575b4de5af"
+        class="desktop-side-rail"
+      ></venatus-placement>
+    </div>
 
-    <template v-slot:placeholder>
-      <div
-        v-if="!playwire"
+    <template v-else-if="cell">
+      <!-- placeholder and lazy-loading are handled by cell wrapper-->
+      <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
+      <venatus-placement
         v-bind="$attrs"
-        class="adswrapper ad-section scraper-ad"
+        ad-id="65f94f9ddd5aea6a13fd04a1"
+        class="mobile-incontent"
+      ></venatus-placement>
+    </template>
+
+    <template v-else-if="instream">
+      <div
+        v-bind="$attrs"
+        id="vm-av"
+        data-format="isvideo"
+        class="aspect-video vm-placement"
       ></div>
     </template>
-  </client-only>
-  <b-page-section
-    v-else
-    v-bind="$attrs"
-    ref="ad"
-    class="text-center -mx-4 lg:mx-0"
-  >
-    <client-only>
-      <playwire-ramp
-        v-if="allowed && visible && playwire"
-        :ad-id="adSlot"
-        :instance="instance"
-        :type="`${leaderboardFits ? 'leaderboard' : 'med_rect'}_${first ? 'atf' : 'btf'}`"
-        class="adsbyplaywire section-ad-pw"
-      ></playwire-ramp>
-      <adsense
-        v-if="allowed && visible && !playwire"
-        :data-ad-slot="adSlot"
-        :data-ad-region="adRegion"
-        data-ad-format="auto"
-        data-ad-client="ca-pub-6856963757796636"
-        class="w-full"
-      ></adsense>
 
-      <template v-slot:placeholder>
-        <div
-          class="adswrapper ad-section w-full"
-          style="height: 300px;"
-        ></div>
-      </template>
-    </client-only>
-  </b-page-section>
+    <b-page-section
+      v-else
+      v-bind="$attrs"
+      ref="ad"
+      class="text-center -mx-4 lg:mx-0"
+    >
+      <client-only>
+        <!-- Desktop - In-Content: 300x250, 336x280, 728x90 -->
+        <venatus-placement
+          v-if="desktop && visible"
+          ad-id="65f94d69767223575b4de5b1"
+          class="desktop-incontent"
+        ></venatus-placement>
+
+        <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
+        <venatus-placement
+          v-if="!desktop && visible"
+          ad-id="65f94f9ddd5aea6a13fd04a1"
+          class="mobile-incontent"
+        ></venatus-placement>
+
+        <template v-slot:placeholder>
+          <div style="width: 100%; height: 280px;"></div>
+        </template>
+      </client-only>
+    </b-page-section>
+  </template>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue'
-import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
+import { defineComponent, computed, ref, onMounted, watch, nextTick } from 'vue'
+import { useBreakpoints, useIntersectionObserver, useElementSize, useWindowSize } from '@vueuse/core'
 import { useIsApp } from '~/composables/app'
-import { useConfig } from '~/composables/compat'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
   inheritAttrs: false,
   props: {
-    adSlot: {
-      type: String,
-      required: true
-    },
-    instance: {
-      type: String
-    },
     first: {
       type: Boolean,
       default: false
@@ -104,6 +108,14 @@ export default defineComponent({
       default: false
     },
     scraper: {
+      type: Boolean,
+      default: false
+    },
+    cell: {
+      type: Boolean,
+      default: false
+    },
+    instream: {
       type: Boolean,
       default: false
     },
@@ -130,155 +142,71 @@ export default defineComponent({
       }
     }
 
-    const config = useConfig()
-    const playwire = config.playwireRampPublisherId != ''
-
     const breakpoints = useBreakpoints({
-      leaderboard: 728,
-      scraper: 1900,
+      desktop: 728,
     })
-    // all false in SSR
-    const leaderboardFits = breakpoints.greaterOrEqual('leaderboard')
-    const scraperFits = breakpoints.greaterOrEqual('scraper')
+    const desktop = breakpoints.greaterOrEqual('desktop')
 
     const route = useRoute()
-    const adRegion = computed(() => route.fullPath)
+    const sideRailMaxWidth = ref(0)
+    watch(route, () => {
+      if (import.meta.env.SSR) {
+        return
+      }
+
+      nextTick(() => {
+        const mainEl = document.querySelector('main')
+        // on desktop (1920px), most pages' main is 1536px
+        // use 32px margin (4*8px) so that the 160px unit fits perfectly
+        if (mainEl) {
+          sideRailMaxWidth.value = (window.innerWidth - mainEl.clientWidth) / 2 - 32
+        }
+      })
+    }, { immediate: true })
 
     return {
       ad,
-      adRegion,
       visible,
       allowed,
-      playwire,
-      scraperFits,
-      leaderboardFits,
+      desktop,
+      sideRailMaxWidth,
     }
   },
 })
 </script>
 
-<style lang="postcss">
-/*
- * Playwire mobile leaderboard:
- *  - 320x50
- *  - 320x100
- */
+<style lang="postcss" scoped>
+.desktop-article {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 970px;
+  height: 90px;
+}
 
-.banner-ad {
-  width: 320px;
+.mobile-leaderboard {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 320px;
   height: 100px;
 }
 
-.banner-ad-pw {
-  min-height: 100px;
+.desktop-side-rail {
+  width: 100%;
+  max-width: 336px;
+  height: 600px;
 }
 
-@media(min-width: 468px) {
-  .banner-ad {
-    width: 468px;
-  }
+.desktop-incontent {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 728px;
+  height: 280px;
 }
 
-/*
- * Playwire desktop leaderboard:
- *  - 728x90
- *  - 970x250 (billboard; too tall)
- *  - 970x90
- */
-
-@media(min-width: 728px) {
-  .banner-ad {
-    width: 728px;
-  }
-}
-
-@media(min-width: 750px) {
-  .banner-ad {
-    width: 750px;
-  }
-}
-
-
-@media(min-width: 970px) {
-  .banner-ad {
-    width: 970px;
-    height: 180px;
-  }
-}
-
-@media(min-width: 980px) {
-  .banner-ad {
-    width: 980px;
-    height: 180px;
-  }
-}
-
-/*
- * Playwire desktop skyscraper:
- *  - 160x600
- *  - 300x600
- */
-.scraper-ad {
-  min-height: 600px;
-}
-
-/* fill container margins */
-@media(min-width: 1900px) {
-  .scraper-ad {
-    width: 160px;
-  }
-}
-
-@media(min-width: 2200px) {
-  .scraper-ad {
-    width: 300px;
-  }
-}
-
-/*
- * Playwire medium rectangle:
- *  - 300x250
- *  - 300x600 (half page)
- *  - 320x50
- */
-
-/*
- * Section ad: Large rectangle on mobile, Billboard on desktop
- */
-.section-ad {
-  height: 250px;
-  width: 320px;
-}
-
-/*
- * Required by playwire:
- * Set a min-height of 100px for mobile
- * and 250px for desktop
- */
-.section-ad-pw {
-  min-height: 100px;
-}
-
-@media(min-width: 468px) {
-  .section-ad {
-    width: 468px;
-  }
-}
-
-@media(min-width: 728px) {
-  .section-ad {
-    height: 280px;
-    width: 728px;
-  }
-
-  .section-ad-pw {
-    min-height: 250px;
-  }
-}
-
-@media(min-width: 970px) {
-  .section-ad {
-    width: 970px;
-  }
+.mobile-incontent {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 336px;
+  height: 280px;
 }
 </style>
