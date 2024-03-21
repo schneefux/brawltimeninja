@@ -17,9 +17,9 @@
           :class="['-mt-4', {
             'h-24 overflow-hidden fade-out': !expanded,
           }]"
-          @click="expanded = true"
+          @click="handleClick()"
         ></article>
-        <b-button v-if="!expanded" @click="expanded = true" primary md>
+        <b-button v-if="!expanded" @click="handleClick()" primary md>
           {{ $t('action.read') }}
         </b-button>
       </div>
@@ -62,7 +62,7 @@ export default defineComponent({
 
     const handleClick = () => {
       emit('interact')
-      expanded.value = !expanded.value
+      expanded.value = true
     }
 
     return {
