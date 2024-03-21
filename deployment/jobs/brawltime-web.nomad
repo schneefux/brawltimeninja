@@ -124,10 +124,8 @@ job "brawltime-web" {
         SENTRY_DSN = "${var.sentry_dsn}"
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"
 
-        ADSENSE_PUBID = "ca-pub-6856963757796636"
         QUANTCAST_CHOICE_ID = "Zj670A0xwScEY"
         GA4_ID = "G-G5V3FPZG9Z"
-        OPTIMIZE_ID = "OPT-PWZ78LC"
         PLAYWIRE_RAMP_PUBLISHER_ID = "1024864"
         PLAYWIRE_RAMP_SITE_ID = "74021"
         PLAYWIRE_RAMP_GA4_ID = "G-YBE993Z5SQ"

@@ -3,8 +3,6 @@ variable "web_traduora_secret" {}
 variable "web_traduora_project_id" {}
 variable "github_user" {}
 variable "github_token" {}
-variable "brawlstars_email" {}
-variable "brawlstars_password" {}
 variable "brawlapi_token" {}
 
 # git hash or "latest"
@@ -68,31 +66,63 @@ job "brawltime-testing" {
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
 
         BRAWLSTARS_URL = "http://proxy.${var.domain}/v1/"
-        CUBE_URL = "https://cube.${var.domain}"
         MEDIA_URL = "https://media.${var.domain}"
         MANAGER_URL = "https://manager.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"
+        MYSQL_DATABASE = "brawltime"
+        MYSQL_USER = "brawltime"
+        MYSQL_PASSWORD = "brawltime"
+        TRACKING_EXPIRE_AFTER_DAYS = "14"
+        TRACKING_REFRESH_MINUTES = "1440"
 
         TRADUORA_URL = "https://translate.${var.domain}"
         TRADUORA_CLIENT_ID = "${var.web_traduora_client_id}"
         TRADUORA_SECRET = "${var.web_traduora_secret}"
         TRADUORA_PROJECT_ID = "${var.web_traduora_project_id}"
 
-        ADSENSE_PUBID = "ca-pub-6856963757796636"
         QUANTCAST_CHOICE_ID = "Zj670A0xwScEY"
-        GA4_ID = "G-8GGHZC6QR2"
-        UA_ID = "UA-137233906-1"
-        OPTIMIZE_ID = "OPT-PWZ78LC"
-        PLAYWIRE_RAMP_PUBLISHER_ID = "1024864"
-        PLAYWIRE_RAMP_SITE_ID = "74021"
-        PLAYWIRE_RAMP_GA4_ID = "G-YBE993Z5SQ"
+        VENATUS_SITE_ID = "65e870e95daddd2733903a31"
+      }
+
+      # web can run without clickhouse, cube and mysql
+      # -> set CLICKHOUSE_URL/MYSQL only when they are available
+      # -> set CUBE_URL only when a router and CH are available (as cube depends on CH)
+      template {
+        data = <<-EOF
+          {{ $clickhouse_servers := nomadService "clickhouse" }}
+          {{ with $clickhouse_servers }}
+            CLICKHOUSE_URL = "http://{{ with index . 0 }}{{ .Address }}:{{ .Port }}{{ end }}"
+          {{ end }}
+          {{ $cube_servers := nomadService "brawltime-cube" }}
+          {{ $cube_online := false }}
+          {{- range $cube_servers }}
+            {{- if not (contains .Tags "canary")}}
+              {{- $cube_online = true}}
+            {{- end}}
+          {{- end}}
+          {{ if and ($clickhouse_servers) ($cube_online) }}
+            CUBE_URL = "https://cube.${var.domain}"
+          {{ end }}
+          {{ with nomadService "mariadb" }}
+            MYSQL_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
+            MYSQL_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
+          {{ end }}
+        EOF
+        destination = "local/db.env"
+        env = true
+        splay = "1m" # wait random amount of time to prevent all instances restarting at the same time
+        # wait for the cluster to be consistent
+        wait {
+          min = "10s"
+          max = "1m"
+        }
       }
 
       template {
         data = <<-EOF
           BRAWLAPI_TOKEN="${var.brawlapi_token}"
         EOF
-        destination = "secrets/brawlstars.env"
+        destination = "secrets/tokens.env"
         env = true
       }
 
@@ -118,7 +148,7 @@ job "brawltime-testing" {
       resources {
         cpu = 128
         memory = 512
-        memory_max = 1536
+        memory_max = 768
       }
     }
   }
