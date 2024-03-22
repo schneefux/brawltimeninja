@@ -9,7 +9,6 @@ import { createPersistedState } from 'pinia-plugin-persistedstate'
 import VueGtagPlugin, { query } from 'vue-gtag'
 import { createI18n, I18n } from 'vue-i18n'
 import { ClientOnly } from '@schneefux/klicker/components'
-import Adsense from '~/components/adsense.vue'
 import { createHead } from '@unhead/vue'
 import { InferSeoMetaPlugin } from '@unhead/addons'
 import { defaultLocale, locales } from '~/locales'
@@ -146,7 +145,6 @@ function createApp(pageContext: PageContext) {
   app.use(pinia)
 
   app.component('ClientOnly', ClientOnly)
-  app.component('Adsense', Adsense)
 
   app.config.globalProperties.localePath = (path: string) => localePath(path, i18n.global)
 

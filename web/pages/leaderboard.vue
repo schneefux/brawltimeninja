@@ -1,13 +1,8 @@
 <template>
-  <b-page :title="$t('leaderboard.player.metric.title', { metric: $t('metric.' + metric) })">
+  <split-page :title="$t('leaderboard.player.metric.title', { metric: $t('metric.' + metric) })">
     <p id="description">{{ $t('leaderboard.player.metric.description', { metric: $t('metric.' + metric) }) }}</p>
 
-    <ad
-      ad-slot="4579727583"
-      first
-    ></ad>
-
-    <div class="mt-4 flex flex-wrap gap-x-2 gap-y-4 justify-center">
+    <div class="mt-4 flex flex-wrap gap-x-2 gap-y-4">
       <b-button
         v-for="metric in metrics"
         :key="metric"
@@ -19,15 +14,12 @@
       </b-button>
     </div>
 
-    <div id="leaderboard" class="flex justify-center mt-8">
-      <router-view></router-view>
-    </div>
-
-    <ad
-      ad-slot="5140154307"
-      lazy
-    ></ad>
-  </b-page>
+    <b-page-section id="leaderboard">
+      <div class="flex justify-center">
+        <router-view></router-view>
+      </div>
+    </b-page-section>
+  </split-page>
 </template>
 
 <script lang="ts">
@@ -36,8 +28,13 @@ import { defineComponent, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { useRouteParams } from '~/composables/route-params'
+import { BButton, BPageSection } from '@schneefux/klicker/components'
 
 export default defineComponent({
+  components: {
+    BPageSection,
+    BButton,
+  },
   setup() {
     const i18n = useI18n()
 

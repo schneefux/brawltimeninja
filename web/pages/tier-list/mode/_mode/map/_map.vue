@@ -1,28 +1,63 @@
 <template>
-  <b-page
-    :title="$t('tier-list.map.title', { map: mapName })"
-  >
-    <b-shimmer
-      v-if="event == undefined"
-      height-px="40"
-      class="my-4"
-      loading
-    ></b-shimmer>
-    <mode-map-jumper
-      v-else
-      id="mode-map-jumper"
-      :mode="event.mode"
-      :map="event.map"
-      :event-id="event.id"
-    ></mode-map-jumper>
+  <split-page :title="$t('tier-list.map.title', { map: mapName })">
+    <template v-slot:aside-left>
+      <b-shimmer
+        v-if="event == undefined"
+        height-px="40"
+        class="my-4"
+        loading
+      ></b-shimmer>
+      <mode-map-jumper
+        v-else
+        id="mode-map-jumper"
+        :mode="event.mode"
+        :map="event.map"
+        :event-id="event.id"
+      ></mode-map-jumper>
 
-    <b-shimmer
-      v-if="event == undefined"
-      height-px="56"
-      loading
-    ></b-shimmer>
-    <template v-else-if="aiReport != undefined">
-      <client-only>
+      <template v-if="showImage">
+        <b-lightbox
+          v-if="event != undefined"
+          id="lightbox"
+          v-model="lightboxOpen"
+        >
+          <map-img
+            :event-id="event.id"
+            :map="event.map"
+            clazz="h-full object-contain"
+            size=""
+          ></map-img>
+        </b-lightbox>
+
+        <b-shimmer
+          v-if="event == undefined"
+          height-px="310"
+          loading
+        ></b-shimmer>
+        <event-picture-card
+          v-else
+          id="aside"
+          :mode="event.mode"
+          :map="event.map"
+          :event-id="event.id"
+          class="relative max-w-sm"
+          @click.capture.prevent="lightboxOpen = true"
+        >
+          <fa
+            :icon="faExpand"
+            class="absolute bottom-4 right-6"
+          ></fa>
+        </event-picture-card>
+      </template>
+    </template>
+
+    <b-page-section>
+      <b-shimmer
+        v-if="event == undefined"
+        height-px="56"
+        loading
+      ></b-shimmer>
+      <client-only v-else-if="aiReport != undefined">
         <template v-slot:placeholder>
           <ai-report-1
             :timestamp="aiReport.timestamp"
@@ -52,82 +87,32 @@
           </template>
         </experiment>
       </client-only>
-    </template>
-    <p
-      v-else
-      id="description"
-      class="prose dark:prose-invert"
-    >
-      {{ $t('tier-list.map.description', { map: mapName, mode: $t('mode.' + event.mode) }) }}
-    </p>
-
-    <ad
-      ad-slot="1665534416"
-      first
-    ></ad>
-
-    <b-lightbox
-      v-if="event != undefined"
-      id="lightbox"
-      v-model="lightboxOpen"
-    >
-      <map-img
-        :event-id="event.id"
-        :map="event.map"
-        clazz="h-full object-contain"
-        size=""
-      ></map-img>
-    </b-lightbox>
-
-    <b-page-section>
-      <b-split-dashboard>
-        <template
-          v-if="event == undefined || showImage"
-          v-slot:aside
-        >
-          <b-shimmer
-            v-if="event == undefined"
-            height-px="310"
-            loading
-          ></b-shimmer>
-          <event-picture-card
-            v-else
-            id="aside"
-            :mode="event.mode"
-            :map="event.map"
-            :event-id="event.id"
-            class="relative"
-            @click.capture.prevent="lightboxOpen = true"
-          >
-            <fa
-              :icon="faExpand"
-              class="absolute bottom-4 right-6"
-            ></fa>
-          </event-picture-card>
-        </template>
-
-        <map-views
-          v-if="event != undefined"
-          id="dashboard"
-          :mode="event.mode"
-          :map="event.map"
-          :event-id="event.id"
-          ga-category="map"
-        ></map-views>
-      </b-split-dashboard>
+      <p
+        v-else
+        id="description"
+        class="prose dark:prose-invert"
+      >
+        {{ $t('tier-list.map.description', { map: mapName, mode: $t('mode.' + event.mode) }) }}
+      </p>
     </b-page-section>
 
-    <ad
-      ad-slot="3536131238"
-      lazy
-    ></ad>
-  </b-page>
+    <b-page-section>
+      <map-views
+        v-if="event != undefined"
+        id="dashboard"
+        :mode="event.mode"
+        :map="event.map"
+        :event-id="event.id"
+        ga-category="map"
+      ></map-views>
+    </b-page-section>
+  </split-page>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
 import { deslugify, kebabToCamel } from '~/lib/util'
-import { BShimmer, BSplitDashboard, BCard, BLightbox, BPage, BPageSection, Fa } from '@schneefux/klicker/components'
+import { BShimmer, BLightbox, BPageSection, Fa } from '@schneefux/klicker/components'
 import { useMapName } from '~/composables/map'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
 import { useApi, useAsync, useCacheHeaders, useConfig, useMeta, useServerBlockingAsync } from '~/composables/compat'
@@ -146,11 +131,8 @@ interface Map {
 export default defineComponent({
   components: {
     Fa,
-    BSplitDashboard,
     BShimmer,
     BLightbox,
-    BCard,
-    BPage,
     BPageSection,
   },
   async setup() {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <split-page :title="$t(`tier-list.${singular}.title`)">
     <breadcrumbs
       id="breadcrumbs"
       :links="[{
@@ -71,7 +71,7 @@
         </template>
       </c-dashboard>
     </b-page-section>
-  </div>
+  </split-page>
 </template>
 
 <script lang="ts">

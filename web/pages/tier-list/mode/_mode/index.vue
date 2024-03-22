@@ -1,5 +1,5 @@
 <template>
-  <b-page :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })">
+  <split-page :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })">
     <mode-map-jumper
       id="mode-map-jumper"
       :mode="mode"
@@ -8,11 +8,6 @@
     <p id="description" class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
     </p>
-
-    <ad
-      ad-slot="2291234880"
-      first
-    ></ad>
 
     <b-page-section
       id="maps"
@@ -32,10 +27,7 @@
       <events-roll :events="events"></events-roll>
     </b-page-section>
 
-    <ad
-      ad-slot="2263314723"
-      lazy
-    ></ad>
+    <ad lazy></ad>
 
     <b-page-section id="dashboard">
       <map-views
@@ -43,17 +35,12 @@
         ga-category="mode"
       ></map-views>
     </b-page-section>
-
-    <ad
-      ad-slot="8497550588"
-      lazy
-    ></ad>
-  </b-page>
+  </split-page>
 </template>
 
 <script lang="ts">
 import { camelToKebab, kebabToCamel } from '~/lib/util'
-import { BDashboardCell, BPage, BPageSection, } from '@schneefux/klicker/components'
+import { BDashboardCell, BPageSection } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { defineComponent, computed } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
@@ -67,7 +54,6 @@ export default defineComponent({
     ObserveVisibility,
   },
   components: {
-    BPage,
     BPageSection,
     BDashboardCell,
   },

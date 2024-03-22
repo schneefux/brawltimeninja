@@ -1,22 +1,12 @@
 <template>
-  <b-page
-    :title="$t('oejts.title')"
-    class="max-w-lg"
-  >
+  <split-page :title="$t('oejts.title')">
     <p id="description" class="mt-4 mb-8">{{ $t('oejts.description') }}</p>
-    <ad
-      ad-slot="1985124187"
-      banner
-    ></ad>
+
     <quiz-card
       id="quiz"
       class="mt-8"
     ></quiz-card>
-    <ad
-      ad-slot="5374523095"
-      first
-    ></ad>
-  </b-page>
+  </split-page>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,8 @@
 <template>
-  <div ref="rootContainer">
+  <div
+    ref="rootContainer"
+    class="overflow-y-auto hide-scrollbar"
+  >
     <nav
       ref="toc"
       class="relative"

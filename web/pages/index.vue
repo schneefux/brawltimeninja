@@ -1,11 +1,5 @@
 <template>
   <b-page>
-    <ad
-      class="-mt-6 mb-6 mx-auto"
-      ad-slot="2812773083"
-      banner
-    ></ad>
-
     <div class="flex flex-col justify-center">
       <div id="logo" class="mx-auto relative">
         <img
@@ -132,10 +126,7 @@
       </div>
     </div>
 
-    <ad
-      ad-slot="6067985913"
-      first
-    ></ad>
+    <ad></ad>
 
     <b-page-section
       id="best"
@@ -165,10 +156,7 @@
       </div>
     </b-page-section>
 
-    <ad
-      ad-slot="6709232983"
-      lazy
-    ></ad>
+    <ad lazy></ad>
 
     <b-page-section
       id="events"
@@ -185,11 +173,6 @@
         with-data
       ></events-roll>
     </b-page-section>
-
-    <ad
-      ad-slot="6736366415"
-      lazy
-    ></ad>
   </b-page>
 </template>
 
@@ -358,3 +341,11 @@ export default defineComponent({
   @apply normal-case;
 }
 </style>
+
+<route>
+{
+  meta: {
+    topBannerType: 'banner',
+  },
+}
+</route>

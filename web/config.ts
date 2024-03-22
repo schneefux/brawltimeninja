@@ -4,7 +4,6 @@ export interface Config {
   managerUrl: string
   renderUrl: string
   ga4Id: string
-  adsensePubid: string
   sentryDsn: string
   venatusSiteId: string
   quantcastChoiceId: string
@@ -21,7 +20,6 @@ export const config: Config = {
   managerUrl: process.env.MANAGER_URL ?? '',
   renderUrl: process.env.RENDER_URL ?? '',
   ga4Id: process.env.GA4_ID ?? '',
-  adsensePubid: process.env.ADSENSE_PUBID ?? '',
   venatusSiteId: process.env.VENATUS_SITE_ID ?? '',
   quantcastChoiceId: process.env.QUANTCAST_CHOICE_ID ?? '',
   sentryDsn: process.env.SENTRY_DSN ?? '',

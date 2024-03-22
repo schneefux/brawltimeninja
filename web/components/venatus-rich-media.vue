@@ -15,11 +15,13 @@
 import { defineComponent, onUnmounted } from 'vue'
 
 export default defineComponent({
-  setup() {
-    onUnmounted(() => {
+  setup(props) {
+    const removeAllRichmedia = () => {
       window.top!.__vm_remove_category = window.top!.__vm_remove_category || []
       window.top!.__vm_remove_category.push('richmedia_all')
-    })
+    }
+
+    onUnmounted(() => removeAllRichmedia())
   },
 })
 </script>

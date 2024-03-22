@@ -1,6 +1,9 @@
 <template>
-  <b-page :title="$t('status.title')">
-    <div class="px-2 mt-8 mx-auto max-w-lg">
+  <b-page
+    :title="$t('status.title')"
+    class="max-w-screen-sm"
+  >
+    <div class="px-2 mt-8">
       <p v-show="status == undefined">{{ $t('state.checking') }}…</p>
       <div v-show="status == 'down'">
         <media-img path="/brawlers/spike_loss/model" clazz="mt-8 w-40 mx-auto" alt="Spike"></media-img>

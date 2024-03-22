@@ -6,6 +6,7 @@
   >
     <div
       :class="{
+        'bg-background': elevation == -1,
         'bg-background/75': elevation == 0,
         'bg-contrast/[0.08]': elevation == 1,
         'bg-white/[.02]': elevation == 2,

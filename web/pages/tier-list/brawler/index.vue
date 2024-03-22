@@ -1,5 +1,5 @@
 <template>
-  <b-page :title="$t('brawlers.title')">
+  <split-page :title="$t('brawlers.title')">
     <p id="description" class="mt-4 prose dark:prose-invert">
       {{ $t('brawlers.description') }}
     </p>
@@ -8,11 +8,6 @@
       id="roll"
       class="mt-8"
     ></brawlers-roll>
-
-    <ad
-      ad-slot="6446102315"
-      first
-    ></ad>
 
     <b-page-section
       id="tier-list"
@@ -34,12 +29,7 @@
         class="mt-8"
       ></map-views>
     </b-page-section>
-
-    <ad
-      ad-slot="7838173054"
-      lazy
-    ></ad>
-  </b-page>
+  </split-page>
 </template>
 
 <script lang="ts">
@@ -48,10 +38,14 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
 import { useCacheHeaders, useMeta } from '~/composables/compat'
 import { useI18n } from 'vue-i18n'
+import { BPageSection } from '@schneefux/klicker/components'
 
 export default defineComponent({
   directives: {
     ObserveVisibility,
+  },
+  components: {
+    BPageSection,
   },
   setup() {
     const i18n = useI18n()

@@ -1,8 +1,13 @@
 <template>
-  <b-page
-    :title="$t('draft-tool.title')"
-    class="max-w-2xl mx-auto"
-  >
+  <split-page :title="$t('draft-tool.title')">
+    <template v-slot:aside-right>
+      <b-card :title="$t('about-metric', { metric: $t('metric.winRate') })">
+        <template v-slot:content>
+          <p>{{ $t('brawler.disclaimer') }}</p>
+        </template>
+      </b-card>
+    </template>
+
     <b-card
       :title="$t('draft-tool.subtitle')"
       class="mt-3"
@@ -32,16 +37,6 @@
       <template v-slot="totals">
         <b-dashboard responsive>
           <b-dashboard-cell
-            :rows="2"
-            :columns="3"
-          >
-            <b-card :title="$t('about-metric', { metric: $t('metric.winRate') })">
-              <template v-slot:content>
-                <p>{{ $t('brawler.disclaimer') }}</p>
-              </template>
-            </b-card>
-          </b-dashboard-cell>
-          <b-dashboard-cell
             :rows="1"
             :columns="2"
           >
@@ -57,7 +52,7 @@
     <prodigy-ad
       class="mt-8"
     ></prodigy-ad>
-  </b-page>
+  </split-page>
 </template>
 
 <script lang="ts">

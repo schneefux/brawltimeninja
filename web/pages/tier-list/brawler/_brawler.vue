@@ -1,5 +1,22 @@
 <template>
-  <b-page :title="brawlerMetadata?.name">
+  <split-page :title="brawlerMetadata?.name">
+    <template v-slot:aside-left>
+      <brawler-aside
+        id="aside"
+        :brawler-metadata="brawlerMetadata"
+        class="!h-auto max-w-sm"
+      ></brawler-aside>
+    </template>
+
+    <template v-slot:aside-right>
+      <b-scroll-spy
+        id="sidenav"
+        :sections="sections"
+        toc-class="hidden lg:block"
+        nav-class="top-14"
+      ></b-scroll-spy>
+    </template>
+
     <breadcrumbs
       id="breadcrumbs"
       :links="[{
@@ -12,219 +29,204 @@
       class="mt-4"
     ></breadcrumbs>
 
-    <ad
-      ad-slot="8533352178"
-      first
-    ></ad>
+    <b-page-section
+      id="overview"
+      ref="overviewSection"
+      :title="$t('brawler.overview')"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('overview'),
+        once: true,
+      }"
+    >
+      <brawler-overview
+        :brawler-id="brawlerMetadata?.slug"
+        :scraped-data="scrapedData"
+      ></brawler-overview>
+    </b-page-section>
 
-    <b-split-dashboard>
-      <template v-slot:aside>
-        <div class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8">
-          <brawler-aside
-            id="aside"
-            :brawler-metadata="brawlerMetadata"
-            class="!h-auto"
-          ></brawler-aside>
+    <ad lazy></ad>
 
-          <b-scroll-spy
-            id="sidenav"
-            :sections="sections"
-            nav-class="top-14 lg:top-0"
-            toc-class="hidden lg:block"
-            class="lg:mt-8 lg:overflow-y-auto hide-scrollbar"
-          ></b-scroll-spy>
-        </div>
+    <b-page-section
+      id="accessory"
+      ref="accessorySection"
+      :title="$t('brawler.accessories')"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('accessories'),
+        once: true,
+      }"
+      lazy
+    >
+      <brawler-accessories
+        :brawler-metadata="brawlerMetadata"
+        :scraped-data="scrapedData"
+      ></brawler-accessories>
+    </b-page-section>
+
+    <b-page-section
+      id="synergy"
+      ref="synergySection"
+      :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerMetadata?.name })"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('synergies'),
+        once: true,
+      }"
+      lazy
+    >
+      <brawler-synergies
+        :brawler-metadata="brawlerMetadata"
+      ></brawler-synergies>
+    </b-page-section>
+
+    <ad lazy></ad>
+
+    <b-page-section
+      id="maps"
+      ref="mapsSection"
+      :title="$t('brawler.current-maps.title', { brawler: brawlerMetadata?.name })"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('current-maps'),
+        once: true,
+      }"
+      lazy
+    >
+      <brawler-active-events
+        :brawler-metadata="brawlerMetadata"
+      ></brawler-active-events>
+    </b-page-section>
+
+    <b-page-section
+      id="modes"
+      ref="modesSection"
+      :title="$t('brawler.modes.title', { brawler: brawlerMetadata?.name })"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('modes'),
+        once: true,
+      }"
+      lazy
+    >
+      <brawler-modes-stats
+        :brawler-metadata="brawlerMetadata"
+      ></brawler-modes-stats>
+
+      <p class="mt-4 prose dark:prose-invert text-text/75">
+        {{ $t('brawler.viable-info') }}
+      </p>
+    </b-page-section>
+
+    <ad lazy></ad>
+
+    <b-page-section
+      id="trends"
+      ref="trendsSection"
+      :title="$t('brawler.trends', { brawler: brawlerMetadata?.name })"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('trends'),
+        once: true,
+      }"
+      lazy
+    >
+      <template v-slot:description>
+        <p class="mt-4 prose dark:prose-invert text-text/75">
+          {{ $t('brawler.trend.description', { brawler: brawlerMetadata?.name }) }}
+        </p>
       </template>
 
-      <b-page-section
-        id="overview"
-        ref="overviewSection"
-        :title="$t('brawler.overview')"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('overview'),
-          once: true,
-        }"
-      >
-        <brawler-overview
-          :brawler-id="brawlerMetadata?.slug"
-          :scraped-data="scrapedData"
-        ></brawler-overview>
-      </b-page-section>
+      <brawler-trends-card
+        :brawler-brawlstars-id="brawlerMetadata?.brawlstarsId"
+        class="mt-4"
+      ></brawler-trends-card>
+    </b-page-section>
 
-      <b-page-section
-        id="accessory"
-        ref="accessorySection"
-        :title="$t('brawler.accessories')"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('accessories'),
-          once: true,
-        }"
-        lazy
-      >
-        <brawler-accessories
-          :brawler-metadata="brawlerMetadata"
-          :scraped-data="scrapedData"
-        ></brawler-accessories>
-      </b-page-section>
+    <b-page-section
+      id="trophies"
+      ref="trophiesSection"
+      :title="$t('brawler.by-trophies', { brawler: brawlerMetadata?.name })"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('trophy-graphs'),
+        once: true,
+      }"
+      lazy
+    >
+      <brawler-trophy-graphs
+        :brawler-brawlstars-id="brawlerMetadata?.brawlstarsId"
+      ></brawler-trophy-graphs>
 
-      <b-page-section
-        id="synergy"
-        ref="synergySection"
-        :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerMetadata?.name })"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('synergies'),
-          once: true,
-        }"
-        lazy
-      >
-        <brawler-synergies
-          :brawler-metadata="brawlerMetadata"
-        ></brawler-synergies>
-      </b-page-section>
+      <p class="mt-4 prose dark:prose-invert text-text/75">
+        {{ $t('brawler.disclaimer') }}
+      </p>
+    </b-page-section>
 
-      <b-page-section
-        id="maps"
-        ref="mapsSection"
-        :title="$t('brawler.current-maps.title', { brawler: brawlerMetadata?.name })"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('current-maps'),
-          once: true,
-        }"
-        lazy
-      >
-        <brawler-active-events
-          :brawler-metadata="brawlerMetadata"
-        ></brawler-active-events>
-      </b-page-section>
+    <ad lazy></ad>
 
-      <b-page-section
-        id="modes"
-        ref="modesSection"
-        :title="$t('brawler.modes.title', { brawler: brawlerMetadata?.name })"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('modes'),
-          once: true,
-        }"
-        lazy
-      >
-        <brawler-modes-stats
-          :brawler-metadata="brawlerMetadata"
-        ></brawler-modes-stats>
+    <!--
+      some Brawlers don't have skins, pins, voicelines etc.
+      but until scrapedData is fetched, render the placeholders
+    -->
+    <b-page-section
+      id="skins"
+      v-if="scrapedData == undefined || (scrapedData.skins != undefined && scrapedData.skins.length > 0)"
+      ref="skinsSection"
+      :title="$t('skin', 2)"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('skins'),
+        once: true,
+      }"
+      lazy
+    >
+      <brawler-skins
+        :scraped-data="scrapedData"
+      ></brawler-skins>
+    </b-page-section>
 
-        <p class="mt-4 prose dark:prose-invert text-text/75">
-          {{ $t('brawler.viable-info') }}
-        </p>
-      </b-page-section>
+    <b-page-section
+      id="pins"
+      v-if="scrapedData == undefined || (scrapedData.pins != undefined && scrapedData.pins.length > 0)"
+      ref="pinsSection"
+      :title="$t('pin', 2)"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('pins'),
+        once: true,
+      }"
+      lazy
+    >
+      <brawler-pins
+        :scraped-data="scrapedData"
+      ></brawler-pins>
+    </b-page-section>
 
-      <b-page-section
-        id="trends"
-        ref="trendsSection"
-        :title="$t('brawler.trends', { brawler: brawlerMetadata?.name })"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('trends'),
-          once: true,
-        }"
-        lazy
-      >
-        <template v-slot:description>
-          <p class="mt-4 prose dark:prose-invert text-text/75">
-            {{ $t('brawler.trend.description', { brawler: brawlerMetadata?.name }) }}
-          </p>
-        </template>
+    <b-page-section
+      id="voicelines"
+      v-if="scrapedData == undefined || (scrapedData.voicelines != undefined && scrapedData.voicelines.length > 0)"
+      ref="voicelineSection"
+      :title="$t('voiceline', 2)"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('voicelines'),
+        once: true,
+      }"
+      lazy
+    >
+      <brawler-voicelines
+        :scraped-data="scrapedData"
+      ></brawler-voicelines>
+    </b-page-section>
 
-        <brawler-trends-card
-          :brawler-brawlstars-id="brawlerMetadata?.brawlstarsId"
-          class="mt-4"
-        ></brawler-trends-card>
-      </b-page-section>
+    <ad lazy></ad>
 
-      <b-page-section
-        id="trophies"
-        ref="trophiesSection"
-        :title="$t('brawler.by-trophies', { brawler: brawlerMetadata?.name })"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('trophy-graphs'),
-          once: true,
-        }"
-        lazy
-      >
-        <brawler-trophy-graphs
-          :brawler-brawlstars-id="brawlerMetadata?.brawlstarsId"
-        ></brawler-trophy-graphs>
-
-        <p class="mt-4 prose dark:prose-invert text-text/75">
-          {{ $t('brawler.disclaimer') }}
-        </p>
-      </b-page-section>
-
-      <!--
-        some Brawlers don't have skins, pins, voicelines etc.
-        but until scrapedData is fetched, render the placeholders
-      -->
-      <b-page-section
-        id="skins"
-        v-if="scrapedData == undefined || (scrapedData.skins != undefined && scrapedData.skins.length > 0)"
-        ref="skinsSection"
-        :title="$t('skin', 2)"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('skins'),
-          once: true,
-        }"
-        lazy
-      >
-        <brawler-skins
-          :scraped-data="scrapedData"
-        ></brawler-skins>
-      </b-page-section>
-
-      <b-page-section
-        id="pins"
-        v-if="scrapedData == undefined || (scrapedData.pins != undefined && scrapedData.pins.length > 0)"
-        ref="pinsSection"
-        :title="$t('pin', 2)"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('pins'),
-          once: true,
-        }"
-        lazy
-      >
-        <brawler-pins
-          :scraped-data="scrapedData"
-        ></brawler-pins>
-      </b-page-section>
-
-      <b-page-section
-        id="voicelines"
-        v-if="scrapedData == undefined || (scrapedData.voicelines != undefined && scrapedData.voicelines.length > 0)"
-        ref="voicelineSection"
-        :title="$t('voiceline', 2)"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('voicelines'),
-          once: true,
-        }"
-        lazy
-      >
-        <brawler-voicelines
-          :scraped-data="scrapedData"
-        ></brawler-voicelines>
-      </b-page-section>
-
-      <b-page-section
-        id="balance-changes"
-        v-if="scrapedData == undefined || (scrapedData.history != undefined && scrapedData.history.length > 0)"
-        :title="$t('balance-changes')"
-        ref="balanceChangesSection"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('balance-changes'),
-          once: true,
-        }"
-        lazy
-      >
-        <brawler-history
-          :scraped-data="scrapedData"
-        ></brawler-history>
-      </b-page-section>
-    </b-split-dashboard>
+    <b-page-section
+      id="balance-changes"
+      v-if="scrapedData == undefined || (scrapedData.history != undefined && scrapedData.history.length > 0)"
+      :title="$t('balance-changes')"
+      ref="balanceChangesSection"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('balance-changes'),
+        once: true,
+      }"
+      lazy
+    >
+      <brawler-history
+        :scraped-data="scrapedData"
+      ></brawler-history>
+    </b-page-section>
 
     <b-page-section
       id="attribution"
@@ -238,19 +240,14 @@
         :scraped-data="scrapedData"
       ></brawler-attribution>
     </b-page-section>
-
-    <ad
-      ad-slot="6837127123"
-      lazy
-    ></ad>
-  </b-page>
+  </split-page>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import { useAsync, useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { BSplitDashboard, BScrollSpy, BPageSection } from '@schneefux/klicker/components'
+import { BScrollSpy, BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 import { ScrapedBrawler } from '~/model/Web'
 import { useI18n } from 'vue-i18n'
@@ -263,7 +260,6 @@ export default defineComponent({
   },
   components: {
     BScrollSpy,
-    BSplitDashboard,
     BPageSection,
   },
   setup() {

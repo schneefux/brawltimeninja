@@ -8,18 +8,18 @@
 
     <loading-indicator></loading-indicator>
 
-    <ad
-      ad-slot="6848221017"
-      class="fixed left-4 top-1/2 -translate-y-1/2 text-left"
-      scraper
-    ></ad>
-    <ad
-      ad-slot="8127026559"
-      class="fixed right-4 top-1/2 -translate-y-1/2 text-right"
-      scraper
-    ></ad>
-
     <div id="main" class="fill-layout-height">
+      <ad
+        v-if="topBannerType == 'takeover'"
+        takeover
+        first
+      ></ad>
+      <ad
+        v-else-if="topBannerType == 'banner'"
+        banner
+        first
+      ></ad>
+
       <slot></slot>
     </div>
 
@@ -50,6 +50,7 @@ import { useI18n } from 'vue-i18n'
 import { useConfig, useLocaleCookieRedirect, useLocalePath } from '~/composables/compat'
 import { useQuantcast } from '~/composables/quantcast'
 import { useVenatus } from '~/composables/venatus'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: {
@@ -86,9 +87,13 @@ export default defineComponent({
 
     useQuantcast(config.quantcastChoiceId)
 
+    const route = useRoute()
+    const topBannerType = computed(() => route.meta.topBannerType as string ?? 'takeover')
+
     return {
       links,
       container,
+      topBannerType,
     }
   },
 })

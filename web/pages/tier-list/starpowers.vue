@@ -1,7 +1,5 @@
 <template>
-  <b-page :title="$t('tier-list.starpower.title')">
-    <accessory-tier-list kind="starpowers"></accessory-tier-list>
-  </b-page>
+  <accessory-tier-list-page kind="starpowers"></accessory-tier-list-page>
 </template>
 
 <script lang="ts">

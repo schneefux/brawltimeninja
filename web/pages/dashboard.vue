@@ -1,5 +1,13 @@
 <template>
-  <b-page title="Brawl Stars Meta Dashboard" no-container>
+  <b-page
+    title="Brawl Stars Meta Dashboard"
+    no-container
+  >
+    <ad
+      instream
+      class="mt-8"
+    ></ad>
+
     <c-dashboard
       v-model="query"
       :configurator="{
@@ -9,7 +17,7 @@
         configureDimensions: true,
         configureCompareMode: true,
       }"
-      class="mt-2"
+      class="mt-8"
       slicer
     >
       <template v-slot:totals="data">

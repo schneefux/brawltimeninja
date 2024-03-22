@@ -1,5 +1,5 @@
 <template>
-  <b-card :title="$t('tier-list.map.report.title', { title })"  class="max-w-2xl mx-auto">
+  <b-card :title="$t('tier-list.map.report.title', { title })"  class="max-w-2xl">
     <template v-if="timestamp" v-slot:preview>
       <absolute-time
         :timestamp="timestamp"

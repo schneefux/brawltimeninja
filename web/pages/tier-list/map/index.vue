@@ -1,102 +1,86 @@
 <template>
-  <b-page :title="$t('tier-list.maps.title')">
+  <split-page :title="$t('tier-list.maps.title')">
+    <template v-slot:aside-right>
+      <b-scroll-spy
+        id="sidenav"
+        :sections="sections"
+        toc-class="hidden lg:block"
+        nav-class="top-14"
+      ></b-scroll-spy>
+    </template>
+
     <p id="description" class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.maps.description') }}
-     </p>
+    </p>
 
-    <ad
-      ad-slot="8877810024"
-      first
-    ></ad>
+    <b-page-section
+      id="active"
+      ref="activeSection"
+      :title="$t('events.active.title')"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('current_events'),
+        once: true,
+      }"
+    >
+      <events-roll
+        :events="current"
+        with-data
+      ></events-roll>
+    </b-page-section>
 
-    <b-split-dashboard>
-      <template v-slot:aside>
-        <b-scroll-spy
-          id="sidenav"
-          :sections="sections"
-          nav-class="top-14 lg:top-0"
-          toc-class="hidden lg:block"
-          class="lg:mt-8 lg:overflow-y-auto hide-scrollbar"
-        ></b-scroll-spy>
-      </template>
-
-      <b-page-section
-        id="active"
-        ref="activeSection"
-        :title="$t('events.active.title')"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('current_events'),
-          once: true,
-        }"
-      >
-        <events-roll
-          :events="current"
-          with-data
-        ></events-roll>
-      </b-page-section>
-
-      <b-page-section
-        id="ranked"
-        ref="rankedSection"
-        :title="$t('events.ranked.title')"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('ranked_events'),
-          once: true,
-        }"
-        lazy
-      >
-        <b-button
-          :to="localePath('/tier-list/ranked')"
-          class="mt-4"
-          primary
-          sm
-        >
-          {{ $t('action.open.tier-list.ranked') }}
-        </b-button>
-      </b-page-section>
-
-      <ad
-        ad-slot="4150756245"
-        lazy
-      ></ad>
-
-      <b-page-section
-        id="upcoming"
-        ref="upcomingSection"
-        :title="$t('events.upcoming.title')"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('upcoming_events'),
-          once: true,
-        }"
-        lazy
-      >
-        <events-roll
-          :events="upcoming"
-          with-data
-        ></events-roll>
-      </b-page-section>
-
-      <b-page-section
-        id="season"
-        :title="$t('events.season.title')"
-        ref="seasonSection"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('maps'),
-          once: true,
-        }"
-        lazy
-      >
-        <events-roll
-          :events="allEvents"
-        ></events-roll>
-      </b-page-section>
-    </b-split-dashboard>
-
-    <ad
-      ad-slot="3577381889"
+    <b-page-section
+      id="ranked"
+      ref="rankedSection"
+      :title="$t('events.ranked.title')"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('ranked_events'),
+        once: true,
+      }"
       lazy
-    ></ad>
-  </b-page>
+    >
+      <b-button
+        :to="localePath('/tier-list/ranked')"
+        class="mt-4"
+        primary
+        sm
+      >
+        {{ $t('action.open.tier-list.ranked') }}
+      </b-button>
+    </b-page-section>
+
+    <ad lazy></ad>
+
+    <b-page-section
+      id="upcoming"
+      ref="upcomingSection"
+      :title="$t('events.upcoming.title')"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('upcoming_events'),
+        once: true,
+      }"
+      lazy
+    >
+      <events-roll
+        :events="upcoming"
+        with-data
+      ></events-roll>
+    </b-page-section>
+
+    <b-page-section
+      id="season"
+      :title="$t('events.season.title')"
+      ref="seasonSection"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('maps'),
+        once: true,
+      }"
+      lazy
+    >
+      <events-roll
+        :events="allEvents"
+      ></events-roll>
+    </b-page-section>
+  </split-page>
 </template>
 
 <script lang="ts">
@@ -106,7 +90,7 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, unformatMode } from '~/lib/util'
 import { ActiveEvent } from '~/model/Api'
 import { useTrackScroll } from '~/composables/gtag'
-import { BPageSection, BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
+import { BPageSection, BScrollSpy } from '@schneefux/klicker/components'
 import { useAllEvents } from '~/composables/dimension-values'
 import { useCurrentAndUpcomingEvents } from '~/composables/events'
 import { useI18n } from 'vue-i18n'
@@ -117,7 +101,6 @@ export default defineComponent({
   },
   components: {
     BPageSection,
-    BSplitDashboard,
     BScrollSpy,
   },
   setup() {

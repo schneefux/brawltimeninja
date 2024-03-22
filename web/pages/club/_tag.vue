@@ -1,114 +1,114 @@
 <template>
-  <b-page
+  <split-page
     v-if="club != undefined"
     :title="$t('club.meta.title', { club: club.name })"
   >
-    <b-split-dashboard class="mt-8 lg:mt-0">
-      <template v-slot:aside>
-        <div class="lg:h-screen lg:flex lg:flex-col lg:py-8 lg:mt-8">
-          <club-aside
-            id="aside"
-            :club="club"
-            v-observe-visibility="{
-              callback: makeVisibilityCallback('aside'),
-              once: true,
-            }"
-            class="!h-auto"
-          ></club-aside>
-        </div>
-      </template>
-
-      <b-page-section
-        id="description"
+    <template v-slot:aside-left>
+      <club-aside
+        id="aside"
+        :club="club"
         v-observe-visibility="{
-          callback: makeVisibilityCallback('description'),
+          callback: makeVisibilityCallback('aside'),
           once: true,
         }"
-        :title="$t('club.description')"
-      >
-        <b-card>
-          <template v-slot:content>
-            <blockquote class="prose dark:prose-invert italic">
-              {{ club.description }}
-            </blockquote>
-          </template>
-        </b-card>
-      </b-page-section>
+        class="!h-auto max-w-sm"
+      ></club-aside>
+    </template>
 
-      <b-page-section :title="$t('club.members')">
-        <club-member-table
-          :club="club"
-          class="max-w-md"
-        ></club-member-table>
-      </b-page-section>
+    <b-page-section
+      id="description"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('description'),
+        once: true,
+      }"
+      :title="$t('club.description')"
+    >
+      <b-card>
+        <template v-slot:content>
+          <blockquote class="prose dark:prose-invert italic">
+            {{ club.description }}
+          </blockquote>
+        </template>
+      </b-card>
+    </b-page-section>
 
-      <b-page-section
-        id="battles"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('battles'),
-          once: true,
-        }"
-        :title="$t('club.common-battle-log')"
-        lazy
-      >
-        <battles-list
-          v-if="commonBattles.length > 0"
-          :battles="commonBattles"
-          :highlight-tags="memberTags"
-          class="mt-8"
-          @interact="trackInteraction('battles')"
-        ></battles-list>
-        <b-shimmer
-          v-else-if="loading"
-          height-px="318"
-          loading
-        ></b-shimmer>
-        <div v-else>
-          <p class="prose dark:prose-invert">
-            {{ $t('state.no-data') }}
-          </p>
-          <b-button
-            v-if="clubActivityStatistics == undefined"
-            v-observe-visibility="{
-              callback: loadClubActivityStatistics,
-              once: true,
-            }"
-            class="mt-3"
-            primary
-            md
-            @click="loadClubActivityStatistics()"
-          >{{ $t('club.load-activity') }}</b-button>
-        </div>
-      </b-page-section>
+    <b-page-section :title="$t('club.members')">
+      <club-member-table
+        :club="club"
+        class="max-w-md"
+      ></club-member-table>
+    </b-page-section>
 
-      <b-page-section
-        id="retention"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('retention'),
-          once: true,
-        }"
-        :title="$t('club.retention.title')"
-        lazy
-      >
-        <club-retention-graph
-          :loading="loading"
-          :club-activity-statistics="clubActivityStatistics"
-          class="max-w-md"
-        ></club-retention-graph>
-      </b-page-section>
+    <ad lazy></ad>
 
-      <b-page-section
-        :title="$t('club.member-activity')"
-      >
-        <club-activity-table
-          :loading="loading"
-          :club="club"
-          :club-activity-statistics="clubActivityStatistics"
-          class="max-w-md"
-        ></club-activity-table>
-      </b-page-section>
-    </b-split-dashboard>
-  </b-page>
+    <b-page-section
+      id="battles"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('battles'),
+        once: true,
+      }"
+      :title="$t('club.common-battle-log')"
+      lazy
+    >
+      <battles-list
+        v-if="commonBattles.length > 0"
+        :battles="commonBattles"
+        :highlight-tags="memberTags"
+        class="mt-8"
+        @interact="trackInteraction('battles')"
+      ></battles-list>
+      <b-shimmer
+        v-else-if="loading"
+        height-px="318"
+        loading
+      ></b-shimmer>
+      <div v-else>
+        <p class="prose dark:prose-invert">
+          {{ $t('state.no-data') }}
+        </p>
+        <b-button
+          v-if="clubActivityStatistics == undefined"
+          v-observe-visibility="{
+            callback: loadClubActivityStatistics,
+            once: true,
+          }"
+          class="mt-3"
+          primary
+          md
+          @click="loadClubActivityStatistics()"
+        >{{ $t('club.load-activity') }}</b-button>
+      </div>
+    </b-page-section>
+
+    <b-page-section
+      id="retention"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('retention'),
+        once: true,
+      }"
+      :title="$t('club.retention.title')"
+      lazy
+    >
+      <club-retention-graph
+        :loading="loading"
+        :club-activity-statistics="clubActivityStatistics"
+        class="max-w-md"
+      ></club-retention-graph>
+    </b-page-section>
+
+    <ad lazy></ad>
+
+    <b-page-section
+      :title="$t('club.member-activity')"
+    >
+      <club-activity-table
+        :loading="loading"
+        :club="club"
+        :club-activity-statistics="clubActivityStatistics"
+        class="max-w-md"
+      ></club-activity-table>
+    </b-page-section>
+  </split-page>
 </template>
 
 <script lang="ts">
@@ -118,7 +118,7 @@ import { tagPattern } from '~/lib/util'
 import { defineComponent, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { TRPCClientError } from '@trpc/client'
-import { BPage, BPageSection, BSplitDashboard, BCard, BScrollingDashboard, BDashboardCell, BBigstat, BShimmer } from '@schneefux/klicker/components'
+import { BPageSection, BCard, BShimmer } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 import { ClubActivityStatistics } from '~/model/Api'
 
@@ -127,13 +127,8 @@ export default defineComponent({
     ObserveVisibility,
   },
   components: {
-    BScrollingDashboard,
-    BSplitDashboard,
-    BDashboardCell,
     BPageSection,
     BShimmer,
-    BBigstat,
-    BPage,
     BCard,
   },
   async setup() {
