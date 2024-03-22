@@ -36,22 +36,22 @@
       </b-page-section>
 
       <b-page-section
-        id="powerleague"
-        ref="powerleagueSection"
-        :title="$t('events.powerleague.title')"
+        id="ranked"
+        ref="rankedSection"
+        :title="$t('events.ranked.title')"
         v-observe-visibility="{
-          callback: makeVisibilityCallback('powerleague_events'),
+          callback: makeVisibilityCallback('ranked_events'),
           once: true,
         }"
         lazy
       >
         <b-button
-          :to="localePath('/tier-list/power-league')"
+          :to="localePath('/tier-list/ranked')"
           class="mt-4"
           primary
           sm
         >
-          {{ $t('action.open.tier-list.powerleague') }}
+          {{ $t('action.open.tier-list.ranked') }}
         </b-button>
       </b-page-section>
 
@@ -127,7 +127,7 @@ export default defineComponent({
 
     const allEvents = useAllEvents()
 
-    const allPowerLeagueEvents = useAllEvents({
+    const allRankedEvents = useAllEvents({
       powerplay: ['true'],
     })
 
@@ -158,7 +158,7 @@ export default defineComponent({
 
     const sectionRefs = {
       activeSection: ref<InstanceType<typeof BPageSection>>(),
-      powerleagueSection: ref<InstanceType<typeof BPageSection>>(),
+      rankedSection: ref<InstanceType<typeof BPageSection>>(),
       upcomingSection: ref<InstanceType<typeof BPageSection>>(),
       seasonSection: ref<InstanceType<typeof BPageSection>>(),
     }
@@ -168,9 +168,9 @@ export default defineComponent({
       title: i18n.t('events.active.title'),
       element: sectionRefs.activeSection.value?.$el,
     }, {
-      id: 'powerleague',
-      title: i18n.t('events.powerleague.title'),
-      element: sectionRefs.powerleagueSection.value?.$el,
+      id: 'ranked',
+      title: i18n.t('events.ranked.title'),
+      element: sectionRefs.rankedSection.value?.$el,
     }, {
       id: 'upcoming',
       title: i18n.t('events.upcoming.title'),
@@ -187,7 +187,7 @@ export default defineComponent({
       allEvents,
       current,
       upcoming,
-      allPowerLeagueEvents,
+      allRankedEvents,
       unformatMode,
       makeVisibilityCallback,
     }

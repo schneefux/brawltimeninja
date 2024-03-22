@@ -5,12 +5,12 @@
     :event-id="eventId"
   >
     <template
-      v-if="powerplay || endDate != undefined || startDate != undefined"
+      v-if="ranked || endDate != undefined || startDate != undefined"
       v-slot:infobar
     >
       <div class="flex justify-end">
-        <span v-if="powerplay">
-          {{ $t('power-play') }}
+        <span v-if="ranked">
+          {{ $t('ranked') }}
         </span>
         <i18n-t
           v-else-if="endDate != undefined"
@@ -63,7 +63,7 @@ export default defineComponent({
       type: [Number, String],
       required: false
     },
-    powerplay: {
+    ranked: {
       type: Boolean,
       default: false
     },

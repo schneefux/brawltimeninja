@@ -3,8 +3,8 @@
     <b-fake-select @open="lightboxOpen = true">
       <template v-slot:preview>
         <span class="w-48 text-left truncate">
-          <template v-if="selectedActiveNonPowerLeagueMaps">{{ $t('option.all-maps') }}: {{ $t('events.active.title') }}</template>
-          <template v-else-if="selectedActivePowerLeagueMaps">{{ $t('option.all-maps') }}: {{ $t('events.powerleague.title') }}</template>
+          <template v-if="selectedActiveNonRankedMaps">{{ $t('option.all-maps') }}: {{ $t('events.active.title') }}</template>
+          <template v-else-if="selectedActiveRankedMaps">{{ $t('option.all-maps') }}: {{ $t('events.ranked.title') }}</template>
           <template v-else>{{ mode != undefined ? $t('mode.' + mode) + ' - ' : '' }}{{ mapNames ?? $t('option.all-maps') }}</template>
         </span>
       </template>
@@ -41,9 +41,9 @@
                       {{ $t('option.all-maps') }}
                     </b-button>
                     <b-button
-                      v-if="activeNonPowerLeagueEventsAvailable"
-                      :dark="!selectedActiveNonPowerLeagueMaps"
-                      :primary="selectedActiveNonPowerLeagueMaps"
+                      v-if="activeNonRankedEventsAvailable"
+                      :dark="!selectedActiveNonRankedMaps"
+                      :primary="selectedActiveNonRankedMaps"
                       class="w-full"
                       md
                       @click.capture.prevent="onSelectAllActiveMaps()"
@@ -51,14 +51,14 @@
                       {{ $t('option.all-maps') }}: {{ $t('events.active.title') }}
                     </b-button>
                     <b-button
-                      v-if="activePowerLeagueEventsAvailable"
-                      :dark="!selectedActivePowerLeagueMaps"
-                      :primary="selectedActivePowerLeagueMaps"
+                      v-if="activeRankedEventsAvailable"
+                      :dark="!selectedActiveRankedMaps"
+                      :primary="selectedActiveRankedMaps"
                       class="w-full"
                       md
-                      @click.capture.prevent="onSelectAllPowerLeagueMaps()"
+                      @click.capture.prevent="onSelectAllRankedMaps()"
                     >
-                      {{ $t('option.all-maps') }}: {{ $t('events.powerleague.title') }}
+                      {{ $t('option.all-maps') }}: {{ $t('events.ranked.title') }}
                     </b-button>
                   </div>
                 </template>
@@ -129,16 +129,16 @@ export default defineComponent({
     const map = computed(() => (props.modelValue.map ?? [])[0])
 
     const allEvents = useAllEvents()
-    const activeNonPowerLeagueEvents = useActiveEvents([], { powerplay: ['false'] })
-    const activeNonPowerLeagueMaps = computed(() => activeNonPowerLeagueEvents.value.map(e => e.map))
-    const activeNonPowerLeagueEventsAvailable = computed(() => activeNonPowerLeagueEvents.value.length > 0)
-    const activePowerLeagueEvents = useActiveEvents([], { powerplay: ['true'] })
-    const activePowerLeagueMaps = computed(() => activePowerLeagueEvents.value.map(e => e.map))
-    const activePowerLeagueEventsAvailable = computed(() => activePowerLeagueEvents.value.length > 0)
+    const activeNonRankedEvents = useActiveEvents([], { powerplay: ['false'] })
+    const activeNonRankedMaps = computed(() => activeNonRankedEvents.value.map(e => e.map))
+    const activeNonRankedEventsAvailable = computed(() => activeNonRankedEvents.value.length > 0)
+    const activeRankedEvents = useActiveEvents([], { powerplay: ['true'] })
+    const activeRankedMaps = computed(() => activeRankedEvents.value.map(e => e.map))
+    const activeRankedEventsAvailable = computed(() => activeRankedEvents.value.length > 0)
 
     const stringArraysEqual = (a1: (string|undefined)[], a2: (string|undefined)[]) => a1.slice().sort().toString() == a2.slice().sort().toString()
-    const selectedActivePowerLeagueMaps = computed(() => stringArraysEqual(props.modelValue.map ?? [], activePowerLeagueMaps.value))
-    const selectedActiveNonPowerLeagueMaps = computed(() => stringArraysEqual(props.modelValue.map ?? [], activeNonPowerLeagueMaps.value))
+    const selectedActiveRankedMaps = computed(() => stringArraysEqual(props.modelValue.map ?? [], activeRankedMaps.value))
+    const selectedActiveNonRankedMaps = computed(() => stringArraysEqual(props.modelValue.map ?? [], activeNonRankedMaps.value))
 
     // events (incl. placeholders) are sorted by events-roll
     const allEventsAndSummaries = computed<EventMetadata[]>(() => {
@@ -164,7 +164,7 @@ export default defineComponent({
         })),
         allEvents.value.map(e => ({
           ...e,
-          active: activePowerLeagueEvents.value.some(ee => e.id == ee.id) || activeNonPowerLeagueEvents.value.some(ee => e.id == ee.id),
+          active: activeRankedEvents.value.some(ee => e.id == ee.id) || activeNonRankedEvents.value.some(ee => e.id == ee.id),
         })),
       )
     })
@@ -192,15 +192,15 @@ export default defineComponent({
     const onSelectAllActiveMaps = () => {
       props.onInput({
         mode: [],
-        map: activeNonPowerLeagueMaps.value,
+        map: activeNonRankedMaps.value,
       })
       lightboxOpen.value = false
     }
 
-    const onSelectAllPowerLeagueMaps = () => {
+    const onSelectAllRankedMaps = () => {
       props.onInput({
         mode: [],
-        map: activePowerLeagueMaps.value,
+        map: activeRankedMaps.value,
       })
       lightboxOpen.value = false
     }
@@ -212,11 +212,11 @@ export default defineComponent({
       map,
       onSelectModeMap,
       onSelectAllActiveMaps,
-      onSelectAllPowerLeagueMaps,
-      selectedActivePowerLeagueMaps,
-      selectedActiveNonPowerLeagueMaps,
-      activePowerLeagueEventsAvailable,
-      activeNonPowerLeagueEventsAvailable,
+      onSelectAllRankedMaps,
+      selectedActiveRankedMaps,
+      selectedActiveNonRankedMaps,
+      activeRankedEventsAvailable,
+      activeNonRankedEventsAvailable,
       allEventsAndSummaries,
       lightboxOpen,
       mapNames,

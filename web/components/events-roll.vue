@@ -37,7 +37,7 @@
           <map-best-brawlers-card
             v-if="withData"
             :slices="event.slices"
-            :powerplay="event.powerplay"
+            :ranked="event.powerplay"
             :event-id="event.id"
             :start-date="event.start"
             :end-date="event.end"

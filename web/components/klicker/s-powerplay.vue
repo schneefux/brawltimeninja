@@ -6,7 +6,7 @@
   >
     <option value="">{{ $t('option.powerplay.all') }}</option>
     <option value="false">{{ $t('option.powerplay.regular') }}</option>
-    <option value="true">{{ $t('option.powerplay.powerleague') }}</option>
+    <option value="true">{{ $t('option.powerplay.ranked') }}</option>
   </b-select>
 </template>
 

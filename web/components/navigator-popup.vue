@@ -139,9 +139,9 @@ export default defineComponent({
           })),
         ),
       }, {
-        id: 'events-powerleague',
-        name: i18n.t('events.powerleague.title'),
-        target: localePath(`/tier-list/power-league`),
+        id: 'events-ranked',
+        name: i18n.t('events.ranked.title'),
+        target: localePath(`/tier-list/ranked`),
       }, {
         id: 'events',
         name: i18n.t('nav.Events'),

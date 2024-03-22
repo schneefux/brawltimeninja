@@ -156,7 +156,7 @@
     "error.tag.not-found": "This tag does not exist.",
     "events.active.title": "Live Now",
     "events.upcoming.title": "Upcoming Events",
-    "events.powerleague.title": "Power League Maps",
+    "events.ranked.title": "Ranked Maps",
     "gadget": "Gadget | Gadgets",
     "index.events.title": "Brawl Stars Events",
     "index.meta.description": "Track Brawl Stars stats. Calculate your win rate, how many hours you play and other statistics. View Tier Lists for current events and get gameplay tips.",
@@ -344,6 +344,7 @@
     "option.powerplay.all": "All Battles",
     "option.powerplay.regular": "Regular Battles",
     "option.powerplay.powerleague": "Power League",
+    "option.powerplay.ranked": "Ranked",
     "option.others": "Others",
     "player.battle-log.description": "See your latest battles and calculate your Win Rate.",
     "player.best-brawlers": "Best Brawlers",
@@ -631,9 +632,9 @@
     "feedback.success": "Thank you for your feedback!",
     "feedback.error": "Error sending feedback. Please send me a mail instead.",
     "action.submit": "Submit",
-    "tier-list.powerleague.title": "Brawl Stars Power League Statistics",
-    "tier-list.powerleague.description": "Brawl Stars' Power League is a competitive mode unlocked at 4500 Trophies. Participate in unlimited 3v3 matches and reap rewards based on your performance. Use the statistics below to maximize your winning odds with win rates for all Power League maps by finding the best Brawlers for your team.",
-    "tier-list.powerleague.meta.title": "Power League Maps",
-    "tier-list.powerleague.meta.description": "Brawl Stars Power League Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all Power League maps and improve your draft.",
-    "action.open.tier-list.powerleague": "Open Power League Tier List"
+    "tier-list.ranked.title": "Brawl Stars Ranked Statistics",
+    "tier-list.ranked.description": "Brawl Stars' Ranked is a competitive mode unlocked at 1000 Trophies. Participate in unlimited 3v3 matches and reap rewards based on your performance. Use the statistics below to maximize your winning odds with win rates for all Ranked maps by finding the best Brawlers for your team.",
+    "tier-list.ranked.meta.title": "Ranked Maps",
+    "tier-list.ranked.meta.description": "Brawl Stars Ranked Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all Ranked maps and improve your draft.",
+    "action.open.tier-list.ranked": "Open Ranked Tier List"
 }
