@@ -9,19 +9,7 @@
         render-placeholder
       >
         <template v-slot:item="voiceline">
-          <div class="h-full flex flex-col items-center justify-between gap-y-2">
-            <media-audio
-              :path="voiceline.path.replace(/\.ogg/, '')"
-              class="leading-none"
-            ></media-audio>
-            <q
-              v-if="voiceline.description != undefined"
-              class="text-center"
-              :class="{
-                'italic [quotes:none]': !voiceline.description.startsWith('&quot;'),
-              }"
-            >{{ voiceline.description.replace(/&quot;/g, '') }}</q>
-          </div>
+          <brawler-voiceline :voiceline="voiceline"></brawler-voiceline>
         </template>
       </b-scrolling-list>
     </template>

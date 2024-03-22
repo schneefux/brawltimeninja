@@ -1,33 +1,26 @@
 <template>
   <b-card>
-    <template v-slot:content><b-scrolling-dashboard >
-      <template v-if="scrapedData != undefined">
+    <template v-slot:content>
+      <b-scrolling-dashboard>
+        <template v-if="scrapedData != undefined">
+          <b-dashboard-cell
+            v-for="pin in scrapedData.pins"
+            :key="pin.name"
+            :rows="1"
+            :columns="1"
+          >
+            <brawler-pin :pin="pin"></brawler-pin>
+          </b-dashboard-cell>
+        </template>
         <b-dashboard-cell
-          v-for="pin in scrapedData.pins"
-          :key="pin.name"
+          v-else
+          v-for="i in 8"
+          :key="i"
           :rows="1"
           :columns="1"
-        >
-          <div class="h-full flex flex-col items-center justify-center relative">
-            <media-img
-              :path="pin.path.replace(/\.(png|gif)/, '')"
-              :alt="pin.name"
-              :animated="pin.path.endsWith('.gif')"
-              clazz="max-h-20"
-              size="160"
-              loading="lazy"
-            ></media-img>
-          </div>
-        </b-dashboard-cell>
-      </template>
-      <b-dashboard-cell
-        v-else
-        v-for="i in 8"
-        :key="i"
-        :rows="1"
-        :columns="1"
-      ></b-dashboard-cell>
-    </b-scrolling-dashboard></template>
+        ></b-dashboard-cell>
+      </b-scrolling-dashboard>
+    </template>
   </b-card>
 </template>
 
