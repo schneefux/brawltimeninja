@@ -133,7 +133,7 @@
         </template>
 
         <brawler-trends-card
-          :brawler-metadata="brawlerMetadata"
+          :brawler-brawlstars-id="brawlerMetadata?.brawlstarsId"
           class="mt-4"
         ></brawler-trends-card>
       </b-page-section>
