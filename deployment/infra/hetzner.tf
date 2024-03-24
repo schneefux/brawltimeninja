@@ -106,13 +106,27 @@ variable "servers" {
       class = "ingress"
       location = "nbg1"
     }
+    /*
     colt = {
       server_type = "cpx21"
       class = "database"
       location = "nbg1"
     }
+    */
+    /*
     dynamike = {
       server_type = "cpx41"
+      class = "database"
+      location = "nbg1"
+    }
+    */
+    pam = {
+      server_type = "cax41"
+      class = "database"
+      location = "nbg1"
+    }
+    hank = {
+      server_type = "cax21"
       class = "database"
       location = "nbg1"
     }
