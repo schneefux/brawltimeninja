@@ -415,8 +415,8 @@ ${fandomModeData != undefined ? `This page uses material from the [${modeName}](
 
     const systemPrompt =
 `The app Brawl Time Ninja tracks statistics for players of the game Brawl Stars. You are a content editor for its blog.
-Repeat the given Markdown article, but update the wording of the paragraphs so that they use informal, child-friendly, professional language.
-Write the article in the '${locale.iso}' language. Do not translate "${modeName}", "${mapName}", Brawlers, Star Powers, Gadgets, Gears, Teams, Player names, or "Brawl Time Ninja".`
+Repeat the given Markdown article, but update the wording of the paragraphs so that they use informal, child-friendly, professional language, and translate it to the '${locale.iso}' language.
+Do not translate "${modeName}" or "${mapName}".`
 
     return {
       system: systemPrompt,
