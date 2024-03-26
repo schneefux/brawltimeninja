@@ -91,7 +91,7 @@ job "autoscaler" {
           scaling "hetzner-workers" {
             enabled = true
             min = 1
-            max = 14
+            max = 18
 
             policy {
               # servers are paid by hour (rounded up) so keep it for a while

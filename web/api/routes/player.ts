@@ -15,8 +15,10 @@ if (process.env.MYSQL_HOST) {
   profileUpdaterService = new ProfileUpdaterService(async (tag) => {
     const player = await brawlstarsService.getPlayerStatistics(tag, true)
     if (player.battles.length == 0) {
+      stats.increment('track.update.battles.empty')
       return undefined
     }
+    stats.histogram('track.update.battles', player.battles.length)
     return player.battles[0].timestamp
   }, knex)
 } else {

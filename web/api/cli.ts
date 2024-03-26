@@ -13,6 +13,7 @@ program
     const summary = await updateAllProfiles()
     console.timeEnd('profiles update')
     console.log(summary)
+    process.exit(0)
   })
 
 program
@@ -23,6 +24,7 @@ program
     const summary = await updateAllReports()
     console.timeEnd('reports update');
     console.log(summary)
+    process.exit(0)
   })
 
 program
@@ -37,6 +39,7 @@ program
     const summary = await updateReport(locale, mode, map)
     console.timeEnd('report update')
     console.log(summary)
+    process.exit(0)
   })
 
 program.parse(process.argv)
