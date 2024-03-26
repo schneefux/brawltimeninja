@@ -31,14 +31,6 @@
           tag="a"
           xs
         >Twitter</b-button>
-        <b-button
-          v-if="!isApp"
-          :secondary="!light"
-          :light="light"
-          href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y9TKS7F2E2A2E"
-          tag="a"
-          xs
-        >PayPal</b-button>
       </div>
     </div>
     <p class="text-xs leading-tight">
