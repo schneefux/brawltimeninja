@@ -7,6 +7,7 @@ export type ProfileTrackingStatus = 'inactive'|'expired'|'active'
 
 const TRACKING_EXPIRE_AFTER_DAYS = parseInt(process.env.TRACKING_EXPIRE_AFTER_DAYS ?? '14')
 const TRACKING_REFRESH_MINUTES = parseInt(process.env.TRACKING_REFRESH_MINUTES ?? '1440')
+const TRACKING_REFRESH_PARALLEL = parseInt(process.env.TRACKING_REFRESH_PARALLEL ?? '10')
 
 export default class ProfileUpdaterService {
   constructor(
@@ -99,7 +100,7 @@ export default class ProfileUpdaterService {
 
     const isSqlite = this.knex.client.config.client == 'better-sqlite3'
     while (true) {
-      const job = await this.knex('tracked_profile')
+      const jobs = await this.knex('tracked_profile')
         .where('confirmed_at', '>=', this.getExpirationDate())
         .andWhere(
           !isSqlite ? this.knex.raw('TIMESTAMPDIFF(MINUTE, last_updated_at, NOW())') : this.knex.raw('(JulianDay(datetime(\'now\')) - JulianDay(datetime(last_updated_at / 1000, \'unixepoch\'))) * 24 * 60'),
@@ -108,20 +109,22 @@ export default class ProfileUpdaterService {
         )
         .select('tag')
         .orderByRaw(!isSqlite ? 'RAND()' : 'RANDOM()')
-        .first()
+        .limit(TRACKING_REFRESH_PARALLEL)
 
-      if (job == undefined) {
+      if (jobs.length == 0) {
         break
       }
 
-      console.log('updating tracked profile ' + job.tag)
-      stats.increment('queue.total')
-      summary.total++
-      const success = await this.updateProfile(job.tag)
-      if (success) {
-        stats.increment('queue.success')
-        summary.success++
-      }
+      await Promise.all(jobs.map(async (job) => {
+        console.log('updating tracked profile ' + job.tag)
+        stats.increment('queue.total')
+        summary.total++
+        const success = await this.updateProfile(job.tag)
+        if (success) {
+          stats.increment('queue.success')
+          summary.success++
+        }
+      }))
     }
 
     return summary
