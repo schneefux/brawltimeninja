@@ -94,7 +94,7 @@ http {
   real_ip_header CF-Connecting-IP;
 
   proxy_cache_key $host$request_uri;
-  proxy_cache_path /var/cache/nginx/main-cache levels=1:2 keys_zone=main-cache:10m inactive=24h max_size=1g;
+  proxy_cache_path /var/cache/nginx/main-cache levels=1:2 keys_zone=main-cache:32m inactive=24h max_size=10g;
 
   # A change to this configuration file triggers an nginx reload.
   # Include a timestamp so that nginx reloads when the certbot job
@@ -136,8 +136,10 @@ http {
 
       add_header X-Proxy-Cache $upstream_cache_status;
       proxy_cache main-cache;
-      proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504 http_429;
-      proxy_cache_lock on;
+      proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504 http_429; # serve from cache instead
+      proxy_cache_revalidate on; # use conditional requests
+      proxy_cache_background_update on; # serve stale, update in background
+      proxy_cache_lock on; # update cache using a single request, stalling others
       proxy_http_version 1.1;
       proxy_set_header Connection "";
     }
@@ -200,8 +202,10 @@ http {
 
       add_header X-Proxy-Cache $upstream_cache_status;
       proxy_cache main-cache;
-      proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504 http_429;
-      proxy_cache_lock on;
+      proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504 http_429; # serve from cache instead
+      proxy_cache_revalidate on; # use conditional requests
+      proxy_cache_background_update on; # serve stale, update in background
+      proxy_cache_lock on; # update cache using a single request, stalling others
       proxy_http_version 1.1;
       proxy_set_header Connection "";
     }

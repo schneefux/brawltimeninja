@@ -109,7 +109,7 @@ export const reportRouter = router({
       const reportHtml = new MarkdownIt().render(report.markdown)
 
       // cache for 1 hour
-      ctx.res.set('Cache-Control', 'public, max-age=3600')
+      ctx.res.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=60, stale-if-error=900')
       return {
         html: reportHtml,
         timestamp: report.timestamp,

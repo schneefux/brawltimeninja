@@ -69,7 +69,7 @@ router.get(
     );
 
     res.type("svg");
-    res.header("Cache-Control", "public, max-age=600");
+    res.header("Cache-Control", "public, max-age=600, stale-if-error=3600");
     return res.send(svg);
   })
 );
@@ -129,7 +129,7 @@ router.get(
     stats.timing('render.profile.timer', performance.now() - renderStart)
 
     res.type("png");
-    res.header("Cache-Control", "public, max-age=600");
+    res.header("Cache-Control", "public, max-age=600, stale-if-error=3600");
     return res.send(pngBuffer);
   })
 );

@@ -203,7 +203,7 @@ function useHeaders(headers: Record<string, string>) {
 }
 
 export function useCacheHeaders() {
-  useHeaders({ 'Cache-Control': 'public, maxage=60' })
+  useHeaders({ 'Cache-Control': 'public, maxage=60, stale-while-revalidate=60, stale-if-error=300' })
 }
 
 export function useCspHeaders() {

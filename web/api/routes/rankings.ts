@@ -12,7 +12,7 @@ export const rankingsRouter = router({
     }))
     .query(async ({ input, ctx }) => {
       const rankings = await brawlstarsService.getClubRanking(input.country)
-      ctx.res.set('Cache-Control', 'public, max-age=300')
+      ctx.res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60, stale-if-error=900')
       return rankings
     }),
   playersByCountryAndBrawler: publicProcedure
@@ -22,7 +22,7 @@ export const rankingsRouter = router({
     })) // TODO use enum?
     .query(async ({ input, ctx }) => {
       const rankings = await brawlstarsService.getBrawlerRanking(input.country, input.brawlerId)
-      ctx.res.set('Cache-Control', 'public, max-age=300')
+      ctx.res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60, stale-if-error=900')
       return rankings
     }),
   playersByCountry: publicProcedure
@@ -31,7 +31,7 @@ export const rankingsRouter = router({
     }))
     .query(async ({ input, ctx }) => {
       const rankings = await brawlstarsService.getPlayerRanking(input.country)
-      ctx.res.set('Cache-Control', 'public, max-age=300')
+      ctx.res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60, stale-if-error=900')
       return rankings
     }),
 })

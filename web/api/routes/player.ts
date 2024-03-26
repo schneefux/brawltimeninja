@@ -52,7 +52,7 @@ export const playerRouter = router({
           console.error('Error updating profile tracking status', err)
         }
       }
-      ctx.res.set('Cache-Control', 'public, max-age=180')
+      ctx.res.set('Cache-Control', 'public, max-age=180, stale-while-revalidate=60, stale-if-error=900')
       return player
     }),
   getTrackingStatus: publicProcedure

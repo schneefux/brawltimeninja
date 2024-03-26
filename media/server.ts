@@ -74,7 +74,7 @@ app.use(async (ctx, next) => {
 
   ctx.type = ext
   ctx.lastModified = stats.mtime
-  ctx.set('Cache-Control', `public, max-age=${maxage}`)
+  ctx.set('Cache-Control', `public, max-age=${maxage}, stale-while-revalidate=${maxage/10}, stale-if-error=${maxage}`)
 
   if (isImage) {
     let transformer = sharp(filePath)
