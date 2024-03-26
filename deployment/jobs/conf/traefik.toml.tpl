@@ -7,7 +7,8 @@
     trustedIPs = ["127.0.0.1/32"]
 
 [log]
-  level = "INFO"
+  #level = "INFO"
+  level = "DEBUG"
 
 [api]
   dashboard = true
