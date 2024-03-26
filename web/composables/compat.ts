@@ -1,4 +1,4 @@
-import { computed, ComputedRef, inject, onMounted, onServerPrefetch, Ref, toRef } from "vue"
+import { computed, ComputedRef, inject, onMounted, onServerPrefetch, Ref, toRef, unref } from "vue"
 import { useQuery, keepPreviousData } from "@tanstack/vue-query";
 import { useI18n } from 'vue-i18n'
 import { usePageContext } from '~/composables/page-context'
@@ -31,21 +31,29 @@ export function useAsync<T>(fun: () => Promise<T>, key: ComputedRef<string>|Mayb
   return data
 }
 
-export async function useBlockingAsync<T>(fun: (ctx: ValidateContext) => Promise<T|undefined>, key: string): Promise<Ref<T>> {
+export async function useBlockingAsync<T>(fun: (ctx: ValidateContext) => Promise<T|undefined>, key: MaybeRef<string>, blockOnClient: boolean = true) {
   const r = ssrRef<T|undefined>(undefined, key)
 
-  await useValidate(async ctx => {
+  const promise = useValidate(async ctx => {
     const result = await fun(ctx)
     r.value = result
     return r.value != undefined
   })
 
-  return r as Ref<T>
+  if (import.meta.env.SSR || blockOnClient) {
+    await promise
+  }
+
+  return r satisfies Ref<T|undefined>
 }
 
-export function ssrRef<T>(defaultValue: T|undefined, key: string) {
+export async function useServerBlockingAsync<T>(fun: (ctx: ValidateContext) => Promise<T|undefined>, key: MaybeRef<string>) {
+  return useBlockingAsync(fun, key, false)
+}
+
+export function ssrRef<T>(defaultValue: T|undefined, key: MaybeRef<string>) {
   const pageContext = usePageContext()
-  const r = toRef(pageContext.refs, key) as Ref<T|undefined>
+  const r = toRef(pageContext.refs, unref(key)) as Ref<T|undefined>
   if (r.value == undefined) {
     r.value = defaultValue
   }

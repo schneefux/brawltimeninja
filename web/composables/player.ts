@@ -10,7 +10,7 @@ export async function useLoadAndValidatePlayer(urlPrefix: string) {
   const store = useBrawlstarsStore()
   const sentry = useSentry()
 
-  return useValidate(async ({ params, redirect, error }) => {
+  const validatePromise = useValidate(async ({ params, redirect, error }) => {
     const tag = (params.tag as string).toUpperCase()
     if (tag != params.tag) {
       // fuck Bing for lowercasing all URLs
@@ -26,40 +26,34 @@ export async function useLoadAndValidatePlayer(urlPrefix: string) {
       return true
     }
 
-    async function load() {
-      try {
-        await store.loadPlayer(tag)
-      } catch (err: any) {
-        if (err.response?.status == 404) {
+    try {
+      await store.loadPlayer(tag)
+      return true
+    } catch (err: any) {
+      if (err.response?.status == 404) {
+        return
+      }
+
+      if (err instanceof TRPCClientError) {
+        if (err.data?.httpStatus == 404) {
+          error({ statusCode: 404, message: i18n.t('error.tag.not-found') })
           return
         }
-
-        if (err instanceof TRPCClientError) {
-          if (err.data?.httpStatus == 404) {
-            error({ statusCode: 404, message: i18n.t('error.tag.not-found') })
-            return
-          }
-          if (err.data?.httpStatus >= 400) {
-            error({ statusCode: 503, message: i18n.t('error.api-unavailable') })
-            return
-          }
+        if (err.data?.httpStatus >= 400) {
+          error({ statusCode: 503, message: i18n.t('error.api-unavailable') })
+          return
         }
-
-        console.error(err)
-        sentry.captureException(err)
-        error({ statusCode: 500, message: ' ' })
       }
-    }
 
-    if (import.meta.env.SSR) {
-      await load()
-    } else {
-      // perform non-blocking load on client
-      load()
+      console.error(err)
+      sentry.captureException(err)
+      error({ statusCode: 500, message: ' ' })
     }
-
-    return true
   })
+
+  if (import.meta.env.SSR) {
+    await validatePromise
+  }
 }
 
 // tag without hash

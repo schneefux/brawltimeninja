@@ -1,16 +1,27 @@
 <template>
   <b-page
-    v-if="event != undefined"
     :title="$t('tier-list.map.title', { map: mapName })"
   >
+    <b-shimmer
+      v-if="event == undefined"
+      height-px="40"
+      class="my-4"
+      loading
+    ></b-shimmer>
     <mode-map-jumper
+      v-else
       id="mode-map-jumper"
       :mode="event.mode"
       :map="event.map"
       :event-id="event.id"
     ></mode-map-jumper>
 
-    <template v-if="aiReport != undefined">
+    <b-shimmer
+      v-if="event == undefined"
+      height-px="56"
+      loading
+    ></b-shimmer>
+    <template v-else-if="aiReport != undefined">
       <client-only>
         <template v-slot:placeholder>
           <ai-report-1
@@ -42,7 +53,6 @@
         </experiment>
       </client-only>
     </template>
-
     <p
       v-else
       id="description"
@@ -56,7 +66,11 @@
       first
     ></ad>
 
-    <b-lightbox id="lightbox" v-model="lightboxOpen">
+    <b-lightbox
+      v-if="event != undefined"
+      id="lightbox"
+      v-model="lightboxOpen"
+    >
       <map-img
         :event-id="event.id"
         :map="event.map"
@@ -68,10 +82,16 @@
     <b-page-section>
       <b-split-dashboard>
         <template
-          v-if="showImage"
+          v-if="event == undefined || showImage"
           v-slot:aside
         >
+          <b-shimmer
+            v-if="event == undefined"
+            height-px="310"
+            loading
+          ></b-shimmer>
           <event-picture-card
+            v-else
             id="aside"
             :mode="event.mode"
             :map="event.map"
@@ -87,6 +107,7 @@
         </template>
 
         <map-views
+          v-if="event != undefined"
           id="dashboard"
           :mode="event.mode"
           :map="event.map"
@@ -106,10 +127,10 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
 import { deslugify, kebabToCamel } from '~/lib/util'
-import { BSplitDashboard, BCard, BLightbox, BPage, BPageSection, Fa } from '@schneefux/klicker/components'
+import { BShimmer, BSplitDashboard, BCard, BLightbox, BPage, BPageSection, Fa } from '@schneefux/klicker/components'
 import { useMapName } from '~/composables/map'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
-import { useApi, useAsync, useCacheHeaders, useConfig, useMeta, useValidate } from '~/composables/compat'
+import { useApi, useAsync, useCacheHeaders, useConfig, useMeta, useServerBlockingAsync } from '~/composables/compat'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
 import { useRouteParams } from '~/composables/route-params'
@@ -126,6 +147,7 @@ export default defineComponent({
   components: {
     Fa,
     BSplitDashboard,
+    BShimmer,
     BLightbox,
     BCard,
     BPage,
@@ -137,32 +159,67 @@ export default defineComponent({
     const $api = useApi()
     const i18n = useI18n()
     const routeParams = useRouteParams()
+    const { trackInteraction } = useTrackScroll('map')
 
-    const mode = computed(() => kebabToCamel(routeParams.value!.mode as string))
-    const map = computed(() => deslugify(routeParams.value!.map as string))
+    useCacheHeaders()
 
-    const event = useAsync(async () => {
+    const showImage = computed(() => event.value?.id != undefined && event.value.map != 'Competition Entry')
+
+    const mapName = useMapName(computed(() => event.value?.id), computed(() => routeParams.value?.map as string))
+
+    const lightboxOpen = ref(false)
+
+    const aiReport = useAsync(async () => {
+      if (event.value == undefined) {
+        return null
+      }
+
+      try {
+        return await $api.report.byModeMap.query({
+          localeIso: i18n.locale.value,
+          mode: event.value.mode,
+          map: event.value.map,
+        })
+      } catch (err) {
+        return null
+      }
+    }, computed(() => `ai-report-${i18n.locale.value}-${routeParams.value?.mode}-${routeParams.value?.map}`))
+
+    const event = await useServerBlockingAsync<Map>(async ({ params }) => {
+      const mode = kebabToCamel(params.mode as string)
+      const map = deslugify(params.map as string)
+
+      if (map.startsWith('Competition')) {
+        return {
+          id: '0',
+          map,
+          mode,
+        }
+      }
+
       const events = await $klicker.query({
         cubeId: 'map',
         slices: {
-          mode: [mode.value],
-          map: [map.value],
+          mode: [mode],
+          map: [map],
         },
         dimensionsIds: [],
         metricsIds: ['eventId'],
         sortId: 'eventId',
         limit: 1,
       })
-      const event = events.data[0]
+
+      if (events.data[0].metricsRaw.eventId == '0') {
+        return undefined
+      }
 
       return {
-        id: event.metricsRaw.eventId,
-        map: map.value,
-        mode: mode.value,
-      } as Map
-    }, computed(() => `map-${mode.value}-${map.value}`))
+        id: events.data[0].metricsRaw.eventId as string,
+        map,
+        mode,
+      }
+    }, computed(() => `event-${routeParams.value?.mode}-${routeParams.value?.map}`))
 
-    useCacheHeaders()
     useMeta(() => {
       if (event.value == undefined) {
         return {}
@@ -180,42 +237,6 @@ export default defineComponent({
           ...(event.value.id != undefined && event.value.id != '0' ? [{ hid: 'og:image', property: 'og:image', content: $config.mediaUrl + '/maps/' + event.value.id + '.png' }] : []),
         ]
       }
-    })
-
-    const showImage = computed(() => event.value?.id != undefined && event.value.map != 'Competition Entry')
-
-    const mapName = useMapName(computed(() => event.value?.id), computed(() => event.value?.map))
-
-    const lightboxOpen = ref(false)
-
-    const aiReport = useAsync(() => $api.report.byModeMap.query({
-      localeIso: i18n.locale.value,
-      mode: mode.value,
-      map: map.value,
-    }).catch(() => null), computed(() => `ai-report-${i18n.locale.value}-${mode.value}-${map.value}`))
-
-    const { trackInteraction } = useTrackScroll('map')
-
-    await useValidate(async ({ params }) => {
-      const mode = kebabToCamel(params.mode as string)
-      const map = deslugify(params.map as string)
-      if (map.startsWith('Competition')) {
-        return true
-      }
-
-      const events = await $klicker.query({
-        cubeId: 'map',
-        slices: {
-          mode: [mode],
-          map: [map],
-        },
-        dimensionsIds: [],
-        metricsIds: ['eventId'],
-        sortId: 'eventId',
-        limit: 1,
-      })
-
-      return events.data[0].metricsRaw.eventId != '0'
     })
 
     return {

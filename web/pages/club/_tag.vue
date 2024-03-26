@@ -143,7 +143,7 @@ export default defineComponent({
 
     useCacheHeaders()
 
-    const memberTags = computed(() => club.value.members.map(m => m.tag))
+    const memberTags = computed(() => club.value?.members.map(m => m.tag) ?? [])
 
     const clubActivityStatistics = ref<ClubActivityStatistics>()
     const loading = ref(false)
