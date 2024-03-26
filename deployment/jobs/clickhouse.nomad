@@ -8,7 +8,7 @@ job "clickhouse" {
 
   affinity {
     attribute = "${attr.unique.hostname}"
-    value = "brawltime-dynamike"
+    value = "brawltime-pam"
   }
 
   priority = 100 # move all other services to get this one running!

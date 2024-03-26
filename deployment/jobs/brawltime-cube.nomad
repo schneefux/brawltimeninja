@@ -68,10 +68,10 @@ job "brawltime-cube" {
       }
     }
 
-    affinity {
+    constraint {
       attribute = "${node.class}"
       operator = "regexp"
-      value = "worker|database"
+      value = "worker"
     }
 
     network {
@@ -157,10 +157,10 @@ job "brawltime-cube" {
   group "cube_refresh" {
     count = 1
 
-    affinity {
+    constraint {
       attribute = "${node.class}"
       operator = "regexp"
-      value = "worker|database"
+      value = "worker"
     }
 
     restart {

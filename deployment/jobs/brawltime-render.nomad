@@ -13,7 +13,7 @@ job "brawltime-render" {
 
   priority = 10
 
-  affinity {
+  constraint {
     attribute = "${node.class}"
     operator = "regexp"
     value = "worker"
