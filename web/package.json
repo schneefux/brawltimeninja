@@ -4,9 +4,10 @@
     "dev": "node --inspect ./node_modules/.bin/vite",
     "typecheck": "vue-tsc --noEmit",
     "build": "vavite",
-    "knex": "cd ./api/ && node --loader ts-node/esm ../node_modules/.bin/knex",
+    "knex": "cd ./api/ && tsx ../node_modules/.bin/knex",
     "start": "cross-env NODE_ENV=production node ./dist/server/index.mjs",
-    "start:debug": "cross-env NODE_ENV=production node --inspect ./dist/server/index.mjs"
+    "start:debug": "cross-env NODE_ENV=production node --inspect ./dist/server/index.mjs",
+    "cli": "cross-env NODE_ENV=production tsx ./api/cli.ts"
   },
   "dependencies": {
     "@clickhouse/client": "^0.3.0",
@@ -28,6 +29,7 @@
     "@unhead/ssr": "^1.8.20",
     "@unhead/vue": "^1.8.20",
     "@vitejs/plugin-vue": "^5.0.4",
+    "commander": "^12.0.0",
     "compression": "^1.7.4",
     "cookie": "^0.6.0",
     "core-js": "^3.36.1",
@@ -50,6 +52,7 @@
     "sirv": "^2.0.4",
     "string-similarity": "^4.0.4",
     "superjson": "^2.2.1",
+    "tsx": "^4.7.1",
     "typescript": "^5.4.2",
     "undici": "^6.9.0",
     "vike": "0.4.166",
@@ -83,7 +86,6 @@
     "postcss": "^8.4.37",
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.1.2",
-    "ts-node": "^10.9.2",
     "unplugin-vue-components": "^0.26.0",
     "vavite": "^4.1.1",
     "vite-plugin-pages": "^0.32.0",
