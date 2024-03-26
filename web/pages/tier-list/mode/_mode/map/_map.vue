@@ -170,15 +170,15 @@ export default defineComponent({
     const lightboxOpen = ref(false)
 
     const aiReport = useAsync(async () => {
-      if (event.value == undefined) {
+      if (routeParams.value == undefined) {
         return null
       }
 
       try {
         return await $api.report.byModeMap.query({
           localeIso: i18n.locale.value,
-          mode: event.value.mode,
-          map: event.value.map,
+          mode: routeParams.value.mode as string,
+          map: routeParams.value.map as string,
         })
       } catch (err) {
         return null
