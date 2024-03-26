@@ -114,6 +114,7 @@ import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
 import { useRouteParams } from '~/composables/route-params'
 import { useTrackScroll } from '~/composables/gtag'
+import { getMapName } from '~/composables/map'
 
 interface Map {
   id: string
@@ -167,14 +168,13 @@ export default defineComponent({
         return {}
       }
 
+      const map = getMapName(i18n, event.value.id, event.value.map)
       const description = i18n.t('tier-list.map.meta.description', {
-        map: i18n.t('map.' + event.value.id),
+        map,
         mode: i18n.t('mode.' + event.value.mode),
       })
       return {
-        title: i18n.t('tier-list.map.meta.title', {
-          map: i18n.t('map.' + event.value.id),
-        }),
+        title: i18n.t('tier-list.map.meta.title', { map }),
         meta: [
           { hid: 'description', name: 'description', content: description },
           ...(event.value.id != undefined && event.value.id != '0' ? [{ hid: 'og:image', property: 'og:image', content: $config.mediaUrl + '/maps/' + event.value.id + '.png' }] : []),
