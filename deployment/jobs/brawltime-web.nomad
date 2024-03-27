@@ -126,8 +126,7 @@ job "brawltime-web" {
 
         ADSENSE_PUBID = "ca-pub-6856963757796636"
         QUANTCAST_CHOICE_ID = "Zj670A0xwScEY"
-        GA4_ID = "G-8GGHZC6QR2"
-        UA_ID = "UA-137233906-1"
+        GA4_ID = "G-G5V3FPZG9Z"
         OPTIMIZE_ID = "OPT-PWZ78LC"
         PLAYWIRE_RAMP_PUBLISHER_ID = "1024864"
         PLAYWIRE_RAMP_SITE_ID = "74021"

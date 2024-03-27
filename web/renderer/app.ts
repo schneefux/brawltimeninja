@@ -159,11 +159,6 @@ function createApp(pageContext: PageContext) {
       params: {
         'send_page_view': false,
       },
-    }, {
-      id: 'G-G5V3FPZG9Z',
-      params: {
-        'debug_mode': true,
-      },
     } ],
     onReady() {
       query('js', new Date())
