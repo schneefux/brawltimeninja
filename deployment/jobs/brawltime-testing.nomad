@@ -7,6 +7,11 @@ variable "brawlstars_email" {}
 variable "brawlstars_password" {}
 variable "brawlapi_token" {}
 
+# git hash or "latest"
+variable "tag" {
+  default = "b650a4e0057992899a1f5be0a42f13d61e18a53a"
+}
+
 variable "domain" {
   default = "brawltime.ninja"
 }
@@ -92,7 +97,7 @@ job "brawltime-testing" {
       }
 
       config {
-        image = "ghcr.io/schneefux/brawltime-web:latest"
+        image = "ghcr.io/schneefux/brawltime-web:${var.tag}"
         ports = ["http"]
         extra_hosts = [
           "${var.domain}:10.0.0.2",
