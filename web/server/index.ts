@@ -100,9 +100,6 @@ async function startServer() {
     if (pageContext.errorWhileRendering && (<any> pageContext.errorWhileRendering).message != 'AbortRender') {
       Sentry.captureException(pageContext.errorWhileRendering)
     }
-    if (pageContext.responseHeaders != undefined) {
-      res.set(pageContext.responseHeaders)
-    }
     if (pageContext.redirectTo != undefined) {
       res.redirect(301, pageContext.redirectTo)
       return
@@ -122,6 +119,10 @@ async function startServer() {
     */
 
     res.set(Object.fromEntries(headers))
+    if (pageContext.responseHeaders != undefined) {
+      // overwrite default headers with custom headers
+      res.set(pageContext.responseHeaders)
+    }
     res.set('document-policy', 'js-profiling')
     res.status(pageContext.statusCode ?? statusCode)
     res.send(body)
