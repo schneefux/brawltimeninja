@@ -7,19 +7,26 @@ import { usePreferencesStore } from '~/stores/preferences'
 const packageId = 'xyz.schneefux.brawltimeninja'
 
 export function useIsApp() {
+  const detected = ref(false)
   const isPwa = ref<boolean>()
   const isTwa = ref<boolean>()
 
   onMounted(() => {
+    if (detected.value) {
+      return
+    }
+
     // track some meta data
     // play store allows only 1 ad/page - TWA is detected via referrer
     isPwa.value = window.matchMedia('(display-mode: standalone)').matches
     isTwa.value = document.referrer.startsWith('android-app');
 
     (gtagSet as any)('user_properties', {
-      'is_pwa': isPwa.toString(),
-      'is_twa': isTwa.toString(),
+      'is_pwa': isPwa.value.toString(),
+      'is_twa': isTwa.value.toString(),
     })
+
+    detected.value = true
   })
 
   const isApp = computed(() => isPwa.value || isTwa.value)
