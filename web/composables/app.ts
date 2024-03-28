@@ -6,8 +6,9 @@ import { usePreferencesStore } from '~/stores/preferences'
 
 const packageId = 'xyz.schneefux.brawltimeninja'
 
+const detected = ref(false)
+
 export function useIsApp() {
-  const detected = ref(false)
   const isPwa = ref<boolean>()
   const isTwa = ref<boolean>()
 
