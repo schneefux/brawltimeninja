@@ -7,9 +7,10 @@
         <ad
           instream
           :class="{
-            'mt-8': 'aside-left' in $slots,
             // do not show the ad as the only content, it is too close to the takeover
             'hidden lg:block': !('aside-left' in $slots),
+            'mt-8': 'aside-left' in $slots,
+            'mb-[110px]': true, // leave space for sticky footer
           }"
         ></ad>
       </template>
@@ -21,6 +22,7 @@
           siderail
           :class="{
             'mt-8': 'aside-right' in $slots,
+            'mb-[110px]': true, // leave space for sticky footer
           }"
         ></ad>
       </template>
