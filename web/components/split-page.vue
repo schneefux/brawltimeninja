@@ -1,5 +1,10 @@
 <template>
   <b-page no-container>
+    <b-title
+      :title="title"
+      class="mb-8 md:hidden"
+    ></b-title>
+
     <b-split-dashboard>
       <template v-slot:aside-left>
         <slot name="aside-left"></slot>
@@ -10,7 +15,7 @@
             // do not show the ad as the only content, it is too close to the takeover
             'hidden lg:block': !('aside-left' in $slots),
             'mt-8': 'aside-left' in $slots,
-            'mb-[110px]': true, // leave space for sticky footer
+            '-mb-16 md:mb-[110px]': true, // mobile: cancel gap-8, desktop: leave space for sticky footer
           }"
         ></ad>
       </template>
@@ -22,12 +27,15 @@
           siderail
           :class="{
             'mt-8': 'aside-right' in $slots,
-            'mb-[110px]': true, // leave space for sticky footer
+            'md:mb-[110px]': true, // leave space for sticky footer
           }"
         ></ad>
       </template>
 
-      <b-title :title="title"></b-title>
+      <b-title
+        :title="title"
+        class="hidden md:block"
+      ></b-title>
 
       <div>
         <slot></slot>
