@@ -9,13 +9,16 @@
     <loading-indicator></loading-indicator>
 
     <div id="main" class="fill-layout-height">
+      <!-- request by Venatus: ads should be refreshed on page navigation -->
       <ad
         v-if="topBannerType == 'takeover'"
+        :key="`takeover-${$route.path}`"
         takeover
         first
       ></ad>
       <ad
         v-else-if="topBannerType == 'banner'"
+        :key="`banner-${$route.path}`"
         banner
         first
       ></ad>
@@ -38,7 +41,9 @@
     </b-web-footer>
 
     <adblock-bait></adblock-bait>
-    <venatus-rich-media></venatus-rich-media>
+    <venatus-rich-media
+      :key="`rich-media-${$route.path}`"
+    ></venatus-rich-media>
   </div>
 </template>
 

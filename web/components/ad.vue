@@ -11,16 +11,16 @@
         <venatus-placement
           v-if="desktop"
           ad-id="65f94d46dd5aea6a13fd049b"
+          ad-type="hybrid-banner"
           class="desktop-multileaderboard"
-          data-display-type="hybrid-banner"
         ></venatus-placement>
 
         <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
         <venatus-placement
           v-if="!desktop"
           ad-id="65f94f9ddd5aea6a13fd04a1"
+          ad-type="hybrid-banner"
           class="mobile-incontent"
-          data-display-type="hybrid-banner"
         ></venatus-placement>
 
         <template v-slot:placeholder>
@@ -76,11 +76,13 @@
     <template v-else-if="cell">
       <!-- placeholder and lazy-loading are handled by cell wrapper-->
       <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
+      <!-- disabled for now, according to Venatus there is overlap on the laptop layout
       <venatus-placement
         v-bind="$attrs"
         ad-id="65f94f9ddd5aea6a13fd04a1"
         class="mobile-incontent"
       ></venatus-placement>
+      -->
     </template>
 
     <div

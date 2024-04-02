@@ -1,27 +1,10 @@
 <template>
-  <!-- Stickies -->
+  <!-- Stickies and instream -->
   <venatus-placement
     ad-id="65f9504e767223575b4de5b7"
-    class="hidden"
+    ad-type="rich-media"
   ></venatus-placement>
 </template>
-
-<script lang="ts">
-import { defineComponent, onBeforeUnmount } from 'vue'
-
-export default defineComponent({
-  setup() {
-    const removeAllRichmedia = () => {
-      window.top!.__vm_remove_category = window.top!.__vm_remove_category || []
-      window.top!.__vm_remove_category.push('richmedia_all')
-      // log statement was requested by Venatus
-      console.log('Venatus : vm_remove_category : richmedia_all')
-    }
-
-    onBeforeUnmount(() => removeAllRichmedia())
-  },
-})
-</script>
 
 <style lang="postcss">
 /* push footer above bottom nav */
