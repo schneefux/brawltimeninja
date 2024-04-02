@@ -9,7 +9,6 @@
         path: `/tier-list/${plural}`,
         name: $t(singular, 2),
       }]"
-      class="mt-4"
     ></breadcrumbs>
 
     <p id="description" class="mt-4 prose dark:prose-invert">

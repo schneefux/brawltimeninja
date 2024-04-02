@@ -37,7 +37,11 @@
         class="hidden md:block"
       ></b-title>
 
-      <div>
+      <div
+        :class="{
+          '-mt-16 md:mt-0': !('aside-left' in $slots), // mobile: cancel gap-8 if there is no aside content
+        }"
+      >
         <slot></slot>
       </div>
     </b-split-dashboard>

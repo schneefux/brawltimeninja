@@ -26,7 +26,7 @@
         path: `/tier-list/brawler/${brawlerMetadata?.slug}`,
         name: brawlerMetadata?.name,
       }]"
-      class="mt-4"
+      class="hidden md:flex"
     ></breadcrumbs>
 
     <b-page-section
