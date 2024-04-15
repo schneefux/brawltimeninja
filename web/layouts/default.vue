@@ -90,7 +90,9 @@ export default defineComponent({
       useVenatus(config.venatusSiteId)
     }
 
-    useQuantcast(config.quantcastChoiceId)
+    if (config.quantcastChoiceId) {
+      useQuantcast(config.quantcastChoiceId)
+    }
 
     const route = useRoute()
     const topBannerType = computed(() => route.meta.topBannerType as string ?? 'takeover')
