@@ -44,6 +44,9 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
       'SYNC.JS',
       'ox_esp',
       'Tyche blocked',
+      'fun-hooks: hooked function not ready',
+      'The play() request was interrupted',
+      'Geo location is undefined or empty',
       // ignore errors that are not actionable
       'Already on path:',
       'Unable to preload CSS',
