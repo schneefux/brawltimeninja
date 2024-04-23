@@ -6,6 +6,7 @@ import { promisify } from 'util'
 import sharp from 'sharp'
 import resolvePath from 'resolve-path'
 import { fileURLToPath } from 'url'
+import crypto from 'crypto'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const assetDir = process.env.ASSET_DIR || path.join(path.dirname(__dirname), 'assets')
@@ -72,9 +73,20 @@ app.use(async (ctx, next) => {
     return
   }
 
-  ctx.type = ext
+  const hash = crypto
+    .createHash('sha1')
+    .update(`${stats.size}-${stats.mtime.getTime()}`)
+    .digest('base64')
+  ctx.etag = `W/"${hash}"`
   ctx.lastModified = new Date()
+
+  ctx.type = ext
   ctx.set('Cache-Control', `public, max-age=${maxage}, stale-while-revalidate=${maxage/10}, stale-if-error=${maxage}`)
+
+  if (ctx.req.headers['if-none-match'] == ctx.etag) {
+    ctx.status = 304
+    return
+  }
 
   if (isImage) {
     let transformer = sharp(filePath)
