@@ -1,10 +1,10 @@
 <template>
   <b-scrolling-list
-    :items="skins"
+    :items="scrapedData?.skins ?? []"
     :cell-columns="2"
     :cell-rows="3"
     :render-at-least="5"
-    key-id="id"
+    key-id="name"
     render-placeholder
   >
     <template v-slot:item="skin">
@@ -52,16 +52,6 @@ export default defineComponent({
       type: Object as PropType<ScrapedBrawler>,
       required: false
     },
-  },
-  setup(props) {
-    const skins = computed(() => props.scrapedData?.skins.flatMap(list => list.skins.map(skin => ({
-      ...skin,
-      id: `${list.name}-${skin.name}`,
-    }))) ?? [])
-
-    return {
-      skins,
-    }
   },
 })
 </script>

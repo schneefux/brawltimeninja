@@ -2,7 +2,7 @@
 
 node download_maps.js
 node download_translations.js
-node scraper.js
+yarn run scraper
 
 find ./out -type f -iname '*.ogg' -print0 | xargs -0 -I{} sh -c 'ffmpeg -i "{}" -ab 192k "${0%.*}.mp3" -hide_banner -loglevel error -y' {} \;
 

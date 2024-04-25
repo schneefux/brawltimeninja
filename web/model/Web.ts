@@ -86,13 +86,12 @@ export interface ScrapedBrawler {
   }
   skins: {
     name: string
-    skins: {
-      name: string
-      link: string
-      path: string
-      cost?: string
-      campaign?: string
-    }[]
+    link: string
+    path: string
+    cost?: string
+    campaign?: string
+    rarity?: string
+    for?: string
   }[]
   pins: {
     name: string

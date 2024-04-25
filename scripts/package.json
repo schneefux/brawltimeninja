@@ -4,17 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "scraper": "tsx scraper.mts"
   },
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
-    "axios": "^0.27.2",
+    "axios": "^1.6.8",
     "js-yaml": "^4.1.0",
-    "jsdom": "^20.0.3",
-    "openai": "^4.28.4",
+    "jsdom": "^24.0.0",
+    "openai": "^4.38.2",
     "string-similarity": "^4.0.4",
-    "wtf-plugin-api": "^1.0.1",
-    "wtf_wikipedia": "^10.0.5"
+    "tsx": "^4.7.2",
+    "wtf-plugin-api": "^2.0.0",
+    "wtf_wikipedia": "^10.3.0"
   }
 }
