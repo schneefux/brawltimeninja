@@ -115,6 +115,8 @@
       ></player-brawlers>
     </b-page-section>
 
+    <ad lazy></ad>
+
     <b-page-section
       id="sharepic"
       ref="sharepicSection"
@@ -151,35 +153,40 @@
 
     <ad lazy></ad>
 
-    <b-page-section
-      id="battles"
+    <template
       v-if="player == undefined || player.battles.length > 0"
-      ref="battlesSection"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('battles'),
-        once: true,
-      }"
-      :title="$t('battle-log', 1)"
-      lazy
     >
-      <p class="mt-4 prose dark:prose-invert w-full">
-        {{ $t('player.battle-log.description') }}
-      </p>
+      <b-page-section
+        id="battles"
+        ref="battlesSection"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('battles'),
+          once: true,
+        }"
+        :title="$t('battle-log', 1)"
+        lazy
+      >
+        <p class="mt-4 prose dark:prose-invert w-full">
+          {{ $t('player.battle-log.description') }}
+        </p>
 
-      <b-shimmer
-        v-if="player == undefined"
-        height-px="318"
-        class="mt-8"
-        loading
-      ></b-shimmer>
-      <battles-list
-        v-else
-        :battles="player.battles"
-        :highlight-tags="[playerTag]"
-        class="mt-8"
-        @interact="trackInteraction('battles')"
-      ></battles-list>
-    </b-page-section>
+        <b-shimmer
+          v-if="player == undefined"
+          height-px="318"
+          class="mt-8"
+          loading
+        ></b-shimmer>
+        <battles-list
+          v-else
+          :battles="player.battles"
+          :highlight-tags="[playerTag]"
+          class="mt-8"
+          @interact="trackInteraction('battles')"
+        ></battles-list>
+      </b-page-section>
+
+      <ad lazy></ad>
+    </template>
 
     <b-page-section
       id="modes"
