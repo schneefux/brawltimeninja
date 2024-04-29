@@ -29,9 +29,15 @@
 import { defineComponent } from 'vue'
 
 /**
- * Split design with a sticky aside left and right and the main content on the right
+ * Three-column layout with sticky sidebars.
+ * The left sidebar (L) should contain main content, as it is shown first on mobile.
+ * The right sidebar (R) should contain optional content (i.e. navigation hints),
+ * as it will not be visible on tablets.
  *
- * The right aside should only contain supplementary information as it will not be visible on md/lg/xl
+ * Layout:
+ *   - desktop: L/M/R from left to right
+ *   - tablet: L/M from left to right
+ *   - mobile: L/R/M from top to down
  */
 export default defineComponent({
 })

@@ -1,5 +1,5 @@
 <template>
-  <b-page>
+  <split-page>
     <div class="flex flex-col justify-center">
       <div id="logo" class="mx-auto relative">
         <img
@@ -173,7 +173,7 @@
         with-data
       ></events-roll>
     </b-page-section>
-  </b-page>
+  </split-page>
 </template>
 
 <script lang="ts">
@@ -341,11 +341,3 @@ export default defineComponent({
   @apply normal-case;
 }
 </style>
-
-<route>
-{
-  meta: {
-    topBannerType: 'banner',
-  },
-}
-</route>

@@ -1,8 +1,5 @@
 <template>
-  <b-page
-    :title="$t('status.title')"
-    class="max-w-screen-sm"
-  >
+  <split-page :title="$t('status.title')">
     <div class="px-2 mt-8">
       <p v-show="status == undefined">{{ $t('state.checking') }}…</p>
       <div v-show="status == 'down'">
@@ -24,7 +21,7 @@
         <Timeline id="BrawlStars" sourceType="profile" :options="{ theme: 'dark', height: 600, dnt: true }" />
       </div>
     </div>
-  </b-page>
+  </split-page>
 </template>
 
 <script lang="ts">

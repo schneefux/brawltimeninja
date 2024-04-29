@@ -9,20 +9,6 @@
     <loading-indicator></loading-indicator>
 
     <div id="main" class="fill-layout-height">
-      <!-- request by Venatus: ads should be refreshed on page navigation -->
-      <ad
-        v-if="topBannerType == 'takeover'"
-        :key="`takeover-${$route.path}`"
-        takeover
-        first
-      ></ad>
-      <ad
-        v-else-if="topBannerType == 'banner'"
-        :key="`banner-${$route.path}`"
-        banner
-        first
-      ></ad>
-
       <slot></slot>
     </div>
 
@@ -41,6 +27,7 @@
     </b-web-footer>
 
     <adblock-bait></adblock-bait>
+    <!-- request by Venatus: ads should be refreshed on page navigation -->
     <venatus-rich-media
       :key="`rich-media-${$route.path}`"
     ></venatus-rich-media>
@@ -55,7 +42,6 @@ import { useI18n } from 'vue-i18n'
 import { useConfig, useLocaleCookieRedirect, useLocalePath } from '~/composables/compat'
 import { useQuantcast } from '~/composables/quantcast'
 import { useVenatus } from '~/composables/venatus'
-import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: {
@@ -94,13 +80,9 @@ export default defineComponent({
       useQuantcast(config.quantcastChoiceId)
     }
 
-    const route = useRoute()
-    const topBannerType = computed(() => route.meta.topBannerType as string ?? 'takeover')
-
     return {
       links,
       container,
-      topBannerType,
     }
   },
 })

@@ -86,11 +86,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<route>
-{
-  meta: {
-    topBannerType: 'none',
-  },
-}
-</route>

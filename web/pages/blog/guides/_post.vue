@@ -1,10 +1,12 @@
 <template>
-  <b-page class="flex justify-center">
-    <article-card
-      v-if="post != null"
-      :document="post"
-    ></article-card>
-  </b-page>
+  <split-page>
+    <div class="flex justify-center">
+      <article-card
+        v-if="post != null"
+        :document="post"
+      ></article-card>
+    </div>
+  </split-page>
 </template>
 
 <script lang="ts">

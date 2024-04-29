@@ -1,5 +1,5 @@
 <template>
-  <b-page title="Brawl Stars Guides">
+  <split-page title="Brawl Stars Guides">
     <div
       v-if="posts != undefined"
       class="flex flex-wrap justify-center"
@@ -55,7 +55,7 @@
         </b-card>
       </div>
     </div>
-  </b-page>
+  </split-page>
 </template>
 
 <script lang="ts">
