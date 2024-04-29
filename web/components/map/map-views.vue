@@ -71,10 +71,7 @@
               ></map-best-teams-table>
             </b-dashboard-cell>
 
-            <ad-cell
-              :columns="3"
-              :rows="2"
-            ></ad-cell>
+            <ad-cell></ad-cell>
 
             <map-insights
               v-observe-visibility="{
@@ -94,6 +91,8 @@
                 once: true,
               }"
             ></map-balance-chart>
+
+            <ad-cell></ad-cell>
 
             <b-dashboard-cell
               :columns="5"
@@ -134,10 +133,7 @@
               ></map-best-players-table>
             </b-dashboard-cell>
 
-            <ad-cell
-              :columns="8"
-              :rows="3"
-            ></ad-cell>
+            <ad-cell></ad-cell>
           </b-dashboard>
         </template>
 
@@ -180,10 +176,7 @@
               ></gadget-starpower-disclaimer>
             </b-dashboard-cell>
 
-            <ad-cell
-              :columns="5"
-              :rows="3"
-            ></ad-cell>
+            <ad-cell></ad-cell>
           </b-dashboard>
         </template>
 
@@ -226,10 +219,7 @@
               ></gadget-starpower-disclaimer>
             </b-dashboard-cell>
 
-            <ad-cell
-              :columns="5"
-              :rows="3"
-            ></ad-cell>
+            <ad-cell></ad-cell>
           </b-dashboard>
         </template>
 
@@ -272,10 +262,7 @@
               ></gadget-starpower-disclaimer>
             </b-dashboard-cell>
 
-            <ad-cell
-              :columns="5"
-              :rows="3"
-            ></ad-cell>
+            <ad-cell></ad-cell>
           </b-dashboard>
         </template>
       </b-tabs>

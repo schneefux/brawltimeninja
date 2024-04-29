@@ -1,8 +1,8 @@
 <template>
   <client-only>
     <b-dashboard-cell
-      :rows="rows"
-      :columns="columns"
+      :rows="3"
+      class="!col-span-full self-center"
       hide-empty
       lazy
     >
@@ -18,16 +18,6 @@ import { BDashboardCell } from '@schneefux/klicker/components'
 export default defineComponent({
   components: {
     BDashboardCell,
-  },
-  props: {
-    rows: {
-      type: Number,
-      required: true
-    },
-    columns: {
-      type: Number,
-      required: true
-    },
   },
 })
 </script>

@@ -75,14 +75,21 @@
 
     <template v-else-if="cell">
       <!-- placeholder and lazy-loading are handled by cell wrapper-->
-      <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
-      <!-- disabled for now, according to Venatus there is overlap on the laptop layout
-      <venatus-placement
-        v-bind="$attrs"
-        ad-id="65f94f9ddd5aea6a13fd04a1"
-        class="mobile-incontent"
-      ></venatus-placement>
-      -->
+      <client-only>
+        <!-- Desktop - In-Content: 300x250, 336x280, 728x90 -->
+        <venatus-placement
+          v-if="desktop"
+          ad-id="65f94d69767223575b4de5b1"
+          class="desktop-incontent"
+        ></venatus-placement>
+
+        <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
+        <venatus-placement
+          v-if="!desktop"
+          ad-id="65f94f9ddd5aea6a13fd04a1"
+          class="mobile-incontent"
+        ></venatus-placement>
+      </client-only>
     </template>
 
     <div
