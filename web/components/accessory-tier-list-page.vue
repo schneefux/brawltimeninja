@@ -20,6 +20,8 @@
       class="mt-4"
     ></gadget-starpower-disclaimer>
 
+    <ad instream></ad>
+
     <b-page-section id="dashboard" :title="$t(`tier-list.${singular}.${plural}`)">
       <c-dashboard
         v-model="query"

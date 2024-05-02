@@ -3,10 +3,7 @@
     title="Brawl Stars Meta Dashboard"
     no-container
   >
-    <ad
-      instream
-      class="mt-8"
-    ></ad>
+    <ad instream></ad>
 
     <c-dashboard
       v-model="query"

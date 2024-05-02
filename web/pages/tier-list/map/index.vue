@@ -13,6 +13,8 @@
       {{ $t('tier-list.maps.description') }}
     </p>
 
+    <ad instream></ad>
+
     <b-page-section
       id="active"
       ref="activeSection"
@@ -65,6 +67,8 @@
         with-data
       ></events-roll>
     </b-page-section>
+
+    <ad></ad>
 
     <b-page-section
       id="season"

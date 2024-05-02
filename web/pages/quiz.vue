@@ -2,6 +2,8 @@
   <split-page :title="$t('oejts.title')">
     <p id="description" class="mt-4 mb-8">{{ $t('oejts.description') }}</p>
 
+    <ad instream></ad>
+
     <quiz-card
       id="quiz"
       class="mt-8"

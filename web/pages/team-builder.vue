@@ -19,6 +19,8 @@
       </template>
     </b-card>
 
+    <ad instream></ad>
+
     <c-slicer
       v-model="query"
       :components="['s-season', 's-mode-map', 's-trophies']"

@@ -14,6 +14,8 @@
       </b-button>
     </div>
 
+    <ad instream></ad>
+
     <b-page-section id="leaderboard">
       <div class="flex justify-center">
         <router-view></router-view>

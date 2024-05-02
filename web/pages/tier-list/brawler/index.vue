@@ -9,6 +9,8 @@
       class="mt-8"
     ></brawlers-roll>
 
+    <ad instream></ad>
+
     <b-page-section
       id="tier-list"
       :title="$t('tier-list.all.title')"

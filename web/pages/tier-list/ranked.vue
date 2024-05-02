@@ -13,6 +13,8 @@
       {{ $t('tier-list.ranked.description') }}
     </p>
 
+    <ad instream></ad>
+
     <b-page-section
       id="teambuilder"
       :title="$t('draft-tool.title.short')"

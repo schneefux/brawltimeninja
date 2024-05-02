@@ -44,7 +44,7 @@
       ></brawler-overview>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad instream></ad>
 
     <b-page-section
       id="accessory"

@@ -1,8 +1,5 @@
 <template>
-  <ad
-    takeover
-    first
-  ></ad>
+  <ad takeover></ad>
 
   <b-page no-container>
     <!-- desktop: title above ads, mobile: title below ads -->
@@ -19,16 +16,11 @@
         <!-- siderail will only render on desktop (lg) -->
         <ad
           v-if="!leftSidebarHasContent"
-          siderail
-        ></ad>
-
-        <ad
           :class="{
-            'hidden lg:block': !leftSidebarHasContent,
             // mobile: cancel dashboard gap-8, desktop: leave space for sticky footer
             'mt-8 -mb-8 md:mb-[110px]': true,
           }"
-          instream
+          siderail
         ></ad>
       </template>
 

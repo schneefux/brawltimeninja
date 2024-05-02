@@ -96,6 +96,8 @@
       </p>
     </b-page-section>
 
+    <ad instream></ad>
+
     <b-page-section>
       <map-views
         v-if="event != undefined"

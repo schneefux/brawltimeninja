@@ -9,6 +9,8 @@
       {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
     </p>
 
+    <ad instream></ad>
+
     <b-page-section
       id="maps"
       v-if="events != undefined && events.length > 0"

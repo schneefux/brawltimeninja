@@ -32,6 +32,8 @@
       </b-card>
     </b-page-section>
 
+    <ad instream></ad>
+
     <b-page-section :title="$t('club.members')">
       <club-member-table
         :club="club"

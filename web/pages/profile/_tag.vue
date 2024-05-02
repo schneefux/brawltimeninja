@@ -46,6 +46,8 @@
       ></player-time-statistics>
     </b-page-section>
 
+    <ad instream></ad>
+
     <b-page-section
       id="trophy"
       ref="trophySection"
@@ -216,6 +218,8 @@
         @interact="trackInteraction('gamemodes')"
       ></player-mode-winrates>
     </b-page-section>
+
+    <ad lazy></ad>
 
     <b-page-section
       id="records"

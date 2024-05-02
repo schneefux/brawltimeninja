@@ -98,20 +98,20 @@
     </client-only>
   </template>
 
-    <div
+  <b-page-section
     v-else-if="instream"
     v-bind="$attrs"
     ref="ad"
-      class="text-center -mx-4 w-[calc(100%+32px)] md:mx-0 md:w-full max-w-lg"
+    class="text-center -mx-4 lg:mx-0"
   >
     <!-- Instream - at least 410px wide, must be 16:9 -->
     <div
       v-if="visible"
       id="vm-av"
       data-format="isvideo"
-        class="aspect-video vm-placement"
+      class="aspect-video vm-placement max-w-[480px] mx-auto"
     ></div>
-    </div>
+  </b-page-section>
 
   <!-- default: section with in-content unit -->
   <b-page-section
@@ -154,31 +154,32 @@ export default defineComponent({
     BDashboardCell,
   },
   props: {
-    first: {
-      type: Boolean,
-      default: false
-    },
     lazy: {
       type: Boolean,
       default: false
     },
+    /** reserved space (the size of an in-content unit) where the instream video will appear */
+    instream: {
+      type: Boolean,
+      default: false
+    },
+    /** in-content unit at the top */
     takeover: {
       type: Boolean,
       default: false
     },
+    /** short unit */
     banner: {
       type: Boolean,
       default: false
     },
+    /** tall desktop unit */
     siderail: {
       type: Boolean,
       default: false
     },
+    /** in-content unit with b-dashboard-cell wrapper */
     cell: {
-      type: Boolean,
-      default: false
-    },
-    instream: {
       type: Boolean,
       default: false
     },

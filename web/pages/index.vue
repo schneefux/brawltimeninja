@@ -126,7 +126,7 @@
       </div>
     </div>
 
-    <ad></ad>
+    <ad instream></ad>
 
     <b-page-section
       id="best"
