@@ -1,14 +1,7 @@
 <template>
   <split-page :title="brawlerMetadata?.name">
-    <template v-slot:aside-left>
-      <brawler-aside
-        id="aside"
-        :brawler-metadata="brawlerMetadata"
-        class="!h-auto max-w-sm"
-      ></brawler-aside>
-    </template>
 
-    <template v-slot:aside-right>
+    <template v-slot:aside-left>
       <b-scroll-spy
         id="sidenav"
         :sections="sections"
@@ -28,6 +21,25 @@
       }]"
       class="hidden md:flex"
     ></breadcrumbs>
+
+    <b-page-section
+      id="brawler"
+      ref="brawlerSection"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('brawler'),
+        once: true,
+      }"
+    >
+      <div class="flex flex-wrap gap-8 items-center">
+        <brawler-aside
+          id="aside"
+          :brawler-metadata="brawlerMetadata"
+          class="flex-auto max-w-md"
+        ></brawler-aside>
+
+        <ad instream-plain></ad>
+      </div>
+    </b-page-section>
 
     <b-page-section
       id="overview"
@@ -291,6 +303,7 @@ export default defineComponent({
         }), computed(() => `scraped-data-${brawlerId.value}`))
 
     const sectionRefs = {
+      brawlerSection: ref<InstanceType<typeof BPageSection>>(),
       overviewSection: ref<InstanceType<typeof BPageSection>>(),
       accessorySection: ref<InstanceType<typeof BPageSection>>(),
       synergySection: ref<InstanceType<typeof BPageSection>>(),
@@ -305,6 +318,10 @@ export default defineComponent({
     }
 
     const sections = computed(() => [{
+      id: 'brawler',
+      title: i18n.t('brawler'),
+      element: sectionRefs.brawlerSection.value?.$el,
+    }, {
       id: 'overview',
       title: i18n.t('brawler.overview'),
       element: sectionRefs.overviewSection.value?.$el,

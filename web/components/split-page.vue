@@ -15,11 +15,9 @@
 
         <!-- siderail will only render on desktop (lg) -->
         <ad
-          v-if="!leftSidebarHasContent"
           :class="{
-            // TODO: when left sidebar has content, show a smaller siderail (max. 320x460)
-            // mobile: cancel dashboard gap-8, desktop: leave space for sticky footer
-            'mt-8 -mb-8 md:mb-[110px]': true,
+            'mt-8': leftSidebarHasContent,
+            'md:mb-[110px]': true, // leave space for sticky footer
           }"
           siderail
         ></ad>
@@ -29,9 +27,8 @@
         <slot name="aside-right"></slot>
 
         <ad
-          v-if="!rightSidebarHasContent"
           :class="{
-            // TODO: when right sidebar has content, show a smaller siderail (max. 320x460)
+            'mt-8': rightSidebarHasContent,
             'md:mb-[110px]': true, // leave space for sticky footer
           }"
           siderail

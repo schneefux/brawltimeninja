@@ -4,19 +4,18 @@
     :loading="loading"
   >
     <template v-slot:content>
-      <div class="flex flex-col items-center">
+      <div class="flex flex-col md:flex-row gap-8">
         <media-img
           :path="`/avatars/${player.icon.id}`"
           :alt="player.name"
           size="200"
-          clazz="w-32 h-32"
+          clazz="w-32 h-32 mx-auto"
         ></media-img>
 
         <b-kv-table
           :rows="rows"
           :data="playerWithTrackingStatus"
           id-key="tag"
-          class="mt-8 w-full"
         >
           <template v-slot:name="{ row }">
             <span

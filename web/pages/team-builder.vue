@@ -1,13 +1,5 @@
 <template>
   <split-page :title="$t('draft-tool.title')">
-    <template v-slot:aside-right>
-      <b-card :title="$t('about-metric', { metric: $t('metric.winRate') })">
-        <template v-slot:content>
-          <p>{{ $t('brawler.disclaimer') }}</p>
-        </template>
-      </b-card>
-    </template>
-
     <b-card
       :title="$t('draft-tool.subtitle')"
       class="mt-3"
@@ -15,6 +7,9 @@
       <template v-slot:content>
         <p class="prose dark:prose-invert">
           {{ $t('draft-tool.description') }}
+        </p>
+        <p class="mt-4 prose dark:prose-invert">
+          {{ $t('brawler.disclaimer') }}
         </p>
       </template>
     </b-card>

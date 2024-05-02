@@ -1,6 +1,6 @@
 <template>
   <split-page :title="$t('tier-list.ranked.title')">
-    <template v-slot:aside-right>
+    <template v-slot:aside-left>
       <b-scroll-spy
         id="sidenav"
         :sections="sections"

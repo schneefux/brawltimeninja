@@ -1,7 +1,7 @@
 <template>
   <b-card :title="brawlerMetadata?.name">
     <template v-slot:content>
-      <div class="flex flex-col items-center">
+      <div class="flex flex-col md:flex-row gap-8">
         <b-shimmer
           v-if="brawlerMetadata == undefined"
           height-px="192"

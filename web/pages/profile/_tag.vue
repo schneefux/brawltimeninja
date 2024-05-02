@@ -5,24 +5,6 @@
     :title="$t('player.meta.title', { name: player?.name ?? '#' + playerTag })"
   >
     <template v-slot:aside-left>
-      <b-shimmer
-        v-if="player == undefined"
-        height-px="512"
-        loading
-      ></b-shimmer>
-      <player-aside
-        v-else
-        id="aside"
-        :player="player"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('aside'),
-          once: true,
-        }"
-        class="!h-auto max-w-sm"
-      ></player-aside>
-    </template>
-
-    <template v-slot:aside-right>
       <b-scroll-spy
         id="sidenav"
         :sections="sections"
@@ -30,6 +12,31 @@
         nav-class="top-14"
       ></b-scroll-spy>
     </template>
+
+    <b-page-section
+      id="profile"
+      ref="profileSection"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('aside'),
+        once: true,
+      }"
+    >
+      <div class="flex flex-wrap gap-8 items-center">
+        <b-shimmer
+          v-if="player == undefined"
+          height-px="512"
+          class="flex-auto"
+          loading
+        ></b-shimmer>
+        <player-aside
+          v-else
+          :player="player"
+          class="flex-auto max-w-md"
+        ></player-aside>
+
+        <ad instream-plain></ad>
+      </div>
+    </b-page-section>
 
     <b-page-section
       id="time"
@@ -45,8 +52,6 @@
         @interact="trackInteraction('hours')"
       ></player-time-statistics>
     </b-page-section>
-
-    <ad instream></ad>
 
     <b-page-section
       id="trophy"
@@ -308,6 +313,7 @@ export default defineComponent({
     const { makeVisibilityCallback, trackInteraction } = useTrackScroll('profile')
 
     const sectionRefs = {
+      profileSection: ref<InstanceType<typeof BPageSection>>(),
       timeSection: ref<InstanceType<typeof BPageSection>>(),
       trophySection: ref<InstanceType<typeof BPageSection>>(),
       sharepicSection: ref<InstanceType<typeof BPageSection>>(),
@@ -319,6 +325,10 @@ export default defineComponent({
     }
 
     const sections = computed(() => [{
+      id: 'profile',
+      title: i18n.t('nav.Profile'),
+      element: sectionRefs.profileSection.value?.$el,
+    }, {
       id: 'time',
       title: i18n.t('player.time-statistics'),
       element: sectionRefs.timeSection.value?.$el,

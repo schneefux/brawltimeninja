@@ -113,6 +113,21 @@
     ></div>
   </b-page-section>
 
+  <div
+    v-else-if="instreamPlain"
+    v-bind="$attrs"
+    ref="ad"
+    class="text-center -mx-4 lg:mx-0 w-[480px]"
+  >
+    <!-- Instream - at least 410px wide, must be 16:9 -->
+    <div
+      v-if="visible"
+      id="vm-av"
+      data-format="isvideo"
+      class="aspect-video vm-placement w-full max-w-[480px] mx-auto"
+    ></div>
+  </div>
+
   <!-- default: section with in-content unit -->
   <b-page-section
     v-else
@@ -158,8 +173,13 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    /** reserved space (the size of an in-content unit) where the instream video will appear */
+    /** instream video wrapped by section */
     instream: {
+      type: Boolean,
+      default: false
+    },
+    /** just the instream */
+    instreamPlain: {
       type: Boolean,
       default: false
     },

@@ -1,6 +1,6 @@
 <template>
   <split-page :title="$t('tier-list.maps.title')">
-    <template v-slot:aside-right>
+    <template v-slot:aside-left>
       <b-scroll-spy
         id="sidenav"
         :sections="sections"
@@ -68,7 +68,7 @@
       ></events-roll>
     </b-page-section>
 
-    <ad></ad>
+    <ad lazy></ad>
 
     <b-page-section
       id="season"
