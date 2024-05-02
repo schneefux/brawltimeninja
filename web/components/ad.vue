@@ -29,7 +29,7 @@
     v-bind="$attrs"
     ref="ad"
     :class="{
-      'text-center': true, // TODO on mobile, offset the page mx padding
+      'text-center': true,
       'w-full max-w-[480px] lg:mx-auto': plain && instream,
     }"
   >
@@ -98,13 +98,13 @@
       ></venatus-placement>
     </client-only>
 
-    <!-- default: in-content unit -->
+    <!-- default -->
     <client-only v-else>
-      <!-- Desktop - In-Content: 300x250, 336x280, 728x90 -->
+      <!-- Desktop - Multisize Leaderboard: 728x90, 970x90, 970x250 -->
       <venatus-placement
         v-if="desktop && visible"
-        ad-id="65f94d69767223575b4de5b1"
-        class="desktop-incontent"
+        ad-id="65f94d46dd5aea6a13fd049b"
+        class="desktop-multileaderboard"
       ></venatus-placement>
 
       <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
@@ -178,7 +178,6 @@ export default defineComponent({
 
         if (isIntersecting && !hidden) {
           visible.value = true
-          console.log('ad visible', props)
           stop()
         }
       }, {
