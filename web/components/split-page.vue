@@ -6,7 +6,7 @@
     <b-title
       v-if="title"
       :title="title"
-      class="mb-8 md:hidden"
+      class="mb-4 md:hidden"
     ></b-title>
 
     <b-split-dashboard>
@@ -17,6 +17,7 @@
         <ad
           v-if="!leftSidebarHasContent"
           :class="{
+            // TODO: when left sidebar has content, show a smaller siderail (max. 320x460)
             // mobile: cancel dashboard gap-8, desktop: leave space for sticky footer
             'mt-8 -mb-8 md:mb-[110px]': true,
           }"
@@ -28,11 +29,12 @@
         <slot name="aside-right"></slot>
 
         <ad
-          siderail
+          v-if="!rightSidebarHasContent"
           :class="{
-            'mt-8': rightSidebarHasContent,
-            'mb-[110px]': true, // leave space for sticky footer
+            // TODO: when right sidebar has content, show a smaller siderail (max. 320x460)
+            'md:mb-[110px]': true, // leave space for sticky footer
           }"
+          siderail
         ></ad>
       </template>
 
@@ -42,11 +44,7 @@
         class="hidden md:block"
       ></b-title>
 
-      <div
-        :class="{
-          '-mt-16 md:mt-0': !leftSidebarHasContent, // mobile: cancel gap-8 if there is no left sidebar
-        }"
-      >
+      <div>
         <slot></slot>
       </div>
     </b-split-dashboard>
