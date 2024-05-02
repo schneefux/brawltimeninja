@@ -126,11 +126,10 @@
       </div>
     </div>
 
-    <ad instream></ad>
+    <ad takeover lazy></ad>
 
     <b-page-section
       id="best"
-      class="mt-4"
       lazy
     >
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -341,3 +340,11 @@ export default defineComponent({
   @apply normal-case;
 }
 </style>
+
+<route>
+{
+  meta: {
+    topBannerType: 'instream',
+  },
+}
+</route>

@@ -34,7 +34,7 @@
           class="flex-auto max-w-md"
         ></player-aside>
 
-        <ad instream-plain></ad>
+        <ad instream plain lazy></ad>
       </div>
     </b-page-section>
 

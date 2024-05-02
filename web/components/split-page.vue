@@ -1,5 +1,14 @@
 <template>
-  <ad takeover></ad>
+  <ad
+    v-if="topBannerType == 'takeover'"
+    takeover
+    plain
+  ></ad>
+  <ad
+    v-else-if="topBannerType == 'instream'"
+    instream
+    plain
+  ></ad>
 
   <b-page no-container>
     <!-- desktop: title above ads, mobile: title below ads -->
@@ -16,10 +25,12 @@
         <!-- siderail will only render on desktop (lg) -->
         <ad
           :class="{
-            'mt-8': leftSidebarHasContent,
+            'md:mt-8': leftSidebarHasContent,
             'md:mb-[110px]': true, // leave space for sticky footer
           }"
           siderail
+          plain
+          lazy
         ></ad>
       </template>
 
@@ -28,10 +39,12 @@
 
         <ad
           :class="{
-            'mt-8': rightSidebarHasContent,
+            'md:mt-8': rightSidebarHasContent,
             'md:mb-[110px]': true, // leave space for sticky footer
           }"
           siderail
+          plain
+          lazy
         ></ad>
       </template>
 
@@ -51,6 +64,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { BPage, BSplitDashboard } from '@schneefux/klicker/components'
+import { useRoute } from 'vue-router'
 
 /**
  * split-dashboard page layout, where empty space in the sidebars is filled with ads.
@@ -74,9 +88,13 @@ export default defineComponent({
 
     const rightSidebarHasContent = computed(() => 'aside-right' in slots)
 
+    const route = useRoute()
+    const topBannerType = computed(() => route.meta.topBannerType as string ?? 'takeover')
+
     return {
       leftSidebarHasContent,
       rightSidebarHasContent,
+      topBannerType,
     }
   },
 })

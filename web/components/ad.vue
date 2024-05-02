@@ -1,14 +1,43 @@
 <template>
-  <div
-    v-if="takeover"
-    v-bind="$attrs"
-    class="text-center"
+  <b-dashboard-cell
+    v-if="cell"
+    :rows="3"
+    class="!col-span-full self-center"
+    hide-empty
+    lazy
   >
     <client-only>
-      <!-- hybrid-banner for takeover -->
-      <!-- Desktop - Multisize Leaderboard: 728x90, 970x90, 970x250 -->
+      <!-- Desktop - In-Content: 300x250, 336x280, 728x90 -->
       <venatus-placement
         v-if="desktop"
+        ad-id="65f94d69767223575b4de5b1"
+        class="desktop-incontent"
+      ></venatus-placement>
+
+      <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
+      <venatus-placement
+        v-if="!desktop"
+        ad-id="65f94f9ddd5aea6a13fd04a1"
+        class="mobile-incontent"
+      ></venatus-placement>
+    </client-only>
+  </b-dashboard-cell>
+
+  <component
+    v-else
+    :is="plain ? 'div' : 'b-page-section'"
+    v-bind="$attrs"
+    ref="ad"
+    :class="{
+      'text-center': true, // TODO on mobile, offset the page mx padding
+      'w-full max-w-[480px] lg:mx-auto': plain && instream,
+    }"
+  >
+    <!-- in-content (hybrid-banner) for takeover -->
+    <client-only v-if="takeover">
+      <!-- Desktop - Multisize Leaderboard: 728x90, 970x90, 970x250 -->
+      <venatus-placement
+        v-if="desktop && visible"
         ad-id="65f94d46dd5aea6a13fd049b"
         ad-type="hybrid-banner"
         class="desktop-multileaderboard"
@@ -16,7 +45,7 @@
 
       <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
       <venatus-placement
-        v-if="!desktop"
+        v-if="!desktop && visible"
         ad-id="65f94f9ddd5aea6a13fd04a1"
         ad-type="hybrid-banner"
         class="mobile-incontent"
@@ -26,24 +55,18 @@
         <div class="placeholder-takeover"></div>
       </template>
     </client-only>
-  </div>
 
-  <div
-    v-else-if="banner"
-    v-bind="$attrs"
-    class="text-center"
-  >
-    <client-only>
+    <client-only v-else-if="banner">
       <!-- Desktop - Article: 728x90, 970x90 -->
       <venatus-placement
-        v-if="desktop"
+        v-if="desktop && visible"
         ad-id="65f94ee2dd5aea6a13fd049f"
         class="desktop-article"
       ></venatus-placement>
 
       <!-- Mobile - Leaderboard: 300x50, 320x50, 300x100, 320x100 -->
       <venatus-placement
-        v-if="!desktop"
+        v-if="!desktop && visible"
         ad-id="65f94f6d767223575b4de5b3"
         class="mobile-leaderboard"
       ></venatus-placement>
@@ -52,90 +75,31 @@
         <div class="placeholder-banner"></div>
       </template>
     </client-only>
-  </div>
 
-  <template v-else-if="siderail">
-    <client-only>
+    <!-- Instream - at least 410px wide, must be 16:9 -->
+    <client-only v-else-if="instream">
       <div
-        v-if="desktop"
-        v-bind="$attrs"
-        ref="ad"
-        class="text-center"
-      >
-        <!-- Desktop Side Rail: 300x250, 300x600, 160x600, 336x280 -->
-        <venatus-placement
-          v-if="visible"
-          ad-id="65f94d27767223575b4de5af"
-          class="desktop-side-rail"
-        ></venatus-placement>
-      </div>
+        v-if="visible"
+        id="vm-av"
+        data-format="isvideo"
+        class="aspect-video vm-placement"
+      ></div>
+      <template v-slot:placeholder>
+        <div class="aspect-video vm-placement"></div>
+      </template>
     </client-only>
-  </template>
 
-  <template v-else-if="cell">
-    <!-- placeholder and lazy-loading are handled by cell wrapper-->
-    <client-only>
-      <b-dashboard-cell
-        :rows="3"
-        class="!col-span-full self-center"
-        hide-empty
-        lazy
-      >
-        <!-- Desktop - In-Content: 300x250, 336x280, 728x90 -->
-        <venatus-placement
-          v-if="desktop"
-          ad-id="65f94d69767223575b4de5b1"
-          class="desktop-incontent"
-        ></venatus-placement>
-
-        <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
-        <venatus-placement
-          v-if="!desktop"
-          ad-id="65f94f9ddd5aea6a13fd04a1"
-          class="mobile-incontent"
-        ></venatus-placement>
-      </b-dashboard-cell>
+    <client-only v-else-if="siderail">
+      <!-- Desktop Side Rail: 300x250, 300x600, 160x600, 336x280 -->
+      <venatus-placement
+        v-if="desktop && visible"
+        ad-id="65f94d27767223575b4de5af"
+        class="desktop-side-rail"
+      ></venatus-placement>
     </client-only>
-  </template>
 
-  <b-page-section
-    v-else-if="instream"
-    v-bind="$attrs"
-    ref="ad"
-    class="text-center -mx-4 lg:mx-0"
-  >
-    <!-- Instream - at least 410px wide, must be 16:9 -->
-    <div
-      v-if="visible"
-      id="vm-av"
-      data-format="isvideo"
-      class="aspect-video vm-placement max-w-[480px] mx-auto"
-    ></div>
-  </b-page-section>
-
-  <div
-    v-else-if="instreamPlain"
-    v-bind="$attrs"
-    ref="ad"
-    class="text-center -mx-4 lg:mx-0 w-[480px]"
-  >
-    <!-- Instream - at least 410px wide, must be 16:9 -->
-    <div
-      v-if="visible"
-      id="vm-av"
-      data-format="isvideo"
-      class="aspect-video vm-placement w-full max-w-[480px] mx-auto"
-    ></div>
-  </div>
-
-  <!-- default: section with in-content unit -->
-  <b-page-section
-    v-else
-    v-bind="$attrs"
-    ref="ad"
-    class="text-center -mx-4 lg:mx-0"
-  >
-    <client-only>
+    <!-- default: in-content unit -->
+    <client-only v-else>
       <!-- Desktop - In-Content: 300x250, 336x280, 728x90 -->
       <venatus-placement
         v-if="desktop && visible"
@@ -154,13 +118,12 @@
         <div class="placeholder-section"></div>
       </template>
     </client-only>
-  </b-page-section>
+  </component>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, nextTick } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
-import { useRoute } from 'vue-router'
 import { BDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
@@ -169,21 +132,22 @@ export default defineComponent({
     BDashboardCell,
   },
   props: {
+    /** takeover and instream do not implement lazy-loading because they are usually ATF */
     lazy: {
       type: Boolean,
       default: false
     },
-    /** instream video wrapped by section */
+    /** do not render b-section wrapper */
+    plain: {
+      type: Boolean,
+      default: false
+    },
+    /** instream video */
     instream: {
       type: Boolean,
       default: false
     },
-    /** just the instream */
-    instreamPlain: {
-      type: Boolean,
-      default: false
-    },
-    /** in-content unit at the top */
+    /** in-content unit */
     takeover: {
       type: Boolean,
       default: false
@@ -206,9 +170,7 @@ export default defineComponent({
   },
   setup(props) {
     const ad = ref<HTMLElement>()
-    // always eager-load takeover because it is at the top of the page
-    // always lazy-load siderail and instream, figure out whether they fit first
-    const visible = ref((!props.lazy || props.takeover) && !props.siderail && !props.instream)
+    const visible = ref(!props.lazy)
 
     if (!import.meta.env.SSR && !visible.value) {
       const { isSupported, stop } = useIntersectionObserver(ad, ([{ isIntersecting, target }]) => {
@@ -216,6 +178,7 @@ export default defineComponent({
 
         if (isIntersecting && !hidden) {
           visible.value = true
+          console.log('ad visible', props)
           stop()
         }
       }, {
@@ -232,28 +195,10 @@ export default defineComponent({
     })
     const desktop = breakpoints.greaterOrEqual('desktop')
 
-    const route = useRoute()
-    const sideRailMaxWidth = ref(0)
-    watch(route, () => {
-      if (import.meta.env.SSR) {
-        return
-      }
-
-      nextTick(() => {
-        const mainEl = document.querySelector('main')
-        // on desktop (1920px), most pages' main is 1536px
-        // use 32px margin (4*8px) so that the 160px unit fits perfectly
-        if (mainEl) {
-          sideRailMaxWidth.value = (window.innerWidth - mainEl.clientWidth) / 2 - 32
-        }
-      })
-    }, { immediate: true })
-
     return {
       ad,
       visible,
       desktop,
-      sideRailMaxWidth,
     }
   },
 })

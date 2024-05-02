@@ -1,6 +1,5 @@
 <template>
   <split-page :title="brawlerMetadata?.name">
-
     <template v-slot:aside-left>
       <b-scroll-spy
         id="sidenav"
@@ -37,7 +36,7 @@
           class="flex-auto max-w-md"
         ></brawler-aside>
 
-        <ad instream-plain></ad>
+        <ad instream plain></ad>
       </div>
     </b-page-section>
 
@@ -56,7 +55,7 @@
       ></brawler-overview>
     </b-page-section>
 
-    <ad instream></ad>
+    <ad lazy></ad>
 
     <b-page-section
       id="accessory"

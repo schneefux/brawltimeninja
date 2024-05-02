@@ -20,7 +20,7 @@
       class="mt-4"
     ></gadget-starpower-disclaimer>
 
-    <ad instream></ad>
+    <ad takeover></ad>
 
     <b-page-section id="dashboard" :title="$t(`tier-list.${singular}.${plural}`)">
       <c-dashboard
