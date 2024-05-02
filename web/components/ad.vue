@@ -76,6 +76,12 @@
     <template v-else-if="cell">
       <!-- placeholder and lazy-loading are handled by cell wrapper-->
       <client-only>
+      <b-dashboard-cell
+        :rows="3"
+        class="!col-span-full self-center"
+        hide-empty
+        lazy
+      >
         <!-- Desktop - In-Content: 300x250, 336x280, 728x90 -->
         <venatus-placement
           v-if="desktop"
@@ -89,6 +95,7 @@
           ad-id="65f94f9ddd5aea6a13fd04a1"
           class="mobile-incontent"
         ></venatus-placement>
+      </b-dashboard-cell>
       </client-only>
     </template>
 
@@ -139,11 +146,14 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, nextTick } from 'vue'
 import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
-import { useIsApp } from '~/composables/app'
 import { useRoute } from 'vue-router'
+import { BDashboardCell } from '@schneefux/klicker/components'
 
 export default defineComponent({
   inheritAttrs: false,
+  components: {
+    BDashboardCell,
+  },
   props: {
     first: {
       type: Boolean,
