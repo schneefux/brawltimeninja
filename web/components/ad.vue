@@ -1,81 +1,80 @@
 <template>
-  <template v-if="allowed">
-    <div
-      v-if="takeover"
-      v-bind="$attrs"
-      class="text-center"
-    >
-      <client-only>
-        <!-- hybrid-banner for takeover -->
-        <!-- Desktop - Multisize Leaderboard: 728x90, 970x90, 970x250 -->
+  <div
+    v-if="takeover"
+    v-bind="$attrs"
+    class="text-center"
+  >
+    <client-only>
+      <!-- hybrid-banner for takeover -->
+      <!-- Desktop - Multisize Leaderboard: 728x90, 970x90, 970x250 -->
+      <venatus-placement
+        v-if="desktop"
+        ad-id="65f94d46dd5aea6a13fd049b"
+        ad-type="hybrid-banner"
+        class="desktop-multileaderboard"
+      ></venatus-placement>
+
+      <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
+      <venatus-placement
+        v-if="!desktop"
+        ad-id="65f94f9ddd5aea6a13fd04a1"
+        ad-type="hybrid-banner"
+        class="mobile-incontent"
+      ></venatus-placement>
+
+      <template v-slot:placeholder>
+        <div class="placeholder-takeover"></div>
+      </template>
+    </client-only>
+  </div>
+
+  <div
+    v-else-if="banner"
+    v-bind="$attrs"
+    class="text-center"
+  >
+    <client-only>
+      <!-- Desktop - Article: 728x90, 970x90 -->
+      <venatus-placement
+        v-if="desktop"
+        ad-id="65f94ee2dd5aea6a13fd049f"
+        class="desktop-article"
+      ></venatus-placement>
+
+      <!-- Mobile - Leaderboard: 300x50, 320x50, 300x100, 320x100 -->
+      <venatus-placement
+        v-if="!desktop"
+        ad-id="65f94f6d767223575b4de5b3"
+        class="mobile-leaderboard"
+      ></venatus-placement>
+
+      <template v-slot:placeholder>
+        <div class="placeholder-banner"></div>
+      </template>
+    </client-only>
+  </div>
+
+  <template v-else-if="siderail">
+    <client-only>
+      <div
+        v-if="desktop"
+        v-bind="$attrs"
+        ref="ad"
+        class="text-center"
+      >
+        <!-- Desktop Side Rail: 300x250, 300x600, 160x600, 336x280 -->
         <venatus-placement
-          v-if="desktop"
-          ad-id="65f94d46dd5aea6a13fd049b"
-          ad-type="hybrid-banner"
-          class="desktop-multileaderboard"
+          v-if="visible"
+          ad-id="65f94d27767223575b4de5af"
+          class="desktop-side-rail"
         ></venatus-placement>
+      </div>
+    </client-only>
+  </template>
 
-        <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
-        <venatus-placement
-          v-if="!desktop"
-          ad-id="65f94f9ddd5aea6a13fd04a1"
-          ad-type="hybrid-banner"
-          class="mobile-incontent"
-        ></venatus-placement>
-
-        <template v-slot:placeholder>
-          <div class="placeholder-takeover"></div>
-        </template>
-      </client-only>
-    </div>
-
-    <div
-      v-else-if="banner"
-      v-bind="$attrs"
-      class="text-center"
-    >
-      <client-only>
-        <!-- Desktop - Article: 728x90, 970x90 -->
-        <venatus-placement
-          v-if="desktop"
-          ad-id="65f94ee2dd5aea6a13fd049f"
-          class="desktop-article"
-        ></venatus-placement>
-
-        <!-- Mobile - Leaderboard: 300x50, 320x50, 300x100, 320x100 -->
-        <venatus-placement
-          v-if="!desktop"
-          ad-id="65f94f6d767223575b4de5b3"
-          class="mobile-leaderboard"
-        ></venatus-placement>
-
-        <template v-slot:placeholder>
-          <div class="placeholder-banner"></div>
-        </template>
-      </client-only>
-    </div>
-
-    <template v-else-if="siderail">
-      <client-only>
-        <div
-          v-if="desktop"
-          v-bind="$attrs"
-          ref="ad"
-          class="text-center"
-        >
-          <!-- Desktop Side Rail: 300x250, 300x600, 160x600, 336x280 -->
-          <venatus-placement
-            v-if="visible"
-            ad-id="65f94d27767223575b4de5af"
-            class="desktop-side-rail"
-          ></venatus-placement>
-        </div>
-      </client-only>
-    </template>
-
-    <template v-else-if="cell">
-      <!-- placeholder and lazy-loading are handled by cell wrapper-->
-      <client-only>
+  <template v-else-if="cell">
+    <!-- placeholder and lazy-loading are handled by cell wrapper-->
+    <client-only>
       <b-dashboard-cell
         :rows="3"
         class="!col-span-full self-center"
@@ -96,55 +95,55 @@
           class="mobile-incontent"
         ></venatus-placement>
       </b-dashboard-cell>
-      </client-only>
-    </template>
+    </client-only>
+  </template>
 
     <div
-      v-else-if="instream"
-      v-bind="$attrs"
-      ref="ad"
+    v-else-if="instream"
+    v-bind="$attrs"
+    ref="ad"
       class="text-center -mx-4 w-[calc(100%+32px)] md:mx-0 md:w-full max-w-lg"
-    >
-      <!-- Instream - at least 410px wide, must be 16:9 -->
-      <div
-        v-if="visible"
-        id="vm-av"
-        data-format="isvideo"
+  >
+    <!-- Instream - at least 410px wide, must be 16:9 -->
+    <div
+      v-if="visible"
+      id="vm-av"
+      data-format="isvideo"
         class="aspect-video vm-placement"
-      ></div>
+    ></div>
     </div>
 
-    <b-page-section
-      v-else
-      v-bind="$attrs"
-      ref="ad"
-      class="text-center -mx-4 lg:mx-0"
-    >
-      <client-only>
-        <!-- Desktop - In-Content: 300x250, 336x280, 728x90 -->
-        <venatus-placement
-          v-if="desktop && visible"
-          ad-id="65f94d69767223575b4de5b1"
-          class="desktop-incontent"
-        ></venatus-placement>
+  <!-- default: section with in-content unit -->
+  <b-page-section
+    v-else
+    v-bind="$attrs"
+    ref="ad"
+    class="text-center -mx-4 lg:mx-0"
+  >
+    <client-only>
+      <!-- Desktop - In-Content: 300x250, 336x280, 728x90 -->
+      <venatus-placement
+        v-if="desktop && visible"
+        ad-id="65f94d69767223575b4de5b1"
+        class="desktop-incontent"
+      ></venatus-placement>
 
-        <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
-        <venatus-placement
-          v-if="!desktop && visible"
-          ad-id="65f94f9ddd5aea6a13fd04a1"
-          class="mobile-incontent"
-        ></venatus-placement>
+      <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
+      <venatus-placement
+        v-if="!desktop && visible"
+        ad-id="65f94f9ddd5aea6a13fd04a1"
+        class="mobile-incontent"
+      ></venatus-placement>
 
-        <template v-slot:placeholder>
-          <div class="placeholder-section"></div>
-        </template>
-      </client-only>
-    </b-page-section>
-  </template>
+      <template v-slot:placeholder>
+        <div class="placeholder-section"></div>
+      </template>
+    </client-only>
+  </b-page-section>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, nextTick } from 'vue'
+import { defineComponent, ref, watch, nextTick } from 'vue'
 import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import { BDashboardCell } from '@schneefux/klicker/components'
@@ -186,17 +185,15 @@ export default defineComponent({
   },
   setup(props) {
     const ad = ref<HTMLElement>()
+    // always eager-load takeover because it is at the top of the page
     // always lazy-load siderail and instream, figure out whether they fit first
-    const visible = ref((!props.lazy || props.first) && !props.siderail && !props.instream)
-    const { isApp } = useIsApp()
-
-    const allowed = computed(() => props.first || isApp.value == undefined || isApp.value == false)
+    const visible = ref((!props.lazy || props.takeover) && !props.siderail && !props.instream)
 
     if (!import.meta.env.SSR && !visible.value) {
       const { isSupported, stop } = useIntersectionObserver(ad, ([{ isIntersecting, target }]) => {
         const hidden = (target as HTMLElement)?.offsetParent === null
 
-        if (isIntersecting && allowed.value && !hidden) {
+        if (isIntersecting && !hidden) {
           visible.value = true
           stop()
         }
@@ -234,7 +231,6 @@ export default defineComponent({
     return {
       ad,
       visible,
-      allowed,
       desktop,
       sideRailMaxWidth,
     }
