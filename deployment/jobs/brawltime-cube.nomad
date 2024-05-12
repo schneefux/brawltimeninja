@@ -86,6 +86,8 @@ job "brawltime-cube" {
       tags = [
         "traefik.enable=true",
         "traefik.http.routers.brawltime-cube.rule=Host(`cube.${var.domain}`)",
+        # prevent thundering herd by limiting the total number of in flight requests to approx. clickhouse's concurrent query limit
+        "traefik.http.middlewares.brawltime-cube-inflightreq.inflightreq.amount=128"
       ]
       canary_tags = [
         # do not route via traefik
