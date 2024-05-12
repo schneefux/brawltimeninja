@@ -12,7 +12,7 @@ export default class ClickerService {
 
   constructor(clickhouseUrl: string, balanceChangesDate: Date) {
     this.ch = createClient({
-      host: clickhouseUrl,
+      url: clickhouseUrl,
       clickhouse_settings: {
         // use 1 thread -> server can handle more queries
         // player queries take about 25% longer than with 4 threads
