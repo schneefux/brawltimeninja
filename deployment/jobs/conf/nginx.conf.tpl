@@ -112,6 +112,7 @@ http {
   # Brawl Stars API Proxy
 
   upstream brawlstars {
+    zone brawlstars_upstreams 64K;
     server api.brawlstars.com:443;
     keepalive 100;
   }
@@ -146,6 +147,7 @@ http {
   }
 
   upstream traefik {
+    zone traefik_upstreams 64K; # share memory to improve performance
     least_conn;
     {{- range nomadService "traefik" }}
     server {{ .Address }}:{{ .Port }};
