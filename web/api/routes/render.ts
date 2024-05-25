@@ -8,7 +8,7 @@ import express, {
 import ProfileView from "../templates/ProfileView";
 import BrawlstarsService from "../services/BrawlstarsService";
 import { BrawltimeKlickerService } from "../../plugins/klicker.service";
-import { tagToId } from "../../lib/util";
+import { formatClickhouseDate, getTodaySeasonEnd, tagToId } from "../../lib/util";
 import { isbot } from 'isbot'
 import { PlayerTotals } from "../../stores/brawlstars";
 import { TRPCError } from "@trpc/server";
@@ -48,6 +48,23 @@ async function getPlayerTotals(tag: string) {
   })
 }
 
+async function getBrawlersCount() {
+  return await klickerService.query({
+    cubeId: 'map',
+    dimensionsIds: ['brawler'],
+    metricsIds: [],
+    slices: {
+      season: [formatClickhouseDate(getTodaySeasonEnd())],
+    },
+    sortId: 'picks',
+  })
+  .then(data => data.data.length)
+  .catch(e => {
+    console.error('error fetching brawlers count', e)
+    return 80
+  })
+}
+
 router.get(
   "/profile/:tag/:brawler.svg",
   asyncWrapper(async (req, res) => {
@@ -59,10 +76,12 @@ router.get(
 
     const isBot = isbot(req.headers['user-agent'] || '')
     const playerTotals = isBot ? undefined : await getPlayerTotals(req.params.tag)
+    const brawlersCount = await getBrawlersCount()
 
     const svg = await profileView.render(
       player,
       playerTotals,
+      brawlersCount,
       req.params.brawler,
       (req.query.background as string) ?? "BlueSkull_Default.jpg",
       process.env.MEDIA_URL!,
@@ -97,12 +116,14 @@ router.get(
 
     const isBot = isbot(req.headers['user-agent'] || '')
     const playerTotals = isBot ? undefined : await getPlayerTotals(req.params.tag)
+    const brawlersCount = await getBrawlersCount()
 
     const renderStart = performance.now()
 
     const svg = await profileView.render(
       player,
       playerTotals,
+      brawlersCount,
       req.params.brawler,
       (req.query.background as string) ?? "BlueSkull_Default.jpg",
       process.env.MEDIA_URL!,

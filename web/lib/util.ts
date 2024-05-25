@@ -332,16 +332,15 @@ export const ratingPercentiles = {
 
 export const tagPattern = new RegExp('^#?[0289PYLQGRJCUV]{3,}$')
 
-
-export function calculateAccountRating(player: Player, totalBrawlers: number) {
+export function calculateAccountRating(player: Player, brawlersCount: number) {
   const brawlersUnlocked = Object.keys(player.brawlers).length
   const brawlerTrophies = [...Object.values(player.brawlers)]
     .map(({ trophies }) => trophies)
     .sort()
   const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
-  const trophiesGoal = medBrawlerTrophies * totalBrawlers
+  const trophiesGoal = medBrawlerTrophies * brawlersCount
   let rating = '?'
-  const medTrophies = trophiesGoal / totalBrawlers
+  const medTrophies = trophiesGoal / brawlersCount
   for (const key in ratingPercentiles) {
     if (medTrophies <= ratingPercentiles[key as keyof typeof ratingPercentiles][1]) {
       rating = key
@@ -356,9 +355,7 @@ export function calculateAccountRating(player: Player, totalBrawlers: number) {
   }
 }
 
-export const totalBrawlers = 73 // TODO get from an API
-
-export const calculateMoe = (sample: number) => {
+export const calculateMoe = (sample: number, total: number) => {
   // margin of error
   // moe = z * standard error
   // for binomial (normal approximation):
@@ -366,7 +363,7 @@ export const calculateMoe = (sample: number) => {
   // worst case, p=50%
   // best case, n = sample / brawlers
   // (assumes we are slicing Brawlers)
-  return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / totalBrawlers))
+  return 1.68 * Math.sqrt(0.5 * (1 - 0.5) / (sample / total))
 }
 
 export const rateMoe = (moe: number) => {

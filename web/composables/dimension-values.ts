@@ -212,3 +212,8 @@ export function useAllBrawlers() {
     .sort((b1, b2) => b1.name.localeCompare(b2.name, i18n.locale.value))
   )
 }
+
+export function useAllBrawlersCount() {
+  const brawlers = useAllBrawlers()
+  return computed(() => brawlers.value.length)
+}

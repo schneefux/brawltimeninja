@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { totalBrawlers } from '~/lib/util'
 import { Player } from '~/model/Api'
 
 interface StoredPlayer {
@@ -9,7 +8,6 @@ interface StoredPlayer {
 
 interface State {
   featuredPlayers: StoredPlayer[]
-  totalBrawlers: number
   player: Player|undefined
 }
 
@@ -37,7 +35,6 @@ export const useBrawlstarsStore = defineStore('brawlstars', {
         tag: 'QRUQQLV0',
         name: 'CG |Nukleo',
       } ],
-    totalBrawlers: totalBrawlers,
     player: undefined,
   }),
   actions: {

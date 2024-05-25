@@ -29,6 +29,7 @@ import { CubeResponse } from '@schneefux/klicker/types'
 import { VCardWrapper } from '@schneefux/klicker/components'
 import { VisualisationProps } from '@schneefux/klicker/props'
 import { calculateMoe, rateMoe } from '~/lib/util'
+import { useAllBrawlersCount } from '~/composables/dimension-values'
 
 export default defineComponent({
   components: {
@@ -38,11 +39,13 @@ export default defineComponent({
     ...VisualisationProps,
   },
   setup(props) {
+    const brawlersCount = useAllBrawlersCount()
+
     const moe = computed((): number => {
       const sample = (<CubeResponse>props.response).data
         .map(c => c.metricsRaw.picks as number)
         .reduce((agg, p) => agg + p, 0)
-      return calculateMoe(sample)
+      return calculateMoe(sample, brawlersCount.value)
     })
     const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')
     const moeRating = computed(() => rateMoe(moe.value))

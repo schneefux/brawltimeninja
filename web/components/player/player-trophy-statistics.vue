@@ -31,7 +31,7 @@
       hide-empty
     >
       <b-bigstat
-        v-if="accountRating != undefined && accountRating.brawlersUnlocked < totalBrawlers"
+        v-if="accountRating != undefined && accountRating.brawlersUnlocked < brawlersCount"
         :title="$t('metric.potentialTrophies')"
         :value="Math.floor(accountRating.trophiesGoal).toLocaleString()"
         :tooltip="$t('metric.potentialTrophies.subtext')"
@@ -105,7 +105,7 @@ import { calculateAccountRating, ratingPercentiles } from '~/lib/util'
 import { PlayerTotals } from '~/stores/brawlstars'
 import { BBigstat, BScrollingDashboard, BDashboardCell } from '@schneefux/klicker/components'
 import { computed, defineComponent, PropType } from 'vue'
-import { useBrawlstarsStore } from '~/stores/brawlstars'
+import { useAllBrawlersCount } from '~/composables/dimension-values'
 
 export default defineComponent({
   components: {
@@ -128,16 +128,14 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useBrawlstarsStore()
-
-    const totalBrawlers = computed<number>(() => store.totalBrawlers)
-    const accountRating = computed(() => props.player != undefined ? calculateAccountRating(props.player, totalBrawlers.value) : undefined)
+    const brawlersCount = useAllBrawlersCount()
+    const accountRating = computed(() => props.player != undefined ? calculateAccountRating(props.player, brawlersCount.value) : undefined)
 
     const hasPlayerTotals = computed(() => props.playerTotals != undefined && props.playerTotals.picks > 0)
 
     return {
       accountRating,
-      totalBrawlers,
+      brawlersCount,
       ratingPercentiles,
       hasPlayerTotals,
     }

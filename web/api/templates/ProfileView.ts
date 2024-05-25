@@ -5,7 +5,7 @@ import path from "path";
 import os from "os";
 import crypto from "crypto";
 import { Player } from "~/model/Api";
-import { calculateAccountRating, totalBrawlers, xpToHours } from "../../lib/util";
+import { calculateAccountRating, xpToHours } from "../../lib/util";
 import { PlayerTotals } from "~/stores/brawlstars";
 import { fetch, Agent } from "undici";
 
@@ -79,6 +79,7 @@ export default class ProfileView {
   async render(
     player: Player,
     playerTotals: PlayerTotals | undefined,
+    brawlersCount: number,
     brawlerId: string | 'best',
     backgroundFilename: string,
     mediaUrl: string,
@@ -110,7 +111,7 @@ export default class ProfileView {
         : []),
     ];
 
-    const accountRating = calculateAccountRating(player, totalBrawlers);
+    const accountRating = calculateAccountRating(player, brawlersCount);
 
     // Icons are either Brawl Stars' or icons8 "stickers" style
     const stats = [
