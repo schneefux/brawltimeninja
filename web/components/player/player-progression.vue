@@ -71,9 +71,9 @@ import { useI18n } from 'vue-i18n'
 import goldCoinIcon from '~/assets/images/icon/gold_coin.png'
 import blingIcon from '~/assets/images/icon/icon_bling.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
-import starPowerIcon from '~/assets/images/icon/starpower_optimized.png'
+import starPowerIcon from '~/assets/images/icon/SP_base@4x.png'
 import gearIcon from '~/assets/images/icon/gear_icon.png'
-import fastForwardGadgetIcon from '~/assets/images/icon/fast_forward_gadget.png'
+import gadgetIcon from '~/assets/images/icon/Gadget.png'
 import shellyIcon from '~/assets/images/icon/shelly.png'
 
 interface Progression {
@@ -132,7 +132,7 @@ export default defineComponent({
         max: maxStats.counts.starPower,
       }, {
         metric: i18n.t('gadget', 2),
-        icon: fastForwardGadgetIcon,
+        icon: gadgetIcon,
         current: stats.counts.gadget,
         max: maxStats.counts.gadget,
       }, {
