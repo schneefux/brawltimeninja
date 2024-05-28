@@ -227,6 +227,36 @@
     <ad lazy></ad>
 
     <b-page-section
+      id="progression"
+      ref="progressionSection"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('progression'),
+        once: true,
+      }"
+      :title="$t('player.progression.title')"
+      lazy
+    >
+      <p class="mt-4 prose dark:prose-invert w-full">
+        {{ $t('player.progression.description') }}
+      </p>
+
+      <b-shimmer
+        v-if="player == undefined"
+        class="mt-8"
+        height-px="112"
+        loading
+      ></b-shimmer>
+      <player-progression
+        v-else
+        :player="player"
+        class="mt-8"
+        @interact="trackInteraction('progression')"
+      ></player-progression>
+    </b-page-section>
+
+    <ad lazy></ad>
+
+    <b-page-section
       id="records"
       ref="recordsSection"
       v-observe-visibility="{
@@ -322,6 +352,7 @@ export default defineComponent({
       battlesSection: ref<InstanceType<typeof BPageSection>>(),
       modesSection: ref<InstanceType<typeof BPageSection>>(),
       brawlersSection: ref<InstanceType<typeof BPageSection>>(),
+      progressionSection: ref<InstanceType<typeof BPageSection>>(),
     }
 
     const sections = computed(() => [{
@@ -356,6 +387,10 @@ export default defineComponent({
       id: 'modes',
       title: i18n.t('mode', 2),
       element: sectionRefs.modesSection.value?.$el,
+    }, {
+      id: 'progression',
+      title: i18n.t('player.progression.title'),
+      element: sectionRefs.progressionSection.value?.$el,
     }, {
       id: 'records',
       title: i18n.t('player.records.title'),

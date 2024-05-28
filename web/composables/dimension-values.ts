@@ -217,3 +217,69 @@ export function useAllBrawlersCount() {
   const brawlers = useAllBrawlers()
   return computed(() => brawlers.value.length)
 }
+
+function useAllBrawlersAccessories(accessoryKind: 'gears'|'gadgets'|'starpowers') {
+  const keys = {
+    'gears': 'gear',
+    'gadgets': 'gadget',
+    'starpowers': 'starpower',
+  } as const
+
+  const $klicker = useKlicker()
+  const i18n = useI18n()
+
+  const acessories = useAsync<{ brawler: BrawlerMetadata, accessory: BrawlerMetadata }[]>(async () => {
+    const singular = keys[accessoryKind]
+
+    const data = await $klicker.query({
+      cubeId: 'battle',
+      dimensionsIds: ['brawler', singular],
+      metricsIds: [],
+      slices: {
+        season: [formatClickhouseDate(getMonthSeasonEnd())],
+        [singular + 'IdNeq']: ['0'],
+      },
+      sortId: 'picks',
+    })
+
+    return data.data
+      .map(b => ({
+        brawler: b.dimensionsRaw.brawler.brawler,
+        accessory: b.dimensionsRaw[singular][singular + 'Name'],
+      }))
+      .map(b => ({
+        brawler: {
+          brawlstarsId: b.brawler,
+          name: capitalizeWords(b.brawler.toLowerCase()),
+          slug: brawlerId({ name: b.brawler }),
+        },
+        accessory: {
+          brawlstarsId: b.accessory,
+          name: capitalizeWords(b.accessory.toLowerCase()),
+          slug: brawlerId({ name: b.accessory }),
+        }
+      }))
+  }, 'all-accessories-' + accessoryKind)
+
+  return computed(() => (acessories.value ?? [])
+    .slice()
+    .sort((a1, a2) => `${a1.brawler.name} ${a1.accessory.name}`.localeCompare(`${a2.brawler.name} ${a2.accessory.name}`, i18n.locale.value))
+  )
+}
+
+export function useAllBrawlersWithAllAccessories() {
+  const brawlers = useAllBrawlers()
+  const gadgets = useAllBrawlersAccessories('gadgets')
+  const starpowers = useAllBrawlersAccessories('starpowers')
+  const gears = useAllBrawlersAccessories('gears')
+
+  return computed(() => brawlers.value.map(b => ({
+    ...b,
+    gadgets: gadgets.value.filter(g => g.brawler.brawlstarsId == b.brawlstarsId),
+    starpowers: starpowers.value.filter(g => g.brawler.brawlstarsId == b.brawlstarsId),
+    gears: gears.value
+      .filter(g => !(g.brawler.name == 'Colt' && g.accessory.name == 'Super Charge')) // FIXME remove, API reported 4 battles with gear that does not exist
+      .filter(g => g.brawler.brawlstarsId == b.brawlstarsId),
+  }))
+  )
+}

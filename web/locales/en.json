@@ -636,5 +636,10 @@
     "tier-list.ranked.description": "Brawl Stars' Ranked is a competitive mode unlocked at 1000 Trophies. Participate in unlimited 3v3 matches and reap rewards based on your performance. Use the statistics below to maximize your winning odds with win rates for all Ranked maps by finding the best Brawlers for your team.",
     "tier-list.ranked.meta.title": "Ranked Maps",
     "tier-list.ranked.meta.description": "Brawl Stars Ranked Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all Ranked maps and improve your draft.",
-    "action.open.tier-list.ranked": "Open Ranked Tier List"
+    "action.open.tier-list.ranked": "Open Ranked Tier List",
+    "player.progression.title": "Progression",
+    "player.progression.description": "Calculate coins needed for a fully maxed account and season end rewards.",
+    "player.progression.coins-to-max": "Coins to Max",
+    "player.progression.reward": "Reward",
+    "player.progression.season-end": "Season End"
 }

@@ -11,6 +11,14 @@
         DEV
       </span>
     </template>
+    <template
+      v-if="player.tag == '#8JVV9GVRQ'"
+      v-slot:preview
+    >
+      <span class="text-primary-400 border-2 border-primary-400 rounded-full px-2 -my-1 font-black">
+        SUPPORTER
+      </span>
+    </template>
 
     <template v-slot:content>
       <div class="flex flex-col md:flex-row gap-8">

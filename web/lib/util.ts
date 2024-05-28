@@ -66,7 +66,7 @@ export function xpToHours(xp: number) {
  * @param num number
  * @param digits digits after comma
  */
-export function formatSI(num: number, digits: number) {
+export function formatSI(num: number, digits: number = 0) {
   const si = [
     { value: 1, symbol: '' },
     { value: 1E3, symbol: 'k' },
@@ -79,9 +79,19 @@ export function formatSI(num: number, digits: number) {
       break
     }
   }
-  return Math.round(num / si[i].value)
-    .toFixed(digits)
-    .replace(rx, '$1') + si[i].symbol
+
+  const number = parseFloat(
+    (num / si[i].value)
+      .toFixed(digits)
+      .replace(rx, '$1')
+  )
+  const symbol = si[i].symbol
+
+  return {
+    number,
+    symbol,
+    formatted: number + symbol,
+  }
 }
 
 const propPriority = ['winRateAdj', 'winRate', 'wins', 'rank1', 'duration', 'useRate', 'pickRate']
@@ -401,3 +411,83 @@ export const rateGini = (gini: number) => {
   }
   return 'balanced'
 }
+
+export const calculatePlayerProgression = (player: Player) => {
+  return calculateProgression(Object.values(player.brawlers).map(brawler => ({
+    power: brawler.power,
+    starPowersCount: brawler.starPowers.length,
+    gadgetsCount: brawler.gadgets.length,
+    gearNames: brawler.gears.map(gear => gear.name),
+  })))
+}
+
+export const calculateProgression = (brawlers: {
+  power: number,
+  starPowersCount: number,
+  gadgetsCount: number,
+  gearNames: string[],
+}[]) => {
+  const rareGears = ['SPEED', 'HEALTH', 'DAMAGE', 'VISION', 'SHIELD', 'GADGET CHARGE'];
+  const epicGears = ['RELOAD SPEED', 'SUPER CHARGE', 'PET POWER'];
+  const brawlerUpgradeCost = [0, 20, 55, 130, 270, 560, 1040, 1840, 3090, 4965, 7765];
+
+  const sum = (a: number, b: number) => a + b;
+  const brawler = brawlers.map(brawler =>
+    brawlerUpgradeCost[brawler.power - 1]
+  ).reduce(sum, 0)
+  const starPower = brawlers.map(brawler =>
+    brawler.starPowersCount * 2000
+  ).reduce(sum, 0)
+  const gadget = brawlers.map(brawler =>
+    brawler.gadgetsCount * 1000
+  ).reduce(sum, 0)
+  const gear = brawlers.flatMap(brawler =>
+    brawler.gearNames.map(id => {
+      if (rareGears.includes(id)) {
+        return 1000;
+      } else if (epicGears.includes(id)) {
+        return 1500;
+      } else {
+        return 2000;
+      }
+    })
+  ).reduce(sum, 0);
+
+  const total = brawler + starPower + gadget + gear;
+
+  return {
+    coins: {
+      brawler,
+      starPower,
+      gadget,
+      gear,
+      total
+    },
+    counts: {
+      brawler: brawlers.length,
+      starPower: brawlers.map(brawler => brawler.starPowersCount).reduce(sum, 0),
+      gadget: brawlers.map(brawler => brawler.gadgetsCount).reduce(sum, 0),
+      gear: brawlers.map(brawler => brawler.gearNames.length).reduce(sum, 0),
+    },
+  };
+}
+
+export const calculateSeasonEndReward = (player: Player) => {
+  return Object.values(player.brawlers)
+    .map(brawler => Math.min(Math.max(brawler.trophies, 500), 1500))
+    .sort((a, b) => b - a)
+    .slice(0, Math.min(Object.keys(player.brawlers).length, 10))
+    .reduce((acc, trophies) => {
+      if (trophies < 500) {
+        return acc;
+      }
+
+      const trophiesToLose = (trophies % 25) + (trophies >= 525 ? 1 : 0);
+      const blingReward = Math.floor((trophies - 450) / 25) * 2;
+
+      return {
+        reward: acc.reward + blingReward,
+        trophies: acc.trophies - trophiesToLose,
+      };
+    }, { reward: 0, trophies: 0 });
+};

@@ -104,6 +104,7 @@ declare module 'vue' {
     PlayerModeCard: typeof import('./components/player/player-mode-card.vue')['default']
     PlayerModeWinrates: typeof import('./components/player/player-mode-winrates.vue')['default']
     PlayerPercentiles: typeof import('./components/player/player-percentiles.vue')['default']
+    PlayerProgression: typeof import('./components/player/player-progression.vue')['default']
     PlayerRankTable: typeof import('./components/player/player-rank-table.vue')['default']
     PlayerSharepicEditor: typeof import('./components/player/player-sharepic-editor.vue')['default']
     PlayerTimeStatistics: typeof import('./components/player/player-time-statistics.vue')['default']
