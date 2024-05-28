@@ -64,9 +64,9 @@ export function xpToHours(xp: number) {
 /**
  * Suffix num with SI unit
  * @param num number
- * @param digits digits after comma
+ * @param digits total digits to show
  */
-export function formatSI(num: number, digits: number = 0) {
+export function formatSI(num: number, digits: number = 3) {
   const si = [
     { value: 1, symbol: '' },
     { value: 1E3, symbol: 'k' },
@@ -80,11 +80,11 @@ export function formatSI(num: number, digits: number = 0) {
     }
   }
 
-  const number = parseFloat(
-    (num / si[i].value)
-      .toFixed(digits)
-      .replace(rx, '$1')
-  )
+  const siNum = num / si[i].value
+  const siNumDigits = Math.floor(siNum).toString().length
+  const number = parseFloat(siNum
+    .toFixed(Math.max(0, digits - siNumDigits))
+    .replace(rx, '$1'))
   const symbol = si[i].symbol
 
   return {

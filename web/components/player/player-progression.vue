@@ -141,8 +141,8 @@ export default defineComponent({
         current: stats.counts.gear,
         max: maxStats.counts.gear,
       }].map(p => {
-        const currentFormatted = formatSI(p.current, 3)
-        const maxFormatted = formatSI(p.max, 3)
+        const currentFormatted = formatSI(p.current)
+        const maxFormatted = formatSI(p.max)
         return {
           ...p,
           currentFormatted: format(currentFormatted.number) + currentFormatted.symbol,
