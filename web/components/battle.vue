@@ -14,7 +14,7 @@
           >
             {{ battle.trophyChange > 0 ? '+' : ''}}{{ battle.trophyChange }}
             <img
-              :src="isPowerplay ? powerPlayIcon : trophyIcon"
+              :src="battle.ranked ? powerPlayIcon : trophyIcon"
               class="w-4 inline"
             />
           </span>
@@ -47,14 +47,14 @@
             @click.stop
           >
             <span
-              v-if="mate.brawlerTrophies != undefined"
+              v-if="mate.brawlerRank != undefined || mate.brawlerTrophies != undefined"
               class="h-4 flex"
             >
               <img
                 class="mr-1 h-4 py-px object-contain"
-                :src="isPowerplay ? powerPlayIcon : trophyIcon"
+                :src="mate.brawlerRank ? rankIcons[mate.brawlerRank.league] : trophyIcon"
               >
-              {{ mate.brawlerTrophies }}
+              {{ mate.brawlerRank?.leagueSub ?? mate.brawlerTrophies }}
               {{ mate.isBigbrawler ? '💀' : '' }}
             </span>
             <media-img
@@ -77,9 +77,26 @@
 
 <script lang="ts">
 import { Battle } from '~/model/Api'
-import { computed, defineComponent, PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import powerPlayIcon from '~/assets/images/icon/power_play_optimized.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
+import bronzeRankIcon from '~/assets/images/icon/ranks/rank_bronze.png'
+import silverRankIcon from '~/assets/images/icon/ranks/rank_silver.png'
+import goldRankIcon from '~/assets/images/icon/ranks/rank_gold.png'
+import diamondRankIcon from '~/assets/images/icon/ranks/rank_diamond.png'
+import mythicRankIcon from '~/assets/images/icon/ranks/rank_mythic.png'
+import legendaryRankIcon from '~/assets/images/icon/ranks/rank_legendary.png'
+import mastersRankIcon from '~/assets/images/icon/ranks/rank_masters.png'
+
+const rankIcons = {
+  'Bronze': bronzeRankIcon,
+  'Silver': silverRankIcon,
+  'Gold': goldRankIcon,
+  'Diamond': diamondRankIcon,
+  'Mythic': mythicRankIcon,
+  'Legendary': legendaryRankIcon,
+  'Masters': mastersRankIcon,
+} as const
 
 export default defineComponent({
   props: {
@@ -93,17 +110,11 @@ export default defineComponent({
       default: [],
     },
   },
-  setup(props) {
-    const isPowerplay = computed(() => {
-      // TODO receive this from backend
-      return props.battle.victory != undefined && props.battle.trophyChange != undefined
-        && (props.battle.victory && props.battle.trophyChange > 11 || !props.battle.victory && props.battle.trophyChange > 3)
-    })
-
+  setup() {
     return {
-      isPowerplay,
       powerPlayIcon,
       trophyIcon,
+      rankIcons,
     }
   },
 })

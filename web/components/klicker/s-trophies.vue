@@ -25,13 +25,13 @@ export default defineComponent({
       get() {
         return {
           gte: parseInt(props.modelValue.trophyRangeGte?.[0] as string) || undefined,
-          lt: parseInt(props.modelValue.trophyRangeLt?.[0] as string) || undefined,
+          lte: parseInt(props.modelValue.trophyRangeLte?.[0] as string) || undefined,
         }
       },
-      set(v: { gte?: number, lt?: number }) {
+      set(v: { gte?: number, lte?: number }) {
         props.onInput({
           trophyRangeGte: v.gte != undefined ? [v.gte.toString()] : [],
-          trophyRangeLt: v.lt != undefined ? [v.lt.toString()] : [],
+          trophyRangeLte: v.lte != undefined ? [v.lte.toString()] : [],
         })
       }
     })

@@ -1419,11 +1419,11 @@ const brawlerSlices = asSlice({
       operator: 'gte',
     },
   },
-  trophyRangeLt: {
-    id: 'trophyRangeLt',
+  trophyRangeLte: {
+    id: 'trophyRangeLte',
     config: {
       member: 'trophyRange_dimension',
-      operator: 'lt',
+      operator: 'lte',
     },
   },
   powerGte: {
@@ -1611,7 +1611,7 @@ const brawlerBattleSlices = [
   commonSlices.season,
   commonSlices.seasonExact,
   commonSlices.trophyRangeGte,
-  commonSlices.trophyRangeLt,
+  commonSlices.trophyRangeLte,
   commonSlices.brawler,
   commonSlices.notBrawler,
 ]
@@ -1671,7 +1671,7 @@ const playerBrawlerSlices = [
   commonSlices.season,
   commonSlices.seasonExact,
   commonSlices.trophyRangeGte,
-  commonSlices.trophyRangeLt,
+  commonSlices.trophyRangeLte,
   commonSlices.brawlerId,
   commonSlices.brawler,
   commonSlices.notBrawler,

@@ -491,3 +491,16 @@ export const calculateSeasonEndReward = (player: Player) => {
       };
     }, { reward: 0, trophies: 0 });
 };
+
+export const formatLeagueRanks = (rank: number) => {
+  // min rank: 1, max rank: 19
+  const leagues = ['Bronze', 'Silver', 'Gold', 'Diamond', 'Mythic', 'Legendary', 'Masters']
+  const league = leagues[Math.floor((rank - 1) / 3)]
+  const leagueSub = ['I', 'II', 'III'][(rank - 1) % 3]
+
+  return {
+    league,
+    leagueSub,
+    formatted: `${league} ${rank < 19 ? leagueSub : ''}`
+  }
+}

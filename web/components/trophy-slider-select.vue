@@ -2,6 +2,7 @@
   <range-slider-select
     v-model="value"
     :name="name == 'playerTrophies' ? $t('metric.playerTrophies') : ''"
+    :min="min"
     :max="max"
     :format="format"
   ></range-slider-select>
@@ -9,11 +10,12 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
+import { formatLeagueRanks } from '~/lib/util'
 
 export default defineComponent({
   props: {
     modelValue: {
-      type: Object as PropType<{ gte?: number, lt?: number }>,
+      type: Object as PropType<{ gte?: number, lte?: number }>,
       required: true,
     },
     name: {
@@ -22,38 +24,39 @@ export default defineComponent({
     },
   },
   emits: {
-    ['update:modelValue'](value: { gte?: number, lt?: number }) { return true },
+    ['update:modelValue'](value: { gte?: number, lte?: number }) { return true },
   },
   setup(props, { emit }) {
     const format = computed(() => {
       if (props.name == 'playerLeague') {
-        const leagues = ['Bronze', 'Silver', 'Gold', 'Diamond', 'Mythic', 'Legendary', 'Masters']
-        return (n?: number) => n == undefined ? '' : `${leagues[Math.floor(n/3)]} ${n < max.value ? ['I', 'II', 'III'][n%3] : ''}`
+        return (n?: number) => n == undefined ? '' : formatLeagueRanks(n).formatted
       } else {
         return (n?: number) => n == undefined ? '' : n * 100 + (n == max.value ? '+' : '')
       }
     })
 
-    const max = computed(() => props.name == 'playerTrophies' ? 15 : 18)
+    const min = computed(() => props.name == 'playerTrophies' ? 0 : 1)
+    const max = computed(() => props.name == 'playerTrophies' ? 15 : 19)
 
     const value = computed({
       get() {
-        const gte = props.modelValue.gte || 0
-        const lt = props.modelValue.lt || max.value
-        return [gte, lt]
+        const gte = props.modelValue.gte || min.value
+        const lte = props.modelValue.lte || max.value
+        return [gte, lte]
       },
       set(e: number[]) {
-        const gte = e[0] > 0 ? { gte: e[0] } : {}
-        const lt = e[1] < max.value ? { lt: e[1] } : {}
+        const gte = e[0] > min.value ? { gte: e[0] } : {}
+        const lte = e[1] < max.value ? { lte: e[1] } : {}
 
         emit('update:modelValue', {
           ...gte,
-          ...lt,
+          ...lte,
         })
       }
     })
 
     return {
+      min,
       max,
       format,
       value,

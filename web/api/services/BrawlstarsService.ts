@@ -1,4 +1,4 @@
-import { brawlerId, capitalize, parseApiTime, unformatMode } from '../../lib/util'
+import { brawlerId, capitalize, formatLeagueRanks, parseApiTime, unformatMode } from '../../lib/util'
 import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../../model/Brawlstars'
 import { Battle, Brawler, Player, ActiveEvent, ClubActivityStatistics } from '../../model/Api'
 import { request } from '../lib/request'
@@ -118,6 +118,8 @@ export default class BrawlstarsService {
   }
 
   private transformBattle(b: BattleLog['items'][0]): Battle {
+    const isRanked = b.battle.type == 'soloRanked' || b.battle.type == 'teamRanked'
+
     b.battle.teams?.forEach(t => {
       t.forEach(p => {
         // FIXME API bug 2022-07-11, brawler trophies may be -1
@@ -162,23 +164,21 @@ export default class BrawlstarsService {
     })
 
     const transformPlayer = (player: BattlePlayer|BattlePlayerMultiple) => {
+      const transformBrawler = (brawler: BattlePlayer['brawler'] | BattlePlayerMultiple['brawlers'][0]) => ({
+        tag: player.tag.replace('#', ''),
+        name: player.name,
+        brawler: brawlerId(brawler),
+        brawlerTrophies: brawler.trophies,
+        // 2024: For ranked games, brawler.trophies is the rank
+        brawlerRank: isRanked && brawler.trophies != undefined ? formatLeagueRanks(brawler.trophies) : undefined,
+        isBigbrawler: b.battle.bigBrawler === undefined ? false : b.battle.bigBrawler.tag == player.tag,
+      })
+
       if ('brawler' in player) {
-        return [{
-          tag: player.tag.replace('#', ''),
-          name: player.name,
-          brawler: brawlerId(player.brawler),
-          brawlerTrophies: player.brawler.trophies,
-          isBigbrawler: b.battle.bigBrawler === undefined ? false : b.battle.bigBrawler.tag == player.tag,
-        }]
+        return [transformBrawler(player.brawler)]
       }
       if ('brawlers' in player) {
-        return player.brawlers.map(brawler => ({
-          tag: player.tag.replace('#', ''),
-          name: player.name,
-          brawler: brawlerId(brawler),
-          brawlerTrophies: brawler.trophies,
-          isBigbrawler: b.battle.bigBrawler === undefined ? false : b.battle.bigBrawler.tag == player.tag,
-        }))
+        return player.brawlers.map(brawler => transformBrawler(brawler))
       }
       return []
     }
@@ -237,6 +237,7 @@ export default class BrawlstarsService {
 
     return {
       timestamp: parseApiTime(b.battleTime),
+      ranked: isRanked,
       event: b.event,
       result,
       victory,

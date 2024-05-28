@@ -25,6 +25,7 @@ export interface Brawler {
 
 export interface Battle {
   timestamp: Date;
+  ranked: boolean;
   event: {
     id: number;
     mode: string;
@@ -38,6 +39,12 @@ export interface Battle {
     name: string;
     brawler: string;
     brawlerTrophies: number;
+    brawlerRank: undefined|{
+      leagueIndex: number,
+      league: 'Bronze'|'Silver'|'Gold'|'Diamond'|'Mythic'|'Legendary'|'Masters',
+      leagueSub: 'I'|'II'|'III',
+      formatted: string,
+    };
     isBigbrawler: boolean;
   }[][]
 }
