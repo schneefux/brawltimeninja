@@ -184,7 +184,7 @@ export default class ProfileView {
         unit: "Brawlers",
       },
       {
-        image: await this.readIcon("scrap_pile.png"),
+        image: await this.readIcon("gear_icon.png"),
         value: Object.values(player.brawlers).reduce(
           (count, brawler) => count + brawler.gears.length,
           0

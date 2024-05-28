@@ -72,7 +72,7 @@ import goldCoinIcon from '~/assets/images/icon/gold_coin.png'
 import blingIcon from '~/assets/images/icon/icon_bling.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import starPowerIcon from '~/assets/images/icon/starpower_optimized.png'
-import speedGearIcon from '~/assets/images/icon/speed_gear.png'
+import gearIcon from '~/assets/images/icon/gear_icon.png'
 import fastForwardGadgetIcon from '~/assets/images/icon/fast_forward_gadget.png'
 import shellyIcon from '~/assets/images/icon/shelly.png'
 
@@ -137,7 +137,7 @@ export default defineComponent({
         max: maxStats.counts.gadget,
       }, {
         metric: i18n.t('gear', 2),
-        icon: speedGearIcon,
+        icon: gearIcon,
         current: stats.counts.gear,
         max: maxStats.counts.gear,
       }].map(p => {
