@@ -15,7 +15,7 @@
       v-if="player.tag == '#8JVV9GVRQ'"
       v-slot:preview
     >
-      <span class="text-primary-400 border-2 border-primary-400 rounded-full px-2 -my-1 font-black">
+      <span class="text-transparent border-2 border-primary-400 rounded-full px-2 -my-1 bg-gradient-to-r from-primary-400 to-secondary-400 transition duration-300 ease-in-out bg-clip-text">
         SUPPORTER
       </span>
     </template>
@@ -270,3 +270,11 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="postcss" scoped>
+.rainbow-border {
+  background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+</style>
