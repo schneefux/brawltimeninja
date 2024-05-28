@@ -3,6 +3,15 @@
     :title="player.name"
     :loading="loading"
   >
+    <template
+      v-if="player.tag == '#V8LLPPC'"
+      v-slot:preview
+    >
+      <span class="text-primary-400 border-2 border-primary-400 rounded-full px-2 -my-1 font-black">
+        DEV
+      </span>
+    </template>
+
     <template v-slot:content>
       <div class="flex flex-col md:flex-row gap-8">
         <media-img
@@ -28,12 +37,6 @@
 
           <template v-slot:tag="{ value }">
             <span>{{ value }}</span>
-            <span
-              v-if="value == 'V8LLPPC'"
-              class="ml-1 text-xs text-yellow-400 border-2 border-yellow-400 rounded-lg px-1 font-black"
-            >
-              DEV
-            </span>
           </template>
 
           <template v-slot:club="{ row }">
