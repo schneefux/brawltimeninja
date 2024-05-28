@@ -82,7 +82,7 @@
         v-if="visible"
         id="vm-av"
         data-format="isvideo"
-        class="aspect-video vm-placement"
+        class="aspect-video max-w-lg vm-placement"
       ></div>
       <template v-slot:placeholder>
         <div class="aspect-video vm-placement"></div>
