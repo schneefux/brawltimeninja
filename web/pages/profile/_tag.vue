@@ -54,24 +54,6 @@
     </b-page-section>
 
     <b-page-section
-      id="trophy"
-      ref="trophySection"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('trophies'),
-        once: true,
-      }"
-      :title="$t('player.trophy-statistics')"
-      lazy
-    >
-      <player-trophy-statistics
-        :player="player"
-        :player-tag="playerTag"
-        :player-totals="playerTotals"
-        @interact="trackInteraction('trophies')"
-      ></player-trophy-statistics>
-    </b-page-section>
-
-    <b-page-section
       id="info"
       v-observe-visibility="{
         callback: makeVisibilityCallback('info'),
@@ -90,6 +72,43 @@
         v-if="player != undefined && playerTotals != undefined"
         class="mt-8 max-w-md"
       ></review-card>
+    </b-page-section>
+
+    <b-page-section
+      id="sharepic"
+      ref="sharepicSection"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('sharepic'),
+        once: true,
+      }"
+      :title="$t('player.sharepic.title')"
+      lazy
+    >
+      <player-sharepic-editor
+        :player-tag="playerTag"
+        :player="player"
+        @interact="trackInteraction('sharepic')"
+      ></player-sharepic-editor>
+    </b-page-section>
+
+    <ad lazy></ad>
+
+    <b-page-section
+      id="trophy"
+      ref="trophySection"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('trophies'),
+        once: true,
+      }"
+      :title="$t('player.trophy-statistics')"
+      lazy
+    >
+      <player-trophy-statistics
+        :player="player"
+        :player-tag="playerTag"
+        :player-totals="playerTotals"
+        @interact="trackInteraction('trophies')"
+      ></player-trophy-statistics>
     </b-page-section>
 
     <ad lazy></ad>
@@ -120,42 +139,6 @@
         class="mt-4"
         @interact="trackInteraction('brawlers')"
       ></player-brawlers>
-    </b-page-section>
-
-    <ad lazy></ad>
-
-    <b-page-section
-      id="sharepic"
-      ref="sharepicSection"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('sharepic'),
-        once: true,
-      }"
-      :title="$t('player.sharepic.title')"
-      lazy
-    >
-      <player-sharepic-editor
-        :player-tag="playerTag"
-        :player="player"
-        @interact="trackInteraction('sharepic')"
-      ></player-sharepic-editor>
-    </b-page-section>
-
-    <b-page-section
-      id="quiz"
-      ref="quizSection"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('quiz'),
-        once: true,
-      }"
-      :title="$t('player.quiz.title')"
-      lazy
-    >
-      <client-only>
-        <quiz-card
-          @interact="trackInteraction('quiz')"
-        ></quiz-card>
-      </client-only>
     </b-page-section>
 
     <ad lazy></ad>
@@ -283,6 +266,25 @@
         @interact="trackInteraction('records')"
       ></player-percentiles>
     </b-page-section>
+
+    <ad lazy></ad>
+
+    <b-page-section
+      id="quiz"
+      ref="quizSection"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('quiz'),
+        once: true,
+      }"
+      :title="$t('player.quiz.title')"
+      lazy
+    >
+      <client-only>
+        <quiz-card
+          @interact="trackInteraction('quiz')"
+        ></quiz-card>
+      </client-only>
+    </b-page-section>
   </split-page>
 </template>
 
@@ -364,6 +366,10 @@ export default defineComponent({
       title: i18n.t('player.time-statistics'),
       element: sectionRefs.timeSection.value?.$el,
     }, {
+      id: 'sharepic',
+      title: i18n.t('player.sharepic.title'),
+      element: sectionRefs.sharepicSection.value?.$el,
+    }, {
       id: 'trophy',
       title: i18n.t('player.trophy-statistics'),
       element: sectionRefs.trophySection.value?.$el,
@@ -371,14 +377,6 @@ export default defineComponent({
       id: 'brawlers',
       title: i18n.t('brawler', 2),
       element: sectionRefs.brawlersSection.value?.$el,
-    }, {
-      id: 'sharepic',
-      title: i18n.t('player.sharepic.title'),
-      element: sectionRefs.sharepicSection.value?.$el,
-    }, {
-      id: 'quiz',
-      title: i18n.t('player.quiz.title'),
-      element: sectionRefs.quizSection.value?.$el,
     }, {
       id: 'battles',
       title: i18n.t('battle-log'),
@@ -395,6 +393,10 @@ export default defineComponent({
       id: 'records',
       title: i18n.t('player.records.title'),
       element: sectionRefs.recordsSection.value?.$el,
+    }, {
+      id: 'quiz',
+      title: i18n.t('player.quiz.title'),
+      element: sectionRefs.quizSection.value?.$el,
     }])
 
     const playerTotalsFallback = computed(() => {
