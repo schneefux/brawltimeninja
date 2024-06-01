@@ -641,5 +641,6 @@
     "player.progression.description": "Calculate coins needed for a fully maxed account and season end rewards.",
     "player.progression.coins-to-max": "Coins to Max",
     "player.progression.reward": "Reward",
-    "player.progression.season-end": "Season End"
+    "player.progression.season-end": "Season End",
+    "gear": "Gear | Gears"
 }
