@@ -7,6 +7,7 @@ export interface Config {
   sentryDsn: string
   venatusSiteId: string
   quantcastChoiceId: string
+  enebaId: string
   traduora?: {
     url: string
     projectId: string
@@ -22,6 +23,7 @@ export const config: Config = {
   ga4Id: process.env.GA4_ID ?? '',
   venatusSiteId: process.env.VENATUS_SITE_ID ?? '',
   quantcastChoiceId: process.env.QUANTCAST_CHOICE_ID ?? '',
+  enebaId: process.env.ENEBA_ID ?? '',
   sentryDsn: process.env.SENTRY_DSN ?? '',
   traduora: undefined,
 }

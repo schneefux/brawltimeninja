@@ -84,14 +84,18 @@
       :title="$t('player.sharepic.title')"
       lazy
     >
-      <player-sharepic-editor
-        :player-tag="playerTag"
-        :player="player"
-        @interact="trackInteraction('sharepic')"
-      ></player-sharepic-editor>
-    </b-page-section>
+      <div class="flex flex-wrap justify-between items-center gap-8">
+        <player-sharepic-editor
+          :player-tag="playerTag"
+          :player="player"
+          @interact="trackInteraction('sharepic')"
+        ></player-sharepic-editor>
 
-    <ad lazy></ad>
+        <div>
+          <affiliate-ad></affiliate-ad>
+        </div>
+      </div>
+    </b-page-section>
 
     <b-page-section
       id="trophy"

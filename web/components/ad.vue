@@ -124,12 +124,13 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
-import { BDashboardCell } from '@schneefux/klicker/components'
+import { BDashboardCell, BPageSection } from '@schneefux/klicker/components'
 
 export default defineComponent({
   inheritAttrs: false,
   components: {
     BDashboardCell,
+    BPageSection,
   },
   props: {
     /** takeover and instream do not implement lazy-loading because they are usually ATF */

@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ProdigyLogo from '~/assets/images/prodigylogo.png'
+import ProdigyLogo from '~/assets/images/ads/prodigylogo.png'
 import { BCard, BButton } from '@schneefux/klicker/components'
 
 export default defineComponent({
