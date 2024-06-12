@@ -92,7 +92,7 @@
         ></player-sharepic-editor>
 
         <div>
-          <affiliate-ad></affiliate-ad>
+          <affiliate-card></affiliate-card>
         </div>
       </div>
     </b-page-section>

@@ -13,6 +13,7 @@ declare module 'vue' {
     AdblockBait: typeof import('./components/adblock-bait.vue')['default']
     Affiliate: typeof import('./components/affiliate.vue')['default']
     AffiliateAd: typeof import('./components/affiliate-ad.vue')['default']
+    AffiliateCard: typeof import('./components/affiliate-card.vue')['default']
     AiReport1: typeof import('./components/ai-report-1.vue')['default']
     AiReport2: typeof import('./components/ai-report-2.vue')['default']
     AppBottomNav: typeof import('./components/app-bottom-nav.vue')['default']

@@ -29,12 +29,6 @@ export default defineComponent({
   directives: {
     ObserveVisibility,
   },
-  props: {
-    siderail: {
-      type: Boolean,
-      default: false
-    },
-  },
   setup() {
     const { makeVisibilityCallback, trackInteraction } = useTrackScroll('affiliate-ad')
     const $config = useConfig()
@@ -50,87 +44,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.placeholder-takeover {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 336px;
-  height: 280px;
-}
-
-@media (min-width: 1028px) {
-  .placeholder-takeover {
-    max-width: 970px;
-    height: 250px;
-  }
-}
-
-.desktop-article {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 970px;
-  height: 90px;
-}
-
-.mobile-leaderboard {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 320px;
-  height: 100px;
-}
-
-.placeholder-banner {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 320px;
-  height: 100px;
-}
-
-@media (min-width: 1028px) {
-  .placeholder-banner {
-    max-width: 970px;
-    height: 90px;
-  }
-}
-
-.desktop-multileaderboard {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 970px;
-  height: 250px;
-}
-
-.desktop-side-rail {
-  width: 336px;
-  height: 600px;
-}
-
-.mobile-incontent {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 336px;
-  height: 280px;
-}
-
-.desktop-incontent {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 728px;
-  height: 280px;
-}
-
-.placeholder-section {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 336px;
-  height: 280px;
-}
-
-@media (min-width: 1028px) {
-  .placeholder-section {
-    max-width: 728px;
-    height: 280px;
-  }
-}
-</style>

@@ -189,6 +189,10 @@
       ></brawler-skins>
     </b-page-section>
 
+    <b-page-section lazy>
+      <affiliate-card></affiliate-card>
+    </b-page-section>
+
     <b-page-section
       id="pins"
       v-if="scrapedData == undefined || (scrapedData.pins != undefined && scrapedData.pins.length > 0)"
