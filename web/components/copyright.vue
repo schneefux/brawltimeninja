@@ -8,7 +8,6 @@
       </span>
     </p>
     <div class="flex flex-wrap justify-center items-center gap-x-3 gap-y-2">
-      <span>{{ $t('footer.support-me') }}</span>
       <div class="flex flex-wrap justify-center items-center gap-2">
         <b-button
           class="whitespace-nowrap"
