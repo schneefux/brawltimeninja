@@ -1,15 +1,12 @@
-import jwt from 'jsonwebtoken'
+import AuthService from '../services/AuthService'
 import { publicProcedure, router } from '../trpc'
 
-const cubeSecret = process.env.CUBEJS_API_SECRET || 'changeme'
+const authService = new AuthService()
 
 export const authRouter = router({
   getToken: publicProcedure
     .mutation(async () => {
       // not cached by CDN
-      // TODO: verify identity, e.g. by captcha
-      return jwt.sign({}, cubeSecret, {
-        expiresIn: '1h',
-      })
+      return authService.getToken()
     }),
 })

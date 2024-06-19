@@ -14,6 +14,7 @@ import { PlayerTotals } from "../../stores/brawlstars";
 import { TRPCError } from "@trpc/server";
 import { Player } from "~/model/Api";
 import StatsD from 'hot-shots'
+import AuthService from "../services/AuthService";
 const stats = new StatsD({ prefix: 'brawltime.api.' })
 
 const router = express.Router();
@@ -26,9 +27,14 @@ function asyncWrapper(fn: RequestHandler) {
 
 const profileView = new ProfileView();
 const brawlStarsApiService = new BrawlstarsService();
+const authService = new AuthService();
 const CUBE_URL = process.env.CUBE_URL
 
-const klickerService = new BrawltimeKlickerService(CUBE_URL, fetch);
+const klickerService = new BrawltimeKlickerService(
+  CUBE_URL,
+  () => authService.getToken(),
+  fetch
+);
 
 async function getPlayerTotals(tag: string) {
   return await klickerService.query({

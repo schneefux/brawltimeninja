@@ -8,8 +8,10 @@ import { publicProcedure, router } from '../trpc'
 import * as z from 'zod'
 import { TRPCError } from '@trpc/server'
 import { locales } from '~/locales'
+import AuthService from '../services/AuthService'
 
 let reportGeneratorService: ReportGeneratorService | undefined
+const authService = new AuthService();
 
 const CUBE_URL = process.env.CUBE_URL
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY
@@ -23,10 +25,14 @@ if (process.env.MYSQL_HOST && CUBE_URL != undefined && OPENAI_API_KEY != undefin
     headersTimeout: 30000,
   })
 
-  const klickerService = new BrawltimeKlickerService(CUBE_URL, (url, input) => fetch(url as string, {
-    ...input as any,
-    dispatcher: agent,
-  }) as any)
+  const klickerService = new BrawltimeKlickerService(
+    CUBE_URL,
+    () => authService.getToken(),
+    (url, input) => fetch(url as string, {
+      ...input as any,
+      dispatcher: agent,
+    }) as any
+  )
 
   reportGeneratorService = new ReportGeneratorService(OPENAI_API_KEY, knex, klickerService)
 } else {
