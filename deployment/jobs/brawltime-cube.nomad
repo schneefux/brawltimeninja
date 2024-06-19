@@ -1,5 +1,6 @@
 variable "github_user" {}
 variable "github_token" {}
+variable "cubejs_secret" {}
 
 # git hash or "latest"
 variable "tag" {}
@@ -117,6 +118,14 @@ job "brawltime-cube" {
         CUBEJS_DB_MAX_POOL = "128"
         CUBEJS_LOG_LEVEL = "info"
         CUBEJS_DB_QUERY_TIMEOUT = "2m"
+      }
+
+      template {
+        data = <<-EOF
+          CUBEJS_API_SECRET="${var.cubejs_secret}"
+        EOF
+        destination = "secrets/cubejs.env"
+        env = true
       }
 
       template {

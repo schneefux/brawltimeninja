@@ -123,7 +123,12 @@ export class KlickerService implements IKlickerService {
     this.metricRenderers = metricRenderers
   }
 
-  private updateCubeToken(token: string) {
+  private async updateCubeToken() {
+    const token = await this.tokenProvider()
+    if (token == undefined) {
+      throw new Error('No authentication token available')
+    }
+
     this.transport.authorization = token
   }
 
@@ -347,24 +352,21 @@ export class KlickerService implements IKlickerService {
    * Send a query to cube.js
    */
   protected async load(query: Query) {
+    if (this.transport.authorization == '') {
+      await this.updateCubeToken()
+    }
+
     try {
-      if (this.cubejsApi != undefined) {
+      return await this.cubejsApi.load(query)
+    } catch (e: any) {
+      if (e.status == 403) {
+        // token is expired, get a new one
+        await this.updateCubeToken()
         return await this.cubejsApi.load(query)
       }
-    } catch (e: any) {
-      if (e.status != 403) {
-        throw e
-      }
+
+      throw e
     }
-
-    const token = await this.tokenProvider()
-    if (token == undefined) {
-      throw new Error('No authentication token available')
-    }
-
-    this.updateCubeToken(token)
-
-    return await this.cubejsApi.load(query)
   }
 
   public async comparingQueryAsSerialized(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<SerializableCubeComparingResponse> {
