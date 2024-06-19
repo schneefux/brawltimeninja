@@ -2,11 +2,36 @@ import { computed, ref, MaybeRef, unref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { LocaleIso } from '~/locales'
 import { Locale, format, formatDistanceToNow } from 'date-fns'
-import { enUS, de, es, uk, it, ru, pl } from 'date-fns/locale'
+import { enUS, de, es, uk, it, ru, pl, bn, fi, fr, hi, ja, lt, nl, pt, sk, sv, tr, vi, zhCN, ptBR, cs, ko } from 'date-fns/locale'
 
 // unfortunately, these cannot be lazy-loaded,
 // they have to be available immediately as to not cause hydration mismatches
-const localeImportMap: Record<LocaleIso, Locale> = { en: enUS, de, es, uk, it, ru, pl, }
+const localeImportMap: Record<LocaleIso, Locale> = {
+  en: enUS,
+  de,
+  es,
+  uk,
+  it,
+  ru,
+  pl,
+  bn,
+  cn: zhCN,
+  br: ptBR,
+  cz: cs,
+  fi,
+  fr,
+  hi,
+  jp: ja,
+  kr: ko,
+  lt,
+  nl,
+  pt,
+  sk,
+  sv,
+  tr,
+  vi,
+  zh: zhCN
+}
 
 export const useDateFnLocale = () => {
   const i18n = useI18n()

@@ -135,7 +135,7 @@ When choosing a Brawler, you should take your own play style and the Brawlers yo
         const isUpToDate = daysSinceLastUpdate < 3
         const isLargeSample = sampleSize >= 50000
         const isReliable = isUpToDate && isLargeSample
-        const moeRaw = calculateMoe(totals.data[0].metricsRaw.picks as number)
+        const moeRaw = calculateMoe(sampleSize, totals.data[0].metricsRaw.picks as number)
         const moe = (moeRaw * 100).toFixed(2) + '%'
         const moeRating = rateMoe(moeRaw)
         const giniRaw = calculateGini(bestBrawlersResponse.data.map(b => b.metricsRaw.useRate as number))

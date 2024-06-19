@@ -4,8 +4,9 @@ import { createMemoryHistory, createRouter as _createRouter, createWebHistory, R
 // @ts-ignore
 import routes from '~pages'
 import { AppI18n } from './app'
-import { Config, PageContext } from './types'
+import { PageContext } from './types'
 import { getPathWithLocale, getSelfOrigin } from '~/composables/compat'
+import { Config } from '~/config'
 
 export { createRouter }
 
