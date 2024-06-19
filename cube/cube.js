@@ -11,6 +11,8 @@ module.exports = {
       max_threads: 1,
       output_format_json_quote_64bit_integers: 1,
       allow_experimental_window_functions: 1,
+      // maximum estimated execution time, in seconds
+      max_execution_time: 300,
     },
   }),
   apiSecret: process.env.CUBEJS_API_SECRET || 'secret',
