@@ -42,6 +42,7 @@
     "isbot": "^5.1.6",
     "js-cookie": "^3.0.5",
     "js-yaml": "^4.1.0",
+    "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
     "markdown-it": "^14.1.0",
     "mysql2": "^3.9.7",

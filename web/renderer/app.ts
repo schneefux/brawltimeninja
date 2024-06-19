@@ -94,6 +94,10 @@ function createApp(pageContext: PageContext) {
     cubeUrl: pageContext.envConfig.cubeUrl,
     managerUrl: pageContext.envConfig.managerUrl,
     translate: i18n.global.t,
+    tokenProvider: async () => {
+      const api = createTrpcClient(trpcOptions.serverOptions)
+      return await api.auth.getToken.mutate()
+    },
     router,
   }
   app.use(KlickerPlugin, klickerOptions)

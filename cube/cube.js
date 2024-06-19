@@ -15,9 +15,8 @@ module.exports = {
       max_execution_time: 300,
     },
   }),
-  apiSecret: process.env.CUBEJS_API_SECRET || 'secret',
+  apiSecret: process.env.CUBEJS_API_SECRET || 'changeme',
   telemetry: false,
-  checkAuth: (req, auth) => ({ securityContext: {} }),
   // TODO: set up datadog monitoring
   http: {
     cors: {

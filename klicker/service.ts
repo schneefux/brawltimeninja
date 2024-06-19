@@ -38,6 +38,7 @@ class CubeDoesNotMatchQueryError extends Error {}
 // adapted from https://github.com/cube-js/cube.js/blob/bd489cd7981dd94766f28ae4621fe993252d63c1/packages/cubejs-client-core/src/HttpTransport.js
 // removes dependency on cross-env, leave it up to the user
 class HttpTransport implements ITransport<ResultSet> {
+  authorization: string = ''
   apiUrl: string
   fetch: any
 
@@ -68,6 +69,7 @@ class HttpTransport implements ITransport<ResultSet> {
     const runRequest = () => this.fetch(url, {
       method: requestMethod,
       headers: {
+        Authorization: this.authorization,
         'x-request-id': baseRequestId && `${baseRequestId}-span-${spanCounter++}`,
         ...headers
       },
@@ -92,32 +94,37 @@ class HttpTransport implements ITransport<ResultSet> {
 
 export class KlickerService implements IKlickerService {
   private cubejsApi: CubeApi
+  private transport: HttpTransport
   public visualisations: VisualisationSpec[] = defaultVisualisations
   public staticWidgets: StaticWidgetSpec[] = defaultStaticWidgets
   public slicers: SlicerSpec[] = []
   public dimensionRenderers: DimensionRendererSpec[] = []
   public metricRenderers: MetricRendererSpec[] = []
 
-  constructor(cubeUrl: string,
+  constructor(
+      cubeUrl: string,
+      private tokenProvider: () => Promise<string|undefined>,
       public config: Config,
       visualisations: VisualisationSpec[],
       staticWidgets: StaticWidgetSpec[],
       slicers: SlicerSpec[],
       dimensionRenderers: DimensionRendererSpec[],
       metricRenderers: MetricRendererSpec[],
-      fetchImplementation: typeof fetch,
+      private fetchImplementation: typeof fetch,
   ) {
     const apiUrl = cubeUrl + '/cubejs-api/v1'
+    this.transport = new HttpTransport(apiUrl, this.fetchImplementation)
     // @ts-ignore
-    this.cubejsApi = new CubeApi('', {
-      apiUrl,
-      transport: new HttpTransport(apiUrl, fetchImplementation),
-    })
+    this.cubejsApi = new CubeApi('', { transport: this.transport })
     this.visualisations = defaultVisualisations.concat(visualisations)
     this.staticWidgets = defaultStaticWidgets.concat(staticWidgets)
     this.slicers = slicers
     this.dimensionRenderers = dimensionRenderers
     this.metricRenderers = metricRenderers
+  }
+
+  private updateCubeToken(token: string) {
+    this.transport.authorization = token
   }
 
   // override & extend
@@ -340,6 +347,23 @@ export class KlickerService implements IKlickerService {
    * Send a query to cube.js
    */
   protected async load(query: Query) {
+    try {
+      if (this.cubejsApi != undefined) {
+        return await this.cubejsApi.load(query)
+      }
+    } catch (e: any) {
+      if (e.status != 403) {
+        throw e
+      }
+    }
+
+    const token = await this.tokenProvider()
+    if (token == undefined) {
+      throw new Error('No authentication token available')
+    }
+
+    this.updateCubeToken(token)
+
     return await this.cubejsApi.load(query)
   }
 

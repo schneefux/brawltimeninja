@@ -11,7 +11,6 @@ declare module 'vue' {
     AccessoryTierListPage: typeof import('./components/accessory-tier-list-page.vue')['default']
     Ad: typeof import('./components/ad.vue')['default']
     AdblockBait: typeof import('./components/adblock-bait.vue')['default']
-    Affiliate: typeof import('./components/affiliate.vue')['default']
     AffiliateAd: typeof import('./components/affiliate-ad.vue')['default']
     AffiliateCard: typeof import('./components/affiliate-card.vue')['default']
     AiReport1: typeof import('./components/ai-report-1.vue')['default']

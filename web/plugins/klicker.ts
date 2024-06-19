@@ -12,11 +12,16 @@ interface Options {
   cubeUrl: string
   managerUrl: string
   translate: (key: string, args: any) => string
+  tokenProvider: () => Promise<string|undefined>
   router: Router
 }
 
 function createClient(options: Options) {
-  return new BrawltimeKlickerService(options.cubeUrl, import.meta.env.SSR ? fetch : window.fetch.bind(window)) // fetch requires window as `this`
+  return new BrawltimeKlickerService(
+    options.cubeUrl,
+    options.tokenProvider,
+    import.meta.env.SSR ? fetch : window.fetch.bind(window)
+  ) // fetch requires window as `this`
 }
 
 function install(app: App, options: Options) {

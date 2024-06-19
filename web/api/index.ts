@@ -10,8 +10,10 @@ import renderRouter from './routes/render'
 import klickerRouter from './routes/klicker'
 import etag from 'etag'
 import { reportRouter } from './routes/report'
+import { authRouter } from './routes/auth'
 
 const appRouter = router({
+  auth: authRouter,
   player: playerRouter,
   club: clubRouter,
   rankings: rankingsRouter,
