@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import wtf from "wtf_wikipedia";
 import wtfPluginApi from "wtf-plugin-api";
 import { JSDOM } from "jsdom";
@@ -24,7 +25,12 @@ async function queryKlicker(query) {
     query: JSON.stringify(query),
   });
   const json = await fetch(
-    "https://cube.brawltime.ninja/cubejs-api/v1/load?" + params.toString()
+    "https://cube.brawltime.ninja/cubejs-api/v1/load?" + params.toString(),
+    {
+      headers: {
+        Authorization: process.env.CUBEJS_API_SECRET,
+      },
+    },
   ).then((response) => response.json());
   return json["results"];
 }
