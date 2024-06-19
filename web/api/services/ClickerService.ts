@@ -18,6 +18,8 @@ export default class ClickerService {
         // player queries take about 25% longer than with 4 threads
         max_threads: 1,
         output_format_json_quote_64bit_integers: 1,
+        // maximum estimated execution time, in seconds
+        max_execution_time: 300,
       },
       // clickhouse allows only a single query per session!
     })
