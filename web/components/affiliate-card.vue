@@ -5,7 +5,6 @@
       once: true,
     }"
     :icon="GemsPack"
-    :link="`https://www.eneba.com/landing/brawl-stars?af_id=${enebaId}`"
     title="Offer: Gems and Brawl Pass"
     class="w-full max-w-md"
   >
@@ -17,6 +16,7 @@
     </template>
     <template v-slot:actions>
       <b-button
+        :href="`https://www.eneba.com/landing/brawl-stars?af_id=${enebaId}`"
         tag="a"
         rel="noopener noreferrer nofollow sponsored"
         target="_blank"
