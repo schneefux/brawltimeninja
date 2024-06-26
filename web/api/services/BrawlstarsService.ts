@@ -132,6 +132,8 @@ export default class BrawlstarsService {
           p.brawler.power = 0 // probably not correct
         }
 
+        // FIXME API bug 2024-06-26, Clancy name is null
+        p.brawler.name = p.brawler.name || 'Clancy'
         // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
         p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
       })
@@ -148,16 +150,22 @@ export default class BrawlstarsService {
         b.battle.starPlayer.brawler.power = 0 // probably not correct
       }
 
+      // FIXME API bug 2024-06-26, Clancy name is null
+      b.battle.starPlayer.brawler.name = b.battle.starPlayer.brawler.name || 'Clancy'
       // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
       b.battle.starPlayer.brawler.name = b.battle.starPlayer.brawler.name.replace(/\s/g, ' ')
     }
 
     b.battle.players?.forEach((p: BattlePlayer | BattlePlayerMultiple) => {
       if ('brawler' in p) {
+        // FIXME API bug 2024-06-26, Clancy name is null
+        p.brawler.name = p.brawler.name || 'Clancy'
         // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
         p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
       }
       if ('brawlers' in p) {
+        // FIXME API bug 2024-06-26, Clancy name is null
+        p.brawlers.forEach(b => b.name = b.name || 'Clancy')
         // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
         p.brawlers.forEach(b => b.name = b.name.replace(/\s/g, ' '))
       }
@@ -263,6 +271,8 @@ export default class BrawlstarsService {
     const battles = battleLog.items.filter(b => b.battle != undefined).map(b => this.transformBattle(b));
 
     player.brawlers.forEach(b => {
+      // FIXME API bug 2024-06-26, Clancy name is null
+      b.name = b.name || 'Clancy'
       // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
       b.name = b.name.replace(/\s/g, ' ')
     })
