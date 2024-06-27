@@ -4,6 +4,9 @@ import { Battle, Brawler, Player, ActiveEvent, ClubActivityStatistics } from '..
 import { request } from '../lib/request'
 import { StarlistEvent } from '../../model/Starlist'
 import ClickerService from './ClickerService'
+// curl https://api.brawlify.com/v1/brawlers | jq 'reduce .list[] as $item ({}; .[$item.id | tostring]=$item.name)'
+import BrawlerNamesMap from '~/api/lib/brawler-names.json'
+const BrawlerNames: Record<string, string> = BrawlerNamesMap
 
 const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v1/';
 const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
@@ -132,8 +135,8 @@ export default class BrawlstarsService {
           p.brawler.power = 0 // probably not correct
         }
 
-        // FIXME API bug 2024-06-26, Clancy name is null
-        p.brawler.name = p.brawler.name || 'Clancy'
+        // FIXME API bug 2024-06-26, Brawler names are null
+        p.brawler.name = p.brawler.name || BrawlerNames[p.brawler.id]
         // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
         p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
       })
@@ -150,22 +153,22 @@ export default class BrawlstarsService {
         b.battle.starPlayer.brawler.power = 0 // probably not correct
       }
 
-      // FIXME API bug 2024-06-26, Clancy name is null
-      b.battle.starPlayer.brawler.name = b.battle.starPlayer.brawler.name || 'Clancy'
+      // FIXME API bug 2024-06-26, Brawler names are null
+      b.battle.starPlayer.brawler.name = b.battle.starPlayer.brawler.name || BrawlerNames[b.battle.starPlayer.brawler.id]
       // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
       b.battle.starPlayer.brawler.name = b.battle.starPlayer.brawler.name.replace(/\s/g, ' ')
     }
 
     b.battle.players?.forEach((p: BattlePlayer | BattlePlayerMultiple) => {
       if ('brawler' in p) {
-        // FIXME API bug 2024-06-26, Clancy name is null
-        p.brawler.name = p.brawler.name || 'Clancy'
+        // FIXME API bug 2024-06-26, Brawler names are null
+        p.brawler.name = p.brawler.name || BrawlerNames[p.brawler.id]
         // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
         p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
       }
       if ('brawlers' in p) {
-        // FIXME API bug 2024-06-26, Clancy name is null
-        p.brawlers.forEach(b => b.name = b.name || 'Clancy')
+        // FIXME API bug 2024-06-26, Bralwer names are null
+        p.brawlers.forEach(b => b.name = b.name || BrawlerNames[b.id])
         // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
         p.brawlers.forEach(b => b.name = b.name.replace(/\s/g, ' '))
       }
@@ -271,8 +274,8 @@ export default class BrawlstarsService {
     const battles = battleLog.items.filter(b => b.battle != undefined).map(b => this.transformBattle(b));
 
     player.brawlers.forEach(b => {
-      // FIXME API bug 2024-06-26, Clancy name is null
-      b.name = b.name || 'Clancy'
+      // FIXME API bug 2024-06-26, Bralwer names are null
+      b.name = b.name || BrawlerNames[b.id]
       // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
       b.name = b.name.replace(/\s/g, ' ')
     })
