@@ -136,7 +136,7 @@ export default class BrawlstarsService {
         }
 
         // FIXME API bug 2024-06-26, Brawler names are null
-        p.brawler.name = p.brawler.name || BrawlerNames[p.brawler.id]
+        p.brawler.name = p.brawler.name || BrawlerNames[p.brawler.id].toUpperCase()
         // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
         p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
       })
@@ -154,7 +154,7 @@ export default class BrawlstarsService {
       }
 
       // FIXME API bug 2024-06-26, Brawler names are null
-      b.battle.starPlayer.brawler.name = b.battle.starPlayer.brawler.name || BrawlerNames[b.battle.starPlayer.brawler.id]
+      b.battle.starPlayer.brawler.name = b.battle.starPlayer.brawler.name || BrawlerNames[b.battle.starPlayer.brawler.id].toUpperCase()
       // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
       b.battle.starPlayer.brawler.name = b.battle.starPlayer.brawler.name.replace(/\s/g, ' ')
     }
@@ -162,13 +162,13 @@ export default class BrawlstarsService {
     b.battle.players?.forEach((p: BattlePlayer | BattlePlayerMultiple) => {
       if ('brawler' in p) {
         // FIXME API bug 2024-06-26, Brawler names are null
-        p.brawler.name = p.brawler.name || BrawlerNames[p.brawler.id]
+        p.brawler.name = p.brawler.name || BrawlerNames[p.brawler.id].toUpperCase()
         // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
         p.brawler.name = p.brawler.name.replace(/\s/g, ' ')
       }
       if ('brawlers' in p) {
         // FIXME API bug 2024-06-26, Bralwer names are null
-        p.brawlers.forEach(b => b.name = b.name || BrawlerNames[b.id])
+        p.brawlers.forEach(b => b.name = b.name || BrawlerNames[b.id].toUpperCase())
         // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
         p.brawlers.forEach(b => b.name = b.name.replace(/\s/g, ' '))
       }
@@ -275,7 +275,7 @@ export default class BrawlstarsService {
 
     player.brawlers.forEach(b => {
       // FIXME API bug 2024-06-26, Bralwer names are null
-      b.name = b.name || BrawlerNames[b.id]
+      b.name = b.name || BrawlerNames[b.id].toUpperCase()
       // FIXME API bug 2022-07-11, 'Colonel\nRuffs'
       b.name = b.name.replace(/\s/g, ' ')
     })
