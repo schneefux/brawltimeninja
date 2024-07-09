@@ -11,19 +11,19 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
-    "@koa/cors": "^4.0.0",
-    "koa": "^2.14.2",
+    "@koa/cors": "^5.0.0",
+    "koa": "^2.15.3",
     "resolve-path": "^1.4.0",
-    "sharp": "^0.32.6",
-    "typescript": "^5.2.2"
+    "sharp": "^0.33.4",
+    "typescript": "^5.5.3"
   },
   "devDependencies": {
-    "@types/koa": "^2.13.11",
-    "@types/koa__cors": "^4.0.3",
-    "@types/node": "^20.8.10",
+    "@types/koa": "^2.15.0",
+    "@types/koa__cors": "^5.0.0",
+    "@types/node": "^20.14.10",
     "@types/resolve-path": "^1.4.2",
     "@types/sharp": "^0.32.0",
-    "nodemon": "^3.0.1",
-    "ts-node": "^10.9.1"
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2"
   }
 }

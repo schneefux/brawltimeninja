@@ -1,5 +1,5 @@
 import type { PageContext } from './types'
-import Sentry from '@sentry/vue'
+import * as Sentry from '@sentry/vue'
 import { getTraduoraToken, TraduoraToken } from '~/locales'
 import { Dispatcher, Agent } from 'undici'
 import { config, Config } from '~/config'

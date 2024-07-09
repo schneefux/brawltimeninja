@@ -1,4 +1,4 @@
-FROM node:21 AS builder
+FROM node:22 AS builder
 ARG SENTRY_DSN=''
 ENV SENTRY_DSN=$SENTRY_DSN
 ARG SENTRY_ORG=''
@@ -20,7 +20,7 @@ RUN cat package.json
 COPY . .
 RUN yarn run build
 
-FROM node:21
+FROM node:22
 # use jemalloc to reduce memory consumption
 RUN apt-get update && apt-get install -y libjemalloc-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
 ENV LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libjemalloc.so"

@@ -7,7 +7,7 @@ const t = initTRPC.context<typeof createContext>().create({
   transformer: superjson,
 })
 const sentryMiddleware = t.middleware(
-  Sentry.Handlers.trpcMiddleware({
+  Sentry.trpcMiddleware({
     attachRpcInput: true,
   })
 )

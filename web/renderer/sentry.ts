@@ -7,7 +7,7 @@ import {
   extraErrorDataIntegration,
   reportingObserverIntegration,
   rewriteFramesIntegration,
-} from '@sentry/integrations'
+} from '@sentry/browser'
 
 export const SentryInjectionKey = Symbol('sentry') as InjectionKey<typeof Sentry>
 
@@ -27,7 +27,6 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
       httpClientIntegration(),
       Sentry.browserTracingIntegration({
         router,
-        tracePropagationTargets: ['localhost', /^https?:\/\/brawltime\.ninja/],
         enableInp: true,
       }),
       Sentry.browserProfilingIntegration(),
@@ -54,6 +53,7 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
     allowUrls: [/https?:\/\/brawltime\.ninja/],
     replaysSessionSampleRate: 0.0005,
     replaysOnErrorSampleRate: 0.01,
+    tracePropagationTargets: ['localhost', /^https?:\/\/brawltime\.ninja/],
     tracesSampleRate: 0.01,
     profilesSampleRate: 0.25, // relative to tracesSampleRate
     trackComponents: true,

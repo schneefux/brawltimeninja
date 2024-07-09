@@ -11,7 +11,7 @@ import {
   captureConsoleIntegration,
   extraErrorDataIntegration,
   rewriteFramesIntegration,
-} from '@sentry/integrations'
+} from '@sentry/browser'
 import { getHTTPStatusCodeFromError } from '@trpc/server/http'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -60,7 +60,6 @@ async function startServer() {
       return event
     },
   })
-  app.use(Sentry.Handlers.requestHandler())
 
   app.use(compression())
 
@@ -126,7 +125,7 @@ async function startServer() {
     res.send(body)
   })
 
-  app.use(Sentry.Handlers.errorHandler())
+  Sentry.setupExpressErrorHandler(app)
 
   if (import.meta.env.PROD) {
     const port = process.env.PORT || 3000

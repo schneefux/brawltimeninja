@@ -128,7 +128,7 @@ job "brawltime-web" {
         #QUANTCAST_CHOICE_ID = "Zj670A0xwScEY" # disabled in favor of Venatus Google CMP
         VENATUS_SITE_ID = "65e870e95daddd2733903a31"
         GA4_ID = "G-G5V3FPZG9Z"
-        ENEBA_ID = "BrawlTimeNinja"
+        #ENEBA_ID = "BrawlTimeNinja"
       }
 
       # FIXME containers do not respect host's DNS settings
