@@ -1,5 +1,6 @@
 <template>
   <b-card
+    v-if="enebaId"
     v-observe-visibility="{
       callback: makeVisibilityCallback('card'),
       once: true,
