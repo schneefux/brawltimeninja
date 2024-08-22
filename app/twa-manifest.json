@@ -5,6 +5,7 @@
   "launcherName": "Brawl Time",
   "display": "standalone",
   "themeColor": "#FACC15",
+  "themeColorDark": "#000000",
   "navigationColor": "#000000",
   "navigationColorDark": "#000000",
   "navigationDividerColor": "#000000",
@@ -19,8 +20,8 @@
     "path": "brawltimeninja.jks",
     "alias": "brawltimeninja"
   },
-  "appVersionName": "6",
-  "appVersionCode": 6,
+  "appVersionName": "10",
+  "appVersionCode": 10,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://brawltime.ninja/manifest.webmanifest",
@@ -38,5 +39,5 @@
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "6"
+  "appVersion": "10"
 }

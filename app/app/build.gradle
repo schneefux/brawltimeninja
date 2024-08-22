@@ -27,6 +27,7 @@ def twaManifest = [
     name: 'Brawl Time Ninja', // The application name.
     launcherName: 'Brawl Time', // The name shown on the Android Launcher.
     themeColor: '#FACC15', // The color used for the status bar.
+    themeColorDark: '#000000', // The color used for the dark status bar.
     navigationColor: '#000000', // The color used for the navigation bar.
     navigationColorDark: '#000000', // The color used for the dark navbar.
     navigationDividerColor: '#000000', // The navbar divider color.
@@ -42,7 +43,7 @@ def twaManifest = [
     // The duration of fade out animation in milliseconds to be played when removing splash screen.
     splashScreenFadeOutDuration: 300,
     generatorApp: 'bubblewrap-cli', // Application that generated the Android Project
-    // The fallback strategy for when Trusted Web Activity is not avilable. Possible values are
+    // The fallback strategy for when Trusted Web Activity is not available. Possible values are
     // 'customtabs' and 'webview'.
     fallbackType: 'customtabs',
     enableSiteSettingsShortcut: 'true',
@@ -50,13 +51,14 @@ def twaManifest = [
 ]
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 35
+    namespace "xyz.schneefux.brawltimeninja"
     defaultConfig {
         applicationId "xyz.schneefux.brawltimeninja"
         minSdkVersion 19
-        targetSdkVersion 33
-        versionCode 7
-        versionName "7"
+        targetSdkVersion 35
+        versionCode 10
+        versionName "10"
 
         // The name for the application
         resValue "string", "appName", twaManifest.name
@@ -68,28 +70,33 @@ android {
         def launchUrl = "https://" + twaManifest.hostName + twaManifest.launchUrl
         resValue "string", "launchUrl", launchUrl
 
-
+        
             // The URL the Web Manifest for the Progressive Web App that the TWA points to. This
             // is used by Chrome OS and Meta Quest to open the Web version of the PWA instead of
             // the TWA, as it will probably give a better user experience for non-mobile devices.
             resValue "string", "webManifestUrl", 'https://brawltime.ninja/manifest.webmanifest'
+        
 
-
-
+        
             // This is used by Meta Quest.
             resValue "string", "fullScopeUrl", 'https://brawltime.ninja/'
+        
 
-
-
+        
 
         // The hostname is used when building the intent-filter, so the TWA is able to
-        // handle Intents to open https://svgomg.firebaseapp.com.
+        // handle Intents to open host url of the application.
         resValue "string", "hostName", twaManifest.hostName
 
         // This attribute sets the status bar color for the TWA. It can be either set here or in
         // `res/values/colors.xml`. Setting in both places is an error and the app will not
         // compile. If not set, the status bar color defaults to #FFFFFF - white.
         resValue "color", "colorPrimary", twaManifest.themeColor
+
+        // This attribute sets the dark status bar color for the TWA. It can be either set here or in
+        // `res/values/colors.xml`. Setting in both places is an error and the app will not
+        // compile. If not set, the status bar color defaults to #000000 - white.
+        resValue "color", "colorPrimaryDark", twaManifest.themeColorDark
 
         // This attribute sets the navigation bar color for the TWA. It can be either set here or
         // in `res/values/colors.xml`. Setting in both places is an error and the app will not
@@ -101,13 +108,13 @@ android {
         // compile. If not set, the navigation bar color defaults to #000000 - black.
         resValue "color", "navigationColorDark", twaManifest.navigationColorDark
 
-        // This attribute sets the navbar divider color for the TWA. It can be either
-        // set here or in `res/values/colors.xml`. Setting in both places is an error and the app
+        // This attribute sets the navbar divider color for the TWA. It can be either 
+        // set here or in `res/values/colors.xml`. Setting in both places is an error and the app 
         // will not compile. If not set, the divider color defaults to #00000000 - transparent.
         resValue "color", "navigationDividerColor", twaManifest.navigationDividerColor
 
-        // This attribute sets the dark navbar divider color for the TWA. It can be either
-        // set here or in `res/values/colors.xml`. Setting in both places is an error and the
+        // This attribute sets the dark navbar divider color for the TWA. It can be either 
+        // set here or in `res/values/colors.xml`. Setting in both places is an error and the 
         //app will not compile. If not set, the divider color defaults to #000000 - black.
         resValue "color", "navigationDividerColorDark", twaManifest.navigationDividerColorDark
 
@@ -115,7 +122,7 @@ android {
         // Trusted Web Activity.
         resValue "color", "backgroundColor", twaManifest.backgroundColor
 
-        // Defines a provider authority fot the Splash Screen
+        // Defines a provider authority for the Splash Screen
         resValue "string", "providerAuthority", twaManifest.applicationId + '.fileprovider'
 
         // The enableNotification resource is used to enable or disable the
@@ -148,9 +155,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-  lint {
-    checkReleaseBuilds false
-  }
+    lintOptions {
+        checkReleaseBuilds false
+    }
 }
 
 task generateShorcutsFile {
@@ -195,9 +202,9 @@ repositories {
 }
 
 dependencies {
-  implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-  implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
 
-  implementation 'com.google.android.play:core:1.10.3'
+    implementation 'com.google.android.play:review:2.0.1'
 }
