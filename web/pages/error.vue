@@ -24,6 +24,7 @@
         </p>
 
         <b-button
+          v-if="!notFound"
           class="mt-4"
           md
           dark
