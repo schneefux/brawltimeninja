@@ -207,12 +207,11 @@ export default defineComponent({
       }
 
       const target = e.target as HTMLElement|null
-      const parentButton = target?.parentElement?.parentElement?.parentElement
-      if (parentButton?.classList.contains('avp-close-floating-button')) {
+      if (target?.closest('.avp-close-floating-button,#fullscreen')) {
         trackInteraction('close-floating')
       }
 
-      if (parentButton?.classList.contains('avp-fullscreen-button')) {
+      if (target?.closest('.avp-fullscreen-button')) {
         trackInteraction('maximize')
       }
     }
