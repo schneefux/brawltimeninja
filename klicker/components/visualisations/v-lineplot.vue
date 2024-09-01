@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { VisualizationSpec } from 'vega-embed'
+import type { VisualizationSpec } from 'vega-embed'
 import { VisualisationProps } from '../../props'
 import BVega from '../ui/b-vega.vue'
 import { useCubeResponseProps } from '../../composables/response'

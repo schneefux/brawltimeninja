@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { VisualisationProps } from '../../props'
-import { VisualizationSpec } from 'vega-embed'
+import type { VisualizationSpec } from 'vega-embed'
 import BVega from '../ui/b-vega.vue'
 import BPaginator from '../ui/b-paginator.vue'
 import { computed, defineComponent, ref } from 'vue'
