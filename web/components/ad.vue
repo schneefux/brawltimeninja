@@ -83,6 +83,7 @@
         id="vm-av"
         data-format="isvideo"
         class="aspect-video max-w-lg vm-placement"
+        @click="onVideoPlayerClicked"
       ></div>
       <template v-slot:placeholder>
         <div class="aspect-video vm-placement"></div>
@@ -125,6 +126,7 @@
 import { defineComponent, ref } from 'vue'
 import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
 import { BDashboardCell, BPageSection } from '@schneefux/klicker/components'
+import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
   inheritAttrs: false,
@@ -190,6 +192,31 @@ export default defineComponent({
       }
     }
 
+    const { trackInteraction: trackInteractionVideo } = useTrackScroll('video')
+    const { trackInteraction: trackInteractionInstream } = useTrackScroll('instream')
+
+    const onVideoPlayerClicked = async (e: MouseEvent) => {
+      const isPlayingAd = (document.querySelector('.avp-video-ad') as any)?.style.visibility != 'hidden'
+      const trackInteraction = (type: string) => {
+        console.log('interacted with video player: %s, ad playing: %s', type, isPlayingAd)
+        if (isPlayingAd) {
+          trackInteractionInstream(type)
+        } else {
+          trackInteractionVideo(type)
+        }
+      }
+
+      const target = e.target as HTMLElement|null
+      const parentButton = target?.parentElement?.parentElement?.parentElement
+      if (parentButton?.classList.contains('avp-close-floating-button')) {
+        trackInteraction('close-floating')
+      }
+
+      if (parentButton?.classList.contains('avp-fullscreen-button')) {
+        trackInteraction('maximize')
+      }
+    }
+
     const breakpoints = useBreakpoints({
       desktop: 1028,
     })
@@ -199,6 +226,7 @@ export default defineComponent({
       ad,
       visible,
       desktop,
+      onVideoPlayerClicked,
     }
   },
 })
