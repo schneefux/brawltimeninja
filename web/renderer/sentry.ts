@@ -46,6 +46,7 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
       'fun-hooks: hooked function not ready',
       'The play() request was interrupted',
       'Geo location is undefined or empty',
+      '33Across Lexicon ID Mappings Provider: PID not found',
       // ignore errors that are not actionable
       'Already on path:',
       'Unable to preload CSS',
