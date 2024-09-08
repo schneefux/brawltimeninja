@@ -25,6 +25,14 @@ job "clickhouse" {
         static = 9000
       }
 
+      port "mysql" {
+        static = 9004
+      }
+
+      port "postgresql" {
+        static = 9005
+      }
+
       port "interserver" {
         static = 9009
       }
@@ -68,7 +76,7 @@ job "clickhouse" {
       }
 
       config {
-        image = "clickhouse/clickhouse-server:24.7-alpine"
+        image = "clickhouse/clickhouse-server:24.8-alpine"
         network_mode = "host"
 
         volumes = [
@@ -76,7 +84,7 @@ job "clickhouse" {
           "local/clickhouse-users.xml:/etc/clickhouse-server/users.d/users.xml:ro",
         ]
 
-        ports = ["http", "tcp", "interserver"]
+        ports = ["http", "tcp", "mysql", "postgresql", "interserver"]
 
         ulimit {
           nofile = "262144:262144"
