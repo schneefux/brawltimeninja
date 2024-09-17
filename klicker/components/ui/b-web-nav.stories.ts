@@ -1,5 +1,6 @@
 import BWebNav, { Link } from './b-web-nav.vue'
 import { Meta, StoryObj } from '@storybook/vue3'
+import { faSearch, faUser, faPrint } from '@fortawesome/free-solid-svg-icons'
 
 const meta: Meta<BWebNav> = {
   component: BWebNav,
@@ -20,26 +21,29 @@ export const Default: Story = {
         <template v-slot:logo>
           <i>Logo</i>
         </template>
-        <template v-slot:before>
-          <i>slot before</i>
-        </template>
         <template v-slot:after>
           <i>slot after</i>
+        </template>
+        <template v-slot:end>
+          <i>slot end</i>
         </template>
       </b-web-nav>
     `,
   }),
   args: {
     tag: 'span',
-    links: [ {
+    screens: [ {
       name: 'Search',
       target: '/',
+      icon: faSearch,
     }, {
       name: 'Profile',
       target: '/user',
+      icon: faUser,
     }, {
       name: 'Print',
       target: '/print',
+      icon: faPrint,
     } ] as Link[],
   },
 }

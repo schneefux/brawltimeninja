@@ -21,17 +21,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect, PropType } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import Fa from '../fa.vue'
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
-
-export interface Screen {
-  id: string
-  icon: IconDefinition
-  name: string
-  target: string
-  prefix: string
-}
+import { Screen, useActiveScreen } from '../../composables/screen-active';
 
 export default defineComponent({
   components: {
@@ -56,26 +48,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const active = ref('profile')
-
-    watchEffect(() => {
-      const path = props.activeRoute.slice(props.ignoreRoutePrefix.length - 1)
-
-      let longestMatch: Screen|undefined
-      let longestMatchLength = 0
-
-      for (const screen of props.screens) {
-        const screenUrlLength = screen.prefix.split('/').length
-        if (screenUrlLength > longestMatchLength && path.startsWith(screen.prefix)) {
-          longestMatch = screen
-          longestMatchLength = screenUrlLength
-        }
-      }
-
-      if (longestMatch != undefined) {
-        active.value = longestMatch.id
-      }
-    })
+    const active = useActiveScreen(
+      computed(() => props.activeRoute),
+      computed(() => props.ignoreRoutePrefix),
+      computed(() => props.screens)
+    )
 
     return {
       active,
