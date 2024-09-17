@@ -19,7 +19,7 @@ export { createApp }
 
 export type AppI18n = I18n<{}, {}, {}, string, false>['global']
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentCustomProperties {
     localePath: (path: string) => string
   }

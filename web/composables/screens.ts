@@ -1,5 +1,5 @@
 import { faCalendarDay, faSearch, faMask } from '@fortawesome/free-solid-svg-icons'
-import { Screen } from '../components/ui/b-app-bottom-nav.vue'
+import { Screen } from '@schneefux/klicker/composables/screen-active'
 import { computed } from "vue"
 import { useI18n } from 'vue-i18n'
 import { useLocalePath } from './compat'
