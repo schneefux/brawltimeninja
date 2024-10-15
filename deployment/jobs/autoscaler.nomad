@@ -25,7 +25,7 @@ job "autoscaler" {
         # artifacts are owned by nobody and nomad-hcloud-autoscaler misses the x flag
         # copy the artifact, chmod it, then start the agent
         # workaround for https://github.com/hashicorp/nomad/issues/2625
-        image = "hashicorp/nomad-autoscaler:0.4.0"
+        image = "hashicorp/nomad-autoscaler:0.4.5"
         entrypoint = []
         command = "/bin/sh"
         ports = ["http"]

@@ -140,8 +140,8 @@ job "brawltime-media" {
       }
 
       resources {
-        cpu = 512
-        memory = 896
+        cpu = 1024
+        memory = 512
         memory_max = 1024
       }
     }

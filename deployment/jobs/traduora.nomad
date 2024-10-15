@@ -81,7 +81,7 @@ job "traduora" {
 
       resources {
         cpu = 128
-        memory = 96
+        memory = 128
         memory_max = 256
       }
     }
