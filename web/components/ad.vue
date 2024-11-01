@@ -90,15 +90,6 @@
       </template>
     </client-only>
 
-    <client-only v-else-if="siderail">
-      <!-- Desktop Side Rail: 300x250, 300x600, 160x600, 336x280 -->
-      <venatus-placement
-        v-if="desktop && visible"
-        ad-id="65f94d27767223575b4de5af"
-        class="desktop-side-rail"
-      ></venatus-placement>
-    </client-only>
-
     <!-- default -->
     <client-only v-else>
       <!-- Desktop - Multisize Leaderboard: 728x90, 970x90, 970x250 -->
@@ -157,11 +148,6 @@ export default defineComponent({
     },
     /** short unit */
     banner: {
-      type: Boolean,
-      default: false
-    },
-    /** tall desktop unit */
-    siderail: {
       type: Boolean,
       default: false
     },
@@ -279,11 +265,6 @@ export default defineComponent({
   width: 100%;
   max-width: 970px;
   height: 250px;
-}
-
-.desktop-side-rail {
-  width: 336px;
-  height: 600px;
 }
 
 .mobile-incontent {

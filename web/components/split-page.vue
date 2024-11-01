@@ -21,31 +21,10 @@
     <b-split-dashboard>
       <template v-slot:aside-left>
         <slot name="aside-left"></slot>
-
-        <!-- siderail will only render on desktop (lg) -->
-        <ad
-          :class="{
-            'md:mt-8': leftSidebarHasContent,
-            'md:mb-[110px]': true, // leave space for sticky footer
-          }"
-          siderail
-          plain
-          lazy
-        ></ad>
       </template>
 
       <template v-slot:aside-right>
         <slot name="aside-right"></slot>
-
-        <ad
-          :class="{
-            'md:mt-8': rightSidebarHasContent,
-            'md:mb-[110px]': true, // leave space for sticky footer
-          }"
-          siderail
-          plain
-          lazy
-        ></ad>
       </template>
 
       <b-title
