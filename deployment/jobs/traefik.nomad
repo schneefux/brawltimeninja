@@ -79,7 +79,7 @@ job "traefik" {
       }
 
       config {
-        image = "traefik:v3.0"
+        image = "traefik:v3.2"
         network_mode = "host"
 
         volumes = [

@@ -40,7 +40,7 @@ job "redis" {
       driver = "docker"
 
       config {
-        image = "redis:7.2-alpine"
+        image = "redis:7.4-alpine"
         args = [ "/usr/local/etc/redis/redis.conf" ]
 
         volumes = [

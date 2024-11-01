@@ -141,7 +141,7 @@ job "brawltime-media" {
 
       resources {
         cpu = 1024
-        memory = 512
+        memory = 896 # reserve some for sharp cache
         memory_max = 1024
       }
     }

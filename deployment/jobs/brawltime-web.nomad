@@ -29,7 +29,7 @@ job "brawltime-web" {
   }
 
   group "web" {
-    count = 4
+    count = 5
 
     restart {
       mode = "delay"
@@ -38,7 +38,7 @@ job "brawltime-web" {
 
     scaling {
       enabled = true
-      min = 3 # at least 1 backup in case the other fails
+      min = 5 # at least 1 backup in case the other fails
       max = 16
 
       policy {

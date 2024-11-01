@@ -26,7 +26,7 @@ job "brawltime-cube" {
   }
 
   group "cube" {
-    count = 2
+    count = 3
 
     restart {
       mode = "delay"
@@ -35,7 +35,7 @@ job "brawltime-cube" {
 
     scaling {
       enabled = true
-      min = 2
+      min = 3
       max = 16
 
       policy {

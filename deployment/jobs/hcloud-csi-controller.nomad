@@ -16,7 +16,7 @@ job "hcloud-csi-controller" {
       driver = "docker"
 
       config {
-        image = "hetznercloud/hcloud-csi-driver:v2.5.1"
+        image = "hetznercloud/hcloud-csi-driver:v2.9.0"
         command = "bin/hcloud-csi-driver-controller"
       }
 
