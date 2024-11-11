@@ -14,7 +14,7 @@
       <button
         :selected="showFilters"
         :aria-label="showFilters ? translate('action.collapse') : translate('action.expand')"
-        v-bind-once="{ 'aria-controls': id }"
+        :aria-controls="id"
         class="md:hidden w-10"
         @click.stop="toggleFilters"
       >
@@ -32,7 +32,7 @@
         }"
         :aria-expanded="showFilters"
         class="flex-col md:flex-row flex-wrap gap-4"
-        v-bind-once="{ id: id }"
+        :id="id"
       >
         <component
           v-for="spec in specs"
@@ -49,20 +49,16 @@
 <script lang="ts">
 import Fa from './fa.vue'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType, ref, useId } from 'vue'
 import { SliceValue, CubeQuery, CubeComparingQuery, SlicerSpec } from '../types'
 import BCard from './ui/b-card.vue'
 import { useCheckSlicerApplicable } from '../composables/check-slicer-applicable'
 import { useKlickerConfig } from '../composables/klicker'
-import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
     Fa,
     BCard,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     modelValue: {
@@ -229,7 +225,7 @@ export default defineComponent({
 
     const toggleFilters = () => showFilters.value = !showFilters.value
 
-    const id = generateId()
+    const id = useId()
 
     return {
       title,

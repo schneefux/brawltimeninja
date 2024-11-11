@@ -1,31 +1,31 @@
 <template>
   <div>
     <div class="w-full grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center">
-      <label v-bind-once="{ for: `${prefix}-title` }">
+      <label :for="`${prefix}-title`">
         Title
       </label>
       <b-textbox
         v-model="title"
-        v-bind-once="{ id: `${prefix}-title` }"
+        :id="`${prefix}-title`"
       ></b-textbox>
 
-      <label v-bind-once="{ for: `${prefix}-description` }">
+      <label :for="`${prefix}-description`">
         Width
       </label>
       <b-number
         v-model="width"
-        v-bind-once="{ id: `${prefix}-description` }"
+        :id="`${prefix}-description`"
         min="300"
         max="4096"
         step="64"
       ></b-number>
 
-      <label v-bind-once="{ for: `${prefix}-height` }">
+      <label :for="`${prefix}-height`">
         Height
       </label>
       <b-number
         v-model="height"
-        v-bind-once="{ id: `${prefix}-height` }"
+        :id="`${prefix}-height`"
         min="300"
         max="16384"
         step="64"
@@ -94,7 +94,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue'
+import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, useId } from 'vue'
 import CMoveableWidget from './c-moveable-widget.vue'
 import CWidgetEditor from './c-widget-editor.vue'
 import BNumber from '../ui/b-number.vue'
@@ -105,7 +105,6 @@ import Panzoom, { PanzoomObject } from '@panzoom/panzoom'
 import { useFullscreen } from '@vueuse/core'
 import Fa from '../fa.vue'
 import { faSearchMinus, faSearchPlus, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons'
-import { generateId, BindOnce } from '../../directives/bind-once'
 
 /**
  * Interactive canvas editor.
@@ -118,9 +117,6 @@ export default defineComponent({
     BTextbox,
     CWidgetEditor,
     CMoveableWidget,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     modelValue: {
@@ -237,7 +233,7 @@ export default defineComponent({
       bottom: props.modelValue.height,
     }))
 
-    const prefix = generateId()
+    const prefix = useId()
 
     return {
       bounds,

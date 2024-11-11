@@ -17,17 +17,15 @@
         >
           <!-- same layout as b-scrolling-list preview -->
           <a
-            v-bind-once="{
-              id: `${prefix}-button-${tab.slot}`,
-              href: `#${prefix}-tab-${tab.slot}`,
-              'aria-controls': `${prefix}-tab-${tab.slot}`,
-            }"
-            role="tab"
+            :id="`${prefix}-button-${tab.slot}`"
+            :href="`#${prefix}-tab-${tab.slot}`"
+            :aria-controls="`${prefix}-tab-${tab.slot}`"
             :class="{
               'border-primary-400 text-text': tabVisibility[tab.slot],
               'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !tabVisibility[tab.slot],
             }"
             :aria-selected="activeTab == tab.slot ? 'true' : 'false'"
+            role="tab"
             class="block px-8 py-2 whitespace-nowrap transition duration-100 ease-in-out border-b-2"
             @click.prevent="scrollToTab(tab)"
           >{{ tab.title }}</a>
@@ -41,12 +39,10 @@
     >
       <div
         v-for="tab in tabs"
-        v-bind-once="{
-          id: `${prefix}-button-${tab.slot}`,
-          'aria-labelledby': `${prefix}-button-${tab.slot}`,
-        }"
         :key="tab.slot"
         :ref="el => setTabRef(tab.slot, el as HTMLElement|null)"
+        :id="`${prefix}-tab-${tab.slot}`"
+        :aria-labelledby="`${prefix}-button-${tab.slot}`"
         :class="{
           // shrink pages that are outside of the viewport
           // so that the active page does not grow
@@ -62,9 +58,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from 'vue'
+import { defineComponent, onMounted, PropType, ref, useId } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
-import { generateId, BindOnce } from '../../directives/bind-once'
 
 interface Tab {
   slot: string
@@ -72,9 +67,6 @@ interface Tab {
 }
 
 export default defineComponent({
-  directives: {
-    BindOnce,
-  },
   props: {
     tabs: {
       type: Array as PropType<Tab[]>,
@@ -203,7 +195,7 @@ export default defineComponent({
       }
     })
 
-    const prefix = generateId()
+    const prefix = useId()
 
     return {
       tabContainer,

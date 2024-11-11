@@ -16,14 +16,14 @@
         "
       >
         <label
-          v-bind-once="{ for: `${prefix}-brawler` }"
+          :for="`${prefix}-brawler`"
           class="mt-4 md:mt-0"
         >
           Brawler
         </label>
         <b-select
           v-model="selectedBrawlerId"
-          v-bind-once="{ id: `${prefix}-brawler` }"
+          :id="`${prefix}-brawler`"
           dark
           sm
         >
@@ -35,13 +35,13 @@
         </b-select>
 
         <label
-          v-bind-once="{ for: `${prefix}-background` }"
+          :for="`${prefix}-background`"
           class="mt-4 md:mt-0"
         >
           Background
         </label>
         <b-scrolling-list
-          v-bind-once="{ id: `${prefix}-background` }"
+          :id="`${prefix}-background`"
           :items="backgrounds"
           :cell-rows="1"
           :cell-columns="2"
@@ -147,13 +147,12 @@
 <script lang="ts">
 import { Player } from '~/model/Api'
 import { event } from 'vue-gtag'
-import { computed, defineComponent, PropType, ref, watch } from 'vue'
+import { computed, defineComponent, PropType, ref, useId, watch } from 'vue'
 import { useConfig, useSelfOrigin } from '~/composables/compat'
 import { capitalizeWords } from '~/lib/util'
 import { BCard, BSelect, BButton, BScrollingList, BLightbox, Fa } from '@schneefux/klicker/components'
 import { usePlayerRender } from '~/composables/player'
 import { faCheck, faExpand } from '@fortawesome/free-solid-svg-icons'
-import { BindOnce, generateId } from '@schneefux/klicker/directives'
 import { useI18n } from 'vue-i18n'
 
 // TODO add this to update_assets.sh
@@ -185,9 +184,6 @@ export default defineComponent({
     BLightbox,
     BScrollingList,
     Fa,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     playerTag: {
@@ -259,7 +255,7 @@ export default defineComponent({
     const editing = ref(false)
     const lightboxOpen = ref(false)
 
-    const prefix = generateId()
+    const prefix = useId()
 
     return {
       lightboxOpen,

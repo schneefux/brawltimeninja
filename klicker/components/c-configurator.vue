@@ -8,7 +8,7 @@
         <div class="grid grid-cols-[auto,auto] gap-6 items-center">
           <label
             v-if="configureCube"
-            v-bind-once="{ for: id }"
+            :for="id"
             class="inline"
           >
             {{ translate('configurator.source') }}
@@ -17,7 +17,7 @@
           <div v-if="configureCube">
             <b-select
               :model-value="modelValue.cubeId"
-              v-bind-once="{ id }"
+              :id="id"
               sm
               @update:modelValue="onInputCubeId"
             >
@@ -72,9 +72,8 @@ import CDimension from './c-dimension.vue'
 import BCard from './ui/b-card.vue'
 import BSelect from './ui/b-select.vue'
 import BCheckbox from './ui/b-checkbox.vue'
-import { computed, defineComponent, PropType } from 'vue'
+import { computed, defineComponent, PropType, useId } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'
-import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
@@ -83,9 +82,6 @@ export default defineComponent({
     BSelect,
     BCheckbox,
     BCard,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     modelValue: {
@@ -186,7 +182,7 @@ export default defineComponent({
       return selectedMetrics.length == 1 && selectedMetrics[0].type == 'quantitative'
     })
 
-    const id = generateId()
+    const id = useId()
 
     return {
       cubes,

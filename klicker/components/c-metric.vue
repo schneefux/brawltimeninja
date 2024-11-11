@@ -1,6 +1,6 @@
 <template>
   <div class="contents">
-    <label v-bind-once="{ for: `${prefix}-1` }">
+    <label :for="`${prefix}-1`">
       {{ translate('configurator.metric') }}
     </label>
 
@@ -9,7 +9,7 @@
         v-for="index in (showAllMetrics ? 1 : numMetrics)"
         :key="index"
         :model-value="showAllMetrics ? '' : modelValue.metricsIds[index - 1]"
-        v-bind-once="{ id: `${prefix}-${index}` }"
+        :id="`${prefix}-${index}`"
         @update:modelValue="v => onInputMetricsIds(index - 1, v)"
       >
         <option
@@ -74,12 +74,11 @@
 import { CubeComparingQuery, CubeQuery } from '../types'
 import Fa from './fa.vue'
 import { faMinus, faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType, ref, useId } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BLightbox from './ui/b-lightbox.vue'
 import BCard from './ui/b-card.vue'
-import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
@@ -87,9 +86,6 @@ export default defineComponent({
     BSelect,
     BLightbox,
     BCard,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     modelValue: {
@@ -176,7 +172,7 @@ export default defineComponent({
 
     const tooltipOpen = ref(false)
 
-    const prefix = generateId()
+    const prefix = useId()
 
     return {
       description,

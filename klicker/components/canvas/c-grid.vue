@@ -1,18 +1,18 @@
 <template>
   <div>
     <div class="w-full grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center">
-      <label v-bind-once="{ for: `${prefix}-title` }">
+      <label :for="`${prefix}-title`">
         Title
       </label>
       <b-textbox
         v-model="title"
-        v-bind-once="{ id: `${prefix}-title` }"
+        :id="`${prefix}-title`"
       ></b-textbox>
 
       <div class="col-span-full space-y-2">
         <div class="flex gap-x-2 items-center">
           <b-radio
-            v-bind-once="{ id: `${prefix}-responsive` }"
+            :id="`${prefix}-responsive`"
             :model-value="columns == undefined"
             :value="true"
             name="responsive"
@@ -20,14 +20,14 @@
             primary
             @update:modelValue="() => columns = undefined"
           ></b-radio>
-          <label v-bind-once="{ for: `${prefix}-responsive` }">
+          <label :for="`${prefix}-responsive`">
             Responsive layout
           </label>
         </div>
 
         <div class="flex gap-x-2 items-center">
           <b-radio
-            v-bind-once="{ id: `${prefix}-fixed` }"
+            :id="`${prefix}-fixed`"
             :model-value="columns != undefined"
             :value="true"
             name="responsive"
@@ -35,7 +35,7 @@
             primary
             @update:modelValue="(v: boolean) => columns = columns || 12"
           ></b-radio>
-          <label v-bind-once="{ for: `${prefix}-fixed` }">
+          <label :for="`${prefix}-fixed`">
             Fixed width layout
           </label>
         </div>
@@ -43,14 +43,14 @@
 
       <label
         v-if="columns != undefined"
-        v-bind-once="{ for: `${prefix}-width` }"
+        :for="`${prefix}-width`"
       >
         Width in columns
       </label>
       <b-number
         v-if="columns != undefined"
         v-model="columns"
-        v-bind-once="{ id: `${prefix}-width` }"
+        :id="`${prefix}-width`"
         min="1"
         max="24"
         required
@@ -84,22 +84,22 @@
           >
             <template v-slot:content>
               <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
-                <label v-bind-once="{ for: `${prefix}-columns` }">
+                <label :for="`${prefix}-columns`">
                   Columns
                 </label>
                 <b-number
-                  v-bind-once="{ id: `${prefix}-columns` }"
+                  :id="`${prefix}-columns`"
                   :model-value="widgetsKeyed[selectedWidgetId].frame.columns"
                   min="1"
                   max="8"
                   @update:modelValue="c => updateWidgetFrame(selectedWidgetId!, { columns: c })"
                 ></b-number>
 
-                <label v-bind-once="{ for: `${prefix}-rows` }">
+                <label :for="`${prefix}-rows`">
                   Rows
                 </label>
                 <b-number
-                  v-bind-once="{ id: `${prefix}-rows` }"
+                  :id="`${prefix}-rows`"
                   :model-value="widgetsKeyed[selectedWidgetId].frame.rows"
                   min="1"
                   max="8"
@@ -136,7 +136,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType, ref, useId } from 'vue'
 import CWidgetEditor from './c-widget-editor.vue'
 import CWidget from './c-widget.vue'
 import BNumber from '../ui/b-number.vue'
@@ -147,7 +147,6 @@ import BRadio from '../ui/b-radio.vue'
 import { Grid, GridWidget, CubeQuery } from '../../types'
 import Draggable from 'vuedraggable'
 import BDashboardCell from '../ui/b-dashboard-cell.vue'
-import { BindOnce, generateId } from '../../directives/bind-once'
 
 /**
  * Interactive grid editor.
@@ -163,9 +162,6 @@ export default defineComponent({
     CWidget,
     CWidgetEditor,
     Draggable,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     modelValue: {
@@ -263,7 +259,7 @@ export default defineComponent({
       }
     })
 
-    const prefix = generateId()
+    const prefix = useId()
 
     return {
       title,

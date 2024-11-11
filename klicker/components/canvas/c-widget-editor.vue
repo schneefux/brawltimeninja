@@ -12,25 +12,25 @@
 
           <b-radio
             v-model="withQuery"
-            v-bind-once="{ id: `${prefix}-static` }"
+            :id="`${prefix}-static`"
             :value="false"
             name="withQuery"
             required
             primary
           ></b-radio>
-          <label v-bind-once="{ for: `${prefix}-static` }">
+          <label :for="`${prefix}-static`">
             Static Widget
           </label>
 
           <b-radio
             v-model="withQuery"
-            v-bind-once="{ id: `${prefix}-dynamic` }"
+            :id="`${prefix}-dynamic`"
             :value="true"
             name="withQuery"
             required
             primary
           ></b-radio>
-          <label v-bind-once="{ for: `${prefix}-dynamic` }">
+          <label :for="`${prefix}-dynamic`">
             Widget with Data
           </label>
         </div>
@@ -88,14 +88,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue'
+import { defineComponent, PropType, computed, ref, useId } from 'vue'
 import { CubeComparingQuery, CubeQuery, Widget } from '../../types'
 import CVisualisationSelector from './c-visualisation-selector.vue'
 import CDashboard from '../c-dashboard.vue'
 import BCard from '../ui/b-card.vue'
 import BRadio from '../ui/b-radio.vue'
 import BButton from '../ui/b-button.vue'
-import { BindOnce, generateId } from '../../directives/bind-once'
 
 /**
  * Form to edit a widget.
@@ -107,9 +106,6 @@ export default defineComponent({
     BButton,
     CDashboard,
     CVisualisationSelector,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     modelValue: {
@@ -167,7 +163,7 @@ export default defineComponent({
       }
     })
 
-    const prefix = generateId()
+    const prefix = useId()
 
     return {
       query,

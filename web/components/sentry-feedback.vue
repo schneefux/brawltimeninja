@@ -13,40 +13,40 @@
               class="flex flex-col gap-y-2"
             >
               <label
-                v-bind-once="{ for: `${prefix}-name` }"
+                :for="`${prefix}-name`"
                 class="mt-3"
               >
                 {{ $t('feedback.name') }}
               </label>
               <b-textbox
-                v-bind-once="{ id: `${prefix}-name` }"
                 v-model="name"
+                :id="`${prefix}-name`"
                 autocomplete="given-name"
                 dark
               ></b-textbox>
 
               <label
-                v-bind-once="{ for: `${prefix}-email` }"
+                :for="`${prefix}-email`"
                 class="mt-3"
               >
                 {{ $t('feedback.email') }}
               </label>
               <b-textbox
-                v-bind-once="{ id: `${prefix}-email` }"
                 v-model="email"
+                :id="`${prefix}-email`"
                 type="email"
                 dark
               ></b-textbox>
 
               <label
-                v-bind-once="{ for: `${prefix}-comment` }"
+                :for="`${prefix}-comment`"
                 class="mt-3"
               >
                 {{ $t('feedback.description') }}
               </label>
               <b-textarea
-                v-bind-once="{ id: `${prefix}-comment` }"
                 v-model="comment"
+                :id="`${prefix}-comment`"
                 rows="4"
                 required
                 dark
@@ -82,10 +82,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, useId } from 'vue'
 import { BTextbox, BButton, BTextarea, BLightbox, BCard } from '@schneefux/klicker/components'
 import { useSentry } from '~/composables/compat'
-import { BindOnce, generateId } from '@schneefux/klicker/directives'
 import { useVModel } from '@vueuse/core'
 import type Feedback from '@sentry-internal/feedback'
 
@@ -96,9 +95,6 @@ export default defineComponent({
     BTextbox,
     BButton,
     BCard,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     modelValue: {
@@ -148,7 +144,7 @@ export default defineComponent({
 
     const lightboxOpen = useVModel(props, 'modelValue', emit)
 
-    const prefix = generateId()
+    const prefix = useId()
 
     return {
       name,

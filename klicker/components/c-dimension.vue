@@ -1,6 +1,6 @@
 <template>
   <div class="contents">
-    <label v-bind-once="{ for: `${prefix}-1` }">
+    <label :for="`${prefix}-1`">
       {{ title }}
     </label>
 
@@ -9,8 +9,8 @@
         v-for="index in numDimensions"
         :key="index"
         :model-value="modelValue.dimensionsIds[index - 1]"
+        :id="`${prefix}-${index}`"
         :disabled="!editable"
-        v-bind-once="{ id: `${prefix}-${index}` }"
         @update:modelValue="v => onInputDimensionsIds(index - 1, v)"
       >
         <option
@@ -47,20 +47,16 @@
 import { CubeComparingQuery, CubeQuery } from '../types'
 import Fa from './fa.vue'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { computed, defineComponent, PropType, ref, watch } from 'vue'
+import { computed, defineComponent, PropType, ref, useId, watch } from 'vue'
 import { useKlickerConfig } from '../composables/klicker'
 import BSelect from './ui/b-select.vue'
 import BButton from './ui/b-button.vue'
-import { generateId, BindOnce } from '../directives/bind-once'
 
 export default defineComponent({
   components: {
     Fa,
     BSelect,
     BButton,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     modelValue: {
@@ -165,7 +161,7 @@ export default defineComponent({
     })
     const editable = computed(() => !compareMode.value || props.comparing)
 
-    const prefix = generateId()
+    const prefix = useId()
 
     return {
       title,

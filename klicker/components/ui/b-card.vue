@@ -1,7 +1,7 @@
 <template>
   <component
     :is="tag"
-    v-bind-once="title != undefined ? { 'aria-labelledby': id } : {}"
+    :aria-labelledby="title != undefined ? id : undefined"
     class="h-full"
   >
     <div
@@ -64,11 +64,11 @@
 
         <div v-if="title != undefined">
           <h1
+            :id="id"
             :class="{
               'text-lg leading-snug': !dense,
               'text-sm leading-tight': dense,
             }"
-            v-bind-once="{ id }"
           >
             <template v-if="titleLink != undefined || link != undefined">
               <component
@@ -143,14 +143,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, inject } from 'vue'
+import { defineComponent, computed, inject, useId } from 'vue'
 import { KlickerConfigInjectionKey } from '../../composables/klicker'
-import { generateId, BindOnce } from '../../directives/bind-once'
 
 export default defineComponent({
-  directives: {
-    BindOnce,
-  },
   props: {
     tag: {
       type: String,
@@ -244,7 +240,7 @@ export default defineComponent({
       }
     }
 
-    const id = generateId()
+    const id = useId()
 
     return {
       onClick,

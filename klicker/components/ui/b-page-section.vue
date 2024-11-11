@@ -1,15 +1,15 @@
 <template>
   <section
     ref="section"
-    v-bind-once="title != undefined ? { 'aria-labelledby': id } : {}"
+    :aria-labelledby="title != undefined ? id : undefined"
   >
     <div
       v-if="title != undefined"
       class="mt-16"
     >
       <h1
+        :id="id"
         class="text-2xl"
-        v-bind-once="{ id }"
       >
         {{ title }}
       </h1>
@@ -40,17 +40,13 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from 'vue'
+import { ref, defineComponent, useId } from 'vue'
 import { LazyHydrationWrapper } from 'vue3-lazy-hydration'
 import { useIntersectionObserver } from '@vueuse/core'
-import { generateId, BindOnce } from '../../directives/bind-once'
 
 export default defineComponent({
   components: {
     LazyHydrationWrapper,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     title: {
@@ -64,7 +60,7 @@ export default defineComponent({
   },
   setup(props) {
     const section = ref<HTMLElement>()
-    const id = generateId()
+    const id = useId()
 
     // never hydrate, instead rerender when visible to prevent hydration errors
     const hydrate = ref(!props.lazy)

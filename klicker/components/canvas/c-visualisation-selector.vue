@@ -7,12 +7,12 @@
       <template v-slot:content>
         <div>
           <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
-            <label v-bind-once="{ for: `${prefix}-widget` }">
+            <label :for="`${prefix}-widget`">
               Widget
             </label>
             <b-select
               v-model="component"
-              v-bind-once="{ id: `${prefix}-widget` }"
+              :id="`${prefix}-widget`"
               sm
             >
               <option
@@ -28,12 +28,12 @@
               v-for="(propSpec, prop) in (spec.props || {})"
               :key="prop"
             >
-              <label v-bind-once="{ for: `${prefix}-prop-${prop}` }">
+              <label :for="`${prefix}-prop-${prop}`">
                 {{ propSpec.name }}
               </label>
               <component
                 v-bind="propSpec.props"
-                v-bind-once="{ id: `${prefix}-prop-${prop}` }"
+                :id="`${prefix}-prop-${prop}`"
                 :model-value="modelValue.props[prop]"
                 :is="propSpec.import || propSpec.component"
                 @update:modelValue="(v: any) => setWidgetProp(prop, v)"
@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { ComponentPublicInstance, computed, defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType, ref, useId } from 'vue'
 import { CubeComparingResponse, CubeResponse, GridWidget, ReportWidget, StaticWidgetSpec, VisualisationSpec, Widget } from '../../types'
 import BCard from '../ui/b-card.vue'
 import BSelect from '../ui/b-select.vue'
@@ -66,7 +66,6 @@ import { useCubeResponse } from '../../composables/response'
 import { StaticProps } from '../../props'
 import { useKlicker } from '../../composables/klicker'
 import BDashboardCell from '../ui/b-dashboard-cell.vue'
-import { generateId, BindOnce } from '../../directives/bind-once'
 
 /**
  * Show applicable visualisations and bind one of them.
@@ -77,9 +76,6 @@ export default defineComponent({
     BSelect,
     BButton,
     BDashboardCell,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     ...StaticProps,
@@ -176,7 +172,7 @@ export default defineComponent({
       emit('update:modelValue', widget)
     }
 
-    const prefix = generateId()
+    const prefix = useId()
 
     return {
       spec,

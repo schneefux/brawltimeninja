@@ -20,21 +20,21 @@
       class="mt-8 grid grid-cols-[max-content,max-content] gap-x-4 gap-y-8 items-center"
     >
       <template v-if="report.id != undefined">
-        <label v-bind-once="{ for: `${prefix}-editor-url` }">
+        <label :for="`${prefix}-editor-url`">
           {{ $t('action.editor-url') }}
         </label>
         <b-textbox
-          v-bind-once="{ id: `${prefix}-editor-url` }"
+          :id="`${prefix}-editor-url`"
           :model-value="editorUrl"
           readonly
           dark
         ></b-textbox>
 
-        <label v-bind-once="{ for: `${prefix}-viewer-url` }">
+        <label :for="`${prefix}-viewer-url`">
           {{ $t('action.viewer-url') }}
         </label>
         <b-textbox
-          v-bind-once="{ id: `${prefix}-viewer-url` }"
+          :id="`${prefix}-viewer-url`"
           :model-value="viewerUrl"
           readonly
           dark
@@ -56,23 +56,19 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, computed, onMounted, ref } from "vue"
+import { defineComponent, computed, onMounted, ref, useId } from "vue"
 import { CCanvas, BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { Report, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'
 import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
 import { useRoute } from "vue-router"
 import { useSelfOrigin } from "~/composables/compat"
-import { BindOnce, generateId } from "@schneefux/klicker/directives"
 
 export default defineComponent({
   components: {
     BDashboardCell,
     BTextbox,
     CCanvas,
-  },
-  directives: {
-    BindOnce,
   },
   setup() {
     const { storage: report, update, canSave } = useStorage<Report>('reports', {
@@ -127,7 +123,7 @@ export default defineComponent({
       sortId: 'winRate',
     }
 
-    const prefix = generateId()
+    const prefix = useId()
 
     return {
       report,

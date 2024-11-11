@@ -13,8 +13,8 @@
     >
       <button
         v-if="link.children != undefined && link.children.length > 0"
-        v-bind-once="{ 'aria-controls': `${prefix}-${link.id}` }"
         class="col-start-1"
+        :aria-controls="`${prefix}-${link.id}`"
         @click="toggleLink(link)"
       >
         <fa
@@ -40,7 +40,7 @@
       </span>
       <navigator-node
         v-if="link.children != undefined && link.children.length > 0"
-        v-bind-once="{ id: `${prefix}-${link.id}` }"
+        :id="`${prefix}-${link.id}`"
         :links="expandedLinks[link.id] ? link.children : []"
         :expand-by-default="expandByDefault"
         class="ml-8 col-span-full"
@@ -58,19 +58,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watchEffect } from 'vue'
+import { defineComponent, PropType, ref, useId, watchEffect } from 'vue'
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Link } from './b-navigator.vue'
 import Fa from '../fa.vue'
-import { generateId, BindOnce } from '../../directives/bind-once'
 
 export default defineComponent({
   name: 'navigator-node',
   components: {
     Fa,
-  },
-  directives: {
-    BindOnce,
   },
   props: {
     links: {
@@ -99,7 +95,7 @@ export default defineComponent({
       }), {})
     })
 
-    const prefix = generateId()
+    const prefix = useId()
 
     return {
       toggleLink,
