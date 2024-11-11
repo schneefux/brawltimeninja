@@ -95,7 +95,7 @@ router.get(
 
     res.type("svg");
     res.header("Cache-Control", "public, max-age=600, stale-if-error=3600");
-    return res.send(svg);
+    res.send(svg);
   })
 );
 
@@ -157,7 +157,7 @@ router.get(
 
     res.type("png");
     res.header("Cache-Control", "public, max-age=600, stale-if-error=3600");
-    return res.send(pngBuffer);
+    res.send(pngBuffer);
   })
 );
 

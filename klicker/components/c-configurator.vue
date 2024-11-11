@@ -1,6 +1,6 @@
 <template>
   <b-card
-    v-bind="card"
+    v-bind="card ?? {}"
     :title="translate('configurator.title')"
   >
     <template v-slot:content>

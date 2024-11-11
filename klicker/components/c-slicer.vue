@@ -1,7 +1,7 @@
 <template>
   <!-- increase z-index so that <b-fake-select> overlaps the following cards -->
   <b-card
-    v-bind="card"
+    v-bind="card ?? {}"
     :title="title"
     :class="{
       '-mb-2 md:mb-0': !showFilters,

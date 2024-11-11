@@ -13,7 +13,7 @@
     >
       <component
         :is="spec.import"
-        v-bind="props"
+        v-bind="props ?? {}"
         :card="card"
         :loading="loading"
         :response="response"
@@ -31,7 +31,7 @@
   >
     <component
       :is="specs[0].import"
-      v-bind="props"
+      v-bind="props ?? {}"
       :card="card"
       :loading="loading"
       :response="response"
