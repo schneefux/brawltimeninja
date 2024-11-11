@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { BCard, BNavigator, Fa } from '@schneefux/klicker/components'
-import { defineComponent, computed, ref } from 'vue'
+import { defineComponent, computed, useTemplateRef } from 'vue'
 import { useVModel } from '@vueuse/core'
 import { Link } from '@schneefux/klicker/components/ui/b-navigator.vue'
 import { getMapName } from '~/composables/map'
@@ -283,10 +283,10 @@ export default defineComponent({
       return []
     }
 
-    const navigator = ref<InstanceType<typeof BNavigator>>()
+    const navigatorRef = useTemplateRef<InstanceType<typeof BNavigator>>('navigator')
 
     return {
-      navigator,
+      navigatorRef,
       popupOpen,
       linkTree,
       linkGenerator,

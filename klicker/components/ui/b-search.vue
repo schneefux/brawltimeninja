@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, useTemplateRef } from 'vue'
 import BTextbox from './b-textbox.vue'
 import Fa from '../fa.vue'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -67,26 +67,24 @@ export default defineComponent({
   setup(props, { emit }) {
     const filter = ref('')
 
-    const search = ref<InstanceType<typeof BTextbox>>()
+    const searchRef = useTemplateRef<InstanceType<typeof BTextbox>>('search')
     onKeyStroke(
       (event) => (event.metaKey || event.ctrlKey) && event.key == 'k',
-      () => (search.value!.$el as HTMLInputElement).focus(),
+      () => (searchRef.value!.$el as HTMLInputElement).focus(),
     )
 
     const reset = () => filter.value = ''
 
-    const container = ref<HTMLElement>()
-    onClickOutside(container, () => emit('update:modelValue', false), {
+    const containerRef = useTemplateRef<HTMLElement>('container')
+    onClickOutside(containerRef, () => emit('update:modelValue', false), {
       capture: true,
     })
 
     return {
-      search,
       filter,
       faSearch,
       faTimes,
       reset,
-      container,
     }
   },
 })

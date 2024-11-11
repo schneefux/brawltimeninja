@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch, nextTick, getCurrentInstance } from 'vue'
+import { computed, defineComponent, ref, watch, nextTick, getCurrentInstance, useTemplateRef } from 'vue'
 import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import BPaginator from '../ui/b-paginator.vue'
@@ -137,15 +137,15 @@ export default defineComponent({
       )
     )
 
-    const wrapper = ref<HTMLElement>()
-    const heading = ref<HTMLElement>()
+    const wrapperRef = useTemplateRef<HTMLElement>('wrapper')
+    const headingRef = useTemplateRef<HTMLElement>('heading')
     const itemRefs = ref<Record<string, InstanceType<typeof DAuto>|null>>({})
     const setItemRef = (id: string, el: InstanceType<typeof DAuto>|null) => itemRefs.value[id] = el
     const page = ref(0)
     const pageSize = ref(headings.value.length)
 
     const calculatePageSize = () => {
-      if (wrapper.value == undefined || heading.value == undefined) {
+      if (wrapperRef.value == undefined || headingRef.value == undefined) {
         return pageSize.value
       }
 
@@ -159,9 +159,9 @@ export default defineComponent({
       const firstItemElement = firstItem.$el
       const pxPerItem = firstItemElement.getBoundingClientRect().width
 
-      const pxForHeader = heading.value.getBoundingClientRect().width
+      const pxForHeader = headingRef.value.getBoundingClientRect().width
 
-      const pxWholeWidth = wrapper.value.getBoundingClientRect().width
+      const pxWholeWidth = wrapperRef.value.getBoundingClientRect().width
       const pxAvailableForItems = pxWholeWidth - pxForHeader
 
       return Math.min(Math.max(Math.floor(pxAvailableForItems / pxPerItem), 1), headings.value.length)
@@ -175,8 +175,8 @@ export default defineComponent({
       nextTick(() => pageSize.value = calculatePageSize())
     }
 
-    useResizeObserver(wrapper, ([ entry ]) => window.requestAnimationFrame(() => {
-      if (wrapper.value == undefined) {
+    useResizeObserver(wrapperRef, ([ entry ]) => window.requestAnimationFrame(() => {
+      if (wrapperRef.value == undefined) {
         return
       }
 
@@ -204,8 +204,6 @@ export default defineComponent({
     // TODO assumes d-auto / m-auto do not change - might want to add a mutation observer
 
     return {
-      wrapper,
-      heading,
       page,
       pageSize,
       headings,

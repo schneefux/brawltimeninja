@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onBeforeUnmount, nextTick, onMounted } from 'vue'
+import { defineComponent, onBeforeUnmount, nextTick, onMounted, useTemplateRef } from 'vue'
 
 export default defineComponent({
   props: {
@@ -25,7 +25,7 @@ export default defineComponent({
     // TODO can I set data-publisher-ref?
   },
   setup(props) {
-    const placement = ref<HTMLDivElement>()
+    const placementRef = useTemplateRef<HTMLDivElement>('placement')
 
     // log statements were requested by Venatus
     const addPlacement = (el: HTMLElement) => {
@@ -48,21 +48,17 @@ export default defineComponent({
 
     onMounted(() => {
       nextTick(() => {
-        if (placement.value != null) {
-          addPlacement(placement.value)
+        if (placementRef.value != null) {
+          addPlacement(placementRef.value)
         }
       })
     })
 
     onBeforeUnmount(() => {
-      if (placement.value != null) {
-        removePlacement(placement.value)
+      if (placementRef.value != null) {
+        removePlacement(placementRef.value)
       }
     })
-
-    return {
-      placement,
-    }
   },
 })
 </script>

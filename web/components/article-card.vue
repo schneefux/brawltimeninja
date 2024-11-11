@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, useTemplateRef } from 'vue'
 
 export default defineComponent({
   props: {
@@ -67,13 +67,13 @@ export default defineComponent({
     },
   },
   setup() {
-    const content = ref<HTMLElement>()
+    const contentRef = useTemplateRef<HTMLElement>('content')
     const lightboxOpen = ref(false)
     const lightboxImage = ref('')
 
     onMounted(() => {
-      if (content.value != undefined) {
-        content.value.querySelectorAll('img.lightbox').forEach((img) => {
+      if (contentRef.value != undefined) {
+        contentRef.value.querySelectorAll('img.lightbox').forEach((img) => {
           img.addEventListener('click', () => {
             lightboxImage.value = (<HTMLImageElement> img).src
             lightboxOpen.value = true
@@ -83,7 +83,6 @@ export default defineComponent({
     })
 
     return {
-      content,
       lightboxOpen,
       lightboxImage,
     }

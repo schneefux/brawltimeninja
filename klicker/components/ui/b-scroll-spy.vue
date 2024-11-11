@@ -13,8 +13,8 @@
           :ref="el => setLinkRef(section.id, el as HTMLElement)"
           :key="section.title"
           :class="{
-            'border-primary-400': visibleSections[section.id],
-            'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !visibleSections[section.id],
+            'border-primary-400': visibleSectionsRefs[section.id],
+            'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !visibleSectionsRefs[section.id],
           }"
           class="border-l-2 transition duration-100 ease-in-out px-3 py-2"
         >
@@ -87,12 +87,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch, nextTick, computed } from 'vue'
+import { defineComponent, onMounted, PropType, ref, watch, nextTick, computed, useTemplateRef } from 'vue'
 import { useIntersectionObserver, breakpointsTailwind, useBreakpoints, onClickOutside } from '@vueuse/core'
 
 interface Section {
   id: string
-  element: undefined|HTMLElement
+  element: null|undefined|HTMLElement
   title: string
 }
 
@@ -113,9 +113,9 @@ export default defineComponent({
   },
   setup(props) {
     const dropdownOpen = ref(false)
-    const rootContainer = ref<HTMLElement>()
-    const navContainer = ref<HTMLElement>()
-    const visibleSections = ref<Record<string, boolean>>({})
+    const rootContainerRef = useTemplateRef<HTMLElement>('rootContainer')
+    const navContainerRef = useTemplateRef<HTMLElement>('navContainer')
+    const visibleSectionsRefs = ref<Record<string, boolean>>({})
     const activeSectionTitle = ref<string>()
     const activeSectionId = ref<string>()
     const linkRefs = ref<Record<string, HTMLElement|null>>({})
@@ -133,11 +133,11 @@ export default defineComponent({
         return
       }
 
-      const offset = linkElement.getBoundingClientRect().top - rootContainer.value!.getBoundingClientRect().top
-      const center = rootContainer.value!.clientHeight / 2
+      const offset = linkElement.getBoundingClientRect().top - rootContainerRef.value!.getBoundingClientRect().top
+      const center = rootContainerRef.value!.clientHeight / 2
       if (offset < center - center / 2 || offset > center + center / 2) {
-        const top = rootContainer.value!.scrollTop + offset - center
-        rootContainer.value!.scrollTo({ top, behavior: 'smooth' })
+        const top = rootContainerRef.value!.scrollTop + offset - center
+        rootContainerRef.value!.scrollTo({ top, behavior: 'smooth' })
       }
     }
 
@@ -150,17 +150,17 @@ export default defineComponent({
       dropdownOpen.value = false
       // dropdown needs to close first
       nextTick(() => {
-        const offset = lgAndLarger.value || navContainer.value == undefined ? 0 : navContainer.value.getBoundingClientRect().bottom
+        const offset = lgAndLarger.value || navContainerRef.value == undefined ? 0 : navContainerRef.value.getBoundingClientRect().bottom
         const top = sectionElement.getBoundingClientRect().top + window.scrollY - offset
         window.scrollTo({ top, behavior: 'smooth' })
       })
     }
 
-    onClickOutside(navContainer, () => dropdownOpen.value = false)
+    onClickOutside(navContainerRef, () => dropdownOpen.value = false)
 
     const stopCallbacks = ref<(() => void)[]>([])
     const updateObservers = () => {
-      const topOffset = lgAndLarger.value ? 0 : navContainer.value!.offsetHeight + navContainer.value!.offsetTop
+      const topOffset = lgAndLarger.value ? 0 : navContainerRef.value!.offsetHeight + navContainerRef.value!.offsetTop
 
       const newStopCallbacks: (() => void)[] = []
       for (const section of validSections.value) {
@@ -184,8 +184,8 @@ export default defineComponent({
         newStopCallbacks.push(stop1)
 
         const { stop: stop2 } = useIntersectionObserver(sectionElement, ([{ isIntersecting }]) => {
-          visibleSections.value = {
-            ...visibleSections.value,
+          visibleSectionsRefs.value = {
+            ...visibleSectionsRefs.value,
             [section.id]: isIntersecting,
           }
 
@@ -193,7 +193,7 @@ export default defineComponent({
             scrollTocLinkIntoView(section.id)
           }
 
-          if (!isIntersecting && !Object.values(visibleSections.value).some(Boolean) && location.hash != '') {
+          if (!isIntersecting && !Object.values(visibleSectionsRefs.value).some(Boolean) && location.hash != '') {
             // no section visible: clear hash
             window.history.replaceState(null, '', ' ')
           }
@@ -236,30 +236,28 @@ export default defineComponent({
       }
     })
 
-    const toc = ref<HTMLElement>()
+    const tocRef = useTemplateRef<HTMLElement>('toc')
     const shouldStick = ref(false)
-    useIntersectionObserver(toc, ([ entry ]) => {
+    useIntersectionObserver(tocRef, ([ entry ]) => {
       if (entry.isIntersecting) {
         shouldStick.value = false
       } else {
-        shouldStick.value = entry.boundingClientRect.bottom < navContainer.value!.offsetTop
+        shouldStick.value = entry.boundingClientRect.bottom < navContainerRef.value!.offsetTop
       }
     }, {
       threshold: 0.0,
     })
 
     return {
-      toc,
+      tocRef,
       shouldStick,
       stopCallbacks,
       dropdownOpen,
-      navContainer,
       scrollTo,
       activeSectionTitle,
       activeSectionId,
-      visibleSections,
+      visibleSectionsRefs,
       validSections,
-      rootContainer,
       setLinkRef,
     }
   },

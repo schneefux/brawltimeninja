@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, useTemplateRef } from 'vue'
 import Fa from '../fa.vue'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import BButton from './b-button.vue'
@@ -92,12 +92,12 @@ export default defineComponent({
     ['rerender'](value: ScrollEvent) { return true },
   },
   setup(props, { emit }) {
-    const wrapper = ref<HTMLElement|null>()
+    const wrapperRef = useTemplateRef<HTMLElement|null>('wrapper')
 
     const scrollBy = (direction: number) => {
-      const rect = wrapper.value!.getBoundingClientRect()
-      const left = wrapper.value!.scrollLeft + rect.width * direction
-      wrapper.value!.scrollTo({ left, behavior: 'smooth' })
+      const rect = wrapperRef.value!.getBoundingClientRect()
+      const left = wrapperRef.value!.scrollLeft + rect.width * direction
+      wrapperRef.value!.scrollTo({ left, behavior: 'smooth' })
     }
 
     const scrollLeft = () => scrollBy(-1)
@@ -121,12 +121,12 @@ export default defineComponent({
         })
       }
 
-      const scrollable = wrapper.value != undefined && wrapper.value.scrollWidth > wrapper.value.clientWidth
+      const scrollable = wrapperRef.value != undefined && wrapperRef.value.scrollWidth > wrapperRef.value.clientWidth
       arrivedLeft.value = scroll.arrivedState.left || !scrollable
       arrivedRight.value = scroll.arrivedState.right || !scrollable
     })
 
-    const scroll = useScroll(wrapper, {
+    const scroll = useScroll(wrapperRef, {
       onScroll: () => onUpdate('scroll'),
       offset: {
         left: 50,
@@ -135,13 +135,13 @@ export default defineComponent({
     })
 
     onMounted(() => onUpdate('rerender'))
-    useResizeObserver(wrapper, () => onUpdate('rerender'))
-    useMutationObserver(wrapper, () => onUpdate('rerender'), {
+    useResizeObserver(wrapperRef, () => onUpdate('rerender'))
+    useMutationObserver(wrapperRef, () => onUpdate('rerender'), {
       childList: true,
     })
 
     return {
-      wrapper,
+      wrapperRef,
       scrollLeft,
       scrollRight,
       arrivedLeft,

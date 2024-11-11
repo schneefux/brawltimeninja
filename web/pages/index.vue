@@ -176,7 +176,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, useTemplateRef } from 'vue'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, tagPattern } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
@@ -240,7 +240,7 @@ export default defineComponent({
 
     const { makeVisibilityCallback } = useTrackScroll('home')
 
-    const helpDropdown = ref<HTMLElement>()
+    const helpDropdownRef = useTemplateRef<HTMLElement>('helpDropdown')
 
     const addLastPlayer = (player: PlayerLink) => preferencesStore.addLastPlayer(player)
 
@@ -253,7 +253,7 @@ export default defineComponent({
       if (!tagPattern.test(cleanedTag.value)) {
         event('search_tag_invalid')
         error.value = i18n.t('error.tag.invalid')
-        const dropdown = helpDropdown.value!
+        const dropdown = helpDropdownRef.value!
         dropdown.setAttribute('open', '')
         dropdown.scrollIntoView({ behavior: 'smooth' })
         return
@@ -319,7 +319,6 @@ export default defineComponent({
       lastPlayers,
       featuredPlayers,
       addLastPlayer,
-      helpDropdown,
       makeVisibilityCallback,
       search,
       error,

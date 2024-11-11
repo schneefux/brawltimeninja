@@ -105,7 +105,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, PropType, ref, nextTick } from 'vue'
+import { computed, defineComponent, onMounted, PropType, ref, nextTick, useTemplateRef } from 'vue'
 import BScrollingDashboard, { ScrollEvent } from './b-scrolling-dashboard.vue'
 import BDashboardCell from './b-dashboard-cell.vue'
 import BShimmer from './b-shimmer.vue'
@@ -177,16 +177,16 @@ export default defineComponent({
     const itemRefs = ref<Record<string, InstanceType<typeof BDashboardCell>|null>>({})
     const setItemRef = (id: number, el: InstanceType<typeof BDashboardCell>|null) => itemRefs.value[id] = el
     const container = ref<InstanceType<typeof BScrollingDashboard>>()
-    const preview = ref<HTMLElement>()
+    const previewRef = useTemplateRef<HTMLElement>('preview')
 
     const scrollTo = (index: number) => {
-      if (columnStyle.value == undefined || container.value?.wrapper == undefined) {
+      if (columnStyle.value == undefined || container.value?.wrapperRef == undefined) {
         return
       }
 
       const { pxPerItem, pxGap } = columnStyle.value
       const x = index * pxPerItem + index * pxGap
-      container.value.wrapper.scrollLeft = x
+      container.value.wrapperRef.scrollLeft = x
     }
 
     /**
@@ -250,12 +250,12 @@ export default defineComponent({
     }>()
     const columnsPerItem = computed(() => columnStyle.value?.columnsPerItem ?? props.cellColumns)
     const updateColumnWidths = (firstItemRect?: DOMRectReadOnly) => {
-      if (container.value?.wrapper == undefined) {
+      if (container.value?.wrapperRef == undefined) {
         nextTick(() => updateColumnWidths(firstItemRect))
         return
       }
 
-      columnStyle.value = getColumnStyle(container.value.wrapper, firstItemRect)
+      columnStyle.value = getColumnStyle(container.value.wrapperRef, firstItemRect)
     }
     onMounted(() => updateColumnWidths())
     const firstItemRef = computed(() => Object.values(itemRefs.value).find(v => v != undefined))
@@ -267,13 +267,13 @@ export default defineComponent({
     let timeout: NodeJS.Timeout
 
     const onUpdate = (event: ScrollEvent) => {
-      if (columnStyle.value == undefined || container.value?.wrapper == undefined) {
+      if (columnStyle.value == undefined || container.value?.wrapperRef == undefined) {
         return
       }
 
       const { pxPerItem, pxGap, wrapperPadding, wrapperPaddingLeft } = columnStyle.value
 
-      const pxWholeWidth = container.value.wrapper.clientWidth - wrapperPadding
+      const pxWholeWidth = container.value.wrapperRef.clientWidth - wrapperPadding
 
       const offsetX = event.x - wrapperPaddingLeft
       const startIndex = (offsetX + pxGap) / (pxPerItem + pxGap)
@@ -306,15 +306,15 @@ export default defineComponent({
         end: Math.min(Math.floor(endIndex + overscanRight + 1), props.items.length),
       }
 
-      if (preview.value != undefined) {
+      if (previewRef.value != undefined) {
         // scroll preview into view
-        const pxPerPreview = preview.value.scrollWidth / props.items.length
+        const pxPerPreview = previewRef.value.scrollWidth / props.items.length
         const pxProgress = state.value.start * pxPerPreview
-        const centerWidth = preview.value.clientWidth / 2
-        const center = preview.value.scrollLeft + centerWidth - pxPerPreview / 2
+        const centerWidth = previewRef.value.clientWidth / 2
+        const center = previewRef.value.scrollLeft + centerWidth - pxPerPreview / 2
         const offset = pxProgress - center
         if (Math.abs(offset) > centerWidth / 2) {
-          preview.value.scrollLeft += offset
+          previewRef.value.scrollLeft += offset
         }
       }
     }
@@ -343,7 +343,7 @@ export default defineComponent({
     })
 
     return {
-      preview,
+      previewRef,
       onScroll,
       onRerender,
       scrollTo,

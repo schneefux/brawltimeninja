@@ -293,7 +293,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, useTemplateRef } from 'vue'
 import { useAsync, useCacheHeaders, useMeta, useSelfOrigin } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
@@ -349,16 +349,16 @@ export default defineComponent({
     const { makeVisibilityCallback, trackInteraction } = useTrackScroll('profile')
 
     const sectionRefs = {
-      profileSection: ref<InstanceType<typeof BPageSection>>(),
-      timeSection: ref<InstanceType<typeof BPageSection>>(),
-      trophySection: ref<InstanceType<typeof BPageSection>>(),
-      sharepicSection: ref<InstanceType<typeof BPageSection>>(),
-      quizSection: ref<InstanceType<typeof BPageSection>>(),
-      recordsSection: ref<InstanceType<typeof BPageSection>>(),
-      battlesSection: ref<InstanceType<typeof BPageSection>>(),
-      modesSection: ref<InstanceType<typeof BPageSection>>(),
-      brawlersSection: ref<InstanceType<typeof BPageSection>>(),
-      progressionSection: ref<InstanceType<typeof BPageSection>>(),
+      profileSection: useTemplateRef<InstanceType<typeof BPageSection>>('profileSection'),
+      timeSection: useTemplateRef<InstanceType<typeof BPageSection>>('timeSection'),
+      trophySection: useTemplateRef<InstanceType<typeof BPageSection>>('trophySection'),
+      sharepicSection: useTemplateRef<InstanceType<typeof BPageSection>>('sharepicSection'),
+      quizSection: useTemplateRef<InstanceType<typeof BPageSection>>('quizSection'),
+      recordsSection: useTemplateRef<InstanceType<typeof BPageSection>>('recordsSection'),
+      battlesSection: useTemplateRef<InstanceType<typeof BPageSection>>('battlesSection'),
+      modesSection: useTemplateRef<InstanceType<typeof BPageSection>>('modesSection'),
+      brawlersSection: useTemplateRef<InstanceType<typeof BPageSection>>('brawlersSection'),
+      progressionSection: useTemplateRef<InstanceType<typeof BPageSection>>('progressSection'),
     }
 
     const sections = computed(() => [{
@@ -457,7 +457,6 @@ export default defineComponent({
       makeVisibilityCallback,
       trackInteraction,
       sections,
-      ...sectionRefs,
     }
   },
 })

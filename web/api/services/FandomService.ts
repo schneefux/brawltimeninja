@@ -1,3 +1,4 @@
+// @ts-ignore
 import wtf from 'wtf_wikipedia'
 // @ts-ignore
 import wtfPluginApi from 'wtf-plugin-api'

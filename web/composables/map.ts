@@ -1,7 +1,16 @@
 import { computed, Ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { Composer, useI18n, VueMessageType } from 'vue-i18n'
+import type { LocaleMessage, NumberFormat } from '@intlify/core-base';
 
-export const getMapName = (i18n: ReturnType<typeof useI18n>, id: string|number|undefined, name: string|undefined) => {
+type I18nInstance = Composer<{
+  [x: string]: LocaleMessage<VueMessageType>;
+}, {
+  [x: string]: LocaleMessage<VueMessageType>;
+}, {
+  [x: string]: NumberFormat;
+}, string, string, string>
+
+export const getMapName = (i18n: I18nInstance, id: string|number|undefined, name: string|undefined) => {
   if (id == undefined) {
     return name
   }

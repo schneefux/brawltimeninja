@@ -8,24 +8,20 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, useTemplateRef } from 'vue'
 import { set as gtagSet } from 'vue-gtag'
 
 export default defineComponent({
   setup() {
-    const adblockBait = ref<HTMLElement>()
+    const adblockBaitRef = useTemplateRef<HTMLElement>('adblockBait')
 
     onMounted(() => {
-      const adsBlocked = adblockBait.value!.clientHeight === 0;
+      const adsBlocked = adblockBaitRef.value!.clientHeight === 0;
 
       (gtagSet as any)('user_properties', {
         'ads_blocked': adsBlocked.toString(),
       })
     })
-
-    return {
-      adblockBait,
-    }
   },
 })
 </script>

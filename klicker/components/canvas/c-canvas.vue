@@ -77,7 +77,7 @@
           v-for="(w, id) in widgets"
           :key="w.id"
           :model-value="widgets[id]"
-          :container="container!"
+          :container="containerRef!"
           :bounds="bounds"
           class="panzoom-exclude"
           @update:modelValue="w => updateWidget(w as ReportWidget)"
@@ -94,7 +94,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, useId } from 'vue'
+import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, useId, useTemplateRef } from 'vue'
 import CMoveableWidget from './c-moveable-widget.vue'
 import CWidgetEditor from './c-widget-editor.vue'
 import BNumber from '../ui/b-number.vue'
@@ -132,17 +132,17 @@ export default defineComponent({
     ['update:modelValue'](value: Report) { return true },
   },
   setup(props, { emit }) {
-    const container = ref<HTMLElement>()
-    const containerParent = ref<HTMLElement>()
+    const containerRef = useTemplateRef<HTMLElement>('container')
+    const containerParentRef = useTemplateRef<HTMLElement>('containerParent')
     const selectedWidgetId = ref<string>()
 
     const panzoomInstance = ref<PanzoomObject>()
     onMounted(() => {
-      const rect = containerParent.value!.getBoundingClientRect()
+      const rect = containerParentRef.value!.getBoundingClientRect()
       const width = rect.width - 2*4 // border
       const height = rect.height - 2*4 // border
       const zoom = Math.min(width / props.modelValue.width, height / props.modelValue.height)
-      panzoomInstance.value = Panzoom(container.value!, {
+      panzoomInstance.value = Panzoom(containerRef.value!, {
         canvas: true,
         cursor: undefined,
         excludeClass: 'panzoom-exclude',
@@ -150,7 +150,7 @@ export default defineComponent({
         startY: -props.modelValue.height / 2 / zoom + height / 2 / zoom,
         startScale: zoom,
       })
-      containerParent.value!.addEventListener('wheel', panzoomInstance.value.zoomWithWheel)
+      containerParentRef.value!.addEventListener('wheel', panzoomInstance.value.zoomWithWheel)
     })
     onUnmounted(() => {
       panzoomInstance.value!.destroy()
@@ -159,7 +159,7 @@ export default defineComponent({
     const zoomIn = () => panzoomInstance.value!.zoomIn()
     const zoomOut = () => panzoomInstance.value!.zoomOut()
 
-    const { toggle: toggleFullscreen, isFullscreen } = useFullscreen(containerParent)
+    const { toggle: toggleFullscreen, isFullscreen } = useFullscreen(containerParentRef)
 
     const widgets = computed({
       get(): Record<string, ReportWidget> {
@@ -237,8 +237,7 @@ export default defineComponent({
 
     return {
       bounds,
-      container,
-      containerParent,
+      containerRef,
       title,
       width,
       height,

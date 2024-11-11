@@ -44,7 +44,7 @@
 import { Player } from '~/model/Api'
 import { xpToHours } from '~/lib/util'
 import { BScrollingDashboard, BBigstat, BDashboardCell, Fa } from '@schneefux/klicker/components'
-import { ref, computed, defineComponent, onMounted, watch, PropType } from 'vue'
+import { ref, computed, defineComponent, onMounted, watch, PropType, useTemplateRef } from 'vue'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { useI18n } from 'vue-i18n'
 
@@ -67,15 +67,15 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const hourCounter = ref<HTMLElement>()
+    const hourCounterRef = useTemplateRef<HTMLElement>('hourCounter')
     const counterRefs = ref<Record<string, HTMLElement|null>>({})
     const setCounterRef = (id: string|number, el: unknown|null) => counterRefs.value[id] = el as HTMLElement|null
     const i18n = useI18n()
 
     const startCounter = () => {
       if (props.player == undefined) {
-        if (hourCounter.value != undefined) {
-          hourCounter.value.textContent = '…'
+        if (hourCounterRef.value != undefined) {
+          hourCounterRef.value.textContent = '…'
         }
         for (const counterRef of Object.values(counterRefs.value)) {
           if (counterRef != undefined) {
@@ -91,11 +91,11 @@ export default defineComponent({
       const animationDuration = 3000
 
       const setCounters = (hoursSpent: number) => {
-        if (hourCounter.value == undefined) {
+        if (hourCounterRef.value == undefined) {
           // not rendered yet
           return
         }
-        hourCounter.value.textContent = Math.floor(hoursSpent).toString()
+        hourCounterRef.value.textContent = Math.floor(hoursSpent).toString()
         Object.entries(funStats.value).forEach(([key, stat], index) => {
           const funCounter = counterRefs.value[key]
           if (funCounter != undefined) {
@@ -152,7 +152,6 @@ export default defineComponent({
     return {
       funStats,
       faClock,
-      hourCounter,
       setCounterRef,
     }
   },

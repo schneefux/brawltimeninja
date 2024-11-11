@@ -2,7 +2,7 @@
   <moveable
     ref="moveable"
     :class-name="$attrs.class as string"
-    :target="target"
+    :target="targetRef"
     :container="container"
     :bounds="bounds"
     :resizable="spec != undefined ? spec.resizable : false"
@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch, onMounted, defineAsyncComponent } from "vue";
+import { computed, defineComponent, PropType, watch, defineAsyncComponent, useTemplateRef } from "vue";
 import { GridWidget, ReportWidget, StaticWidgetSpec } from "../../types";
 import CWidget, { render } from './c-widget.vue'
 import { MoveableInterface } from 'moveable'
@@ -77,8 +77,8 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const $klicker = useKlicker()
-    const target = ref<HTMLElement>()
-    const moveable = ref<MoveableInterface>()
+    const targetRef = useTemplateRef<HTMLElement>('target')
+    const moveableRef = useTemplateRef<MoveableInterface>('moveable')
 
     const spec = computed<StaticWidgetSpec>(() => (
       $klicker.visualisations.find(v => v.component == props.modelValue.component) ??
@@ -92,7 +92,7 @@ export default defineComponent({
       if (JSON.stringify(after) != JSON.stringify(before)) {
         frame = clone(props.modelValue.frame)
         handlers.onRender()
-        moveable.value?.updateRect()
+        moveableRef.value?.updateRect()
       }
     }, { flush: 'post' })
 
@@ -148,8 +148,8 @@ export default defineComponent({
         sync()
       },
       onRender() {
-        if (target.value != undefined) {
-          Object.assign(target.value.style, render(frame, spec.value))
+        if (targetRef.value != undefined) {
+          Object.assign(targetRef.value.style, render(frame, spec.value))
         }
       },
     }
@@ -159,8 +159,7 @@ export default defineComponent({
 
     return {
       spec,
-      target,
-      moveable,
+      targetRef,
       initialStyle,
       ...handlers,
     }

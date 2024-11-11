@@ -34,7 +34,7 @@ import { VisualisationProps } from '../../props'
 import type { VisualizationSpec } from 'vega-embed'
 import BVega from '../ui/b-vega.vue'
 import BPaginator from '../ui/b-paginator.vue'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, useTemplateRef } from 'vue'
 import { useCubeResponseProps } from '../../composables/response'
 import VCardWrapper from './v-card-wrapper.vue'
 import { useResizeObserver } from '@vueuse/core'
@@ -183,10 +183,10 @@ export default defineComponent({
 
     const page = ref(0)
     const pageSize = ref(values.value.length)
-    const wrapper = ref<HTMLElement>()
+    const wrapperRef = useTemplateRef<HTMLElement>('wrapper')
 
-    useResizeObserver(wrapper, ([ entry ]) => window.requestAnimationFrame(() => {
-      if (wrapper.value == undefined) {
+    useResizeObserver(wrapperRef, ([ entry ]) => window.requestAnimationFrame(() => {
+      if (wrapperRef.value == undefined) {
         return
       }
 
@@ -196,7 +196,6 @@ export default defineComponent({
     }))
 
     return {
-      wrapper,
       values,
       spec,
       page,

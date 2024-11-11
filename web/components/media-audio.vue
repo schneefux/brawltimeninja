@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, useTemplateRef } from 'vue'
 import { useConfig } from "~/composables/compat";
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
 import { BButton, Fa } from '@schneefux/klicker/components'
@@ -42,14 +42,13 @@ export default defineComponent({
   setup() {
     const $config = useConfig()
     const mediaUrl = computed(() => $config.mediaUrl)
-    const audioEl = ref<HTMLAudioElement>()
+    const audioElRef = useTemplateRef<HTMLAudioElement>('audioEl')
 
-    const play = () => audioEl.value?.play()
+    const play = () => audioElRef.value?.play()
 
     return {
       play,
       mediaUrl,
-      audioEl,
       faPlayCircle,
     }
   },

@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, useTemplateRef } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 
 export default defineComponent({
@@ -38,10 +38,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const cell = ref<HTMLElement|null>()
+    const cellRef = useTemplateRef<HTMLElement|null>('cell')
     const visible = ref(!props.lazy)
     if (!visible.value && !import.meta.env.SSR) {
-      const { isSupported, stop } = useIntersectionObserver(cell, ([{ isIntersecting }]) => {
+      const { isSupported, stop } = useIntersectionObserver(cellRef, ([{ isIntersecting }]) => {
         if (isIntersecting) {
           visible.value = isIntersecting
           stop()
@@ -55,7 +55,6 @@ export default defineComponent({
     }
 
     return {
-      cell,
       visible,
     }
   },

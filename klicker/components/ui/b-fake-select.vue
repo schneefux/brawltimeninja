@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, useTemplateRef } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
 export default defineComponent({
@@ -49,10 +49,10 @@ export default defineComponent({
     ['open']() { return true },
   },
   setup(props, { emit }) {
-    const container = ref<HTMLElement>()
+    const containerRef = useTemplateRef<HTMLElement>('container')
     const dropdownOpen = ref(false)
 
-    onClickOutside(container, () => dropdownOpen.value = false)
+    onClickOutside(containerRef, () => dropdownOpen.value = false)
 
     const toggleDropdown = () => {
       dropdownOpen.value = !dropdownOpen.value
@@ -63,7 +63,6 @@ export default defineComponent({
     }
 
     return {
-      container,
       dropdownOpen,
       toggleDropdown,
     }

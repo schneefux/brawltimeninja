@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, useTemplateRef } from 'vue'
 import { useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, unformatMode } from '~/lib/util'
@@ -144,10 +144,10 @@ export default defineComponent({
     const { makeVisibilityCallback } = useTrackScroll('maps')
 
     const sectionRefs = {
-      activeSection: ref<InstanceType<typeof BPageSection>>(),
-      rankedSection: ref<InstanceType<typeof BPageSection>>(),
-      upcomingSection: ref<InstanceType<typeof BPageSection>>(),
-      seasonSection: ref<InstanceType<typeof BPageSection>>(),
+      activeSection: useTemplateRef<InstanceType<typeof BPageSection>>('activeSection'),
+      rankedSection: useTemplateRef<InstanceType<typeof BPageSection>>('rankedSection'),
+      upcomingSection: useTemplateRef<InstanceType<typeof BPageSection>>('upcomingSection'),
+      seasonSection: useTemplateRef<InstanceType<typeof BPageSection>>('seasonSection'),
     }
 
     const sections = computed(() => [{
@@ -169,7 +169,6 @@ export default defineComponent({
     }])
 
     return {
-      ...sectionRefs,
       sections,
       allEvents,
       current,

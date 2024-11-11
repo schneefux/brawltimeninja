@@ -33,7 +33,7 @@ import embed, { VisualizationSpec } from 'vega-embed'
 import Fa from '../fa.vue'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import BShimmer from './b-shimmer.vue'
-import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue'
+import { defineComponent, onMounted, onUnmounted, PropType, ref, useTemplateRef, watch } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 
 export default defineComponent({
@@ -73,17 +73,17 @@ export default defineComponent({
 
     // be careful about https://github.com/vuejs/core/issues/7207#issuecomment-1326599127
     // only works because the <b-shimmer> wrapper is empty
-    const graph = ref<InstanceType<typeof BShimmer>>()
+    const graphRef = useTemplateRef<InstanceType<typeof BShimmer>>('graph')
 
     const refresh = async () => {
-      if (graph.value?.$el == undefined || container.value == undefined) {
+      if (graphRef.value?.$el == undefined || containerRef.value == undefined) {
         return
       }
 
       loading.value = true
       cleanup()
 
-      const computedStyle = window.getComputedStyle(container.value)
+      const computedStyle = window.getComputedStyle(containerRef.value)
       const textColor = computedStyle.getPropertyValue('--text-color')
       const gridColor = computedStyle.getPropertyValue('--grid-color')
       const primaryColor = computedStyle.getPropertyValue('--primary-color')
@@ -141,7 +141,7 @@ export default defineComponent({
       const userSpec = JSON.parse(JSON.stringify(props.spec))
       const spec = Object.assign(<VisualizationSpec>{}, userSpec, defaults)
 
-      result.value = await embed(graph.value.$el, spec, {
+      result.value = await embed(graphRef.value.$el, spec, {
         actions: false,
         // canvas: better performance
         // svg: easily zoomable and support for CSS variable colors
@@ -157,11 +157,11 @@ export default defineComponent({
       width: 600*1.25,
       height: 315*1.25,
     }) => {
-      if (result.value == undefined || container.value == undefined) {
+      if (result.value == undefined || containerRef.value == undefined) {
         return
       }
 
-      const backgroundColor = window.getComputedStyle(container.value)
+      const backgroundColor = window.getComputedStyle(containerRef.value)
         .getPropertyValue('--background-color')
 
       result.value.view.background(opts.background ?? backgroundColor)
@@ -181,13 +181,11 @@ export default defineComponent({
 
     watch(() => props.spec, () => refresh())
 
-    useResizeObserver(graph, () => window.requestAnimationFrame(() => refresh()))
+    useResizeObserver(graphRef, () => window.requestAnimationFrame(() => refresh()))
 
-    const container = ref<HTMLElement>()
+    const containerRef = useTemplateRef<HTMLElement>('container')
 
     return {
-      container,
-      graph,
       loading,
       result,
       faDownload,

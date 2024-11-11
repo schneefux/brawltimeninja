@@ -259,7 +259,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, useTemplateRef } from 'vue'
 import { useAsync, useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { BScrollSpy, BPageSection } from '@schneefux/klicker/components'
@@ -306,18 +306,18 @@ export default defineComponent({
         }), computed(() => `scraped-data-${brawlerId.value}`))
 
     const sectionRefs = {
-      brawlerSection: ref<InstanceType<typeof BPageSection>>(),
-      overviewSection: ref<InstanceType<typeof BPageSection>>(),
-      accessorySection: ref<InstanceType<typeof BPageSection>>(),
-      synergySection: ref<InstanceType<typeof BPageSection>>(),
-      mapsSection: ref<InstanceType<typeof BPageSection>>(),
-      modesSection: ref<InstanceType<typeof BPageSection>>(),
-      trendsSection: ref<InstanceType<typeof BPageSection>>(),
-      trophiesSection: ref<InstanceType<typeof BPageSection>>(),
-      skinsSection: ref<InstanceType<typeof BPageSection>>(),
-      pinsSection: ref<InstanceType<typeof BPageSection>>(),
-      voicelineSection: ref<InstanceType<typeof BPageSection>>(),
-      balanceChangesSection: ref<InstanceType<typeof BPageSection>>(),
+      brawlerSection: useTemplateRef<InstanceType<typeof BPageSection>>('brawlerSection'),
+      overviewSection: useTemplateRef<InstanceType<typeof BPageSection>>('overviewSection'),
+      accessorySection: useTemplateRef<InstanceType<typeof BPageSection>>('accessorySection'),
+      synergySection: useTemplateRef<InstanceType<typeof BPageSection>>('synergySection'),
+      mapsSection: useTemplateRef<InstanceType<typeof BPageSection>>('mapsSection'),
+      modesSection: useTemplateRef<InstanceType<typeof BPageSection>>('modesSection'),
+      trendsSection: useTemplateRef<InstanceType<typeof BPageSection>>('trendsSection'),
+      trophiesSection: useTemplateRef<InstanceType<typeof BPageSection>>('trophiesSection'),
+      skinsSection: useTemplateRef<InstanceType<typeof BPageSection>>('skinsSection'),
+      pinsSection: useTemplateRef<InstanceType<typeof BPageSection>>('pinsSection'),
+      voicelineSection: useTemplateRef<InstanceType<typeof BPageSection>>('voicelineSection'),
+      balanceChangesSection: useTemplateRef<InstanceType<typeof BPageSection>>('balanceChangesSection'),
     }
 
     const sections = computed(() => [{
@@ -375,7 +375,6 @@ export default defineComponent({
       makeVisibilityCallback,
       scrapedData,
       sections,
-      ...sectionRefs,
     }
   },
 })

@@ -114,7 +114,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, useTemplateRef } from 'vue'
 import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
 import { BDashboardCell, BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
@@ -158,11 +158,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const ad = ref<HTMLElement>()
+    const adRef = useTemplateRef<HTMLElement>('ad')
     const visible = ref(!props.lazy)
 
     if (!import.meta.env.SSR && !visible.value) {
-      const { isSupported, stop } = useIntersectionObserver(ad, ([{ isIntersecting, target }]) => {
+      const { isSupported, stop } = useIntersectionObserver(adRef, ([{ isIntersecting, target }]) => {
         const hidden = (target as HTMLElement)?.offsetParent === null
 
         if (isIntersecting && !hidden) {
@@ -208,7 +208,6 @@ export default defineComponent({
     const desktop = breakpoints.greaterOrEqual('desktop')
 
     return {
-      ad,
       visible,
       desktop,
       onVideoPlayerClicked,

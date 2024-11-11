@@ -17,8 +17,8 @@
 
     <b-page-section
       id="teambuilder"
-      :title="$t('draft-tool.title.short')"
       ref="draftTool"
+      :title="$t('draft-tool.title.short')"
       v-observe-visibility="{
         callback: makeVisibilityCallback('team-builder'),
         once: true,
@@ -58,7 +58,7 @@
 <script lang="ts">
 import { BPageSection, BDashboardCell, BScrollSpy } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { defineComponent, computed, ref } from 'vue'
+import { defineComponent, computed, ref, useTemplateRef } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
 import { useMeta, useCacheHeaders } from '~/composables/compat'
 import { useActiveEvents } from '~/composables/dimension-values'
@@ -99,11 +99,11 @@ export default defineComponent({
 
     const modeSectionRefs = ref<Record<string, HTMLElement|null>>({})
     const setModeSectionRef = (id: string, el: HTMLElement|null) => modeSectionRefs.value[id] = el
-    const draftTool = ref<HTMLElement>()
+    const draftToolRef = useTemplateRef<HTMLElement>('draftTool')
     const sections = computed(() => [{
       id: 'team-builder',
       title: i18n.t('draft-tool.title.short'),
-      element: draftTool.value,
+      element: draftToolRef.value,
     }, ...[...Object.keys(eventsByMode.value)].map(mode => ({
       id: camelToKebab(mode),
       title: i18n.t(`mode.${mode}`),
@@ -115,7 +115,6 @@ export default defineComponent({
       setModeSectionRef,
       eventsByMode,
       makeVisibilityCallback,
-      draftTool,
     }
   },
 })

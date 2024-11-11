@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref, useId } from 'vue'
+import { defineComponent, onMounted, PropType, ref, useId, useTemplateRef } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 
 interface Tab {
@@ -82,16 +82,16 @@ export default defineComponent({
     const setHeaderRef = (id: string, el: HTMLElement|null) => headerRefs.value[id] = el
     const tabRefs = ref<Record<string, HTMLElement|null>>({})
     const setTabRef = (id: string, el: HTMLElement|null) => tabRefs.value[id] = el
-    const tabContainer = ref<HTMLElement>()
-    const navContainer = ref<HTMLElement>()
-    const headerContainer = ref<HTMLElement>()
+    const tabContainerRef = useTemplateRef<HTMLElement>('tabContainer')
+    const navContainerRef = useTemplateRef<HTMLElement>('navContainer')
+    const headerContainerRef = useTemplateRef<HTMLElement>('headerContainer')
     const activeTab = ref<string>(props.tabs[0].slot)
     const tabVisibility = ref<Record<string, boolean>>({
       [activeTab.value]: true,
     })
 
     const scrollUpToTab = () => {
-      const offset = tabContainer.value!.getBoundingClientRect().top - navContainer.value!.getBoundingClientRect().bottom
+      const offset = tabContainerRef.value!.getBoundingClientRect().top - navContainerRef.value!.getBoundingClientRect().bottom
       if (offset < 0) {
         const top = window.scrollY + offset
         window.scrollTo({ top, behavior: 'smooth' })
@@ -104,11 +104,11 @@ export default defineComponent({
         return
       }
 
-      const offset = headerElement.getBoundingClientRect().left - headerContainer.value!.getBoundingClientRect().left
-      const center = tabContainer.value!.getBoundingClientRect().width / 2
+      const offset = headerElement.getBoundingClientRect().left - headerContainerRef.value!.getBoundingClientRect().left
+      const center = tabContainerRef.value!.getBoundingClientRect().width / 2
       if (Math.abs(offset) > center / 2) {
-        const left = headerContainer.value!.scrollLeft + offset - center
-        headerContainer.value!.scrollTo({ left, behavior: 'smooth' })
+        const left = headerContainerRef.value!.scrollLeft + offset - center
+        headerContainerRef.value!.scrollTo({ left, behavior: 'smooth' })
       }
     }
 
@@ -123,12 +123,12 @@ export default defineComponent({
         return
       }
 
-      const offset = tabElement.getBoundingClientRect().left - tabContainer.value!.getBoundingClientRect().left
-      const left = tabContainer.value!.scrollLeft + offset
+      const offset = tabElement.getBoundingClientRect().left - tabContainerRef.value!.getBoundingClientRect().left
+      const left = tabContainerRef.value!.scrollLeft + offset
       // smooth if it's next to the current tab
       // otherwise auto so no intersection observers get triggered
       const behavior = Math.abs(offset) <= 1.5 * tabElement.getBoundingClientRect().width ? 'smooth' : undefined
-      tabContainer.value!.scrollTo({ left, behavior })
+      tabContainerRef.value!.scrollTo({ left, behavior })
     }
 
     const scrollSnap = ref(true)
@@ -170,7 +170,7 @@ export default defineComponent({
             [tab.slot]: isIntersecting,
           }
         }, {
-          root: tabContainer.value,
+          root: tabContainerRef.value,
           threshold: 0.25,
         })
 
@@ -179,7 +179,7 @@ export default defineComponent({
             setActiveTab(tab)
           }
         }, {
-          root: tabContainer.value,
+          root: tabContainerRef.value,
           threshold: 1.0,
         })
       }
@@ -198,9 +198,6 @@ export default defineComponent({
     const prefix = useId()
 
     return {
-      tabContainer,
-      navContainer,
-      headerContainer,
       scrollToTab,
       activeTab,
       tabVisibility,

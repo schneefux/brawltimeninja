@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, useId } from 'vue'
+import { ref, defineComponent, useId, useTemplateRef } from 'vue'
 import { LazyHydrationWrapper } from 'vue3-lazy-hydration'
 import { useIntersectionObserver } from '@vueuse/core'
 
@@ -59,14 +59,14 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const section = ref<HTMLElement>()
+    const sectionRef = useTemplateRef<HTMLElement>('section')
     const id = useId()
 
     // never hydrate, instead rerender when visible to prevent hydration errors
     const hydrate = ref(!props.lazy)
 
     if (!import.meta.env.SSR) {
-      const { isSupported, stop } = useIntersectionObserver(section, ([ { isIntersecting } ]) => {
+      const { isSupported, stop } = useIntersectionObserver(sectionRef, ([ { isIntersecting } ]) => {
         if (isIntersecting) {
           hydrate.value = true
           stop()
@@ -82,7 +82,6 @@ export default defineComponent({
 
     return {
       id,
-      section,
       hydrate,
     }
   },

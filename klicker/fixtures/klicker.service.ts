@@ -14,7 +14,7 @@ export function translate(key: string) {
 
 export class KlickerServiceMock extends KlickerService {
   constructor() {
-    super('https://cube.brawltime.ninja', config, [], [], [], [], [], window.fetch.bind(window))
+    super('https://cube.brawltime.ninja', () => Promise.resolve(''), config, [], [], [], [], [], window.fetch.bind(window))
   }
 }
 

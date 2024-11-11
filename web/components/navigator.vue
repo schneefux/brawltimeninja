@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, useTemplateRef, watch } from 'vue'
 import { BSearch } from '@schneefux/klicker/components'
 import { useRoute, useRouter } from 'vue-router'
 import NavigatorPopup from '~/components/navigator-popup.vue'
@@ -38,22 +38,22 @@ export default defineComponent({
     const popupOpen = ref(false)
 
     const route = useRoute()
-    const search = ref<InstanceType<typeof BSearch>>()
+    const searchRef = useTemplateRef<InstanceType<typeof BSearch>>('search')
     watch(route, () => {
       popupOpen.value = false
-      search.value?.reset()
+      searchRef.value?.reset()
     })
 
-    const navigatorPopup = ref<InstanceType<typeof NavigatorPopup>>()
+    const navigatorPopupRef = useTemplateRef<InstanceType<typeof NavigatorPopup>>('navigatorPopup')
     const router = useRouter()
     const goToFirstResult = async () => {
-      const navigator = navigatorPopup.value?.navigator
+      const navigator = navigatorPopupRef.value?.navigatorRef
       if (navigator == undefined) {
         return
       }
 
       const firstLink = navigator.searchResults
-        .concat(navigatorPopup.value!.linkTree)
+        .concat(navigatorPopupRef.value!.linkTree)
         .map(l => l.target)
         .find((l): l is string => l != undefined)
 
@@ -63,10 +63,8 @@ export default defineComponent({
     }
 
     return {
-      navigatorPopup,
       goToFirstResult,
       popupOpen,
-      search,
     }
   },
 })

@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, useTemplateRef } from 'vue'
 import { BWebFooter } from '@schneefux/klicker/components'
 import { useInstallPromptListeners } from '~/composables/app'
 import { useI18n } from 'vue-i18n'
@@ -48,7 +48,7 @@ export default defineComponent({
     BWebFooter,
   },
   setup() {
-    const container = ref<HTMLElement>()
+    const containerRef = useTemplateRef<HTMLElement>('container')
 
     const config = useConfig()
     const i18n = useI18n()
@@ -82,7 +82,6 @@ export default defineComponent({
 
     return {
       links,
-      container,
     }
   },
 })
