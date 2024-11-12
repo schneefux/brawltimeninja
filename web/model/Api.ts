@@ -23,6 +23,12 @@ export interface Brawler {
   gears: Gear[];
 }
 
+export interface LeagueRank {
+  league: 'Bronze'|'Silver'|'Gold'|'Diamond'|'Mythic'|'Legendary'|'Masters',
+  leagueSub: 'I'|'II'|'III',
+  formatted: string,
+}
+
 export interface Battle {
   timestamp: Date;
   ranked: boolean;
@@ -39,12 +45,7 @@ export interface Battle {
     name: string;
     brawler: string;
     brawlerTrophies: number;
-    brawlerRank: undefined|{
-      leagueIndex: number,
-      league: 'Bronze'|'Silver'|'Gold'|'Diamond'|'Mythic'|'Legendary'|'Masters',
-      leagueSub: 'I'|'II'|'III',
-      formatted: string,
-    };
+    brawlerRank: undefined|LeagueRank;
     isBigbrawler: boolean;
   }[][]
 }
@@ -52,6 +53,21 @@ export interface Battle {
 export interface Player extends Omit<BrawlstarsPlayer, 'brawlers'> {
   brawlers: Record<string, Brawler>
   battles: Battle[]
+}
+
+export interface LeagueRankWithPoints extends LeagueRank {
+  points: number
+}
+
+export interface PlayerExtra {
+  rank: LeagueRankWithPoints
+  highestRank: LeagueRankWithPoints
+  accountCreationYear: number
+  brawlers: Record<string, BrawlerExtra>
+}
+
+export interface BrawlerExtra {
+  masteryPoints: number
 }
 
 export interface ActiveEvent {

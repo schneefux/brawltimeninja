@@ -1,15 +1,18 @@
 import { brawlerId, capitalize, formatLeagueRanks, parseApiTime, unformatMode } from '../../lib/util'
-import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking } from '../../model/Brawlstars'
-import { Battle, Brawler, Player, ActiveEvent, ClubActivityStatistics } from '../../model/Api'
+import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking, DevfoxPlayerResponse } from '../../model/Brawlstars'
+import { Battle, Brawler, Player, ActiveEvent, ClubActivityStatistics, PlayerExtra, BrawlerExtra } from '../../model/Api'
 import { request } from '../lib/request'
-import { StarlistEvent } from '../../model/Starlist'
+import { StarlistBrawler, StarlistEvent } from '../../model/Starlist'
 import ClickerService from './ClickerService'
 // curl https://api.brawlify.com/v1/brawlers | jq 'reduce .list[] as $item ({}; .[$item.id | tostring]=$item.name)'
 import BrawlerNamesMap from '~/api/lib/brawler-names.json'
+import { TRPCError } from '@trpc/server'
 const BrawlerNames: Record<string, string> = BrawlerNamesMap
+import { Cache } from '~/lib/cache'
 
-const apiUnofficialUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v1/';
-const apiOfficialUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
+const brawlapiUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v1/';
+const brawlstarsUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
+const devfoxUrl = process.env.HPDEVFOX_URL || 'https://api.hpdevfox.ru/';
 const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
 const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
 const clickhouseUrl = process.env.CLICKHOUSE_URL
@@ -34,11 +37,11 @@ function getApiUrl(tag: string) {
 }
 */
 
-export default class BrawlstarsService {
-  private readonly apiUnofficial = apiUnofficialUrl;
-  private readonly apiOfficial = apiOfficialUrl;
+const BRAWLIFY_CACHE_MINUTES = 60 * 24
 
+export default class BrawlstarsService {
   private readonly clicker?: ClickerService;
+  private brawlifyCache = new Cache<string, Record<number, string>>(BRAWLIFY_CACHE_MINUTES)
 
   constructor() {
     if (clickhouseUrl != undefined) {
@@ -49,7 +52,7 @@ export default class BrawlstarsService {
   }
 
   private async apiRequest<T>(path: string, metricName: string, timeout: number = 1000) {
-    return request<T>(path, this.apiOfficial, metricName,
+    return request<T>(path, brawlstarsUrl, metricName,
       {}, { 'Authorization': 'Bearer ' + tokenOfficial }, timeout)
   }
 
@@ -57,7 +60,7 @@ export default class BrawlstarsService {
   public async getActiveEvents() {
     const response = await request<{ active: StarlistEvent[], upcoming: StarlistEvent[] }>(
       'events',
-      this.apiUnofficial,
+      brawlapiUrl,
       'fetch_events',
       { },
       { 'Authorization': 'Bearer ' + tokenUnofficial },
@@ -101,7 +104,7 @@ export default class BrawlstarsService {
   private async getPlayer(tag: string): Promise<BrawlstarsPlayer> {
     return request<BrawlstarsPlayer>(
       'players/%23' + tag,
-      apiOfficialUrl,
+      brawlstarsUrl,
       'fetch_player',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial },
@@ -109,10 +112,37 @@ export default class BrawlstarsService {
     );
   }
 
+  private async getPlayerDevfox(tag: string): Promise<DevfoxPlayerResponse> {
+    return request<DevfoxPlayerResponse>(
+      'profile/' + tag,
+      devfoxUrl,
+      'fetch_player_devfox',
+      { },
+      { },
+      5000, // TODO tweak this
+    );
+  }
+
+  private async getBrawlerMeta(): Promise<Record<number, string>> {
+    // TODO move caches to mariadb
+
+    return this.brawlifyCache.getOrUpdate('brawlers', async () => {
+      const response = await request<{ list: StarlistBrawler[] }>(
+        'brawlers',
+        brawlapiUrl,
+        'fetch_brawlers',
+        { },
+        { 'Authorization': 'Bearer ' + tokenUnofficial },
+        1000,
+      );
+      return Object.fromEntries(response.list.map(b => [b.id, b.name]))
+    });
+  }
+
   private async getPlayerBattleLog(tag: string): Promise<BattleLog> {
     return request<BattleLog>(
       'players/%23' + tag + '/battlelog',
-      apiOfficialUrl,
+      brawlstarsUrl,
       'fetch_player_battles',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial },
@@ -257,7 +287,7 @@ export default class BrawlstarsService {
     } as Battle
   }
 
-  public async getPlayerStatistics(tag: string, store: boolean, skipBattlelog = false) {
+  public async getPlayerStatistics(tag: string, store: boolean, skipBattlelog = false): Promise<Player> {
     const battleLogDummy: BattleLog = {
       items: [],
       paging: [],
@@ -294,13 +324,50 @@ export default class BrawlstarsService {
       // overwrite brawlers
       brawlers,
       battles,
-    } as Player;
+    };
+  }
+
+  public async getPlayerExtraStatistics(tag: string): Promise<PlayerExtra> {
+    const brawlerMap = await this.getBrawlerMeta()
+    const devfoxResponse = await this.getPlayerDevfox(tag)
+
+    if (devfoxResponse.state != 0) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Error from devfox API',
+      })
+    }
+
+    const brawlers: Record<string, BrawlerExtra> = Object.fromEntries(
+      devfoxResponse.response.Heroes.map(b => [
+        brawlerId({ name: brawlerMap[b.Character] }),
+        {
+          masteryPoints: b.Mastery,
+        }
+      ])
+    )
+
+    const rankPoints = devfoxResponse.response.Stats[24]
+    const highestRankPoints = devfoxResponse.response.Stats[25]
+
+    return {
+      rank: {
+        points: rankPoints,
+        ...formatLeagueRanks(Math.floor(rankPoints / 500 + 1)),
+      },
+      highestRank: {
+        points: highestRankPoints,
+        ...formatLeagueRanks(Math.floor(highestRankPoints / 500 + 1)),
+      },
+      accountCreationYear: devfoxResponse.response.Stats[27],
+      brawlers,
+    }
   }
 
   public async getClubStatistics(tag: string) {
     const club = await request<Club>(
       'clubs/%23' + tag,
-      apiOfficialUrl,
+      brawlstarsUrl,
       'fetch_club',
       { },
       { 'Authorization': 'Bearer ' + tokenOfficial },

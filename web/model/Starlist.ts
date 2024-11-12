@@ -4,24 +4,32 @@ export interface StarlistBrawler {
   name: string;
   hash: string;
   path: string;
+  fankit: string;
   released: boolean;
   version: number;
   link: string; // starlist detail page
   imageUrl: string; // avatar with border
   imageUrl2: string; // avatar without border
   imageUrl3: string; // emote
-  class: string;
-  rarity: {
+  class: {
     id: number;
     name: string;
   };
-  unlock: number; // trophies
+  rarity: {
+    id: number;
+    name: string;
+    color: string;
+  };
+  unlock: number|null; // trophies
   description: string;
+  descriptionHtml: string;
   starPowers: {
     id: number;
     name: string;
     path: string;
+    version: number;
     description: string;
+    descriptionHtml: string;
     imageUrl: string;
     released: boolean;
   }[];
@@ -29,7 +37,9 @@ export interface StarlistBrawler {
     id: number;
     name: string;
     path: string;
+    version: number;
     description: string;
+    descriptionHtml: string;
     imageUrl: string;
     released: boolean;
   }[];

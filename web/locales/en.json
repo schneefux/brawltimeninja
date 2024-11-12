@@ -647,5 +647,7 @@
     "player.progression.coins-to-max": "Coins to Max",
     "player.progression.reward": "Reward",
     "player.progression.season-end": "Season End",
-    "gear": "Gear | Gears"
+    "gear": "Gear | Gears",
+    "metric.accountCreationYear": "Account Created",
+    "metric.highestRank": "Highest Rank"
 }

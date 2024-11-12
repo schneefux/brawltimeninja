@@ -31,6 +31,7 @@
         <player-aside
           v-else
           :player="player"
+          :player-extra="playerExtra ?? undefined"
           class="flex-auto max-w-md"
         ></player-aside>
 
@@ -294,7 +295,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, useTemplateRef } from 'vue'
-import { useAsync, useCacheHeaders, useMeta, useSelfOrigin } from '~/composables/compat'
+import { useApi, useAsync, useCacheHeaders, useMeta, useSelfOrigin } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
 import { BScrollSpy, BPageSection, BShimmer } from '@schneefux/klicker/components'
@@ -448,12 +449,22 @@ export default defineComponent({
 
     const playerTotals = computed(() => playerTotalsKlicker.value ?? playerTotalsFallback.value ?? undefined)
 
+    const $api = useApi()
+    const playerExtra = useAsync(async () => {
+      try {
+        return await $api.player.byTagExtra.query(playerTag.value)
+      } catch (err) {
+        return null
+      }
+    }, computed(() => `player-extra-${playerTag.value}`))
+
     await useLoadAndValidatePlayer('/profile/')
 
     return {
       player,
       playerTag,
       playerTotals,
+      playerExtra,
       makeVisibilityCallback,
       trackInteraction,
       sections,

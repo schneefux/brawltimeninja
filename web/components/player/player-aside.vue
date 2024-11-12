@@ -31,7 +31,7 @@
 
         <b-kv-table
           :rows="rows"
-          :data="playerWithTrackingStatus"
+          :data="playerMerged"
           id-key="tag"
         >
           <template v-slot:name="{ row }">
@@ -43,7 +43,7 @@
             >{{ row.name }}</span>
           </template>
 
-          <template v-slot:tag="{ value }">
+          <template v-slot:tag="{ value }: { value: string }">
             <span>{{ value }}</span>
           </template>
 
@@ -61,7 +61,7 @@
             </router-link>
           </template>
 
-          <template v-slot:trophies="{ value }">
+          <template v-slot:trophies="{ value }: { value: number }">
             <img
               :src="trophyIcon"
               alt="Trophies"
@@ -70,7 +70,17 @@
             {{ value }}
           </template>
 
-          <template v-slot:victories="{ value }">
+          <template v-slot:accountCreationYear="{ value }: { value: number }">
+            <img
+              :src="calendarIcon"
+              alt="Account creation year"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
+
+
+          <template v-slot:victories="{ value }: { value: number }">
             <img
               :src="victoryIcon"
               alt="3v3 Victories"
@@ -79,7 +89,15 @@
             {{ value }}
           </template>
 
-          <template v-slot:expLevel="{ value }">
+          <template v-slot:tier="{ value }: { value: LeagueRankWithPoints }">
+            <img
+              class="inline h-4"
+              :src="rankIcons[value.league]"
+            >
+            {{ value.leagueSub }} ({{ value.points }})
+          </template>
+
+          <template v-slot:expLevel="{ value }: { value: number }">
             <img
               :src="levelIcon"
               alt="EXP Level"
@@ -88,7 +106,7 @@
             {{ value }}
           </template>
 
-          <template v-slot:soloVictories="{ value }">
+          <template v-slot:soloVictories="{ value }: { value: number }">
             <media-img
               path="/modes/solo-showdown/icon"
               alt="Solo Victories"
@@ -98,7 +116,7 @@
             {{ value }}
           </template>
 
-          <template v-slot:duoVictories="{ value }">
+          <template v-slot:duoVictories="{ value }: { value: number }">
             <media-img
               path="/modes/duo-showdown/icon"
               alt="Duo Victories"
@@ -108,7 +126,7 @@
             {{ value }}
           </template>
 
-          <template v-slot:tracking="{ value }">
+          <template v-slot:tracking="{ value }: { value: ProfileTrackingStatus }">
             {{ $t('profile.tracking.status.' + value) }}
           </template>
         </b-kv-table>
@@ -135,16 +153,18 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, onMounted } from 'vue'
 import { BCard, BKvTable } from '@schneefux/klicker/components'
-import { Player } from "~/model/Api"
+import { Player, PlayerExtra, LeagueRankWithPoints } from "~/model/Api"
 import { Row } from "@schneefux/klicker/components/ui/b-kv-table.vue"
 import { useApi, useSentry } from '~/composables/compat'
 import clubIcon from '~/assets/images/icon/club.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import victoryIcon from '~/assets/images/icon/victories.png'
 import levelIcon from '~/assets/images/icon/level.png'
+import calendarIcon from '~/assets/images/icon/icons8-calendar-100.png'
 import { useI18n } from 'vue-i18n'
 import { ProfileTrackingStatus } from '~/api/services/ProfileUpdaterService'
 import { usePreferencesStore } from '~/stores/preferences'
+import { rankIcons } from '~/lib/rank-icons'
 
 export default defineComponent({
   components: {
@@ -155,6 +175,10 @@ export default defineComponent({
     player: {
       type: Object as PropType<Player>,
       required: true
+    },
+    playerExtra: {
+      type: Object as PropType<PlayerExtra>,
+      default: undefined
     },
   },
   setup(props) {
@@ -250,6 +274,30 @@ export default defineComponent({
         title: i18n.t('metric.highestTrophies'),
       })
 
+      if (props.playerExtra?.accountCreationYear) {
+        rows.push({
+          slot: 'accountCreationYear',
+          key: 'accountCreationYear',
+          title: i18n.t('metric.accountCreationYear'),
+        })
+      }
+
+      if (props.playerExtra?.rank?.points) {
+        rows.push({
+          slot: 'tier',
+          key: 'rank',
+          title: i18n.t('metric.rank'),
+        })
+      }
+
+      if (props.playerExtra?.highestRank?.points) {
+        rows.push({
+          slot: 'tier',
+          key: 'highestRank',
+          title: i18n.t('metric.highestRank'),
+        })
+      }
+
       rows.push({
         slot: 'expLevel',
         key: 'expLevel',
@@ -285,8 +333,9 @@ export default defineComponent({
       return rows
     })
 
-    const playerWithTrackingStatus = computed(() => ({
+    const playerMerged = computed(() => ({
       ...props.player,
+      ...props.playerExtra,
       tracking: trackingStatus.value,
     }))
 
@@ -298,11 +347,13 @@ export default defineComponent({
       trackingStatus,
       canEnableTracking,
       canDisableTracking,
-      playerWithTrackingStatus,
+      playerMerged,
       clubIcon,
       trophyIcon,
       victoryIcon,
       levelIcon,
+      calendarIcon,
+      rankIcons,
     }
   },
 })

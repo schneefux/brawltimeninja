@@ -150,3 +150,24 @@ export interface ClubRanking {
   rank: number
   memberCount: number
 }
+
+export interface DevfoxPlayerResponse {
+  state: 0|1 // 0: success, 1: error
+  tag: string // with hash
+  response: {
+    Heroes: {
+      Character: number // Brawler ID
+      Skin: number // selected skin ID
+      Mastery: number // current Mastery points
+    }[]
+    Stats: {
+      22: number // highest ranked
+      23: number // current ranked
+      24: number // current ranked points
+      25: number // highest ranked points
+      27: number // account creation year
+      29: number // season highest trophies
+      30: number // season prestige
+    }
+  }
+}

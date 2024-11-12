@@ -58,6 +58,18 @@ export const playerRouter = router({
       ctx.res.set('Cache-Control', 'public, max-age=180, stale-while-revalidate=60, stale-if-error=900')
       return player
     }),
+  byTagExtra: publicProcedure
+    .input(tagWithoutHashType)
+    .query(async ({ input, ctx }) => {
+      if (ctx.isBot) {
+        // TODO maybe allow bots to access this endpoint later
+        return undefined
+      }
+
+      const player = await brawlstarsService.getPlayerExtraStatistics(input)
+      ctx.res.set('Cache-Control', 'public, max-age=180, stale-while-revalidate=60, stale-if-error=900')
+      return player
+    }),
   getTrackingStatus: publicProcedure
     .input(tagWithoutHashType)
     .query(async ({ input }) => {

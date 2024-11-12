@@ -494,9 +494,10 @@ export const calculateSeasonEndReward = (player: Player) => {
 
 export const formatLeagueRanks = (rank: number) => {
   // min rank: 1, max rank: 19
-  const leagues = ['Bronze', 'Silver', 'Gold', 'Diamond', 'Mythic', 'Legendary', 'Masters']
+  const leagues = ['Bronze', 'Silver', 'Gold', 'Diamond', 'Mythic', 'Legendary', 'Masters'] as const
+  const leagueSubs = ['I', 'II', 'III'] as const
   const league = leagues[Math.floor((rank - 1) / 3)]
-  const leagueSub = ['I', 'II', 'III'][(rank - 1) % 3]
+  const leagueSub = leagueSubs[(rank - 1) % 3]
 
   return {
     league,

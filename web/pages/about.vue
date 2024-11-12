@@ -5,7 +5,8 @@
   >
     <p class="mt-8">
       Brawl Time Ninja allows you to check competitive and fun statistics for your Brawl Stars account.
-      Brawl Time Ninja uses the official Brawl Stars API. The service may be unreliable at times.
+      Brawl Time Ninja uses the official Brawl Stars API and the meowAPI by hpdevfox.
+      The service may be unreliable at times.
     </p>
 
     <p>
