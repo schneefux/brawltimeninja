@@ -649,5 +649,6 @@
     "player.progression.season-end": "Season End",
     "gear": "Gear | Gears",
     "metric.accountCreationYear": "Account Created",
-    "metric.highestRank": "Highest Rank"
+    "metric.highestRank": "Highest Rank",
+    "metric.masteryPoints": "Mastery Points"
 }

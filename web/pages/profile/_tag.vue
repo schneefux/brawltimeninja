@@ -141,6 +141,7 @@
       <player-brawlers
         v-else
         :player="player"
+        :player-extra="playerExtra ?? undefined"
         class="mt-4"
         @interact="trackInteraction('brawlers')"
       ></player-brawlers>

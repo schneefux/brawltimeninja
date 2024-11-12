@@ -18,7 +18,8 @@
 
     <template v-slot:item="brawler">
       <player-brawler-card
-        :brawler="brawler"
+        :brawler="brawler.data"
+        :brawler-extra="brawler.extra"
         :player-tag="player.tag"
       ></player-brawler-card>
     </template>
@@ -27,7 +28,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
-import { Player } from '~/model/Api'
+import { Player, PlayerExtra } from '~/model/Api'
 import { BScrollingList } from '@schneefux/klicker/components'
 
 export default defineComponent({
@@ -39,10 +40,15 @@ export default defineComponent({
       type: Object as PropType<Player>,
       required: true,
     },
+    playerExtra: {
+      type: Object as PropType<PlayerExtra>,
+      default: undefined,
+    },
   },
   setup(props) {
     const brawlers = computed(() => Object.entries(props.player.brawlers).map(([id, brawler]) => ({
-      ...brawler,
+      data: brawler,
+      extra: props.playerExtra?.brawlers[id],
       brawlerId: id,
     })))
 

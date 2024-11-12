@@ -52,33 +52,45 @@
           id-key="id"
           class="mt-4"
         >
-          <template v-slot:rank="{ value }">
+          <template v-slot:masteryPoints="{ value }: { value: number }">
+            <img
+              :src="masteryIcon"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
+
+          <template v-slot:rank="{ value }: { value: number }">
             <img
               :src="leaderboardsIcon"
               class="inline h-4 mr-1"
             >
             {{ value }}
           </template>
-          <template v-slot:trophies="{ value }">
+
+          <template v-slot:trophies="{ value }: { value: number }">
             <img
               :src="trophyIcon"
               class="inline h-4 mr-1"
             >
             {{ value }}
           </template>
-          <template v-slot:power="{ value }">
+
+          <template v-slot:power="{ value }: { value: number }">
             <img
               :src="value < 10 ? powerpointIcon : starpowerIcon"
               class="inline h-4 mr-1"
             >
             {{ value }}
           </template>
-          <template v-slot:wins="{ value }">
+
+          <template v-slot:wins="{ value }: { value: number }">
             <span class="text-green-400">
               {{ value }}
             </span>
           </template>
-          <template v-slot:losses="{ value }">
+
+          <template v-slot:losses="{ value }: { value: number }">
             <span class="text-red-400">
               {{ value }}
             </span>
@@ -91,7 +103,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
-import { Brawler } from '~/model/Api'
+import { Brawler, BrawlerExtra } from '~/model/Api'
 import { brawlerId as getBrawlerId, capitalizeWords, formatClickhouseDate, getSeasonEnd, tagToId } from '~/lib/util'
 import { subWeeks } from 'date-fns'
 import { BKvTable } from '@schneefux/klicker/components'
@@ -101,6 +113,7 @@ import leaderboardsIcon from '~/assets/images/icon/leaderboards_optimized.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import powerpointIcon from '~/assets/images/icon/powerpoint_optimized.png'
 import starpowerIcon from '~/assets/images/icon/starpower_optimized.png'
+import masteryIcon from '~/assets/images/icon/mastery.png'
 import { useI18n } from 'vue-i18n'
 
 interface BrawlerWithId extends Brawler {
@@ -119,6 +132,10 @@ export default defineComponent({
     brawler: {
       type: Object as PropType<BrawlerWithId>,
       required: true,
+    },
+    brawlerExtra: {
+      type: Object as PropType<BrawlerExtra>,
+      default: undefined,
     },
   },
   setup(props) {
@@ -152,39 +169,69 @@ export default defineComponent({
     const brawlerId = computed(() => getBrawlerId({ name: props.brawler.name }))
     const title = computed(() => capitalizeWords(props.brawler.name.toLowerCase()))
 
+    console.log('extra', props.brawler.name, props.brawlerExtra)
+
     const i18n = useI18n()
-    const kvTableRows = computed(() => ([{
-      title: i18n.t('metric.rank'),
-      key: 'rank',
-      slot: 'rank',
-    }, {
-      title: i18n.t('metric.power-level'),
-      key: 'power',
-      slot: 'power',
-    }, {
-      title: i18n.t('metric.trophies'),
-      key: 'trophies',
-      slot: 'trophies',
-    }, {
-      title: i18n.t('metric.highest-trophies'),
-      key: 'highestTrophies',
-      slot: 'trophies',
-    },
-    ...(data.value != undefined && data.value.picks > 0 ? [{
-      title: i18n.t('metric.winRate'),
-      key: 'winRate',
-    }, {
-      title: i18n.t('metric.wins'),
-      key: 'wins',
-      slot: 'wins',
-    }, {
-      title: i18n.t('metric.losses'),
-      key: 'losses',
-      slot: 'losses',
-    }] : [])]))
+    const kvTableRows = computed(() => {
+      const rows = []
+
+      if (props.brawlerExtra?.masteryPoints) {
+        rows.push({
+          title: i18n.t('metric.masteryPoints'),
+          key: 'masteryPoints',
+          slot: 'masteryPoints',
+        })
+      }
+
+      rows.push({
+        title: i18n.t('metric.rank'),
+        key: 'rank',
+        slot: 'rank',
+      })
+
+      rows.push({
+        title: i18n.t('metric.power-level'),
+        key: 'power',
+        slot: 'power',
+      })
+
+      rows.push({
+        title: i18n.t('metric.trophies'),
+        key: 'trophies',
+        slot: 'trophies',
+      })
+
+      rows.push({
+        title: i18n.t('metric.highest-trophies'),
+        key: 'highestTrophies',
+        slot: 'trophies',
+      })
+
+      if (data.value != undefined && data.value.picks > 0) {
+        rows.push({
+          title: i18n.t('metric.winRate'),
+          key: 'winRate',
+        })
+
+        rows.push({
+          title: i18n.t('metric.wins'),
+          key: 'wins',
+          slot: 'wins',
+        })
+
+        rows.push({
+          title: i18n.t('metric.losses'),
+          key: 'losses',
+          slot: 'losses',
+        })
+      }
+
+      return rows
+    })
 
     const kvTableData = computed(() => ({
       id: props.brawler.name,
+      masteryPoints: props.brawlerExtra?.masteryPoints,
       rank: props.brawler.rank,
       trophies: props.brawler.trophies,
       power: props.brawler.power,
@@ -207,6 +254,7 @@ export default defineComponent({
       trophyIcon,
       powerpointIcon,
       starpowerIcon,
+      masteryIcon,
     }
   },
 })
