@@ -7,7 +7,6 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": [
       "vite/client",
-      "@types/jest",
       "vite-plugin-pwa/client",
     ],
     "skipLibCheck": true,

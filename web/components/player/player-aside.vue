@@ -122,6 +122,12 @@
         sm
         @click="enableTracking()"
       >{{ $t('profile.tracking.enable') }}</b-button>
+      <b-button
+        v-if="canDisableTracking"
+        primary
+        sm
+        @click="disableTracking()"
+      >{{ $t('profile.tracking.disable') }}</b-button>
     </template>
   </b-card>
 </template>
@@ -138,6 +144,7 @@ import victoryIcon from '~/assets/images/icon/victories.png'
 import levelIcon from '~/assets/images/icon/level.png'
 import { useI18n } from 'vue-i18n'
 import { ProfileTrackingStatus } from '~/api/services/ProfileUpdaterService'
+import { usePreferencesStore } from '~/stores/preferences'
 
 export default defineComponent({
   components: {
@@ -153,6 +160,7 @@ export default defineComponent({
   setup(props) {
     const i18n = useI18n()
     const sentry = useSentry()
+    const preferencesStore = usePreferencesStore()
 
     const $api = useApi()
     const loading = ref(false)
@@ -171,7 +179,31 @@ export default defineComponent({
       }
       loading.value = true
       try {
-        trackingStatus.value = await $api.player.trackTag.mutate(props.player.tag.substring(1))
+        const res = await $api.player.trackTag.mutate(props.player.tag.substring(1))
+        if (res) {
+          preferencesStore.addTrackedPlayer(props.player, res.deletionToken)
+          trackingStatus.value = res.status
+        }
+      } catch (err) {
+        sentry.captureException(err)
+      }
+      loading.value = false
+    }
+
+    const disableTracking = async () => {
+      if (props.player == undefined || trackedPlayer.value == undefined) {
+        return
+      }
+      loading.value = true
+      try {
+        const res = await $api.player.untrackTag.mutate({
+          tag: props.player.tag.slice(1),
+          deletionToken: trackedPlayer.value?.deletionToken,
+        })
+        if (res) {
+          preferencesStore.removeTrackedPlayer(props.player.tag)
+          trackingStatus.value = 'inactive'
+        }
       } catch (err) {
         sentry.captureException(err)
       }
@@ -180,6 +212,9 @@ export default defineComponent({
 
     const canEnableTracking = computed(() => props.player.battles.length > 0
       && (trackingStatus.value == 'inactive' || trackingStatus.value == 'expired'))
+
+    const trackedPlayer = computed(() => preferencesStore.trackedPlayers.find(p => p.tag == props.player.tag))
+    const canDisableTracking = computed(() => trackingStatus.value == 'active' && trackedPlayer.value != undefined)
 
     const rows = computed<Row[]>(() => {
       const rows: Row[] = []
@@ -259,8 +294,10 @@ export default defineComponent({
       rows,
       loading,
       enableTracking,
+      disableTracking,
       trackingStatus,
       canEnableTracking,
+      canDisableTracking,
       playerWithTrackingStatus,
       clubIcon,
       trophyIcon,

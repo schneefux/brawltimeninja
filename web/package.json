@@ -4,7 +4,8 @@
     "dev": "node --inspect ./node_modules/.bin/vite",
     "typecheck": "vue-tsc --noEmit",
     "build": "vavite",
-    "knex": "cd ./api/ && tsx ../node_modules/.bin/knex",
+    "test": "cd ./api && NODE_OPTIONS='--import tsx/esm' ../node_modules/.bin/vitest",
+    "knex": "cd ./api && tsx ../node_modules/.bin/knex",
     "start": "cross-env NODE_ENV=production node ./dist/server/index.mjs",
     "start:debug": "cross-env NODE_ENV=production node --inspect ./dist/server/index.mjs",
     "cli": "cross-env NODE_ENV=production tsx ./api/cli.ts"
@@ -72,7 +73,6 @@
     "@types/compression": "^1.7.5",
     "@types/etag": "^1.8.3",
     "@types/express": "^5.0.0",
-    "@types/jest": "^29.5.14",
     "@types/js-cookie": "^3.0.6",
     "@types/js-yaml": "^4.0.9",
     "@types/markdown-it": "^14.1.2",
@@ -81,15 +81,14 @@
     "@vue/compiler-sfc": "^3.5.12",
     "autoprefixer": "^10.4.20",
     "better-sqlite3": "^11.5.0",
-    "jest": "^29.7.0",
     "nodemon": "^3.1.7",
     "postcss": "^8.4.48",
     "tailwindcss": "^3.4.14",
-    "ts-jest": "^29.2.5",
     "unplugin-vue-components": "^0.27.4",
     "vavite": "^5.0.1",
     "vite-plugin-pages": "^0.32.3",
     "vite-plugin-pwa": "^0.20.5",
+    "vitest": "^2.1.4",
     "vue-tsc": "^2.1.10"
   }
 }

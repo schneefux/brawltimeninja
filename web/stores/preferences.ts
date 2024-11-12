@@ -1,14 +1,19 @@
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { defineStore } from 'pinia'
 
 interface StoredPlayer {
-  tag: string
+  tag: string // with hash
   name: string
+}
+
+interface TrackedPlayer extends StoredPlayer {
+  deletionToken: string
 }
 
 export const usePreferencesStore = defineStore('preferences', () => {
   const version = ref<number>()
   const lastPlayers = ref<StoredPlayer[]>([])
+  const trackedPlayers = ref<TrackedPlayer[]>([])
   const userTag = ref<string>() // personal tag (last searched)
   const personalityTestResult = ref<string>()
   const installBannerDismissed = ref(false)
@@ -17,18 +22,33 @@ export const usePreferencesStore = defineStore('preferences', () => {
   const state = {
     version,
     lastPlayers,
+    trackedPlayers,
     userTag,
     personalityTestResult,
     installBannerDismissed,
     reviewBannerDismissed,
   }
 
-  function addLastPlayer(player: StoredPlayer) {
-    const clone = (obj: any) => JSON.parse(JSON.stringify(obj))
+  const clone = (obj: any) => JSON.parse(JSON.stringify(obj))
 
+  function addLastPlayer(player: StoredPlayer) {
     const newLastPlayers = [clone(player), ...lastPlayers.value]
       .filter((player, index, arr) => index == arr.findIndex(p => p.tag == player.tag)) // unique
     lastPlayers.value = newLastPlayers.slice(0, 4)
+  }
+
+  function addTrackedPlayer(player: StoredPlayer, deletionToken: string) {
+    const newTrackedPlayers = [{
+        tag: player.tag,
+        name: player.name,
+        deletionToken,
+      }, ...trackedPlayers.value]
+      .filter((player, index, arr) => index == arr.findIndex(p => p.tag == player.tag)) // unique
+    trackedPlayers.value = newTrackedPlayers
+  }
+
+  function removeTrackedPlayer(tag: string) {
+    trackedPlayers.value = trackedPlayers.value.filter(p => p.tag !== tag)
   }
 
   // sync with localstorage
@@ -40,7 +60,8 @@ export const usePreferencesStore = defineStore('preferences', () => {
       }
     }
     // v10: migration to pinia-plugin-persistedstate
-    version.value = 10
+    // v11: added trackedPlayers
+    version.value = 11
   })
 
   watch([...Object.values(state)], () => {
@@ -60,6 +81,8 @@ export const usePreferencesStore = defineStore('preferences', () => {
   return {
     ...state,
     addLastPlayer,
+    addTrackedPlayer,
+    removeTrackedPlayer,
   }
 })
 

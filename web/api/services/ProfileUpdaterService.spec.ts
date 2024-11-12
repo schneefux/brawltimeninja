@@ -1,3 +1,4 @@
+import { test, beforeEach, expect, vi } from 'vitest'
 import Knex from 'knex'
 import ProfileUpdaterService from './ProfileUpdaterService'
 
@@ -17,11 +18,77 @@ beforeEach(async () => {
 test('should track new profile', async () => {
   const profileUpdaterService = new ProfileUpdaterService(async () => new Date(), knex)
 
-  await profileUpdaterService.upsertProfileTrackingStatus('V8LLPPC', new Date())
+  const res = await profileUpdaterService.upsertProfileTrackingStatus('V8LLPPC', new Date())
+  expect(res.status).toBe('active')
+  expect(res.deletionToken).not.toBe('')
+
   const count = await knex('tracked_profile')
     .count('tag as count')
     .first()
   expect(count!.count).toBe(1)
+})
+
+test('should allow deletion of tracking status if deletion token is correct', async () => {
+  const profileUpdaterService = new ProfileUpdaterService(async () => new Date(), knex)
+
+  const now = new Date()
+  await knex('tracked_profile').insert({
+    tag: 'V8LLPPC',
+    created_at: now,
+    confirmed_at: now,
+    last_updated_at: now,
+    last_active_at: now,
+    deletion_token: 'correcttoken',
+  })
+
+  const success = await profileUpdaterService.deleteProfileTrackingStatus('V8LLPPC', 'correcttoken')
+  expect(success).toBe(true)
+
+  const count = await knex('tracked_profile')
+    .count('tag as count')
+    .first()
+  expect(count!.count).toBe(0)
+})
+
+test('should not allow deletion of tracking status if deletion token is wrong', async () => {
+  const profileUpdaterService = new ProfileUpdaterService(async () => new Date(), knex)
+
+  const now = new Date()
+  await knex('tracked_profile').insert({
+    tag: 'V8LLPPC',
+    created_at: now,
+    confirmed_at: now,
+    last_updated_at: now,
+    last_active_at: now,
+    deletion_token: 'correcttoken',
+  })
+
+  const success = await profileUpdaterService.deleteProfileTrackingStatus('V8LLPPC', 'wrongtoken')
+  expect(success).toBe(false)
+
+  const count = await knex('tracked_profile')
+    .count('tag as count')
+    .first()
+  expect(count!.count).toBe(1)
+})
+
+test('should should generate new token when updating profile', async () => {
+  const profileUpdaterService = new ProfileUpdaterService(async () => new Date(), knex)
+
+  const then = new Date()
+  then.setMonth(then.getMonth() - 1)
+  await knex('tracked_profile').insert({
+    tag: 'V8LLPPC',
+    created_at: then,
+    confirmed_at: then,
+    last_updated_at: then,
+    last_active_at: then,
+    deletion_token: 'oldtoken',
+  })
+
+  const res = await profileUpdaterService.upsertProfileTrackingStatus('V8LLPPC', new Date())
+  expect(res.status).toBe('active')
+  expect(res.deletionToken).not.toBe('oldtoken')
 })
 
 test('should return unknown profile status to inactive', async () => {
@@ -100,7 +167,7 @@ test('should handle error in update', async () => {
   const now = new Date()
   const past = new Date()
   past.setFullYear(2000)
-  const spy = jest.spyOn(console, 'error')
+  const spy = vi.spyOn(console, 'error')
   spy.mockImplementation(() => {})
   await knex('tracked_profile').insert({
     tag: 'V8LLPPC',

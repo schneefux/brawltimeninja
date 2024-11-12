@@ -6,6 +6,7 @@ import ProfileUpdaterService from '../services/ProfileUpdaterService'
 import Knex from 'knex'
 import knexfile from '../knexfile'
 import { publicProcedure, router } from '../trpc'
+import { z } from 'zod'
 
 const environment = process.env.NODE_ENV || 'development'
 let profileUpdaterService: ProfileUpdaterService | undefined
@@ -73,5 +74,13 @@ export const playerRouter = router({
         })
       }
       return await profileUpdaterService?.upsertProfileTrackingStatus(input, stats.battles[0].timestamp)
+    }),
+  untrackTag: publicProcedure
+    .input(z.object({
+      tag: tagWithoutHashType,
+      deletionToken: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      return await profileUpdaterService?.deleteProfileTrackingStatus(input.tag, input.deletionToken)
     }),
 })
