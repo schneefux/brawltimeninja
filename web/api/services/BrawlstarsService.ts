@@ -11,10 +11,14 @@ const BrawlerNames: Record<string, string> = BrawlerNamesMap
 import { Cache } from '~/lib/cache'
 
 const brawlapiUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v1/';
+const brawlapiToken = process.env.BRAWLAPI_TOKEN || '';
+
 const brawlstarsUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
+const brawlstarsToken = process.env.BRAWLSTARS_TOKEN || '';
+
 const devfoxUrl = process.env.HPDEVFOX_URL || 'https://api.hpdevfox.ru/';
-const tokenUnofficial = process.env.BRAWLAPI_TOKEN || '';
-const tokenOfficial = process.env.BRAWLSTARS_TOKEN || '';
+const devfoxToken = process.env.HPDEVFOX_TOKEN || '';
+
 const clickhouseUrl = process.env.CLICKHOUSE_URL
 const twoMonths = 2*4*7*24*60*60*1000
 const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '') || (Date.now() - twoMonths))
@@ -53,7 +57,7 @@ export default class BrawlstarsService {
 
   private async apiRequest<T>(path: string, metricName: string, timeout: number = 1000) {
     return request<T>(path, brawlstarsUrl, metricName,
-      {}, { 'Authorization': 'Bearer ' + tokenOfficial }, timeout)
+      {}, { 'Authorization': 'Bearer ' + brawlstarsToken }, timeout)
   }
 
   // TODO official API does not show all future events as of 2022-01-07
@@ -63,7 +67,7 @@ export default class BrawlstarsService {
       brawlapiUrl,
       'fetch_events',
       { },
-      { 'Authorization': 'Bearer ' + tokenUnofficial },
+      { 'Authorization': 'Bearer ' + brawlapiToken },
       1000,
     );
 
@@ -107,14 +111,14 @@ export default class BrawlstarsService {
       brawlstarsUrl,
       'fetch_player',
       { },
-      { 'Authorization': 'Bearer ' + tokenOfficial },
+      { 'Authorization': 'Bearer ' + brawlstarsToken },
       1000,
     );
   }
 
   private async getPlayerDevfox(tag: string): Promise<DevfoxPlayerResponse> {
     return request<DevfoxPlayerResponse>(
-      'profile/' + tag,
+      'profile/' + tag + (devfoxToken ? '?api_key=' + devfoxToken : ''),
       devfoxUrl,
       'fetch_player_devfox',
       { },
@@ -132,7 +136,7 @@ export default class BrawlstarsService {
         brawlapiUrl,
         'fetch_brawlers',
         { },
-        { 'Authorization': 'Bearer ' + tokenUnofficial },
+        { 'Authorization': 'Bearer ' + brawlapiToken },
         1000,
       );
       return Object.fromEntries(response.list.map(b => [b.id, b.name]))
@@ -145,7 +149,7 @@ export default class BrawlstarsService {
       brawlstarsUrl,
       'fetch_player_battles',
       { },
-      { 'Authorization': 'Bearer ' + tokenOfficial },
+      { 'Authorization': 'Bearer ' + brawlstarsToken },
       1000,
     )
   }
@@ -370,7 +374,7 @@ export default class BrawlstarsService {
       brawlstarsUrl,
       'fetch_club',
       { },
-      { 'Authorization': 'Bearer ' + tokenOfficial },
+      { 'Authorization': 'Bearer ' + brawlstarsToken },
       1000,
     )
     // official API: with hash, unofficial API: no hash

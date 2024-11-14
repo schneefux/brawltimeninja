@@ -169,8 +169,6 @@ export default defineComponent({
     const brawlerId = computed(() => getBrawlerId({ name: props.brawler.name }))
     const title = computed(() => capitalizeWords(props.brawler.name.toLowerCase()))
 
-    console.log('extra', props.brawler.name, props.brawlerExtra)
-
     const i18n = useI18n()
     const kvTableRows = computed(() => {
       const rows = []
