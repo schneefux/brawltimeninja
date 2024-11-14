@@ -453,7 +453,7 @@ export default defineComponent({
     const $api = useApi()
     const playerExtra = useAsync(async () => {
       try {
-        return await $api.player.byTagExtra.query(playerTag.value)
+        return await $api.player.byTagExtra.query(playerTag.value) ?? null
       } catch (err) {
         return null
       }
