@@ -12,9 +12,6 @@ import { vavite } from 'vavite'
 import legacy from '@vitejs/plugin-legacy'
 import manifest from './manifest'
 
-// FIXME cannot update vega-embed because import is messed up in dev
-// https://github.com/vega/vega-embed/pull/1301/files
-
 const config: UserConfig = {
   buildSteps: [
     { name: "client" },
@@ -87,6 +84,10 @@ const config: UserConfig = {
   define: {
     // enable hydration mismatch details in production build (TODO: disable later)
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true'
+  },
+  ssr: {
+    // vega-embed has a broken ESM config since https://github.com/vega/vega-embed/pull/1301/files
+    noExternal: ['vega-embed'],
   },
 }
 
