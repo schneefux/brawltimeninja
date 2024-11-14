@@ -29,7 +29,7 @@ job "brawltime-web" {
   }
 
   group "web" {
-    count = 5
+    count = 7 # autoscaling is currently broken due to https://github.com/hashicorp/nomad/issues/24339
 
     restart {
       mode = "delay"
@@ -38,7 +38,7 @@ job "brawltime-web" {
 
     scaling {
       enabled = true
-      min = 5 # at least 1 backup in case the other fails
+      min = 7 # note: keep at least 1 backup in case the other fails
       max = 16
 
       policy {

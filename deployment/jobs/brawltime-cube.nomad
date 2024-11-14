@@ -26,7 +26,7 @@ job "brawltime-cube" {
   }
 
   group "cube" {
-    count = 3
+    count = 4 # autoscaling is currently broken due to https://github.com/hashicorp/nomad/issues/24339
 
     restart {
       mode = "delay"
@@ -35,7 +35,7 @@ job "brawltime-cube" {
 
     scaling {
       enabled = true
-      min = 3
+      min = 4
       max = 16
 
       policy {
