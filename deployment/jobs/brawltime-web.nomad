@@ -2,6 +2,7 @@ variable "sentry_dsn" {}
 variable "github_user" {}
 variable "github_token" {}
 variable "brawlapi_token" {}
+variable "hpdevfox_token" {}
 variable "openai_key" {}
 variable "cubejs_secret" {}
 
@@ -171,6 +172,7 @@ job "brawltime-web" {
       template {
         data = <<-EOF
           BRAWLAPI_TOKEN="${var.brawlapi_token}"
+          HPDEVFOX_TOKEN="${var.hpdevfox_token}
           OPENAI_API_KEY="${var.openai_key}"
           CUBEJS_API_SECRET="${var.cubejs_secret}"
         EOF
