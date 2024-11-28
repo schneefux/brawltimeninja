@@ -79,6 +79,7 @@ const config: UserConfig = {
     dedupe: ['vue', 'vue3-lazy-hydration'], // https://github.com/vitejs/vite/issues/7454#issuecomment-1079830994
     alias: {
       '~': path.resolve(__dirname),
+      'isomorphic-unfetch': path.resolve(__dirname, './use-undici.js'),
     },
   },
   define: {
@@ -86,8 +87,12 @@ const config: UserConfig = {
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true'
   },
   ssr: {
-    // vega-embed has a broken ESM config since https://github.com/vega/vega-embed/pull/1301/files
-    noExternal: ['vega-embed'],
+    noExternal: [
+      // vega-embed has a broken ESM config since https://github.com/vega/vega-embed/pull/1301/files
+      'vega-embed',
+      // force transpilation of wtf_wikipedia to apply the above alias
+      'wtf_wikipedia',
+    ],
   },
 }
 

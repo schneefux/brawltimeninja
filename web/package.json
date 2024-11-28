@@ -29,6 +29,7 @@
     "@unhead/ssr": "^1.11.11",
     "@unhead/vue": "^1.11.11",
     "@vitejs/plugin-vue": "^5.1.5",
+    "cheerio": "^1.0.0",
     "commander": "^12.1.0",
     "compression": "^1.7.5",
     "cookie": "^1.0.1",
