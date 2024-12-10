@@ -6,6 +6,8 @@ import { parseApiTime, tagToId, validateTag, getSeasonEnd, formatClickhouse, for
 
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
 
+const ENABLE_ASYNC_INSERT = !!process.env.CLICKHOUSE_ASYNC_INSERT;
+
 export default class ClickerService {
   private ch: ClickHouseClient;
   private seasonSliceStart: Date;
@@ -20,6 +22,12 @@ export default class ClickerService {
         output_format_json_quote_64bit_integers: 1,
         // maximum estimated execution time, in seconds
         max_execution_time: 300,
+        // buffer inserts to improve inserts + selects
+        // https://clickhouse.com/docs/en/optimize/asynchronous-inserts
+        ...(ENABLE_ASYNC_INSERT ? {
+          async_insert: 1,
+          wait_for_async_insert: 1,
+        } : {}),
       },
       // clickhouse allows only a single query per session!
     })

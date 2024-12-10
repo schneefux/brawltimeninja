@@ -123,6 +123,8 @@ job "brawltime-web" {
         TRACKING_EXPIRE_AFTER_DAYS = "14"
         TRACKING_REFRESH_MINUTES = "1440"
 
+        CLICKHOUSE_ASYNC_INSERT = "true"
+
         SENTRY_DSN = "${var.sentry_dsn}"
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"
 
