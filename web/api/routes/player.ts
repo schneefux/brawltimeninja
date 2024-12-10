@@ -66,9 +66,15 @@ export const playerRouter = router({
         return undefined
       }
 
-      const player = await brawlstarsService.getPlayerExtraStatistics(input)
-      ctx.res.set('Cache-Control', 'public, max-age=180, stale-while-revalidate=60, stale-if-error=900')
-      return player
+      try {
+        const player = await brawlstarsService.getPlayerExtraStatistics(input)
+        ctx.res.set('Cache-Control', 'public, max-age=180, stale-while-revalidate=60, stale-if-error=900')
+        return player
+      } catch (err) {
+        console.error('Error fetching extra player statistics', err)
+        // API data is optional - ignore error, but do not cache
+        return undefined
+      }
     }),
   getTrackingStatus: publicProcedure
     .input(tagWithoutHashType)
