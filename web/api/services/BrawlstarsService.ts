@@ -123,7 +123,7 @@ export default class BrawlstarsService {
       'fetch_player_devfox',
       { },
       { },
-      5000, // TODO tweak this
+      1000,
     );
   }
 
