@@ -33,7 +33,7 @@
       <b-bigstat
         v-if="accountRating != undefined && accountRating.brawlersUnlocked < brawlersCount"
         :title="$t('metric.potentialTrophies')"
-        :value="Math.floor(accountRating.trophiesGoal).toLocaleString()"
+        :value="$n(Math.floor(accountRating.trophiesGoal))"
         :tooltip="$t('metric.potentialTrophies.subtext')"
       ></b-bigstat>
     </b-dashboard-cell>
