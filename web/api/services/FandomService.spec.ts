@@ -1,17 +1,19 @@
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import FandomService, {
+  Asset,
   BalanceHistoryEntry,
   Skin,
+  Spray,
   Voiceline,
 } from "./FandomService";
 import { MockAgent, setGlobalDispatcher } from "undici";
 
-import fandomEdgarJson from "./fixtures/fandom-edgar.json";
-import fandomEdgarHtml from "./fixtures/fandom-edgar.html?raw";
-import fandomShellyJson from "./fixtures/fandom-shelly.json";
-import fandomShellyHtml from "./fixtures/fandom-shelly.html?raw";
-import fandomNitaJson from "./fixtures/fandom-nita.json";
-import fandomNitaHtml from "./fixtures/fandom-nita.html?raw";
+import fandomEdgarJson from "./fixtures/fandom-Edgar.json";
+import fandomEdgarHtml from "./fixtures/fandom-Edgar.html?raw";
+import fandomShellyJson from "./fixtures/fandom-Shelly.json";
+import fandomShellyHtml from "./fixtures/fandom-Shelly.html?raw";
+import fandomNitaJson from "./fixtures/fandom-Nita.json";
+import fandomNitaHtml from "./fixtures/fandom-Nita.html?raw";
 import fandomGemgrabJson from "./fixtures/fandom-gemgrab.json";
 import fandomGemgrabHtml from "./fixtures/fandom-gemgrab.html?raw";
 
@@ -147,7 +149,23 @@ test("should parse Brawler page (Edgar)", async () => {
         filename: "Edgar Hypercharge-Spray.png",
       },
     },
-  ]);
+  ] satisfies Spray[]);
+
+  expect(defaultSkin.profileIcons).toEqual(
+    expect.arrayContaining([
+      {
+        sourceUrl:
+          "https://static.wikia.nocookie.net/brawlstars/images/6/64/Edgar1-pfp.png/revision/latest?cb=20220429014048",
+        filename: "Edgar1-pfp.png",
+      },
+      {
+        sourceUrl:
+          "https://static.wikia.nocookie.net/brawlstars/images/2/20/Edgar_Hypercharge-pfp.png/revision/latest?cb=20231212181544",
+        filename: "Edgar Hypercharge-pfp.png",
+      },
+    ] satisfies Asset[])
+  );
+  expect(defaultSkin.profileIcons.length).toBe(3);
 
   expect(data.model).toEqual({
     sourceUrl:
@@ -193,55 +211,54 @@ test("should parse Brawler page (Edgar)", async () => {
     petSkins: [],
     voicelines: [],
     sprays: [],
-  });
+    profileIcons: [],
+  } satisfies Skin);
 
   expect(data.skins).toEqual(
     expect.arrayContaining([expect.objectContaining({ name: "True Gold" })])
   );
   const trueGoldSkin = data.skins.find((s) => s.name == "True Gold")!;
-  expect(trueGoldSkin).toEqual(
-    expect.objectContaining({
-      name: "True Gold",
-      rarity: undefined,
-      campaign: undefined,
-      cost: "25000 Coins",
-      exclusive: false,
-      seasonal: false,
-      asset: {
-        sourceUrl:
-          "https://static.wikia.nocookie.net/brawlstars/images/8/83/Edgar_Skin-True_Gold.png/revision/latest?cb=20221225151257",
-        filename: "Edgar Skin-True Gold.png",
-      },
-      pins: expect.arrayContaining([]),
-      petSkins: [],
-      voicelines: [],
-      sprays: [],
-    })
-  );
+  expect(trueGoldSkin).toEqual({
+    name: "True Gold",
+    rarity: undefined,
+    campaign: undefined,
+    cost: "25000 Coins",
+    exclusive: false,
+    seasonal: false,
+    asset: {
+      sourceUrl:
+        "https://static.wikia.nocookie.net/brawlstars/images/8/83/Edgar_Skin-True_Gold.png/revision/latest?cb=20221225151257",
+      filename: "Edgar Skin-True Gold.png",
+    },
+    pins: expect.arrayContaining([]),
+    petSkins: [],
+    voicelines: [],
+    sprays: [],
+    profileIcons: [],
+  } satisfies Skin);
 
   expect(data.skins).toEqual(
     expect.arrayContaining([expect.objectContaining({ name: "Orochi" })])
   );
   const orochiSkin = data.skins.find((s) => s.name == "Orochi")!;
-  expect(orochiSkin).toEqual(
-    expect.objectContaining({
-      name: "Orochi",
-      rarity: "Epic",
-      campaign: "Lunar Brawl",
-      cost: "149 Gems",
-      exclusive: false,
-      seasonal: true,
-      asset: {
-        sourceUrl:
-          "https://static.wikia.nocookie.net/brawlstars/images/e/e4/Edgar_Skin-Orochi.png/revision/latest?cb=20220127002251",
-        filename: "Edgar Skin-Orochi.png",
-      },
-      pins: expect.arrayContaining([]),
-      petSkins: [],
-      voicelines: [],
-      sprays: [],
-    })
-  );
+  expect(orochiSkin).toEqual({
+    name: "Orochi",
+    rarity: "Epic",
+    campaign: "Lunar Brawl",
+    cost: "149 Gems",
+    exclusive: false,
+    seasonal: true,
+    asset: {
+      sourceUrl:
+        "https://static.wikia.nocookie.net/brawlstars/images/e/e4/Edgar_Skin-Orochi.png/revision/latest?cb=20220127002251",
+      filename: "Edgar Skin-Orochi.png",
+    },
+    pins: expect.arrayContaining([]),
+    petSkins: [],
+    voicelines: [],
+    sprays: [],
+    profileIcons: expect.arrayContaining([]),
+  } satisfies Skin);
 
   // there is a "Mecha" skin but also a "Mecha (Unit-00)" skin
   // make sure that the img asset matching does not select the latter while searching the former
@@ -265,7 +282,7 @@ test("should parse Brawler page (Edgar)", async () => {
         filename: "Mecha Edgar-Spray.png",
       },
     },
-  ]);
+  ] satisfies Spray[]);
 
   // spray is called "Edgar Tata" and skin is called "Edgar Tata"
   expect(data.skins).toEqual(
@@ -281,7 +298,7 @@ test("should parse Brawler page (Edgar)", async () => {
         filename: "Edgar Tata-Spray.png",
       },
     },
-  ]);
+  ] satisfies Spray[]);
 
   expect(data.history).toEqual(
     expect.arrayContaining([
@@ -396,6 +413,7 @@ test("should parse Brawler skins including Pet", async () => {
     },
     pins: expect.arrayContaining([]),
     sprays: expect.arrayContaining([]),
+    profileIcons: expect.arrayContaining([]),
     voicelines: expect.arrayContaining([
       {
         trigger: "Spawning",
@@ -417,7 +435,7 @@ test("should parse Brawler skins including Pet", async () => {
         },
       },
     ],
-  });
+  } satisfies Skin);
 
   expect(data.skins).toEqual(
     expect.arrayContaining([expect.objectContaining({ name: "Nian" })])
@@ -439,8 +457,25 @@ test("should parse Brawler skins including Pet", async () => {
     petSkins: expect.arrayContaining([]),
     sprays: expect.arrayContaining([]),
     voicelines: [],
-  });
+    profileIcons: expect.arrayContaining([]),
+  } satisfies Skin);
 });
+
+/*
+test.each(["Shelly", "Nita", "Edgar"])("should parse live page for %s", async (brawler) => {
+  mockAgent.enableNetConnect();
+
+  const logSpy = vi.spyOn(console, "log");
+  const warnSpy = vi.spyOn(console, "warn");
+  const errorSpy = vi.spyOn(console, "error");
+
+  const data = (await fandomService.getBrawlerData(brawler))!;
+  expect(data).toBeDefined();
+  expect(logSpy).not.toHaveBeenCalled();
+  expect(warnSpy).not.toHaveBeenCalled();
+  expect(errorSpy).not.toHaveBeenCalled();
+});
+*/
 
 test("template parser", () => {
   const parsed = fandomService.parseEnumeratedKeys({
