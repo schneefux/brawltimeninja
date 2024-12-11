@@ -60,6 +60,11 @@ export interface Pin {
   emote: string; // "Happy" | "Sad" | "Angry" | "GG" | "Clap" | "Thanks" | "Phew" | "Special" | "Facepalm" | "Hypercharge";
 }
 
+export interface Spray {
+  asset: Asset;
+  rarity: string;
+}
+
 export interface PetSkin {
   for: string;
   asset: Asset;
@@ -76,6 +81,7 @@ export interface Skin {
   petSkins: PetSkin[];
   pins: Pin[];
   voicelines: Voiceline[];
+  sprays: Spray[];
 }
 
 export interface FandomBrawlerData {
@@ -103,8 +109,9 @@ export interface FandomBrawlerData {
   // sprays
   // icons
   // videos
-  // trait
+  // traits
   // hypercharge
+  // … translations via GPT-4o
 }
 
 wtf.extend((models: any, templates: any) => {
@@ -130,14 +137,6 @@ wtf.extend((models: any, templates: any) => {
       description: data.list[1],
     });
   };
-
-  /*
-  templates["skin gallery"] = (tmpl: any, list: any, parse: any) => {
-    const data = parse(tmpl);
-    console.log({ data });
-    return "skins";
-  };
-  */
 });
 
 export default class FandomService {
@@ -382,34 +381,66 @@ export default class FandomService {
       }
     }
 
-    return rows
+    const voicelinesTable = this.findFirstTableInSection($, "Voice Lines");
+    const audioButtonsCount = voicelinesTable.find(".audio-button").length;
+    if (rows.length != audioButtonsCount) {
+      console.warn("Parsed unexpected number of voicelines", {
+        actual: rows.length,
+        expected: audioButtonsCount,
+      });
+    }
+
+    return rows;
   }
 
-  private parseImageUrlByAlt(
+  private findFirstTableInSection($: cheerio.CheerioAPI, sectionName: string) {
+    return $("h2,h3")
+      .filter((i, el) => $(el).text() == sectionName)
+      .nextAll("table")
+      .first();
+  }
+
+  private findAssetByAttr(
     $: cheerio.CheerioAPI,
-    alt: string[],
-    title?: string[]
+    value: string,
+    attr: "title" | "alt"
   ): Asset | undefined {
-    const modelEl = $("#content img")
-      .filter(
-        (i, el) =>
-          alt.every((word) => ($(el).attr("alt") ?? "").includes(word)) &&
-          (title ?? []).every((word) =>
-            ($(el).attr("title") ?? "").includes(word)
-          )
-      )
+    const img = $("#content img")
+      .filter((i, el) => {
+        const titleText = $(el).attr(attr) ?? "";
+        return titleText.includes(value);
+      })
       .first();
 
-    if (modelEl == undefined) {
+    if (img == undefined) {
+      console.warn("Could not find image", value);
       return undefined;
     }
 
-    const src = modelEl?.attr("data-src") ?? modelEl.attr("src");
-    const sourceUrl = src?.split("/smart")[0]?.split("/scale")[0]; // remove resizing parameters
+    const asset = this.parseImgAsAsset(img);
 
-    const filename = modelEl.attr("data-image-name");
+    if (asset == undefined) {
+      console.warn("Could not parse image as asset", value);
+      return undefined;
+    }
 
-    if (sourceUrl == undefined || filename == undefined) {
+    return asset;
+  }
+
+  private parseImgAsAsset(img: cheerio.Cheerio<any>): Asset | undefined {
+    const src = img.attr("data-src") ?? img.attr("src");
+    const queryParams = src?.split("?")[1]; // keep cb (cache buster) timestamp
+    const sourceUrl =
+      src?.split("/smart")[0]?.split("/scale")[0] +
+      (queryParams ? "?" + queryParams : ""); // remove resizing parameters
+
+    const filename = img.attr("data-image-name");
+
+    if (sourceUrl == undefined) {
+      return undefined;
+    }
+
+    if (filename == undefined) {
       return undefined;
     }
 
@@ -419,15 +450,15 @@ export default class FandomService {
     };
   }
 
-  private parseDefaultSkin($: cheerio.CheerioAPI) {
+  private parseDefaultSkin(brawlerName: string, $: cheerio.CheerioAPI) {
     return {
-      model: this.parseImageUrlByAlt($, ["Default", "Skin"])!,
+      model: this.findAssetByAttr($, `${brawlerName} Skin-Default`, "alt")!,
     };
   }
 
-  private parseAvatar($: cheerio.CheerioAPI) {
+  private parseAvatar(brawlerName: string, $: cheerio.CheerioAPI) {
     return {
-      avatar: this.parseImageUrlByAlt($, ["Portrait"])!,
+      avatar: this.findAssetByAttr($, `${brawlerName} Portrait`, "alt")!,
     };
   }
 
@@ -475,9 +506,7 @@ export default class FandomService {
   }
 
   private parsePins($: cheerio.CheerioAPI): { skin: Asset; pin: Pin }[] {
-    const pinsTable = $("h3")
-      .filter((i, el) => $(el).text() == "Pins")
-      .next("table");
+    const pinsTable = this.findFirstTableInSection($, "Pins");
 
     if (pinsTable == undefined) {
       return [];
@@ -487,15 +516,16 @@ export default class FandomService {
     const pins: { skin: Asset; pin: Pin }[] = [];
     for (const pin of pinsTable.find("td")) {
       const pinTd = $(pin);
-      const img = pinTd.find("img").first();
 
-      const alt = img.attr("alt");
-      if (alt == undefined) {
+      if (pinTd.children().length == 0) {
         continue;
       }
 
-      const asset = this.parseImageUrlByAlt($, [alt]);
+      const img = pinTd.find("img").first();
+
+      const asset = this.parseImgAsAsset(img);
       if (asset == undefined) {
+        console.warn("Could not convert img to asset", { pin: pinTd.text() });
         continue;
       }
 
@@ -503,15 +533,19 @@ export default class FandomService {
         skinAsset = asset;
       }
 
+      if (skinAsset == undefined) {
+        continue;
+      }
+
       const emote = pinTd.find("p").first().text();
       const rarity = pinTd.find("i").first().text();
 
-      if (
-        skinAsset != undefined &&
-        emote != undefined &&
-        rarity != undefined &&
-        asset.filename.includes("Pin")
-      ) {
+      if (emote == undefined || rarity == undefined) {
+        console.warn("Could not find emote or rarity", { pin: pinTd.text() });
+        continue;
+      }
+
+      if (asset.filename.includes("Pin")) {
         pins.push({
           skin: skinAsset,
           pin: {
@@ -526,28 +560,116 @@ export default class FandomService {
     return pins;
   }
 
-  private parseSkins(brawlerPage: any, $: cheerio.CheerioAPI) {
+  private parseSprays(
+    $: cheerio.CheerioAPI
+  ): { skinName: string; spray: Spray }[] {
+    const spraysTable = this.findFirstTableInSection($, "Sprays");
+
+    if (spraysTable == undefined) {
+      return [];
+    }
+
+    const sprays: { skinName: string; spray: Spray }[] = [];
+    for (const spray of spraysTable.find("td")) {
+      const sprayTd = $(spray);
+
+      if (sprayTd.children().length == 0) {
+        continue;
+      }
+
+      const img = sprayTd.find("img").first();
+      const name = sprayTd.find("p").first().text();
+      const rarity = sprayTd.find("i").first().text();
+
+      const asset = this.parseImgAsAsset(img);
+      if (asset == undefined) {
+        console.warn("Could not convert img to asset", { name });
+        continue;
+      }
+
+      if (name == undefined && rarity == undefined) {
+        console.warn("Could not find name and rarity", { name, rarity });
+      }
+
+      sprays.push({
+        skinName: name,
+        spray: {
+          asset,
+          rarity,
+        },
+      });
+    }
+
+    return sprays;
+  }
+
+  private parseSkins(
+    brawlerName: string,
+    brawlerPage: any,
+    $: cheerio.CheerioAPI
+  ) {
     const skinTemplates: any[] = brawlerPage
       .templates("skin gallery")
       .map((t: any) => t.json());
 
+    const popMatching = <T>(arr: T[], predicate: (t: T) => boolean): T[] => {
+      const result: T[] = [];
+      for (let i = 0; i < arr.length; i++) {
+        if (predicate(arr[i])) {
+          result.push(arr[i]);
+          arr.splice(i, 1);
+          i--;
+        }
+      }
+      return result;
+    };
+
     const pins = this.parsePins($);
-    const pinsFor = (skin: Asset) =>
-      pins.filter((p) => p.skin.filename == skin.filename).map((p) => p.pin);
+    const popPinsFor = (skin: Asset) =>
+      popMatching(pins, (p) => p.skin.filename == skin.filename).map(
+        (p) => p.pin
+      );
 
     const voicelines = this.parseVoicelines(brawlerPage, $);
-    const voicelinesFor = (skinName: string) =>
-      voicelines.filter((v) => v.skinName == skinName).map((v) => v.voiceline);
+    const popVoicelinesFor = (skinName: string) =>
+      popMatching(voicelines, (v) => v.skinName == skinName).map(
+        (v) => v.voiceline
+      );
+
+    const sprays = this.parseSprays($);
+    const popSpraysFor = (skinName: string) =>
+      popMatching(sprays, (s) => {
+        if (skinName == s.skinName) {
+          return true;
+        }
+
+        const spraySkinName = s.skinName.replace(brawlerName, "").trim();
+
+        if (skinName == "Default") {
+          return s.skinName == brawlerName || spraySkinName == "Hypercharge";
+        }
+
+        return skinName == spraySkinName;
+      }).map((s) => s.spray);
 
     const skinData: Skin[] = [];
     for (let i = 0; i < skinTemplates.length; i++) {
       const template = skinTemplates[i];
 
-      const addSkin = (skin: Omit<Skin, "asset" | "petSkins" | "pins" | "voicelines">) => {
-        const asset = this.parseImageUrlByAlt(
+      const addSkin = (
+        skin: Omit<
+          Skin,
+          "asset" | "petSkins" | "pins" | "voicelines" | "sprays"
+        >
+      ) => {
+        const asset = this.findAssetByAttr(
           $,
-          [skin.name],
-          [...(template.for ? [template.for] : [])]
+          brawlerName +
+            (template.for ? " " + template.for : " Skin") +
+            "-" +
+            skin.name +
+            ".png",
+          "title"
         );
 
         if (asset == undefined) {
@@ -559,8 +681,9 @@ export default class FandomService {
             ...skin,
             asset,
             petSkins: [],
-            pins: pinsFor(asset),
-            voicelines: voicelinesFor(skin.name),
+            pins: popPinsFor(asset),
+            voicelines: popVoicelinesFor(skin.name),
+            sprays: popSpraysFor(skin.name),
           });
         } else {
           const correspondingSkin = skinData.find((s) => s.name == skin.name);
@@ -619,6 +742,18 @@ export default class FandomService {
       });
     }
 
+    if (pins.length > 0) {
+      console.warn("Could not match all pins to skins", pins);
+    }
+
+    if (voicelines.length > 0) {
+      console.warn("Could not match all voicelines to skins", voicelines);
+    }
+
+    if (sprays.length > 0) {
+      console.warn("Could not match all sprays to skins", sprays);
+    }
+
     return {
       skins: skinData,
     };
@@ -637,7 +772,8 @@ export default class FandomService {
       if (line.endsWith(":")) {
         const groups = line.match(/^(\d{2})\/(\d{2})\/(\d{2}):$/);
         if (groups == null) {
-          continue
+          console.warn("Could not parse date", line);
+          continue;
         }
         date = new Date(Date.parse(`20${groups[3]}-${groups[2]}-${groups[1]}`));
       }
@@ -674,9 +810,9 @@ export default class FandomService {
       ...this.parseHealthByLevel(brawlerPage),
       ...this.parseStats(brawlerPage),
       ...this.parseTips(brawlerPage),
-      ...this.parseDefaultSkin($),
-      ...this.parseAvatar($),
-      ...this.parseSkins(brawlerPage, $),
+      ...this.parseDefaultSkin(brawlerName, $),
+      ...this.parseAvatar(brawlerName, $),
+      ...this.parseSkins(brawlerName, brawlerPage, $),
       ...this.parseBalanceHistory(brawlerPage),
     };
   }

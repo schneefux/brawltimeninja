@@ -130,82 +130,158 @@ test("should parse Brawler page (Edgar)", async () => {
       },
     ] satisfies Voiceline[])
   );
+  expect(defaultSkin.sprays).toEqual([
+    {
+      rarity: "Common",
+      asset: {
+        sourceUrl:
+          "https://static.wikia.nocookie.net/brawlstars/images/7/7b/Edgar-Spray.png/revision/latest?cb=20220903144124",
+        filename: "Edgar-Spray.png",
+      },
+    },
+    {
+      rarity: "Exclusive",
+      asset: {
+        sourceUrl:
+          "https://static.wikia.nocookie.net/brawlstars/images/6/69/Edgar_Hypercharge-Spray.png/revision/latest?cb=20231212184440",
+        filename: "Edgar Hypercharge-Spray.png",
+      },
+    },
+  ]);
 
   expect(data.model).toEqual({
     sourceUrl:
-      "https://static.wikia.nocookie.net/brawlstars/images/2/2b/Edgar_Skin-Default.png/revision/latest",
+      "https://static.wikia.nocookie.net/brawlstars/images/2/2b/Edgar_Skin-Default.png/revision/latest?cb=20230219113721",
     filename: "Edgar Skin-Default.png",
   });
 
   expect(data.avatar).toEqual({
     sourceUrl:
-      "https://static.wikia.nocookie.net/brawlstars/images/b/b4/Edgar_Portrait.png/revision/latest",
+      "https://static.wikia.nocookie.net/brawlstars/images/b/b4/Edgar_Portrait.png/revision/latest?cb=20201218104515",
     filename: "Edgar Portrait.png",
   });
 
   expect(data.skins.length).toBe(15);
+
   expect(data.skins).toEqual(
-    expect.arrayContaining([
-      {
-        name: "Nightbringer",
-        rarity: "Hypercharge",
-        campaign: "Angels vs. Demons",
-        cost: "Free from Angelic Drops",
-        exclusive: false,
-        seasonal: false,
-        asset: {
-          sourceUrl:
-            "https://static.wikia.nocookie.net/brawlstars/images/f/f2/Edgar_Skin-Nightbringer.png/revision/latest",
-          filename: "Edgar Skin-Nightbringer.png",
-        },
-        pins: [
-          {
-            asset: {
-              sourceUrl:
-                "https://static.wikia.nocookie.net/brawlstars/images/d/d2/Edgar_Nightbringer_Pin-Special.png/revision/latest",
-              filename: "Edgar Nightbringer Pin-Special.png",
-            },
-            rarity: "Exclusive",
-            emote: "Special",
-          },
-        ],
-        petSkins: [],
-        voicelines: [],
-      },
-      {
-        name: "True Gold",
-        rarity: undefined,
-        campaign: undefined,
-        cost: "25000 Coins",
-        exclusive: false,
-        seasonal: false,
-        asset: {
-          sourceUrl:
-            "https://static.wikia.nocookie.net/brawlstars/images/8/83/Edgar_Skin-True_Gold.png/revision/latest",
-          filename: "Edgar Skin-True Gold.png",
-        },
-        pins: expect.arrayContaining([]),
-        petSkins: [],
-        voicelines: [],
-      },
-      {
-        name: "Orochi",
-        rarity: "Epic",
-        campaign: "Lunar Brawl",
-        cost: "149 Gems",
-        exclusive: false,
-        seasonal: true,
-        asset: {
-          sourceUrl:
-            "https://static.wikia.nocookie.net/brawlstars/images/e/e4/Edgar_Skin-Orochi.png/revision/latest",
-          filename: "Edgar Skin-Orochi.png",
-        },
-        pins: expect.arrayContaining([]),
-        petSkins: [],
-        voicelines: [],
-      },
-    ] satisfies Skin[])
+    expect.arrayContaining([expect.objectContaining({ name: "Nightbringer" })])
   );
+  const nightbringerSkin = data.skins.find((s) => s.name == "Nightbringer")!;
+  expect(nightbringerSkin).toEqual({
+    name: "Nightbringer",
+    rarity: "Hypercharge",
+    campaign: "Angels vs. Demons",
+    cost: "Free from Angelic Drops",
+    exclusive: false,
+    seasonal: false,
+    asset: {
+      sourceUrl:
+        "https://static.wikia.nocookie.net/brawlstars/images/f/f2/Edgar_Skin-Nightbringer.png/revision/latest?cb=20241117122248",
+      filename: "Edgar Skin-Nightbringer.png",
+    },
+    pins: [
+      {
+        asset: {
+          sourceUrl:
+            "https://static.wikia.nocookie.net/brawlstars/images/d/d2/Edgar_Nightbringer_Pin-Special.png/revision/latest?cb=20241028142135",
+          filename: "Edgar Nightbringer Pin-Special.png",
+        },
+        rarity: "Exclusive",
+        emote: "Special",
+      },
+    ],
+    petSkins: [],
+    voicelines: [],
+    sprays: [],
+  });
+
+  expect(data.skins).toEqual(
+    expect.arrayContaining([expect.objectContaining({ name: "True Gold" })])
+  );
+  const trueGoldSkin = data.skins.find((s) => s.name == "True Gold")!;
+  expect(trueGoldSkin).toEqual(
+    expect.objectContaining({
+      name: "True Gold",
+      rarity: undefined,
+      campaign: undefined,
+      cost: "25000 Coins",
+      exclusive: false,
+      seasonal: false,
+      asset: {
+        sourceUrl:
+          "https://static.wikia.nocookie.net/brawlstars/images/8/83/Edgar_Skin-True_Gold.png/revision/latest?cb=20221225151257",
+        filename: "Edgar Skin-True Gold.png",
+      },
+      pins: expect.arrayContaining([]),
+      petSkins: [],
+      voicelines: [],
+      sprays: [],
+    })
+  );
+
+  expect(data.skins).toEqual(
+    expect.arrayContaining([expect.objectContaining({ name: "Orochi" })])
+  );
+  const orochiSkin = data.skins.find((s) => s.name == "Orochi")!;
+  expect(orochiSkin).toEqual(
+    expect.objectContaining({
+      name: "Orochi",
+      rarity: "Epic",
+      campaign: "Lunar Brawl",
+      cost: "149 Gems",
+      exclusive: false,
+      seasonal: true,
+      asset: {
+        sourceUrl:
+          "https://static.wikia.nocookie.net/brawlstars/images/e/e4/Edgar_Skin-Orochi.png/revision/latest?cb=20220127002251",
+        filename: "Edgar Skin-Orochi.png",
+      },
+      pins: expect.arrayContaining([]),
+      petSkins: [],
+      voicelines: [],
+      sprays: [],
+    })
+  );
+
+  // there is a "Mecha" skin but also a "Mecha (Unit-00)" skin
+  // make sure that the img asset matching does not select the latter while searching the former
+  expect(data.skins).toEqual(
+    expect.arrayContaining([expect.objectContaining({ name: "Mecha" })])
+  );
+  const mechaSkin = data.skins.find((s) => s.name == "Mecha")!;
+  expect(mechaSkin.asset).toEqual({
+    sourceUrl:
+      "https://static.wikia.nocookie.net/brawlstars/images/7/7f/Edgar_Skin-Mecha.png/revision/latest?cb=20231029153551",
+    filename: "Edgar Skin-Mecha.png",
+  });
+
+  // spray is called "Mecha Edgar" but skin is called "Edgar"
+  expect(mechaSkin.sprays).toEqual([
+    {
+      rarity: "Common",
+      asset: {
+        sourceUrl:
+          "https://static.wikia.nocookie.net/brawlstars/images/3/34/Mecha_Edgar-Spray.png/revision/latest?cb=20230905141225",
+        filename: "Mecha Edgar-Spray.png",
+      },
+    },
+  ]);
+
+  // spray is called "Edgar Tata" and skin is called "Edgar Tata"
+  expect(data.skins).toEqual(
+    expect.arrayContaining([expect.objectContaining({ name: "Edgar Tata" })])
+  );
+  const tataSkin = data.skins.find((s) => s.name == "Edgar Tata")!;
+  expect(tataSkin.sprays).toEqual([
+    {
+      rarity: "Common",
+      asset: {
+        sourceUrl:
+          "https://static.wikia.nocookie.net/brawlstars/images/2/23/Edgar_Tata-Spray.png/revision/latest?cb=20220629091903",
+        filename: "Edgar Tata-Spray.png",
+      },
+    },
+  ]);
 
   expect(data.history).toEqual(
     expect.arrayContaining([
@@ -303,60 +379,67 @@ test("should parse Brawler skins including Pet", async () => {
   expect(data.skins.map((s) => s.name).sort()).toEqual(skinNames.sort());
 
   expect(data.skins).toEqual(
-    expect.arrayContaining([
-      {
-        name: "Tusked",
-        rarity: "Legendary",
-        campaign: "Bizarre Circus",
-        cost: "299 Gems",
-        exclusive: false,
-        seasonal: false,
-        asset: {
-          sourceUrl:
-            "https://static.wikia.nocookie.net/brawlstars/images/9/9d/Nita_Skin-Tusked.png/revision/latest",
-          filename: "Nita Skin-Tusked.png",
-        },
-        pins: expect.arrayContaining([]),
-        voicelines: expect.arrayContaining([
-          {
-            trigger: "Spawning",
-            description: "Yeah!",
-            asset: {
-              sourceUrl:
-                "https://static.wikia.nocookie.net/brawlstars/images/c/ca/Nita_start_vo_evil_03.ogg/revision/latest?cb=20231026113115",
-              filename: "Nita start vo evil 03.ogg",
-            },
-          },
-        ]),
-        petSkins: [
-          {
-            for: "Minion",
-            asset: {
-              sourceUrl:
-                "https://static.wikia.nocookie.net/brawlstars/images/b/bf/Nita_Minion-Tusked.png/revision/latest",
-              filename: "Nita Minion-Tusked.png",
-            },
-          },
-        ],
-      },
-      {
-        name: "Nian",
-        rarity: "Epic",
-        campaign: "Ranked, Lunar Brawl", // multiple campaigns, concatenated
-        cost: "149 Gems or 5000 Bling",
-        exclusive: true,
-        seasonal: false,
-        asset: {
-          sourceUrl:
-            "https://static.wikia.nocookie.net/brawlstars/images/0/0a/Nita_Skin-Nian.png/revision/latest",
-          filename: "Nita Skin-Nian.png",
-        },
-        pins: expect.arrayContaining([]),
-        petSkins: expect.arrayContaining([]),
-        voicelines: [],
-      },
-    ] satisfies Skin[])
+    expect.arrayContaining([expect.objectContaining({ name: "Tusked" })])
   );
+  const tuskedSkin = data.skins.find((s) => s.name == "Tusked")!;
+  expect(tuskedSkin).toEqual({
+    name: "Tusked",
+    rarity: "Legendary",
+    campaign: "Bizarre Circus",
+    cost: "299 Gems",
+    exclusive: false,
+    seasonal: false,
+    asset: {
+      sourceUrl:
+        "https://static.wikia.nocookie.net/brawlstars/images/9/9d/Nita_Skin-Tusked.png/revision/latest?cb=20231213185144",
+      filename: "Nita Skin-Tusked.png",
+    },
+    pins: expect.arrayContaining([]),
+    sprays: expect.arrayContaining([]),
+    voicelines: expect.arrayContaining([
+      {
+        trigger: "Spawning",
+        description: "Yeah!",
+        asset: {
+          sourceUrl:
+            "https://static.wikia.nocookie.net/brawlstars/images/c/ca/Nita_start_vo_evil_03.ogg/revision/latest?cb=20231026113115",
+          filename: "Nita start vo evil 03.ogg",
+        },
+      },
+    ]),
+    petSkins: [
+      {
+        for: "Minion",
+        asset: {
+          sourceUrl:
+            "https://static.wikia.nocookie.net/brawlstars/images/b/bf/Nita_Minion-Tusked.png/revision/latest?cb=20231028002842",
+          filename: "Nita Minion-Tusked.png",
+        },
+      },
+    ],
+  });
+
+  expect(data.skins).toEqual(
+    expect.arrayContaining([expect.objectContaining({ name: "Nian" })])
+  );
+  const nianSkin = data.skins.find((s) => s.name == "Nian")!;
+  expect(nianSkin).toEqual({
+    name: "Nian",
+    rarity: "Epic",
+    campaign: "Ranked, Lunar Brawl", // multiple campaigns, concatenated
+    cost: "149 Gems or 5000 Bling",
+    exclusive: true,
+    seasonal: false,
+    asset: {
+      sourceUrl:
+        "https://static.wikia.nocookie.net/brawlstars/images/0/0a/Nita_Skin-Nian.png/revision/latest?cb=20221222212700",
+      filename: "Nita Skin-Nian.png",
+    },
+    pins: expect.arrayContaining([]),
+    petSkins: expect.arrayContaining([]),
+    sprays: expect.arrayContaining([]),
+    voicelines: [],
+  });
 });
 
 test("template parser", () => {
