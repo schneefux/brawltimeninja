@@ -82,6 +82,7 @@ export interface Skin {
   pins: Pin[];
   voicelines: Voiceline[];
   sprays: Spray[];
+  profileIcons: Asset[];
 }
 
 export interface FandomBrawlerData {
@@ -106,7 +107,6 @@ export interface FandomBrawlerData {
   attack: ScrapedAttack
   super: ScrapedAttack
   */
-  // sprays
   // icons
   // videos
   // traits
@@ -583,12 +583,17 @@ export default class FandomService {
 
       const asset = this.parseImgAsAsset(img);
       if (asset == undefined) {
-        console.warn("Could not convert img to asset", { name });
+        console.warn("Could not convert img to asset", {
+          spray: sprayTd.text(),
+        });
         continue;
       }
 
       if (name == undefined && rarity == undefined) {
-        console.warn("Could not find name and rarity", { name, rarity });
+        console.warn("Could not find name and rarity", {
+          spray: sprayTd.text(),
+        });
+        continue;
       }
 
       sprays.push({
@@ -601,6 +606,50 @@ export default class FandomService {
     }
 
     return sprays;
+  }
+
+  private parseProfileIcons(
+    $: cheerio.CheerioAPI
+  ): { skinName: string; profileIcon: Asset }[] {
+    const iconsTable = this.findFirstTableInSection($, "Profile Icons");
+
+    if (iconsTable == undefined) {
+      return [];
+    }
+
+    const profileIcons: { skinName: string; profileIcon: Asset }[] = [];
+    for (const profileIcon of iconsTable.find("td")) {
+      const profileIconTd = $(profileIcon);
+
+      if (profileIconTd.children().length == 0) {
+        continue;
+      }
+
+      const img = profileIconTd.find("img").first();
+      const name = profileIconTd.text().trim();
+
+      const asset = this.parseImgAsAsset(img);
+      if (asset == undefined) {
+        console.warn("Could not convert img to asset", {
+          profileIcon: profileIconTd.text(),
+        });
+        continue;
+      }
+
+      if (name == undefined) {
+        console.warn("Could not find name", {
+          profileIcon: profileIconTd.text(),
+        });
+        continue;
+      }
+
+      profileIcons.push({
+        skinName: name,
+        profileIcon: asset,
+      });
+    }
+
+    return profileIcons;
   }
 
   private parseSkins(
@@ -636,21 +685,37 @@ export default class FandomService {
         (v) => v.voiceline
       );
 
-    const sprays = this.parseSprays($);
-    const popSpraysFor = (skinName: string) =>
-      popMatching(sprays, (s) => {
-        if (skinName == s.skinName) {
+    const matchSkinName =
+      (expectedSkinName: string) =>
+      ({ skinName: actualSkinName }: { skinName: string }) => {
+        if (expectedSkinName == actualSkinName) {
           return true;
         }
 
-        const spraySkinName = s.skinName.replace(brawlerName, "").trim();
+        const cleanedActualSkinName = actualSkinName
+          .replace(brawlerName, "")
+          .trim();
 
-        if (skinName == "Default") {
-          return s.skinName == brawlerName || spraySkinName == "Hypercharge";
+        if (expectedSkinName == "Default") {
+          return (
+            actualSkinName == brawlerName ||
+            cleanedActualSkinName == "Hypercharge" ||
+            cleanedActualSkinName == "Mastery"
+          );
         }
 
-        return skinName == spraySkinName;
-      }).map((s) => s.spray);
+        return expectedSkinName == cleanedActualSkinName;
+      };
+
+    const sprays = this.parseSprays($);
+    const popSpraysFor = (skinName: string) =>
+      popMatching(sprays, matchSkinName(skinName)).map((s) => s.spray);
+
+    const profileIcons = this.parseProfileIcons($);
+    const popProfileIconsFor = (skinName: string) =>
+      popMatching(profileIcons, matchSkinName(skinName)).map(
+        (i) => i.profileIcon
+      );
 
     const skinData: Skin[] = [];
     for (let i = 0; i < skinTemplates.length; i++) {
@@ -659,7 +724,12 @@ export default class FandomService {
       const addSkin = (
         skin: Omit<
           Skin,
-          "asset" | "petSkins" | "pins" | "voicelines" | "sprays"
+          | "asset"
+          | "petSkins"
+          | "pins"
+          | "voicelines"
+          | "sprays"
+          | "profileIcons"
         >
       ) => {
         const asset = this.findAssetByAttr(
@@ -684,6 +754,7 @@ export default class FandomService {
             pins: popPinsFor(asset),
             voicelines: popVoicelinesFor(skin.name),
             sprays: popSpraysFor(skin.name),
+            profileIcons: popProfileIconsFor(skin.name),
           });
         } else {
           const correspondingSkin = skinData.find((s) => s.name == skin.name);
@@ -752,6 +823,10 @@ export default class FandomService {
 
     if (sprays.length > 0) {
       console.warn("Could not match all sprays to skins", sprays);
+    }
+
+    if (profileIcons.length > 0) {
+      console.warn("Could not match all profile icons to skins", profileIcons);
     }
 
     return {
