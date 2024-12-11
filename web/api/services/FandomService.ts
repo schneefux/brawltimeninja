@@ -85,11 +85,39 @@ export interface Skin {
   profileIcons: Asset[];
 }
 
+interface DescribeAble {
+  name: string;
+  description: string;
+}
+
+interface StatsAble {
+  stats: {
+    label: string;
+    value: string;
+  }[];
+}
+
+interface StatsByLevelAble {
+  statsByLevel: {
+    name: string;
+    list: number[];
+  }[];
+}
+
+export interface Attack extends DescribeAble, StatsAble, StatsByLevelAble {}
+
+export interface Super extends DescribeAble, StatsAble, StatsByLevelAble {}
+
+export interface Hypercharge extends DescribeAble, StatsAble {}
+
 export interface FandomBrawlerData {
   attribution: string;
   shortDescription: string;
   fullDescription: string;
   trait: string | undefined;
+  attack: Attack;
+  super: Super;
+  hypercharge: Hypercharge | undefined;
   stats: {
     rarity: string;
     class: string;
@@ -105,11 +133,8 @@ export interface FandomBrawlerData {
   /*
   gadgets: ScrapedAccessory[]
   starpowers: ScrapedAccessory[]
-  attack: ScrapedAttack
-  super: ScrapedAttack
   */
   // videos
-  // hypercharge
   // … translations via GPT-4o
 }
 
@@ -235,14 +260,13 @@ export default class FandomService {
     };
   }
 
-  private parseDescriptions(
-    brawlerName: string,
-    brawlerPage: any,
-    $: cheerio.CheerioAPI
-  ) {
-    const extractFirstQuote = (text: string) => text.match(/"(.*)"/)?.[1];
+  private extractFirstQuote(text: string) {
+    return text.match(/"(.*)"/)?.[1];
+  }
+
+  private parseDescriptions(brawlerPage: any, $: cheerio.CheerioAPI) {
     const description: string = brawlerPage.section("").text();
-    const shortDescription: string = extractFirstQuote(description) ?? "";
+    const shortDescription: string = this.extractFirstQuote(description) ?? "";
 
     if (shortDescription == "") {
       console.warn("Could not parse short description");
@@ -262,14 +286,14 @@ export default class FandomService {
 
     const traitSection = brawlerPage.section("Trait");
     if (traitSection) {
-      trait = extractFirstQuote(traitSection.text());
+      trait = this.extractFirstQuote(traitSection.text());
     }
 
     const traitsSection = brawlerPage.section("Traits");
     if (traitsSection) {
       trait = traitsSection
         .sections()
-        .map((s: any) => extractFirstQuote(s.text()))
+        .map((s: any) => this.extractFirstQuote(s.text()))
         .filter((t: string | undefined) => t != undefined)
         .join("\n");
     }
@@ -308,6 +332,151 @@ export default class FandomService {
       healthByLevel: generateStatsPerLevelList(
         infobox.get("health").json().number
       ),
+    };
+  }
+
+  private parseAttack(brawlerPage: any, $: cheerio.CheerioAPI) {
+    const attackSection = brawlerPage
+      .sections()
+      .find((s: any) => s.title().startsWith("Attack: "));
+
+    const attackName = attackSection?.title().replace("Attack: ", "");
+    const attackDescription = this.extractFirstQuote(attackSection?.text());
+
+    if (attackName == undefined || attackDescription == undefined) {
+      console.warn("Could not parse attack name or description");
+    }
+
+    const attackStats = this.parseInfoboxTable($, "Attack");
+
+    return {
+      attack: {
+        name: attackName ?? "",
+        description: attackDescription ?? "",
+        stats: attackStats?.stats ?? [],
+        statsByLevel: attackStats?.statsByLevel ?? [],
+      },
+    };
+  }
+
+  private parseSuper(brawlerPage: any, $: cheerio.CheerioAPI) {
+    const superSection = brawlerPage
+      .sections()
+      .find((s: any) => s.title().startsWith("Super: "));
+
+    const superName = superSection?.title().replace("Super: ", "");
+    const superDescription = this.extractFirstQuote(superSection?.text());
+
+    if (superName == undefined || superDescription == undefined) {
+      console.warn("Could not parse super name or description");
+    }
+
+    const superStats = this.parseInfoboxTable($, "Super");
+
+    return {
+      super: {
+        name: superName ?? "",
+        description: superDescription ?? "",
+        stats: superStats?.stats ?? [],
+        statsByLevel: superStats?.statsByLevel ?? [],
+      },
+    };
+  }
+
+  private parseHypercharge(brawlerPage: any, $: cheerio.CheerioAPI) {
+    const hyperchargeSection = brawlerPage
+      .sections()
+      .find((s: any) => s.title().startsWith("Hypercharge: "));
+
+    if (hyperchargeSection == undefined) {
+      return {
+        hypercharge: undefined,
+      };
+    }
+
+    const hyperchargeName = hyperchargeSection
+      .title()
+      .replace("Hypercharge: ", "");
+    const hyperchargeDescription = this.extractFirstQuote(
+      hyperchargeSection.text()
+    );
+
+    if (hyperchargeName == undefined || hyperchargeDescription == undefined) {
+      console.warn("Could not parse hypercharge name or description");
+    }
+
+    const hyperchargeStats = this.parseInfoboxTable($, "Hypercharge");
+
+    return {
+      hypercharge: {
+        name: hyperchargeName ?? "",
+        description: hyperchargeDescription ?? "",
+        stats: hyperchargeStats?.stats ?? [],
+      },
+    };
+  }
+
+  private parseInfoboxTable($: cheerio.CheerioAPI, sectionName: string) {
+    const brawlerInfobox = $(".portable-infobox");
+    const infoboxSection = brawlerInfobox
+      .find("h2")
+      .filter((i, el) => $(el).text() == sectionName)
+      .first()
+      .parent();
+
+    if (infoboxSection.length == 0) {
+      console.warn("Could not find infobox section", { sectionName });
+      return;
+    }
+
+    const stats = infoboxSection
+      .find(".pi-data")
+      .map((i, el) => ({
+        label: $(el).find(".pi-data-label").text(),
+        value:
+          $(el)
+            .find(".pi-data-value")
+            .html()
+            ?.replace(/<br\s*\/?>/gi, "\n") ?? "",
+      }))
+      .get();
+
+    const names = infoboxSection
+      .find(".pi-group")
+      .first()
+      .find(".pi-data-value")
+      .map((i, el) => $(el).text())
+      .get();
+
+    const values = infoboxSection
+      .find(".pi-group")
+      .map((rowIndex, el): { value: number; columnIndex: number }[] => {
+        if (rowIndex == 0) {
+          return [];
+        }
+
+        return $(el)
+          .find(".pi-data-value")
+          .map((columnIndex, el) => ({
+            value: parseInt($(el).text()),
+            columnIndex,
+          }))
+          .get();
+      })
+      .get();
+
+    const statsByLevel = names
+      .map((name, columnIndex) => ({
+        name,
+        list: values
+          .filter((v) => v.columnIndex == columnIndex)
+          .map((v) => v.value),
+      }))
+      .filter((s) => s.name != "Level");
+
+    return {
+      stats,
+      statsByLevel,
     };
   }
 
@@ -430,27 +599,6 @@ export default class FandomService {
       .filter((i, el) => $(el).text() == sectionName)
       .nextAll("table")
       .first();
-  }
-
-  private findQuotesInSection(
-    $: cheerio.CheerioAPI,
-    sectionName: string
-  ): string[] {
-    for (const level of ["h3", "h2"]) {
-      const quotes = $(level)
-        .filter((i, el) => $(el).text() == sectionName)
-        .nextUntil(level)
-        .find("b")
-        .map((i, el) => $(el).text().replace(/"/g, ""))
-        .get();
-      console.log(quotes);
-
-      if (quotes.length > 0) {
-        return quotes;
-      }
-    }
-
-    return [];
   }
 
   private findAssetByAttr(
@@ -936,7 +1084,10 @@ export default class FandomService {
 
     return {
       attribution: url,
-      ...this.parseDescriptions(brawlerName, brawlerPage, $),
+      ...this.parseDescriptions(brawlerPage, $),
+      ...this.parseAttack(brawlerPage, $),
+      ...this.parseSuper(brawlerPage, $),
+      ...this.parseHypercharge(brawlerPage, $),
       ...this.parseHealthByLevel(brawlerPage),
       ...this.parseStats(brawlerPage),
       ...this.parseTips(brawlerPage),
