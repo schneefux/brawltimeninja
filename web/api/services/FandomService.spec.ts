@@ -1,9 +1,12 @@
 import { expect, test, vi } from "vitest";
 import FandomService, {
   Asset,
+  Attack,
   BalanceHistoryEntry,
+  Hypercharge,
   Skin,
   Spray,
+  Super,
   Voiceline,
 } from "./FandomService";
 import { MockAgent, setGlobalDispatcher } from "undici";
@@ -106,6 +109,90 @@ test("should parse Brawler page (Edgar)", async () => {
   expect(data.healthByLevel).toEqual([
     3300, 3630, 3960, 4290, 4620, 4950, 5280, 5610, 5940, 6270, 6600,
   ]);
+
+  expect(data.attack).toEqual({
+    name: "Fight Club",
+    description:
+      "Hits enemies with quick punches from his scarf, healing himself for each landed punch.",
+    stats: [
+      {
+        label: "Range",
+        value: "2 (Short)",
+      },
+      {
+        label: "Reload",
+        value: "0.7 seconds (Very Fast)\n0.35 seconds (with Hypercharge)",
+      },
+      {
+        label: "Projectiles per attack",
+        value: "2",
+      },
+      {
+        label: "Super charge per hit",
+        value:
+          "8.37%\n9.207% (with Super Charge Gear)\n16.74% (with Hypercharge)\n17.577% (with Super Charge Gear and Hypercharge)",
+      },
+      {
+        label: "Hypercharge charge per hit",
+        value: "3.348%\n3.6828% (with Super Charge Gear)",
+      },
+      {
+        label: "Projectile speed",
+        value: "3500",
+      },
+      {
+        label: "Attack width",
+        value: "2",
+      },
+    ],
+    statsByLevel: [
+      {
+        name: "Damage per punch",
+        list: [540, 594, 648, 702, 756, 810, 864, 918, 972, 1026, 1080],
+      },
+      {
+        name: "Heal per punch",
+        list: [189, 207, 225, 243, 261, 279, 297, 315, 333, 351, 369],
+      },
+    ],
+  } satisfies Attack);
+
+  expect(data.super).toEqual({
+    name: "Vault",
+    description:
+      "Edgar jumps over any obstacle and gets a temporary speed boost. His Super will slowly charge over time.",
+    stats: [
+      {
+        label: "Range",
+        value: "6.67 (Normal)",
+      },
+    ],
+    statsByLevel: [],
+  } satisfies Super);
+
+  expect(data.hypercharge).toEqual({
+    name: "Outburst",
+    description:
+      "After using Super gain charging speed and reload speed for few seconds.",
+    stats: [
+      {
+        label: "Hypercharge Multiplier",
+        value: "40%",
+      },
+      {
+        label: "Speed",
+        value: "+24%",
+      },
+      {
+        label: "Damage",
+        value: "+15%",
+      },
+      {
+        label: "Shield",
+        value: "+15%",
+      },
+    ],
+  } satisfies Hypercharge);
 
   expect(data.tips.length).toBeGreaterThan(5);
   expect(data.tips[0]).toBe(
@@ -484,6 +571,7 @@ test("should parse Brawler with multiple traits", async () => {
   expect(data.trait).toBe(
     "This Brawler charges Super from staying close to opposing enemies.\nThis Brawler can move over water."
   );
+  expect(data.hypercharge).toBeUndefined();
 });
 
 /*
