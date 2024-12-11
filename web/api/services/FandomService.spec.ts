@@ -14,6 +14,8 @@ import fandomShellyJson from "./fixtures/fandom-Shelly.json";
 import fandomShellyHtml from "./fixtures/fandom-Shelly.html?raw";
 import fandomNitaJson from "./fixtures/fandom-Nita.json";
 import fandomNitaHtml from "./fixtures/fandom-Nita.html?raw";
+import fandomShadeJson from "./fixtures/fandom-Shade.json";
+import fandomShadeHtml from "./fixtures/fandom-Shade.html?raw";
 import fandomGemgrabJson from "./fixtures/fandom-gemgrab.json";
 import fandomGemgrabHtml from "./fixtures/fandom-gemgrab.html?raw";
 
@@ -92,6 +94,7 @@ test("should parse Brawler page (Edgar)", async () => {
   expect(data.fullDescription).toBe(
     `Edgar is an Epic Brawler who could be unlocked for free as a Brawlidays 2020 gift from December 19th to January 7th or can be unlocked from the Starr Road. He has moderate health, moderately high burst damage and great mobility with his Super and his very fast movement speed, but a short attack range. His Trait allows his Super and Hypercharge to charge itself over time. He attacks with two quick short-ranged punches with an extremely short cooldown and reload speed that also slightly heal him per hit on an enemy Brawler. His Super is a quick jump over obstacles that grants him a speed boost upon landing. His first Gadget, Let's Fly, drastically increases his Trait's Super-charge for a short period of time. His second Gadget, Hardcore, provides him a shield that absorbs damage and decays over time. His first Star Power, Hard Landing, allows his Super to deal moderate damage to enemies in his Super's landing area of effect. His second Star Power, Fisticuffs, increases the amount he heals per punch. His Hypercharge, Outburst, increases his Super charge rate and reload speed after using his Super.`
   );
+  expect(data.trait).toBe("This Brawler charges Super over time.");
 
   expect(data.stats).toEqual({
     rarity: "Epic",
@@ -377,6 +380,7 @@ test("should parse Brawler skins including Pet", async () => {
     .reply(200, fandomNitaHtml);
 
   const data = (await fandomService.getBrawlerData("Nita"))!;
+  expect(data.trait).toBeUndefined();
 
   const skinNames = [
     "Default",
@@ -459,6 +463,27 @@ test("should parse Brawler skins including Pet", async () => {
     voicelines: [],
     profileIcons: expect.arrayContaining([]),
   } satisfies Skin);
+});
+
+test("should parse Brawler with multiple traits", async () => {
+  const mockPool = mockAgent.get("https://brawlstars.fandom.com");
+
+  mockPool
+    .intercept({
+      path: "/api.php?action=query&format=json&maxlag=5&origin=*&prop=revisions%7Cpageprops&redirects=true&rvprop=content%7Cids%7Ctimestamp&rvslots=main&titles=Shade",
+    })
+    .reply(200, fandomShadeJson);
+
+  mockPool
+    .intercept({
+      path: "/wiki/Shade",
+    })
+    .reply(200, fandomShadeHtml);
+
+  const data = (await fandomService.getBrawlerData("Shade"))!;
+  expect(data.trait).toBe(
+    "This Brawler charges Super from staying close to opposing enemies.\nThis Brawler can move over water."
+  );
 });
 
 /*

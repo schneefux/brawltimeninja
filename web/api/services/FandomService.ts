@@ -89,6 +89,7 @@ export interface FandomBrawlerData {
   attribution: string;
   shortDescription: string;
   fullDescription: string;
+  trait: string | undefined;
   stats: {
     rarity: string;
     class: string;
@@ -107,9 +108,7 @@ export interface FandomBrawlerData {
   attack: ScrapedAttack
   super: ScrapedAttack
   */
-  // icons
   // videos
-  // traits
   // hypercharge
   // … translations via GPT-4o
 }
@@ -132,6 +131,11 @@ wtf.extend((models: any, templates: any) => {
 
   templates["balance"] = (tmpl: any, list: any, parse: any) => {
     const data = parse(tmpl);
+
+    if (data.list == undefined) {
+      return "";
+    }
+
     return JSON.stringify({
       kind: data.list[0],
       description: data.list[1],
@@ -231,18 +235,46 @@ export default class FandomService {
     };
   }
 
-  private parseDescriptions(brawlerPage: any) {
+  private parseDescriptions(
+    brawlerName: string,
+    brawlerPage: any,
+    $: cheerio.CheerioAPI
+  ) {
+    const extractFirstQuote = (text: string) => text.match(/"(.*)"/)?.[1];
     const description: string = brawlerPage.section("").text();
-    const shortDescription: string = description
-      .split("\n")[0]
-      .replaceAll('"', "");
+    const shortDescription: string = extractFirstQuote(description) ?? "";
+
+    if (shortDescription == "") {
+      console.warn("Could not parse short description");
+    }
+
     const fullDescription: string = description
       .split("\n")
       .slice(1)
       .join("\n")
       .trim();
 
-    return { shortDescription, fullDescription };
+    if (fullDescription == "") {
+      console.warn("Could not parse full description");
+    }
+
+    let trait: string | undefined = undefined;
+
+    const traitSection = brawlerPage.section("Trait");
+    if (traitSection) {
+      trait = extractFirstQuote(traitSection.text());
+    }
+
+    const traitsSection = brawlerPage.section("Traits");
+    if (traitsSection) {
+      trait = traitsSection
+        .sections()
+        .map((s: any) => extractFirstQuote(s.text()))
+        .filter((t: string | undefined) => t != undefined)
+        .join("\n");
+    }
+
+    return { shortDescription, fullDescription, trait };
   }
 
   private parseStats(brawlerPage: any) {
@@ -398,6 +430,27 @@ export default class FandomService {
       .filter((i, el) => $(el).text() == sectionName)
       .nextAll("table")
       .first();
+  }
+
+  private findQuotesInSection(
+    $: cheerio.CheerioAPI,
+    sectionName: string
+  ): string[] {
+    for (const level of ["h3", "h2"]) {
+      const quotes = $(level)
+        .filter((i, el) => $(el).text() == sectionName)
+        .nextUntil(level)
+        .find("b")
+        .map((i, el) => $(el).text().replace(/"/g, ""))
+        .get();
+      console.log(quotes);
+
+      if (quotes.length > 0) {
+        return quotes;
+      }
+    }
+
+    return [];
   }
 
   private findAssetByAttr(
@@ -785,7 +838,7 @@ export default class FandomService {
         addSkin({
           name: e.name.join(", "),
           rarity: e.rarity ? e.rarity.join(", ") : undefined,
-          campaign: e.campaign.join(", "),
+          campaign: e.campaign?.join(", "),
           cost: e.cost
             ? e.cost.join(", ").replaceAll(" • E", "").replaceAll(" • S", "")
             : undefined,
@@ -794,23 +847,25 @@ export default class FandomService {
         });
       }
 
-      addSkin({
-        name: "True Silver",
-        rarity: undefined,
-        campaign: undefined,
-        cost: "10000 Coins",
-        exclusive: false,
-        seasonal: false,
-      });
+      if (template.trueskins) {
+        addSkin({
+          name: "True Silver",
+          rarity: undefined,
+          campaign: undefined,
+          cost: "10000 Coins",
+          exclusive: false,
+          seasonal: false,
+        });
 
-      addSkin({
-        name: "True Gold",
-        rarity: undefined,
-        campaign: undefined,
-        cost: "25000 Coins",
-        exclusive: false,
-        seasonal: false,
-      });
+        addSkin({
+          name: "True Gold",
+          rarity: undefined,
+          campaign: undefined,
+          cost: "25000 Coins",
+          exclusive: false,
+          seasonal: false,
+        });
+      }
     }
 
     if (pins.length > 0) {
@@ -881,7 +936,7 @@ export default class FandomService {
 
     return {
       attribution: url,
-      ...this.parseDescriptions(brawlerPage),
+      ...this.parseDescriptions(brawlerName, brawlerPage, $),
       ...this.parseHealthByLevel(brawlerPage),
       ...this.parseStats(brawlerPage),
       ...this.parseTips(brawlerPage),
