@@ -2,36 +2,6 @@
   <b-scrolling-dashboard
     @scroll.once="$emit('interact')"
   >
-    <b-dashboard-cell :columns="2">
-      <b-bigstat :title="$t('player.progression.season-end')">
-        <template v-slot:content>
-          <b-kv-table
-            :rows="rewardRows"
-            :data="reward"
-            class="w-full mt-2 text-base"
-          >
-            <template v-slot:reward="{ value }">
-              <img
-                :src="blingIcon"
-                alt="Bling"
-                class="inline h-4 mr-1 mb-1"
-              >
-              {{ value }}
-            </template>
-
-            <template v-slot:trophies="{ value }">
-              <img
-                :src="trophyIcon"
-                :alt="$t('metric.trophies')"
-                class="inline h-4 mr-1"
-              >
-              {{ value }}
-            </template>
-          </b-kv-table>
-        </template>
-      </b-bigstat>
-    </b-dashboard-cell>
-
     <b-dashboard-cell
       v-for="progression in progressions"
       :key="progression.metric"
@@ -69,7 +39,6 @@ import { calculateProgression, calculatePlayerProgression, calculateSeasonEndRew
 import { useAllBrawlersWithAllAccessories } from '~/composables/dimension-values'
 import { useI18n } from 'vue-i18n'
 import goldCoinIcon from '~/assets/images/icon/gold_coin.png'
-import blingIcon from '~/assets/images/icon/icon_bling.png'
 import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import starPowerIcon from '~/assets/images/icon/SP_base@4x.png'
 import gearIcon from '~/assets/images/icon/gear_icon.png'
@@ -101,8 +70,6 @@ export default defineComponent({
   setup(props) {
     const i18n = useI18n()
     const maxedBrawlers = useAllBrawlersWithAllAccessories()
-
-    const reward = computed(() => calculateSeasonEndReward(props.player))
 
     const progressions = computed<Progression[]>(() => {
       const maxStats = calculateProgression(maxedBrawlers.value.map(b => ({
@@ -151,21 +118,8 @@ export default defineComponent({
       })
     })
 
-    const rewardRows = computed(() => [{
-      title: i18n.t('player.progression.reward'),
-      key: 'reward',
-      slot: 'reward',
-    }, {
-      title: i18n.t('metric.trophies'),
-      key: 'trophies',
-      slot: 'trophies',
-    }])
-
     return {
-      reward,
-      rewardRows,
       progressions,
-      blingIcon,
       trophyIcon,
     }
   },
