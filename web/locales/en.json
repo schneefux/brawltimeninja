@@ -650,5 +650,7 @@
     "gear": "Gear | Gears",
     "metric.accountCreationYear": "Account Created",
     "metric.highestRank": "Highest Rank",
-    "metric.masteryPoints": "Mastery Points"
+    "metric.masteryPoints": "Mastery Points",
+    "mode.wipeout5v5": "Wipeout 5v5",
+    "mode.paintBrawl": "Paint Brawl"
 }
