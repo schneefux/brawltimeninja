@@ -67,7 +67,8 @@
       >
         <template v-slot:tooltip>
           <p class="mt-2">{{ $t('metric.accountRating.description') }}</p>
-          <ul class="mt-1 mb-2">
+          <p class="mt-1">{{ $t('rating.your-mean', { trophies: accountRating.medianBrawlerTrophies }) }}</p>
+          <ul class="mt-1">
             <li
               v-for="(info, rating) in ratingPercentiles"
               :key="rating"

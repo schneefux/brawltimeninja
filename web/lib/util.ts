@@ -346,13 +346,12 @@ export function calculateAccountRating(player: Player, brawlersCount: number) {
   const brawlersUnlocked = Object.keys(player.brawlers).length
   const brawlerTrophies = [...Object.values(player.brawlers)]
     .map(({ trophies }) => trophies)
-    .sort()
-  const medBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
-  const trophiesGoal = medBrawlerTrophies * brawlersCount
+    .sort((a, b) => a - b)
+  const medianBrawlerTrophies = brawlerTrophies[Math.floor(brawlerTrophies.length / 2)]
+  const trophiesGoal = medianBrawlerTrophies * brawlersCount
   let rating = '?'
-  const medTrophies = trophiesGoal / brawlersCount
   for (const key in ratingPercentiles) {
-    if (medTrophies <= ratingPercentiles[key as keyof typeof ratingPercentiles][1]) {
+    if (medianBrawlerTrophies <= ratingPercentiles[key as keyof typeof ratingPercentiles][1]) {
       rating = key
       break
     }
@@ -360,6 +359,7 @@ export function calculateAccountRating(player: Player, brawlersCount: number) {
 
   return {
     rating,
+    medianBrawlerTrophies,
     brawlersUnlocked,
     trophiesGoal,
   }

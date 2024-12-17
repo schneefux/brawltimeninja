@@ -400,6 +400,7 @@
     "rating.excellence.9": "Amazing",
     "rating.percentile": "Better than {percentile}",
     "rating.percentile-of": "Better than {part} out of {total}",
+    "rating.your-mean": "Your mean Brawler trophies: {trophies}",
     "rating.popularity.0": "niche",
     "rating.popularity.1": "not so popular",
     "rating.popularity.2": "moderately popular",
