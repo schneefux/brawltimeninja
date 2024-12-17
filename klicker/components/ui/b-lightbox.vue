@@ -8,7 +8,9 @@
         class="h-full flex justify-center items-center pt-20 pb-8 px-4"
         @click.self="$emit('update:modelValue', false)"
       >
-        <slot></slot>
+        <div>
+          <slot></slot>
+        </div>
       </div>
 
       <button
