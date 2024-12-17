@@ -37,7 +37,7 @@
           <template v-slot:name="{ row }">
             <span
               :style="{
-                color: '#' + (row.nameColor != undefined ? row.nameColor.slice('0x'.length) : 'ffffff'),
+                color: nameColorHex,
               }"
               class="font-semibold"
             >{{ row.name }}</span>
@@ -240,6 +240,18 @@ export default defineComponent({
     const trackedPlayer = computed(() => preferencesStore.trackedPlayers.find(p => p.tag == props.player.tag))
     const canDisableTracking = computed(() => trackingStatus.value == 'active' && trackedPlayer.value != undefined)
 
+    const nameColorHex = computed(() => {
+      const hex = props.player.nameColor?.slice('0x'.length)
+      if (hex?.length == 6) {
+        return '#' + hex
+      }
+      if (hex?.length == 8) {
+        // 2024-12-17: name colors have an alpha channel, cut it off
+        return '#' + hex.slice(-6)
+      }
+      return '#ffffff'
+    })
+
     const rows = computed<Row[]>(() => {
       const rows: Row[] = []
       rows.push({
@@ -354,6 +366,7 @@ export default defineComponent({
       levelIcon,
       calendarIcon,
       rankIcons,
+      nameColorHex,
     }
   },
 })
