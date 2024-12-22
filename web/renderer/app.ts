@@ -71,7 +71,7 @@ function createApp(pageContext: PageContext) {
       },
     ],
     link: [
-      { rel: 'manifest', href: '/manifest.webmanifest' },
+      { rel: 'manifest', href: '/manifest.webmanifest' }, // TODO try https://vite-pwa-org.netlify.app/frameworks/#accessing-pwa-info instead
       { rel: 'icon', href: '/icons/favicon.ico', sizes: 'any' },
       { rel: 'icon', href: '/icons/favicon.svg', type: 'image/svg+xml' },
       { rel: 'apple-touch-icon', href: '/icons/icon_x512.png', sizes: '512x512' },

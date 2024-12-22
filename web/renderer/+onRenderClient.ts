@@ -14,11 +14,6 @@ export { onRenderClient }
 async function onRenderClient(pageContext: PageContext) {
   const params = createApp(pageContext)
 
-  initSentry(pageContext.envConfig.sentryDsn, params.app, params.router)
-  hydrate(params.queryClient, pageContext.vueQueryState)
-  params.pinia.state.value = SuperJSON.parse(pageContext.piniaState)
-  await params.router.isReady()
-
   const { registerSW } = await import('virtual:pwa-register') // use dynamic import to fetch sw at runtime
   registerSW({
     immediate: true, // reload app when service worker updates
@@ -29,5 +24,12 @@ async function onRenderClient(pageContext: PageContext) {
       })
     },
   })
+
+  initSentry(pageContext.envConfig.sentryDsn, params.app, params.router)
+  hydrate(params.queryClient, pageContext.vueQueryState)
+  params.pinia.state.value = SuperJSON.parse(pageContext.piniaState)
+
+  await params.router.isReady()
+
   params.app.mount('#app')
 }

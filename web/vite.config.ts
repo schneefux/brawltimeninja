@@ -41,7 +41,7 @@ const config: UserConfig = {
       resolver: 'vue',
     }),
     VitePWA({
-      injectRegister: null, // not supported by vike, injected in all.page.client instead
+      injectRegister: null, // not supported by vike, injected in +onRenderClient.ts instead
       registerType: 'autoUpdate',
       devOptions: {
         enabled: false,
