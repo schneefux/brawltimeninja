@@ -22,12 +22,6 @@ async function onRenderClient(pageContext: PageContext) {
   const { registerSW } = await import('virtual:pwa-register') // use dynamic import to fetch sw at runtime
   registerSW({
     immediate: true, // reload app when service worker updates
-    async onRegisteredSW(swScriptUrl, registration) {
-      // delete old caches by previous PWA implementation
-      const keys = await caches.keys()
-      const oldKeys = keys.filter(key => !key.startsWith('workbox-precache')) // used by vite-plugin-pwa
-      await Promise.all(oldKeys.map(key => caches.delete(key)))
-    },
     onRegisterError(error) {
       params.app.runWithContext(() => {
         const sentry = inject(SentryInjectionKey)
