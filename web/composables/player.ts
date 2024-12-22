@@ -2,13 +2,12 @@ import { tagPattern } from "~/lib/util"
 import { useBrawlstarsStore } from "~/stores/brawlstars"
 import { TRPCClientError } from "@trpc/client"
 import { useI18n } from "vue-i18n"
-import { useSentry, useValidate } from "./compat"
+import { useValidate } from "./compat"
 import { computed, Ref } from 'vue'
 
 export async function useLoadAndValidatePlayer(urlPrefix: string) {
   const i18n = useI18n()
   const store = useBrawlstarsStore()
-  const sentry = useSentry()
 
   const validatePromise = useValidate(async ({ params, redirect, error }) => {
     const tag = (params.tag as string).toUpperCase()
@@ -46,7 +45,6 @@ export async function useLoadAndValidatePlayer(urlPrefix: string) {
       }
 
       console.error(err)
-      sentry.captureException(err)
       error({ statusCode: 500, message: ' ' })
     }
   })

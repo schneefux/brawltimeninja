@@ -3,7 +3,6 @@ import { Router } from "vue-router"
 import * as Sentry from '@sentry/vue'
 import {
   httpClientIntegration,
-  captureConsoleIntegration,
   extraErrorDataIntegration,
   reportingObserverIntegration,
   rewriteFramesIntegration,
@@ -21,9 +20,6 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
       extraErrorDataIntegration(),
       reportingObserverIntegration(),
       rewriteFramesIntegration(),
-      captureConsoleIntegration({
-        levels: ['error', 'assert']
-      }),
       httpClientIntegration(),
       Sentry.browserTracingIntegration({
         router,

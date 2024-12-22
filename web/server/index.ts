@@ -8,7 +8,6 @@ import { PageContext } from '~/renderer/types'
 import * as Sentry from '@sentry/node'
 import {
   dedupeIntegration,
-  captureConsoleIntegration,
   extraErrorDataIntegration,
   rewriteFramesIntegration,
 } from '@sentry/browser'
@@ -28,9 +27,6 @@ async function startServer() {
       dedupeIntegration(),
       extraErrorDataIntegration(),
       rewriteFramesIntegration(),
-      captureConsoleIntegration({
-        levels: ['error', 'assert'],
-      }),
     ],
     ignoreErrors: [
       // ignore errors that are not actionable
