@@ -48,8 +48,8 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
       'Unable to preload CSS',
     ],
     allowUrls: [/https?:\/\/brawltime\.ninja/],
-    replaysSessionSampleRate: 0.0005,
-    replaysOnErrorSampleRate: 0.01,
+    replaysSessionSampleRate: 0.0001,
+    replaysOnErrorSampleRate: 0.002,
     tracePropagationTargets: ['localhost', /^https?:\/\/brawltime\.ninja/],
     tracesSampleRate: 0.01,
     profilesSampleRate: 0.25, // relative to tracesSampleRate
@@ -71,6 +71,12 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
         if (isAutoTranslated) {
           return null
         }
+      }
+
+      // ignore error if user agent contains "Google-Read-Aloud"
+      // because this browser does not seem to support service workers
+      if (navigator.userAgent.includes('Google-Read-Aloud')) {
+        return null
       }
 
       return event
