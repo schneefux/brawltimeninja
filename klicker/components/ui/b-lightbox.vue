@@ -8,7 +8,7 @@
         class="h-full flex justify-center items-center pt-20 pb-8 px-4"
         @click.self="$emit('update:modelValue', false)"
       >
-        <div>
+        <div class="max-w-full">
           <slot></slot>
         </div>
       </div>
