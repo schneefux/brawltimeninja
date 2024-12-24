@@ -1,5 +1,5 @@
 #!/bin/sh
 
 for IP in "$@"; do
-    ssh -i ~/.ssh/brawltime.key "root@$IP" "apt-get update && apt-get upgrade -y"
+    ssh -o "StrictHostKeyChecking no" -i ~/.ssh/brawltime.key "root@$IP" "apt-get update && apt-get upgrade -y"
 done
