@@ -95,6 +95,7 @@ class HttpTransport implements ITransport<ResultSet> {
 export class KlickerService implements IKlickerService {
   private cubejsApi: CubeApi
   private transport: HttpTransport
+  private tokenPromise: Promise<void>|undefined
   public visualisations: VisualisationSpec[] = defaultVisualisations
   public staticWidgets: StaticWidgetSpec[] = defaultStaticWidgets
   public slicers: SlicerSpec[] = []
@@ -124,12 +125,25 @@ export class KlickerService implements IKlickerService {
   }
 
   private async updateCubeToken() {
-    const token = await this.tokenProvider()
-    if (token == undefined) {
-      throw new Error('No authentication token available')
+    // prevent concurrent calls to tokenProvider
+    if (this.tokenPromise) {
+      return this.tokenPromise
     }
 
-    this.transport.authorization = token
+    this.tokenPromise = (async () => {
+      try {
+        const token = await this.tokenProvider()
+        if (token == undefined) {
+          throw new Error('No authentication token available')
+        }
+
+        this.transport.authorization = token
+      } finally {
+        this.tokenPromise = undefined
+      }
+    })();
+
+    return this.tokenPromise
   }
 
   // override & extend
