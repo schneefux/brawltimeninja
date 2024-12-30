@@ -15,6 +15,7 @@ export function useVenatus(siteId: string) {
       src: `https://hb.vntsm.com/v3/live/ad-manager.min.js`,
       'data-site-id': siteId,
       'data-mode': 'scan',
+      async: true,
       tagPriority: 31,
     } ],
   }))
