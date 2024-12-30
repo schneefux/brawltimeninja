@@ -1,7 +1,7 @@
 <template>
   <media-img
     :path="icon"
-    :alt="alt"
+    :alt="iconAlt"
     size="160"
     clazz="w-8 h-8 object-contain"
   ></media-img>
@@ -16,7 +16,7 @@ export default defineComponent({
       type: String,
       required: true
     },
-    alt: {
+    iconAlt: {
       type: String,
       required: false
     },
