@@ -8,7 +8,7 @@ import * as SentryTypes from '@sentry/core'
 import type { PageContextBuiltInServer } from 'vike/types'
 import type { ComponentPublicInstance } from 'vue'
 import { LocaleIso } from '~/locales'
-import { Config } from '~/config'
+import { Config } from '~/config/config'
 
 type PageProps = Record<string, unknown>
 

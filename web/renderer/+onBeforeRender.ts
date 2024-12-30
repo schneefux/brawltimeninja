@@ -2,7 +2,7 @@ import type { PageContext } from './types'
 import * as Sentry from '@sentry/vue'
 import { getTraduoraToken, TraduoraToken } from '~/locales'
 import { Dispatcher, Agent } from 'undici'
-import { config, Config } from '~/config'
+import { config, Config } from '~/config/config'
 
 export { onBeforeRender }
 

@@ -6,7 +6,7 @@ import routes from '~pages'
 import { AppI18n } from './app'
 import { PageContext } from './types'
 import { getPathWithLocale, getSelfOrigin } from '~/composables/compat'
-import { Config } from '~/config'
+import { Config } from '~/config/config'
 
 export { createRouter }
 

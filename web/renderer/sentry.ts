@@ -7,6 +7,7 @@ import {
   reportingObserverIntegration,
   rewriteFramesIntegration,
 } from '@sentry/browser'
+import { SENTRY_APPLICATION_KEY } from "~/config/sentry"
 
 export const SentryInjectionKey = Symbol('sentry') as InjectionKey<typeof Sentry>
 
@@ -31,18 +32,12 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
         maskAllInputs: false,
         blockAllMedia: false,
       }),
+      Sentry.thirdPartyErrorFilterIntegration({
+        filterKeys: [SENTRY_APPLICATION_KEY],
+        behaviour: 'drop-error-if-exclusively-contains-third-party-frames',
+      }),
     ],
     ignoreErrors: [
-      // ignore common errors triggered by ads
-      'ReportingObserver [deprecation]',
-      '[GPT] ',
-      'SYNC.JS',
-      'ox_esp',
-      'Tyche blocked',
-      'fun-hooks: hooked function not ready',
-      'The play() request was interrupted',
-      'Geo location is undefined or empty',
-      '33Across Lexicon ID Mappings Provider: PID not found',
       // ignore errors that are not actionable
       'Already on path:',
       'Unable to preload CSS',

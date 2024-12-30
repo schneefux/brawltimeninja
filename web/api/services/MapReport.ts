@@ -6,7 +6,7 @@ import { winRateAdjMergedMetric } from "~/lib/klicker.cubes"
 import { formatDistanceToNow, subWeeks, differenceInDays } from 'date-fns'
 import { FandomModeData } from "./FandomService"
 import { Locale, loadLocaleWithFallback, locales } from "~/locales"
-import { config } from "~/config"
+import { config } from "~/config/config"
 
 const comparingAccessoryQuery = (accessory: 'gears'|'gadgets'|'starpowers', slices: SliceValue) => {
   return {

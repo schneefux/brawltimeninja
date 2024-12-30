@@ -10,7 +10,8 @@ import Pages from 'vite-plugin-pages'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import { vavite } from 'vavite'
 import legacy from '@vitejs/plugin-legacy'
-import manifest from './manifest'
+import manifest from './config/manifest'
+import { SENTRY_APPLICATION_KEY, SENTRY_REPO } from './config/sentry'
 
 const config: UserConfig = {
   buildSteps: [
@@ -57,11 +58,12 @@ const config: UserConfig = {
     ssr({ disableAutoFullBuild: true }),
     legacy(),
     process.env.VITE_GIT_REV != undefined ? sentryVitePlugin({
+      applicationKey: SENTRY_APPLICATION_KEY,
       release: {
         name: `brawltimeninja@${process.env.VITE_GIT_REV}`,
         setCommits: {
           auto: false,
-          repo: 'schneefux/brawltimeninja',
+          repo: SENTRY_REPO,
           commit: process.env.VITE_GIT_REV,
         },
       },
