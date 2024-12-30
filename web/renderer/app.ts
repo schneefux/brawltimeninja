@@ -56,7 +56,6 @@ function createApp(pageContext: PageContext) {
   const head = createHead({
     plugins: [
       InferSeoMetaPlugin(),
-      CapoPlugin({}), // sort head tags
     ],
   })
   head.push({

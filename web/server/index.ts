@@ -12,10 +12,53 @@ import {
   rewriteFramesIntegration,
 } from '@sentry/browser'
 import { getHTTPStatusCodeFromError } from '@trpc/server/http'
+import { parse, serialize } from 'parse5'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || 3000
+
+function optimizeHead(body: string) {
+  // reorder head according to capo.js' recommendations
+  // https://rviscomi.github.io/capo.js/user/rules/
+  // FIXME it would be nicer if unhead-ssr with capo plugin would work together with VPS' injects
+  // waiting for https://github.com/vikejs/vike/issues/695
+  const root = parse(body)
+  const html = root.childNodes.find((node: any) => node.tagName === 'html') as any
+  const head = html.childNodes.find((node: any) => node.tagName === 'head')
+
+  const priorities = {
+    'meta[charset]': 11,
+    'meta[name="viewport"]': 11,
+    'title': 10,
+    'link[rel="preconnect"]': 9,
+    'script[src]': 6,
+    'script': 6,
+    'link[rel="stylesheet"]': 5,
+    'link[rel="preload"]': 4,
+  }
+
+  const getPriority = (node: any) => {
+    if (!(node.tagName && node.attrs)) {
+      return 1
+    }
+
+    for (const key in priorities) {
+      if (
+        (node.attrs.length == 0 && node.tagName === key) ||
+        node.attrs.some((attr: any) => `${node.tagName}[${attr.name}="${attr.value}"]` === key) ||
+        node.attrs.some((attr: any) => `${node.tagName}[${attr.name}]` === key)
+      ) {
+        return priorities[key as keyof typeof priorities]
+      }
+    }
+
+    return 1
+  }
+
+  head.childNodes.sort((a: any, b: any) => getPriority(b) - getPriority(a))
+  return serialize(root)
+}
 
 async function startServer() {
   const app = express()
@@ -101,7 +144,7 @@ async function startServer() {
     if (!httpResponse) {
       return next()
     }
-    const { statusCode, headers, earlyHints, body } = httpResponse
+    let { statusCode, headers, earlyHints, body, contentType } = httpResponse
     /*
     // early hints are not supported by nginx - hang the request with http2 (https://forum.nginx.org/read.php?10,293049)
     if (res.writeEarlyHints) {
@@ -110,6 +153,16 @@ async function startServer() {
       })
     }
     */
+
+    if (contentType == 'text/html;charset=utf-8') {
+      try {
+        body = optimizeHead(body)
+      } catch (e) {
+        console.error(e)
+        Sentry.captureException(e)
+        // move on with the original body
+      }
+    }
 
     res.set(Object.fromEntries(headers))
     if (pageContext.responseHeaders != undefined) {

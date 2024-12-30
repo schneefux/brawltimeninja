@@ -54,16 +54,16 @@ async function onRenderHtml(pageContext: PageContextServer & PageContext) {
     const piniaState = SuperJSON.stringify(pinia.state.value)
 
     const documentHtml = escapeInject`<!DOCTYPE html>
-      <html${dangerouslySkipEscape(payload.htmlAttrs)}>
-        <head>
-          ${dangerouslySkipEscape(payload.headTags)}
-        </head>
-        <body${dangerouslySkipEscape(payload.bodyAttrs)}>
-          ${dangerouslySkipEscape(payload.bodyTagsOpen)}
-          <div id="app">${dangerouslySkipEscape(string)}</div>
-          ${dangerouslySkipEscape(payload.bodyTags)}
-        </body>
-      </html>`
+<html${dangerouslySkipEscape(payload.htmlAttrs)}>
+<head>
+${dangerouslySkipEscape(payload.headTags)}
+</head>
+<body${dangerouslySkipEscape(payload.bodyAttrs)}>
+${dangerouslySkipEscape(payload.bodyTagsOpen)}
+<div id="app">${dangerouslySkipEscape(string)}</div>
+${dangerouslySkipEscape(payload.bodyTags)}
+</body>
+</html>`
 
     return {
       documentHtml,
