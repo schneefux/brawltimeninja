@@ -38,7 +38,12 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
       }),
     ],
     ignoreErrors: [
+      // ignore errors triggered by ads
+      'fun-hooks: hooked function not ready',
+      'The play() request was interrupted',
       // ignore errors that are not actionable
+      'Non-Error promise rejection captured with value: undefined',
+      'ReportingObserver [deprecation]',
       'Already on path:',
       'Unable to preload CSS',
     ],
