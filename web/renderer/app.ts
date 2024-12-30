@@ -9,7 +9,7 @@ import { createPersistedState } from 'pinia-plugin-persistedstate'
 import VueGtagPlugin, { query } from 'vue-gtag'
 import { createI18n, I18n } from 'vue-i18n'
 import { ClientOnly } from '@schneefux/klicker/components'
-import { createHead } from '@unhead/vue'
+import { CapoPlugin, createHead } from '@unhead/vue'
 import { InferSeoMetaPlugin } from '@unhead/addons'
 import { defaultLocale, locales } from '~/locales'
 import { createRouter } from './router'
@@ -56,6 +56,7 @@ function createApp(pageContext: PageContext) {
   const head = createHead({
     plugins: [
       InferSeoMetaPlugin(),
+      CapoPlugin({}), // sort head tags
     ],
   })
   head.push({
