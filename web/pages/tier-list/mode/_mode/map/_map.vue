@@ -57,36 +57,6 @@
         height-px="56"
         loading
       ></b-shimmer>
-      <client-only v-else-if="aiReport != undefined">
-        <template v-slot:placeholder>
-          <ai-report-1
-            :timestamp="aiReport.timestamp"
-            :title="`${$t('mode.' + event.mode)} - ${mapName}`"
-            :content="aiReport.html"
-            @interact="trackInteraction('map-report-cta')"
-          ></ai-report-1>
-        </template>
-
-        <experiment experiment-id="map-report">
-          <template v-slot:none></template>
-          <template v-slot:cta>
-            <ai-report-1
-              :timestamp="aiReport.timestamp"
-              :title="`${$t('mode.' + event.mode)} - ${mapName}`"
-              :content="aiReport.html"
-              @interact="trackInteraction('map-report-cta')"
-            ></ai-report-1>
-          </template>
-          <template v-slot:fadeout>
-            <ai-report-2
-              :timestamp="aiReport.timestamp"
-              :title="`${$t('mode.' + event.mode)} - ${mapName}`"
-              :content="aiReport.html"
-              @interact="trackInteraction('map-report-fadeout')"
-            ></ai-report-2>
-          </template>
-        </experiment>
-      </client-only>
       <p
         v-else
         id="description"
@@ -117,7 +87,7 @@ import { deslugify, kebabToCamel } from '~/lib/util'
 import { BShimmer, BLightbox, BPageSection, Fa } from '@schneefux/klicker/components'
 import { useMapName } from '~/composables/map'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
-import { useApi, useAsync, useCacheHeaders, useConfig, useMeta, useServerBlockingAsync } from '~/composables/compat'
+import { useCacheHeaders, useConfig, useMeta, useServerBlockingAsync } from '~/composables/compat'
 import { useKlicker } from '@schneefux/klicker/composables'
 import { useI18n } from 'vue-i18n'
 import { useRouteParams } from '~/composables/route-params'
@@ -140,7 +110,6 @@ export default defineComponent({
   async setup() {
     const $klicker = useKlicker()
     const $config = useConfig()
-    const $api = useApi()
     const i18n = useI18n()
     const routeParams = useRouteParams()
     const { trackInteraction } = useTrackScroll('map')
@@ -152,22 +121,6 @@ export default defineComponent({
     const mapName = useMapName(computed(() => event.value?.id), computed(() => routeParams.value?.map as string))
 
     const lightboxOpen = ref(false)
-
-    const aiReport = useAsync(async () => {
-      if (routeParams.value == undefined) {
-        return null
-      }
-
-      try {
-        return await $api.report.byModeMap.query({
-          localeIso: i18n.locale.value,
-          mode: routeParams.value.mode as string,
-          map: routeParams.value.map as string,
-        })
-      } catch (err) {
-        return null
-      }
-    }, computed(() => `ai-report-${i18n.locale.value}-${routeParams.value?.mode}-${routeParams.value?.map}`))
 
     const event = await useServerBlockingAsync<Map>(async ({ params }) => {
       const mode = kebabToCamel(params.mode as string)
@@ -226,7 +179,6 @@ export default defineComponent({
     return {
       event,
       mapName,
-      aiReport,
       faExpand,
       showImage,
       lightboxOpen,
