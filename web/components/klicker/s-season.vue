@@ -1,47 +1,27 @@
 <template>
   <b-select
-    v-if="seasonsSince.length > 0 && seasonsAt.length > 0"
+    v-if="seasonsOptions.length > 0"
     v-model="value"
     dark
     sm
   >
-    <i18n-t
-      v-for="s in seasonsSince"
-      :key="`since@${s.id}`"
-      :value="`since@${s.id}`"
-      keypath="option.season-since"
-      tag="option"
+    <option
+      v-for="s in seasonsOptions"
+      :key="s.value"
+      :value="s.value"
     >
-      <template v-slot:season>
-        <absolute-time
-          tag=""
-          :timestamp="s.start"
-          format-str="PP"
-        ></absolute-time>
-      </template>
-    </i18n-t>
-    <i18n-t
-      v-for="s in seasonsAt"
-      :key="`at@${s.id}`"
-      :value="`at@${s.id}`"
-      keypath="option.season-at"
-      tag="option"
-    >
-      <template v-slot:season>
-        <absolute-time
-          tag=""
-          :timestamp="s.start"
-          format-str="PP"
-        ></absolute-time>
-      </template>
-    </i18n-t>
+      {{ s.formatted }}
+    </option>
   </b-select>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue'
+import { computed, defineComponent, onMounted, PropType, ref, watch } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
 import { useAllSeasons } from '~/composables/dimension-values'
+import { useDateFnLocale } from '~/composables/date-fns';
+import { format } from 'date-fns'
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
@@ -63,9 +43,35 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const i18n = useI18n()
+    const { locale } = useDateFnLocale()
+
     const seasons = useAllSeasons(Math.max(props.limitSince, props.limitAt))
-    const seasonsSince = computed(() => seasons.value.slice(0, props.limitSince))
-    const seasonsAt = computed(() => seasons.value.slice(0, props.limitAt))
+
+    const seasonsOptions = ref<{
+      value: string,
+      formatted: string
+    }[]>([])
+    const updateSeasonsOptions = () => {
+      seasonsOptions.value = seasons.value.slice(0, props.limitSince).map(s => ({
+        value: `since@${s.id}`,
+        formatted: i18n.t('option.season-since', {
+          season: format(s.start, 'PP', {
+            locale: locale.value,
+          }),
+        }),
+      })).concat(seasons.value.slice(0, props.limitAt).map(s => ({
+        value: `at@${s.id}`,
+        formatted: i18n.t('option.season-at', {
+          season: format(s.start, 'PP', {
+            locale: locale.value,
+          }),
+        }),
+      })))
+    }
+    // use refs instead of computed to avoid hydration mismatches
+    watch(seasons, updateSeasonsOptions)
+    onMounted(updateSeasonsOptions)
 
     const value = computed({
       get() {
@@ -93,8 +99,7 @@ export default defineComponent({
 
     return {
       value,
-      seasonsSince,
-      seasonsAt,
+      seasonsOptions,
     }
   },
 })

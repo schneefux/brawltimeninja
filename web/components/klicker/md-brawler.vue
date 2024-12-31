@@ -52,46 +52,73 @@
 
 <script lang="ts">
 import { useLocalePath } from '~/composables/compat'
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, PropType } from 'vue'
+import { MetaGridEntry } from '@schneefux/klicker/types'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 
 export default defineComponent({
   props: {
-    brawler: {
-      type: String,
+    row: {
+      type: Object as PropType<MetaGridEntry>,
       required: true
     },
-    ally: {
-      type: String,
-    },
-    starpowerName: {
-      type: String,
-    },
-    starpowerId: {
-      type: String,
-    },
-    gadgetName: {
-      type: String,
-    },
-    gadgetId: {
-      type: String,
-    },
     captioned: {
-      type: Boolean
+      type: Boolean,
     },
   },
   setup(props) {
     const localePath = useLocalePath()
-    const brawlerBrawlerId = computed(() => brawlerId({ name: props.brawler }))
-    const brawlerBrawlerName = computed(() => capitalizeWords(props.brawler.toLowerCase()))
-    const brawlerAllyId = computed(() => props.ally != undefined ? brawlerId({ name: props.ally }) : undefined)
-    const brawlerAllyName = computed(() => props.ally != undefined ? capitalizeWords(props.ally.toLowerCase()) : undefined)
+
+    // for dimension rendering: swap brawler and ally/enemy so that the ally/enemy will be large
+    const brawler = computed(() => {
+      if (props.row.metricsRaw.brawler != undefined) {
+        return props.row.metricsRaw.brawler as string
+      }
+      if (props.row.dimensionsRaw.enemy != undefined) {
+        return props.row.dimensionsRaw.enemy.enemy
+      }
+      if (props.row.dimensionsRaw.ally != undefined) {
+        return props.row.dimensionsRaw.ally.ally
+      }
+      if (props.row.dimensionsRaw.brawler != undefined) {
+        return props.row.dimensionsRaw.brawler.brawler
+      }
+      if (props.row.dimensionsRaw.starpower != undefined) {
+        return props.row.dimensionsRaw.starpower.brawler
+      }
+      if (props.row.dimensionsRaw.gadget != undefined) {
+        return props.row.dimensionsRaw.gadget.brawler
+      }
+      return ''
+    })
+
+    const ally = computed(() => {
+      if (props.row.dimensionsRaw.ally != undefined || props.row.dimensionsRaw.enemy != undefined) {
+        return props.row.dimensionsRaw.brawler.brawler
+      }
+      return undefined
+    })
+
+    const brawlerBrawlerId = computed(() => brawlerId({ name: brawler.value }))
+    const brawlerBrawlerName = computed(() => capitalizeWords(brawler.value.toLowerCase()))
+    const brawlerAllyId = computed(() => ally.value != undefined ? brawlerId({ name: ally.value }) : undefined)
+    const brawlerAllyName = computed(() => ally.value != undefined ? capitalizeWords(ally.value.toLowerCase()) : undefined)
     const link = computed(() => localePath(`/tier-list/brawler/${brawlerBrawlerId.value}`))
-    const title = computed(() => props.starpowerName || props.gadgetName || capitalizeWords(props.brawler.toLowerCase()))
+    const title = computed(() => props.row.dimensions.starpower || props.row.dimensions.gadget || capitalizeWords(brawler.value.toLowerCase()))
+    const starpowerName = computed(() => props.row.dimensions.starpower)
+    const starpowerId = computed(() => props.row.dimensionsRaw.starpower?.starpower)
+    const gadgetName = computed(() => props.row.dimensions.gadget)
+    const gadgetId = computed(() => props.row.dimensionsRaw.gadget?.gadget)
 
     return {
       link,
       title,
+      brawler,
+      ally,
+      starpowerName,
+      starpowerId,
+      gadgetName,
+      gadgetId,
       brawlerAllyId,
       brawlerAllyName,
       brawlerBrawlerId,

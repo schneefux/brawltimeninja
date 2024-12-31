@@ -17,15 +17,24 @@
                 ref="heading"
                 class="font-normal text-sm text-left pt-2 pb-1 pr-3 border-r border-gray-600 whitespace-nowrap w-0"
               >{{ dimensionName }}</th>
-              <d-auto
+              <!-- allow to skip d-auto and provide the renderer directly for improved performance -->
+              <slot
+                name="heading"
                 v-for="title in headings.slice(page * pageSize, (page + 1) * pageSize)"
                 :key="title.id"
-                :ref="el => setItemRef(title.id, el as any)"
+                :set-item-ref="el => setItemRef(title.id, el as any)"
                 :response="response"
                 :row="title.entry"
-                tag="td"
-                class="text-center pt-2 pb-1 pl-3"
-              ></d-auto>
+                clazz="text-center pt-2 pb-1 pl-3"
+              >
+                <d-auto
+                  :ref="el => setItemRef(title.id, (el as any)?.$el)"
+                  :response="response"
+                  :row="title.entry"
+                  tag="td"
+                  class="text-center pt-2 pb-1 pl-3"
+                ></d-auto>
+              </slot>
             </tr>
 
             <tr
@@ -139,8 +148,8 @@ export default defineComponent({
 
     const wrapperRef = useTemplateRef<HTMLElement>('wrapper')
     const headingRef = useTemplateRef<HTMLElement>('heading')
-    const itemRefs = ref<Record<string, InstanceType<typeof DAuto>|null>>({})
-    const setItemRef = (id: string, el: InstanceType<typeof DAuto>|null) => itemRefs.value[id] = el
+    const itemRefs = ref<Record<string, HTMLElement|null>>({})
+    const setItemRef = (id: string, el: HTMLElement|null) => itemRefs.value[id] = el
     const page = ref(0)
     const pageSize = ref(headings.value.length)
 
@@ -149,14 +158,13 @@ export default defineComponent({
         return pageSize.value
       }
 
-      const firstItem = Object.values(itemRefs.value)
+      const firstItemElement = Object.values(itemRefs.value)
         .find(v => v != undefined)
 
-      if (firstItem == undefined) {
+      if (firstItemElement == undefined) {
         return pageSize.value
       }
 
-      const firstItemElement = firstItem.$el
       const pxPerItem = firstItemElement.getBoundingClientRect().width
 
       const pxForHeader = headingRef.value.getBoundingClientRect().width

@@ -11,8 +11,8 @@ export const dimensionRenderers: DimensionRendererSpec[] = [{
   replacesDimensionIds: ['map'],
 }, {
   name: 'Brawler',
-  component: 'd-brawler',
-  import: defineAsyncComponent(() => import('~/components/klicker/d-brawler.vue')),
+  component: 'md-brawler',
+  import: defineAsyncComponent(() => import('~/components/klicker/md-brawler.vue')),
   applicable(dimension) {
     return dimension.some(d => d.id == 'brawler' || d.id == 'starpower' || d.id == 'gadget')
   },
@@ -61,8 +61,8 @@ export const dimensionRenderers: DimensionRendererSpec[] = [{
 
 export const metricRenderers: MetricRendererSpec[] = [{
   name: 'Brawler',
-  component: 'm-brawler',
-  import: defineAsyncComponent(() => import('~/components/klicker/m-brawler.vue')),
+  component: 'md-brawler',
+  import: defineAsyncComponent(() => import('~/components/klicker/md-brawler.vue')),
   applicable(metrics) {
     return metrics.some(m => m.id == 'brawler')
   },
