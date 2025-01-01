@@ -20,7 +20,7 @@ export const getMapName = (i18n: I18nInstance, id: string|number|undefined, name
     return name
   }
 
-  if (i18n.t(`map.${id}`) != `map.${id}`) {
+  if (i18n.te(`map.${id}`)) {
     return i18n.t(`map.${id}`)
   }
 

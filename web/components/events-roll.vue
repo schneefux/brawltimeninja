@@ -59,7 +59,6 @@ import { computed, defineComponent, PropType, ref } from 'vue'
 import { camelToKebab } from '~/lib/util'
 import { BScrollingList, BTextbox } from '@schneefux/klicker/components'
 import { EventMetadata } from '~/plugins/klicker.service'
-import { getMapName } from '~/composables/map'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
@@ -85,15 +84,7 @@ export default defineComponent({
     const nameFilter = ref('')
 
     const i18n = useI18n()
-    const filteredEvents = computed(() =>
-      props.events.filter(e => {
-        if (nameFilter.value == '') {
-          return true
-        }
-
-        const mapName = getMapName(i18n, e.id, e.map) ?? ''
-        return mapName.toLowerCase().includes(nameFilter.value.toLowerCase())
-      })
+    const filteredEvents = computed(() => props.events
       .map(e => ({
         ...e,
         slices: {
@@ -102,6 +93,13 @@ export default defineComponent({
         },
         icon: `/modes/${camelToKebab(e.mode)}/icon`,
       }))
+      .filter(e => {
+        if (nameFilter.value == '') {
+          return true
+        }
+
+        return e.mapTranslated.toLowerCase().includes(nameFilter.value.toLowerCase())
+      })
       .sort((a, b) => {
         // 'all-all' first
         if (a.mode == 'all') {
@@ -121,12 +119,12 @@ export default defineComponent({
           }
           if (a.mode == b.mode) {
             // same mode: sort by map name
-            return getMapName(i18n, a.id, a.map)!.localeCompare(getMapName(i18n, b.id, b.map)!, i18n.locale.value)
+            return a.mapTranslated.localeCompare(b.mapTranslated, i18n.locale.value)
           }
         }
 
         // sort by mode name
-        return (i18n.t('mode.' + a.mode)).localeCompare(i18n.t('mode.' + b.mode), i18n.locale.value)
+        return a.modeTranslated.localeCompare(b.modeTranslated, i18n.locale.value)
       })
     )
 

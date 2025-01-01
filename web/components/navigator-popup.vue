@@ -37,7 +37,6 @@ import { BCard, BNavigator, Fa } from '@schneefux/klicker/components'
 import { defineComponent, computed, useTemplateRef } from 'vue'
 import { useVModel } from '@vueuse/core'
 import { Link } from '@schneefux/klicker/components/ui/b-navigator.vue'
-import { getMapName } from '~/composables/map'
 import { camelToKebab, slugify, tagPattern } from '~/lib/util'
 import { TocEntry } from '~/model/Web'
 import { useAsync, useLocalePath } from '~/composables/compat'
@@ -174,7 +173,7 @@ export default defineComponent({
                 .filter(e => e.mode == m)
                 .map(e => ({
                   id: e.key,
-                  name: getMapName(i18n, e.id, e.map)!,
+                  name: e.mapTranslated,
                   target: localePath(`/tier-list/mode/${camelToKebab(m)}/map/${slugify(e.map)}`),
                   children: mapViewTabs.map(tab => ({
                     id: `${e.key}#${tab}`,

@@ -6,13 +6,14 @@ import { differenceInMinutes, parseISO, subWeeks } from "date-fns"
 import { computed, MaybeRef, ref, unref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useAsync, useApi } from "./compat"
+import { getMapName } from "./map"
 
 export function useAllEvents(slices: MaybeRef<SliceValue> = ref({})) {
   const $klicker = useKlicker()
   const i18n = useI18n()
   const key = computed(() => `active-events-${JSON.stringify(unref(slices))}`)
 
-  const events = useAsync<EventMetadata[]>(async () => {
+  const events = useAsync<Omit<EventMetadata, 'modeTranslated'|'mapTranslated'>[]>(async () => {
     const data = await $klicker.query({
       cubeId: 'map',
       dimensionsIds: ['mode', 'map'],
@@ -37,13 +38,17 @@ export function useAllEvents(slices: MaybeRef<SliceValue> = ref({})) {
   }, key)
 
   return computed(() => (events.value ?? [])
-    .slice()
+    .map(e => ({
+      ...e,
+      mapTranslated: getMapName(i18n, e.id, e.map) ?? '',
+      modeTranslated: i18n.t('mode.' + e.mode),
+    }))
     .sort((a, b) => {
-      const sortMode = i18n.t('mode.' + a.mode).localeCompare(i18n.t('mode.' + b.mode), i18n.locale.value)
+      const sortMode = a.modeTranslated.localeCompare(b.modeTranslated, i18n.locale.value)
       if (sortMode != 0) {
         return sortMode
       }
-      return i18n.t('map.' + a.id).localeCompare(i18n.t('map.' + b.id), i18n.locale.value)
+      return a.mapTranslated.localeCompare(b.mapTranslated, i18n.locale.value)
     })
   )
 }
@@ -51,9 +56,10 @@ export function useAllEvents(slices: MaybeRef<SliceValue> = ref({})) {
 export function useActiveEvents(metricsIds: MaybeRef<string[]> = ref([]), slices: MaybeRef<SliceValue> = ref({}), maxage: number|null = 60) {
   const $klicker = useKlicker()
   const $api = useApi()
+  const i18n = useI18n()
   const key = computed(() => `active-events-${unref(metricsIds).join('-')}-${JSON.stringify(unref(slices))}-${maxage}`)
 
-  const lastEvents = useAsync<EventMetadata[]>(async () => {
+  const lastEvents = useAsync<Omit<EventMetadata, 'modeTranslated'|'mapTranslated'>[]>(async () => {
     const data = await $klicker.query({
       cubeId: 'map',
       dimensionsIds: ['mode', 'map', 'powerplay'],
@@ -89,6 +95,8 @@ export function useActiveEvents(metricsIds: MaybeRef<string[]> = ref([]), slices
       ...e,
       start: brawlifyEvent?.start,
       end: brawlifyEvent?.end,
+      mapTranslated: getMapName(i18n, e.id, e.map) ?? '',
+      modeTranslated: i18n.t('mode.' + e.mode),
     }
   }) ?? [])
 }
@@ -143,7 +151,12 @@ export function useAllModes() {
 
   return computed(() => (modes.value ?? [])
     .slice()
-    .sort((a, b) => i18n.t('mode.' + a).localeCompare(i18n.t('mode.' + b), i18n.locale.value))
+    .map(m => ({
+      mode: m,
+      translated: i18n.t('mode.' + m),
+    }))
+    .sort((a, b) => a.translated.localeCompare(b.translated, i18n.locale.value))
+    .map(m => m.mode)
   )
 }
 

@@ -100,7 +100,6 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { SliceValue, SliceValueUpdateListener } from '@schneefux/klicker/types'
-import { getMapName } from '~/composables/map'
 import { BFakeSelect, BLightbox, BButton } from '@schneefux/klicker/components'
 import { EventMetadata } from '~/plugins/klicker.service'
 import { useActiveEvents, useAllEvents } from '~/composables/dimension-values'
@@ -147,8 +146,10 @@ export default defineComponent({
         [{
           key: 'all',
           id: '0',
-          map: i18n.t('option.all-modes'),
+          map: 'all',
+          mapTranslated: i18n.t('option.all-maps'),
           mode: 'all',
+          modeTranslated: i18n.t('option.all-modes'),
           powerplay: false,
           metrics: {},
           active: false,
@@ -156,8 +157,10 @@ export default defineComponent({
         modes.map(m => ({
           key: `all-mode-${m}`,
           id: '0',
-          map: i18n.t('option.all-maps'),
+          map: 'all',
+          mapTranslated: i18n.t('option.all-maps'),
           mode: m,
+          modeTranslated: i18n.t('mode.' + m),
           powerplay: false,
           metrics: {},
           active: false,
@@ -175,10 +178,7 @@ export default defineComponent({
         return undefined
       }
 
-      return maps.map(m => {
-        const mapRecord = allEvents.value?.find(e => e.map == m)
-        return getMapName(i18n, mapRecord?.id, m)
-      }).join(', ')
+      return maps.map(m => allEvents.value?.find(e => e.map == m)?.mapTranslated ?? m).join(', ')
     })
 
     const onSelectModeMap = (value: { mode?: string, map?: string }) => {

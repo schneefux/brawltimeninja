@@ -92,12 +92,12 @@ import { computed, defineComponent, useTemplateRef } from 'vue'
 import { useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { formatAsJsonLd, unformatMode } from '~/lib/util'
-import { ActiveEvent } from '~/model/Api'
 import { useTrackScroll } from '~/composables/gtag'
 import { BPageSection, BScrollSpy } from '@schneefux/klicker/components'
 import { useAllEvents } from '~/composables/dimension-values'
 import { useCurrentAndUpcomingEvents } from '~/composables/events'
 import { useI18n } from 'vue-i18n'
+import { EventMetadata } from '~/plugins/klicker.service'
 
 export default defineComponent({
   directives: {
@@ -120,13 +120,13 @@ export default defineComponent({
 
     useCacheHeaders()
     useMeta(() => {
-      const structuredData = (<ActiveEvent[]>[]).concat(current.value, upcoming.value)
+      const structuredData = (<EventMetadata[]>[]).concat(current.value, upcoming.value)
         .map((event) => ({
           type: 'application/ld+json',
           innerHTML: formatAsJsonLd({
             id: event.id,
-            map: (i18n.te(`map.${event.id}`) && i18n.t(`map.${event.id}`) || event.map),
-            mode: i18n.t('mode.' + event.mode),
+            map: event.mapTranslated,
+            mode: event.modeTranslated,
             start: event.start,
             end: event.end,
           }, $config.mediaUrl),

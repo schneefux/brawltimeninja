@@ -60,9 +60,14 @@ export default defineComponent({
       return modesIds.value?.map(m => ({
         id: m,
         slug: camelToKebab(m),
-      })).sort((a, b) => {
-        const aHasEvent = events.value?.some(e => e.mode == a.id)
-        const bHasEvent = events.value?.some(e => e.mode == b.id)
+      }))
+      .map(m => ({
+        mode: m,
+        translated: i18n.t('mode.' + m.id),
+      }))
+      .sort((a, b) => {
+        const aHasEvent = events.value?.some(e => e.mode == a.mode.id)
+        const bHasEvent = events.value?.some(e => e.mode == b.mode.id)
 
         if (aHasEvent && !bHasEvent) {
           return -1
@@ -71,8 +76,9 @@ export default defineComponent({
           return +1
         }
 
-        return (i18n.t('mode.' + a.id)).localeCompare(i18n.t('mode.' + b.id), i18n.locale.value)
+        return a.translated.localeCompare(b.translated, i18n.locale.value)
       })
+      .map(m => m.mode)
     })
 
     return {

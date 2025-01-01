@@ -299,8 +299,8 @@ export default defineComponent({
           type: 'application/ld+json',
           innerHTML: formatAsJsonLd({
             id: event.id.toString(),
-            map: (i18n.te(`map.${event.id}`) && i18n.t(`map.${event.id}`) || event.map),
-            mode: i18n.t('mode.' + event.mode),
+            map: event.mapTranslated,
+            mode: event.modeTranslated,
             start: event.start,
             end: event.end,
           }, $config.mediaUrl),

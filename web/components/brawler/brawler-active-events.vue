@@ -35,7 +35,6 @@ import { BScrollingList } from '@schneefux/klicker/components'
 import { BrawlerMetadata, useActiveEvents } from '~/composables/dimension-values'
 import { useI18n } from 'vue-i18n'
 import { PropType } from 'vue'
-import { getMapName } from '~/composables/map'
 
 export default defineComponent({
   components: {
@@ -66,10 +65,7 @@ export default defineComponent({
 
       const bestEvents = events.value.slice().sort((e1, e2) => (e2.metrics.winRateAdj as number) - (e1.metrics.winRateAdj as number))
 
-      const formatEvent = (r: EventMetadata) => {
-        const mapName = getMapName(i18n, r.id, r.map)
-        return `${i18n.t('mode.' + r.mode)} - ${mapName}`
-      }
+      const formatEvent = (r: EventMetadata) => `${r.modeTranslated} - ${r.mapTranslated}`
 
       const bestMaps = formatList(bestEvents.filter(e => !isSpecialEvent(e.mode)).slice(0, 2).map(formatEvent))
       const viableMaps = bestEvents.filter(e => (<any>e).winRateAdj > 0.55).length

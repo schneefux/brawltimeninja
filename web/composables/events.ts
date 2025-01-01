@@ -4,8 +4,11 @@ import { EventMetadata } from "~/plugins/klicker.service"
 import { computed } from "vue"
 import { useApi, useAsync } from "./compat"
 import { useAllEvents } from "./dimension-values"
+import { getMapName } from "./map"
+import { useI18n } from "vue-i18n"
 
 export function useCurrentAndUpcomingEvents() {
+  const i18n = useI18n()
   const $api = useApi()
 
   const events = useAsync(() => $api.events.active.query().catch(() => ({ current: [], upcoming: [] })), 'events')
@@ -23,7 +26,9 @@ export function useCurrentAndUpcomingEvents() {
     .map(e => ({
       id: e.id,
       map: e.map,
+      mapTranslated: getMapName(i18n, e.id, e.map) ?? '',
       mode: e.mode,
+      modeTranslated: i18n.t('mode.' + e.mode),
       key: `${e.id}-${e.mode}-${e.map}`,
       metrics: {},
       powerplay: false,
@@ -38,7 +43,9 @@ export function useCurrentAndUpcomingEvents() {
     .map(e => ({
       id: e.id,
       map: e.map,
+      mapTranslated: getMapName(i18n, e.id, e.map) ?? '',
       mode: unformatMode(e.mode),
+      modeTranslated: i18n.t('mode.' + unformatMode(e.mode)),
       key: `${e.id}-${e.mode}-${e.map}`,
       metrics: {},
       powerplay: false,

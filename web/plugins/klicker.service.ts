@@ -12,7 +12,9 @@ export interface EventMetadata {
   key: string
   id: string
   map: string
+  mapTranslated: string
   mode: string
+  modeTranslated: string
   start?: string
   end?: string
   powerplay: boolean

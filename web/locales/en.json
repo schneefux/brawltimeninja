@@ -604,6 +604,7 @@
     "mode.trioShowdown": "Trio Showdown",
     "mode.knockout5V5": "Knockout 5v5",
     "mode.brawlBall5V5": "Brawl Ball 5v5",
+    "mode.brawlBall5v5": "Brawl Ball 5v5",
     "mode.zombiePlunder": "Zombie Plunder",
     "profile.tracking.label": "Automatic Tracking",
     "profile.tracking.status.active": "Active",
@@ -653,5 +654,6 @@
     "metric.highestRank": "Highest Rank",
     "metric.masteryPoints": "Mastery Points",
     "mode.wipeout5V5": "Wipeout 5v5",
-    "mode.paintBrawl": "Paint Brawl"
+    "mode.paintBrawl": "Paint Brawl",
+    "mode.spiritWars": "Spirit Wars"
 }
