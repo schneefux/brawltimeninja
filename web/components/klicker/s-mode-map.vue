@@ -3,8 +3,8 @@
     <b-fake-select @open="lightboxOpen = true">
       <template v-slot:preview>
         <span class="w-48 text-left truncate">
-          <template v-if="selectedActiveNonRankedMaps">{{ $t('option.all-maps') }}: {{ $t('events.active.title') }}</template>
-          <template v-else-if="selectedActiveRankedMaps">{{ $t('option.all-maps') }}: {{ $t('events.ranked.title') }}</template>
+          <template v-if="activeNonRankedEventsAvailable && selectedActiveNonRankedMaps">{{ $t('option.all-maps') }}: {{ $t('events.active.title') }}</template>
+          <template v-else-if="activeRankedEventsAvailable && selectedActiveRankedMaps">{{ $t('option.all-maps') }}: {{ $t('events.ranked.title') }}</template>
           <template v-else>{{ mode != undefined ? $t('mode.' + mode) + ' - ' : '' }}{{ mapNames ?? $t('option.all-maps') }}</template>
         </span>
       </template>
