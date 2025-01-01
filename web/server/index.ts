@@ -144,7 +144,7 @@ async function startServer() {
     if (!httpResponse) {
       return next()
     }
-    let { statusCode, headers, earlyHints, body, contentType } = httpResponse
+    let { statusCode, headers, earlyHints, body } = httpResponse
     /*
     // early hints are not supported by nginx - hang the request with http2 (https://forum.nginx.org/read.php?10,293049)
     if (res.writeEarlyHints) {
@@ -154,7 +154,7 @@ async function startServer() {
     }
     */
 
-    if (contentType == 'text/html;charset=utf-8') {
+    if (headers.some(([h, v]) => h == 'Content-Type' && v == 'text/html;charset=utf-8')) {
       try {
         body = optimizeHead(body)
       } catch (e) {

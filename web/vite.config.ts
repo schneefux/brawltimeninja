@@ -21,6 +21,7 @@ const config: UserConfig = {
       config: {
         build: {
           ssr: true,
+          cssTarget: "chrome61", // https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979
         },
       },
     },
