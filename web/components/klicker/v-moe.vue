@@ -1,9 +1,7 @@
 <template>
-  <v-card-wrapper
-    :card="card != undefined && { ...card, title: $t('metric.margin-of-error') }"
-    :loading="loading"
-    component="v-moe"
-    wrapper="b-bigstat"
+  <component
+    :is="vwrapper.is"
+    v-bind="vwrapper.props"
   >
     <template v-slot:content>
       <p class="flex items-center">
@@ -20,25 +18,27 @@
         </span>
       </p>
     </template>
-  </v-card-wrapper>
+  </component>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { CubeResponse } from '@schneefux/klicker/types'
-import { VCardWrapper } from '@schneefux/klicker/components'
 import { VisualisationProps } from '@schneefux/klicker/props'
 import { calculateMoe, rateMoe } from '~/lib/util'
 import { useAllBrawlersCount } from '~/composables/dimension-values'
+import { useVWrapper, vwrappers } from '@schneefux/klicker/composables'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
-    VCardWrapper,
+    ...vwrappers,
   },
   props: {
     ...VisualisationProps,
   },
   setup(props) {
+    const i18n = useI18n()
     const brawlersCount = useAllBrawlersCount()
 
     const moe = computed((): number => {
@@ -50,7 +50,12 @@ export default defineComponent({
     const moePercent = computed((): string => (moe.value * 100).toFixed(2) + '%')
     const moeRating = computed(() => rateMoe(moe.value))
 
+    const vwrapper = useVWrapper(computed(() =>
+      props.card != undefined && ({ ...props.card, title: i18n.t('metric.margin-of-error') })
+    ), computed(() => props.loading), 'b-bigstat')
+
     return {
+      vwrapper,
       moe,
       moeRating,
       moePercent,

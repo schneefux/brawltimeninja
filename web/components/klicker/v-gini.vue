@@ -1,9 +1,7 @@
 <template>
-  <v-card-wrapper
-    :card="card != undefined ? { ...card, title: $t('metric.balance-rating'), tooltipLink: '/faq/measuring-map-quality' } : undefined"
-    :loading="loading"
-    component="v-gini"
-    wrapper="b-bigstat"
+  <component
+    :is="vwrapper.is"
+    v-bind="vwrapper.props"
   >
     <template v-slot:content>
       <p>
@@ -20,19 +18,19 @@
         </span>
       </p>
     </template>
-  </v-card-wrapper>
+  </component>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { VCardWrapper } from '@schneefux/klicker/components'
 import { VisualisationProps } from '@schneefux/klicker/props'
 import { useI18n } from 'vue-i18n'
 import { calculateGini } from '~/lib/util'
+import { useVWrapper, vwrappers } from '@schneefux/klicker/composables'
 
 export default defineComponent({
   components: {
-    VCardWrapper,
+    ...vwrappers,
   },
   props: {
     ...VisualisationProps,
@@ -62,7 +60,12 @@ export default defineComponent({
       i18n.t('rating.excellence.0'),
     ]
 
+    const vwrapper = useVWrapper(computed(() =>
+      props.card != undefined && ({ ...props.card, title: i18n.t('metric.balance-rating'), tooltipLink: '/faq/measuring-map-quality' })
+    ), computed(() => props.loading), 'b-bigstat')
+
     return {
+      vwrapper,
       giniScore,
       giniScoreWords,
     }

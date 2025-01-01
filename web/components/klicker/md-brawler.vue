@@ -1,6 +1,6 @@
 <template>
-  <router-link
-    :to="link"
+  <a
+    :href="href"
     :title="title"
     @click.stop
   >
@@ -47,7 +47,7 @@
         class="ml-2 leading-none"
       >{{ brawlerAllyName || starpowerName || gadgetName || brawlerBrawlerName }}</figcaption>
     </figure>
-  </router-link>
+  </a>
 </template>
 
 <script lang="ts">
@@ -55,6 +55,7 @@ import { useLocalePath } from '~/composables/compat'
 import { defineComponent, computed, PropType } from 'vue'
 import { MetaGridEntry } from '@schneefux/klicker/types'
 import { brawlerId, capitalizeWords } from '~/lib/util'
+import { useLink } from 'vue-router'
 
 export default defineComponent({
   props: {
@@ -110,8 +111,11 @@ export default defineComponent({
     const gadgetName = computed(() => props.row.dimensions.gadget)
     const gadgetId = computed(() => props.row.dimensionsRaw.gadget?.gadget)
 
+    // render <a> directly to improve performance
+    const { href } = useLink({ to: link })
+
     return {
-      link,
+      href,
       title,
       brawler,
       ally,

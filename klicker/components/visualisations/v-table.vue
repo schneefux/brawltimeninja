@@ -1,8 +1,7 @@
 <template>
-  <v-card-wrapper
-    :card="card"
-    :loading="loading"
-    component="v-table"
+  <component
+    :is="vwrapper.is"
+    v-bind="vwrapper.props"
   >
     <template v-slot:content>
       <div class="h-full relative">
@@ -47,7 +46,7 @@
         <fa :icon="faExternalLinkAlt"></fa>
       </router-link>
     </template>
-  </v-card-wrapper>
+  </component>
 </template>
 
 <script lang="ts">
@@ -55,12 +54,12 @@ import { VisualisationProps } from '../../props'
 import BTable, { Column } from '../ui/b-table.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, toRef } from 'vue'
 import Fa from '../fa.vue'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { useCubeResponseProps } from '../../composables/response'
-import VCardWrapper from './v-card-wrapper.vue'
 import { useKlickerConfig } from '../../composables/klicker'
+import { useVWrapper, vwrappers } from '../../composables/vwrapper'
 
 export default defineComponent({
   components: {
@@ -68,7 +67,7 @@ export default defineComponent({
     BTable,
     DAuto,
     MAuto,
-    VCardWrapper,
+    ...vwrappers,
   },
   props: {
     ...VisualisationProps,
@@ -130,7 +129,10 @@ export default defineComponent({
       }
     })
 
+    const vwrapper = useVWrapper(toRef(props, 'card'), toRef(props, 'loading'))
+
     return {
+      vwrapper,
       rows,
       columns,
       linkWithParams,

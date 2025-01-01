@@ -1,8 +1,7 @@
 <template>
-  <v-card-wrapper
-    :card="card"
-    :loading="loading"
-    component="v-bigstats"
+  <component
+    :is="vwrapper.is"
+    v-bind="vwrapper.props"
   >
     <template v-slot:content>
       <b-kv-table
@@ -42,28 +41,28 @@
         </template>
       </b-kv-table>
     </template>
-  </v-card-wrapper>
+  </component>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, toRef } from 'vue'
 import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import BKvTable, { Row } from '../ui/b-kv-table.vue'
-import VCardWrapper from './v-card-wrapper.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
 import { useKlickerConfig } from '../../composables/klicker'
+import { useVWrapper, vwrappers } from '../../composables/vwrapper'
 
 /**
  * Table visualisation with metrics on the Y axis and a single value on the X axis
  */
 export default defineComponent({
   components: {
-    VCardWrapper,
     BKvTable,
     DAuto,
     MAuto,
+    ...vwrappers,
   },
   name: 'VKvTable',
   props: {
@@ -94,7 +93,10 @@ export default defineComponent({
 
     const data = computed(() => props.response.data[0])
 
+    const vwrapper = useVWrapper(toRef(props, 'card'), toRef(props, 'loading'))
+
     return {
+      vwrapper,
       metrics,
       rows,
       data,

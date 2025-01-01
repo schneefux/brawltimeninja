@@ -7,6 +7,8 @@ import BBigstat from '../ui/b-bigstat.vue'
 /**
  * Visualisation component that wraps another one in a <b-card>, if the card prop is set.
  * Should be used internally to build visualisation components.
+ *
+ * @deprecated use useVWrapper instead for better performance
  */
 export default defineComponent({
   components: {

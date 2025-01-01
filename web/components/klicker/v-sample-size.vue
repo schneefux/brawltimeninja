@@ -1,9 +1,7 @@
 <template>
-  <v-card-wrapper
-    :card="card != undefined && { ...card, title: $t('metric.sample-size') }"
-    :loading="loading"
-    component="v-sample-size"
-    wrapper="b-bigstat"
+  <component
+    :is="vwrapper.is"
+    v-bind="vwrapper.props"
   >
     <template v-slot:content>
       <p
@@ -16,25 +14,27 @@
         {{ $t('sample-size', { count: sampleFormatted }) }}
       </p>
     </template>
-  </v-card-wrapper>
+  </component>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { CubeResponse } from '@schneefux/klicker/types'
 import { formatSI } from '~/lib/util'
-import { VCardWrapper } from '@schneefux/klicker/components'
 import { useCubeResponseProps } from '@schneefux/klicker/composables'
 import { VisualisationProps } from '@schneefux/klicker/props'
+import { useVWrapper, vwrappers } from '@schneefux/klicker/composables'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: {
-    VCardWrapper,
+    ...vwrappers,
   },
   props: {
     ...VisualisationProps,
   },
   setup(props) {
+    const i18n = useI18n()
     const { switchResponse } = useCubeResponseProps(props)
 
     const sample = computed(() => (<CubeResponse> props.response).data.reduce((agg, e) => agg + (e.metricsRaw.picks as number), 0))
@@ -52,7 +52,12 @@ export default defineComponent({
       })
     })
 
+    const vwrapper = useVWrapper(computed(() =>
+      props.card != undefined && ({ ...props.card, title: i18n.t('metric.sample-size') })
+    ), computed(() => props.loading), 'b-bigstat')
+
     return {
+      vwrapper,
       sample,
       sampleFormatted,
     }

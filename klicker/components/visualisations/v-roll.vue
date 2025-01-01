@@ -1,8 +1,7 @@
 <template>
-  <v-card-wrapper
-    :card="card"
-    :loading="loading"
-    component="v-roll"
+  <component
+    :is="vwrapper.is"
+    v-bind="vwrapper.props"
   >
     <template v-slot:content>
       <div
@@ -68,19 +67,19 @@
         ></b-paginator>
       </div>
     </template>
-  </v-card-wrapper>
+  </component>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch, nextTick, getCurrentInstance, useTemplateRef } from 'vue'
+import { computed, defineComponent, ref, watch, nextTick, useTemplateRef, toRef } from 'vue'
 import { VisualisationProps } from '../../props'
 import { useCubeResponseProps } from '../../composables/response'
 import BPaginator from '../ui/b-paginator.vue'
-import VCardWrapper from './v-card-wrapper.vue'
 import DAuto from './d-auto.vue'
 import MAuto from './m-auto.vue'
 import { useResizeObserver } from '@vueuse/core'
 import { useKlickerConfig } from '../../composables/klicker'
+import { useVWrapper, vwrappers } from '../../composables/vwrapper'
 
 /**
  * Table visualisation that renders rows on the X axis
@@ -89,9 +88,9 @@ export default defineComponent({
   name: 'VRoll',
   components: {
     BPaginator,
-    VCardWrapper,
     DAuto,
     MAuto,
+    ...vwrappers,
   },
   props: {
     ...VisualisationProps,
@@ -209,9 +208,12 @@ export default defineComponent({
       updatePageSize()
     })
 
+    const vwrapper = useVWrapper(toRef(props, 'card'), toRef(props, 'loading'))
+
     // TODO assumes d-auto / m-auto do not change - might want to add a mutation observer
 
     return {
+      vwrapper,
       page,
       pageSize,
       headings,

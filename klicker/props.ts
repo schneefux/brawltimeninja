@@ -1,7 +1,7 @@
 import { PropType } from 'vue'
 import { CubeComparingResponse, CubeResponse } from './types'
 
-type CardProps = Partial<{
+export type CardProps = Partial<{
   // TODO infer these
   tag: string
   link: string
@@ -20,7 +20,7 @@ type CardProps = Partial<{
   noFilter: boolean
 }>
 
-type BigstatProps = Partial<{
+export type BigstatProps = Partial<{
   title: string
   value: number|string
   tooltip: string
