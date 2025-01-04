@@ -79,6 +79,11 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
         return null
       }
 
+      // ignore errors originating from ad manager script
+      if (error && error.stack && error.stack.includes('hb.vntsm.com')) {
+        return null
+      }
+
       return event
     },
   })
