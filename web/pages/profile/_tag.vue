@@ -149,29 +149,6 @@
 
     <ad lazy></ad>
 
-    <b-page-section
-      v-if="player != undefined && modeForSurvey != undefined"
-      id="survey"
-      ref="surveySection"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('survey'),
-        once: true,
-      }"
-      :title="$t('player.survey.title')"
-      lazy
-    >
-      <p class="mt-4 prose dark:prose-invert w-full">
-        {{ $t('player.survey.description') }}
-      </p>
-
-      <survey-card
-        :player="player"
-        :mode="modeForSurvey"
-        class="mt-8"
-        @interact="trackInteraction('survey')"
-      ></survey-card>
-    </b-page-section>
-
     <template
       v-if="player == undefined || player.battles.length > 0"
     >
@@ -314,6 +291,29 @@
         ></quiz-card>
       </client-only>
     </b-page-section>
+
+    <b-page-section
+      v-if="player != undefined && modeForSurvey != undefined"
+      id="survey"
+      ref="surveySection"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('survey'),
+        once: true,
+      }"
+      :title="$t('player.survey.title')"
+      lazy
+    >
+      <p class="mt-4 prose dark:prose-invert w-full">
+        {{ $t('player.survey.description') }}
+      </p>
+
+      <survey-card
+        :player="player"
+        :mode="modeForSurvey"
+        class="mt-8"
+        @interact="trackInteraction('survey')"
+      ></survey-card>
+    </b-page-section>
   </split-page>
 </template>
 
@@ -408,10 +408,6 @@ export default defineComponent({
       title: i18n.t('brawler', 2),
       element: sectionRefs.brawlersSection.value?.$el,
     }, {
-      id: 'survey',
-      title: i18n.t('player.survey.title'),
-      element: sectionRefs.surveySection.value?.$el,
-    }, {
       id: 'battles',
       title: i18n.t('battle-log'),
       element: sectionRefs.battlesSection.value?.$el,
@@ -431,6 +427,10 @@ export default defineComponent({
       id: 'quiz',
       title: i18n.t('player.quiz.title'),
       element: sectionRefs.quizSection.value?.$el,
+    }, {
+      id: 'survey',
+      title: i18n.t('player.survey.title'),
+      element: sectionRefs.surveySection.value?.$el,
     }])
 
     const playerTotalsFallback = computed(() => {
