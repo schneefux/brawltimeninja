@@ -9,12 +9,10 @@
     >
       <b-bigstat :title="progression.metric">
         <template v-slot:content>
-          <!-- TODO refactor progress into klicker component -->
-          <progress
+          <b-progress
             :max="progression.max"
             :value="progression.current"
-            class="progress"
-          >{{ Math.floor(100 * progression.current / progression.max) }}%</progress>
+          ></b-progress>
           <img
             :src="progression.icon"
             :alt="progression.metric"
@@ -34,8 +32,8 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue'
 import { Player } from '~/model/Api'
-import { BScrollingDashboard, BBigstat, BDashboardCell, BKvTable } from '@schneefux/klicker/components'
-import { calculateProgression, calculatePlayerProgression, calculateSeasonEndReward, formatSI } from '~/lib/util'
+import { BScrollingDashboard, BBigstat, BDashboardCell, BKvTable, BProgress } from '@schneefux/klicker/components'
+import { calculateProgression, calculatePlayerProgression, formatSI } from '~/lib/util'
 import { useAllBrawlersWithAllAccessories } from '~/composables/dimension-values'
 import { useI18n } from 'vue-i18n'
 import goldCoinIcon from '~/assets/images/icon/gold_coin.png'
@@ -58,6 +56,7 @@ export default defineComponent({
   components: {
     BBigstat,
     BKvTable,
+    BProgress,
     BDashboardCell,
     BScrollingDashboard,
   },
@@ -125,17 +124,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.progress {
-  @apply w-full h-3;
-}
-
-.progress::-webkit-progress-bar {
-  @apply rounded-full bg-contrast/10;
-}
-
-.progress::-webkit-progress-value {
-  @apply rounded-full bg-primary-400;
-}
-</style>

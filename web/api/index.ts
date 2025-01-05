@@ -11,6 +11,7 @@ import klickerRouter from './routes/klicker'
 import etag from 'etag'
 import { reportRouter } from './routes/report'
 import { authRouter } from './routes/auth'
+import { surveyRouter } from './routes/survey'
 
 const appRouter = router({
   auth: authRouter,
@@ -19,11 +20,14 @@ const appRouter = router({
   rankings: rankingsRouter,
   events: eventsRouter,
   report: reportRouter,
+  survey: surveyRouter,
 })
 
 export type AppRouter = typeof appRouter
 
 const app = express()
+
+app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal'])
 
 app.use('/render', renderRouter)
 app.use('/klicker', klickerRouter)

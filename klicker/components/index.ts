@@ -31,6 +31,7 @@ export { default as BAppBottomNav } from './ui/b-app-bottom-nav.vue'
 export { default as BSearch } from './ui/b-search.vue'
 export { default as BCookieConsent } from './ui/b-cookie-consent.vue'
 export { default as BRangeSlider } from './ui/b-range-slider.vue'
+export { default as BProgress } from './ui/b-progress.vue'
 
 export { default as VBarplot } from './visualisations/v-barplot.vue'
 export { default as VCsv } from './visualisations/v-csv.vue'

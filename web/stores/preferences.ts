@@ -18,6 +18,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
   const personalityTestResult = ref<string>()
   const installBannerDismissed = ref(false)
   const reviewBannerDismissed = ref(false)
+  const modeSurveyBrawlersSeen = ref<Record<string, string[]>>({})
 
   const state = {
     version,
@@ -27,6 +28,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
     personalityTestResult,
     installBannerDismissed,
     reviewBannerDismissed,
+    modeSurveyBrawlersSeen,
   }
 
   const clone = (obj: any) => JSON.parse(JSON.stringify(obj))
@@ -51,6 +53,14 @@ export const usePreferencesStore = defineStore('preferences', () => {
     trackedPlayers.value = trackedPlayers.value.filter(p => p.tag !== tag)
   }
 
+  function addBrawlersSeenInModeSurvey(mode: string, brawlerSlugs: string[]) {
+    const responses = modeSurveyBrawlersSeen.value[mode] || []
+    modeSurveyBrawlersSeen.value = {
+      ...modeSurveyBrawlersSeen.value,
+      [mode]: [...responses, ...brawlerSlugs],
+    }
+  }
+
   // sync with localstorage
   onMounted(() => {
     const data = JSON.parse(localStorage.getItem('brawlstars-ninja') || '{}')
@@ -61,7 +71,8 @@ export const usePreferencesStore = defineStore('preferences', () => {
     }
     // v10: migration to pinia-plugin-persistedstate
     // v11: added trackedPlayers
-    version.value = 11
+    // v12: added modeSurveyResponses
+    version.value = 12
   })
 
   watch([...Object.values(state)], () => {
@@ -83,6 +94,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
     addLastPlayer,
     addTrackedPlayer,
     removeTrackedPlayer,
+    addBrawlersSeenInModeSurvey,
   }
 })
 

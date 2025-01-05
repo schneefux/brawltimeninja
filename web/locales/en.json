@@ -655,5 +655,9 @@
     "metric.masteryPoints": "Mastery Points",
     "mode.wipeout5V5": "Wipeout 5v5",
     "mode.paintBrawl": "Paint Brawl",
-    "mode.spiritWars": "Spirit Wars"
+    "mode.spiritWars": "Spirit Wars",
+    "player.survey.title": "Survey",
+    "player.survey.description": "Help improve Brawl Time Ninja by answering a few questions.",
+    "player.survey.cta": "Select who is best in {mode}:",
+    "player.survey.thanks": "Thank you for your participation in the survey! Join the Discord server to discuss the results."
 }

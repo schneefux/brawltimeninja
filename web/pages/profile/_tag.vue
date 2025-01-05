@@ -149,6 +149,29 @@
 
     <ad lazy></ad>
 
+    <b-page-section
+      v-if="player != undefined && modeForSurvey != undefined"
+      id="survey"
+      ref="surveySection"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('survey'),
+        once: true,
+      }"
+      :title="$t('player.survey.title')"
+      lazy
+    >
+      <p class="mt-4 prose dark:prose-invert w-full">
+        {{ $t('player.survey.description') }}
+      </p>
+
+      <survey-card
+        :player="player"
+        :mode="modeForSurvey"
+        class="mt-8"
+        @interact="trackInteraction('survey')"
+      ></survey-card>
+    </b-page-section>
+
     <template
       v-if="player == undefined || player.battles.length > 0"
     >
@@ -358,6 +381,7 @@ export default defineComponent({
       quizSection: useTemplateRef<InstanceType<typeof BPageSection>>('quizSection'),
       recordsSection: useTemplateRef<InstanceType<typeof BPageSection>>('recordsSection'),
       battlesSection: useTemplateRef<InstanceType<typeof BPageSection>>('battlesSection'),
+      surveySection: useTemplateRef<InstanceType<typeof BPageSection>>('surveySection'),
       modesSection: useTemplateRef<InstanceType<typeof BPageSection>>('modesSection'),
       brawlersSection: useTemplateRef<InstanceType<typeof BPageSection>>('brawlersSection'),
       progressionSection: useTemplateRef<InstanceType<typeof BPageSection>>('progressSection'),
@@ -383,6 +407,10 @@ export default defineComponent({
       id: 'brawlers',
       title: i18n.t('brawler', 2),
       element: sectionRefs.brawlersSection.value?.$el,
+    }, {
+      id: 'survey',
+      title: i18n.t('player.survey.title'),
+      element: sectionRefs.surveySection.value?.$el,
     }, {
       id: 'battles',
       title: i18n.t('battle-log'),
@@ -459,6 +487,34 @@ export default defineComponent({
       }
     }, computed(() => `player-extra-${playerTag.value}`))
 
+    const modeForSurvey = computed(() => {
+      if (player.value == undefined || player.value.battles.length == 0) {
+        return undefined
+      }
+
+      // last battle was within the last 7 days
+      const lastBattle = player.value.battles[0]
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      if (lastBattle == undefined || lastBattle.timestamp < weekAgo) {
+        return undefined
+      }
+
+      // has unlocked ranked
+      if (player.value.trophies < 1000 && !Object.values(player.value.brawlers).some(brawler => brawler.power >= 9)) {
+        return undefined
+      }
+
+      // return most frequently played mode
+      const modeCounts = player.value.battles.reduce((acc, battle) => {
+        acc[battle.event.mode] = (acc[battle.event.mode] ?? 0) + 1
+        return acc
+      }, {} as Record<string, number>)
+
+      return Object.entries(modeCounts)
+        .sort(([, a], [, b]) => b - a)
+        .map(([mode]) => mode)[0]
+    })
+
     await useLoadAndValidatePlayer('/profile/')
 
     return {
@@ -469,6 +525,7 @@ export default defineComponent({
       makeVisibilityCallback,
       trackInteraction,
       sections,
+      modeForSurvey,
     }
   },
 })
