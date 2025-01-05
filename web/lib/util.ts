@@ -3,12 +3,25 @@ import { parseISO } from "date-fns";
 import { MapMetaMap, ModeMetaMap } from "~/model/MetaEntry";
 
 export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-export const camelToKebab = (s: string) =>
-  s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
-export const kebabToCamel = (s: string) =>
-  s.replace(/([-_][a-z])/ig, ($1) => $1.toUpperCase()
-      .replace('-', '')
-      .replace('_', ''))
+export const camelToKebab = (s: string) => {
+  const kebab = s.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+
+  if (s.endsWith('5V5')) {
+    return kebab.replace('5-v5', '-5v5');
+  }
+  return kebab;
+}
+export const kebabToCamel = (s: string) => {
+  const camel = s.replace(/([-_][a-z])/ig, ($1) => $1.toUpperCase()
+    .replace('-', '')
+    .replace('_', ''))
+
+  if (s.endsWith('-5v5')) {
+    return camel.replace('-5v5', '5V5');
+  }
+  return camel;
+}
+
 export const capitalize = (str: string) => str.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
 export const decapitalizeFirstLetter = (str: string) => str.charAt(0).toLowerCase() + str.slice(1)
 export const capitalizeWords = (str: string) => str.replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase())
