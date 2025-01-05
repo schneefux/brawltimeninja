@@ -29,6 +29,7 @@ export const surveyRouter = router({
         trophies: z.number(),
         brawlersTrophies: z.array(z.object({
           name: z.string(),
+          power: z.number(),
           trophies: z.number(),
         }))
       }),
