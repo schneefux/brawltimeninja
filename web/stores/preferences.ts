@@ -53,11 +53,11 @@ export const usePreferencesStore = defineStore('preferences', () => {
     trackedPlayers.value = trackedPlayers.value.filter(p => p.tag !== tag)
   }
 
-  function addBrawlersSeenInModeSurvey(mode: string, brawlerSlugs: string[]) {
+  function addBrawlersSeenInModeSurvey(mode: string, brawlerIds: string[]) {
     const responses = modeSurveyBrawlersSeen.value[mode] || []
     modeSurveyBrawlersSeen.value = {
       ...modeSurveyBrawlersSeen.value,
-      [mode]: [...responses, ...brawlerSlugs],
+      [mode]: [...responses, ...brawlerIds],
     }
   }
 
@@ -71,7 +71,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
     }
     // v10: migration to pinia-plugin-persistedstate
     // v11: added trackedPlayers
-    // v12: added modeSurveyResponses
+    // v12: added modeSurveyBrawlersSeen
     version.value = 12
   })
 

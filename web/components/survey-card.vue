@@ -35,7 +35,7 @@
           class="text-center flex-1"
           dark
           md
-          @click="vote(choice.slug)"
+          @click="vote(choice.brawlstarsId)"
         >
           <media-img
             :path="`/brawlers/${choice.slug}/avatar`"
@@ -87,8 +87,8 @@ export default defineComponent({
     const api = useApi()
 
     const brawlersNotSeen = computed(() => {
-      const brawlersSeenSlugs = store.modeSurveyBrawlersSeen[props.mode] ?? []
-      return brawlers.value.filter(brawler => !brawlersSeenSlugs.includes(brawler.slug))
+      const brawlersSeenIds = store.modeSurveyBrawlersSeen[props.mode] ?? []
+      return brawlers.value.filter(brawler => !brawlersSeenIds.includes(brawler.brawlstarsId))
     })
 
     const progress = computed(() => 1 - brawlersNotSeen.value.length / brawlers.value.length)
@@ -108,20 +108,21 @@ export default defineComponent({
     const choices = ref<BrawlerMetadata[]>([])
     onMounted(() => generateChoices())
 
-    const vote = async (brawlerSlug: string) => {
-      store.addBrawlersSeenInModeSurvey(props.mode, choices.value.map(choice => choice.slug))
+    const vote = async (brawlerId: string) => {
+      store.addBrawlersSeenInModeSurvey(props.mode, choices.value.map(choice => choice.brawlstarsId))
 
       emit('interact')
 
       await api.survey.vote.mutate({
         tag: props.player.tag.substring(1),
         mode: props.mode,
-        best: brawlerSlug,
-        rest: choices.value.filter(choice => choice.slug != brawlerSlug).map(choice => choice.slug),
+        best: brawlerId,
+        rest: choices.value.filter(choice => choice.brawlstarsId != brawlerId).map(choice => choice.brawlstarsId),
         player: {
           trophies: props.player.trophies,
           brawlersTrophies: Object.values(props.player.brawlers).map(brawler => ({
             name: brawler.name,
+            power: brawler.power,
             trophies: brawler.trophies,
           })),
         },

@@ -135,7 +135,7 @@ declare module 'vue' {
     SPowerplay: typeof import('./components/klicker/s-powerplay.vue')['default']
     SSeason: typeof import('./components/klicker/s-season.vue')['default']
     STrophies: typeof import('./components/klicker/s-trophies.vue')['default']
-    SurveyCard: typeof import('./components/survey/survey-card.vue')['default']
+    SurveyCard: typeof import('./components/survey-card.vue')['default']
     SWithGadget: typeof import('./components/klicker/s-with-gadget.vue')['default']
     SWithStarpower: typeof import('./components/klicker/s-with-starpower.vue')['default']
     TopBrawlersCard: typeof import('./components/top-brawlers-card.vue')['default']
