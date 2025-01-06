@@ -295,30 +295,30 @@
       </client-only>
     </b-page-section>
 
-    <b-page-section
-      v-if="player != undefined && modeForSurvey != undefined"
-      id="survey"
-      ref="surveySection"
-      v-observe-visibility="{
-        callback: makeVisibilityCallback('survey'),
-        once: true,
-      }"
-      :title="$t('player.survey.title')"
-      lazy
-    >
-      <p class="mt-4 prose dark:prose-invert w-full">
-        {{ $t('player.survey.description') }}
-      </p>
+    <client-only>
+      <b-page-section
+        v-if="player != undefined && modeForSurvey != undefined"
+        id="survey"
+        ref="surveySection"
+        v-observe-visibility="{
+          callback: makeVisibilityCallback('survey'),
+          once: true,
+        }"
+        :title="$t('player.survey.title')"
+        lazy
+      >
+        <p class="mt-4 prose dark:prose-invert w-full">
+          {{ $t('player.survey.description') }}
+        </p>
 
-      <client-only>
         <survey-card
           :player="player"
           :mode="modeForSurvey"
           class="mt-8"
           @interact="trackInteraction('survey')"
         ></survey-card>
-      </client-only>
-    </b-page-section>
+      </b-page-section>
+    </client-only>
   </split-page>
 </template>
 
@@ -329,6 +329,7 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
 import { BScrollSpy, BPageSection, BShimmer } from '@schneefux/klicker/components'
 import { PlayerTotals, useBrawlstarsStore } from '~/stores/brawlstars'
+import { usePreferencesStore } from '~/stores/preferences'
 import { useI18n } from 'vue-i18n'
 import { useLoadAndValidatePlayer, usePlayerRender } from '~/composables/player'
 import { useKlicker } from '@schneefux/klicker/composables'
@@ -350,6 +351,7 @@ export default defineComponent({
     const klicker = useKlicker()
 
     const store = useBrawlstarsStore()
+    const preferences = usePreferencesStore()
     const player = computed(() => store.player)
 
     const origin = useSelfOrigin()
@@ -494,6 +496,15 @@ export default defineComponent({
 
     const modeForSurvey = computed(() => {
       if (player.value == undefined || player.value.battles.length == 0) {
+        return undefined
+      }
+
+      if (import.meta.env.SSR) {
+        return undefined
+      }
+
+      // tag was entered manually
+      if (!preferences.lastPlayers.some((p) => p.tag.substring(1) == playerTag.value)) {
         return undefined
       }
 
