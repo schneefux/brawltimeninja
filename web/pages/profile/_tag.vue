@@ -73,6 +73,9 @@
         v-if="player != undefined && playerTotals != undefined"
         class="mt-8 max-w-md"
       ></review-card>
+      <youtube-card
+        class="mt-8 max-w-md"
+      ></youtube-card>
     </b-page-section>
 
     <b-page-section

@@ -18,6 +18,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
   const personalityTestResult = ref<string>()
   const installBannerDismissed = ref(false)
   const reviewBannerDismissed = ref(false)
+  const youtubeBannerDismissed = ref(false)
   const modeSurveyBrawlersSeen = ref<Record<string, string[]>>({})
 
   const state = {
@@ -28,6 +29,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
     personalityTestResult,
     installBannerDismissed,
     reviewBannerDismissed,
+    youtubeBannerDismissed,
     modeSurveyBrawlersSeen,
   }
 
@@ -72,7 +74,8 @@ export const usePreferencesStore = defineStore('preferences', () => {
     // v10: migration to pinia-plugin-persistedstate
     // v11: added trackedPlayers
     // v12: added modeSurveyBrawlersSeen
-    version.value = 12
+    // v13: added youtubeBannerDismissed
+    version.value = 13
   })
 
   watch([...Object.values(state)], () => {

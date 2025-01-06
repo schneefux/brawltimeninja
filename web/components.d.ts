@@ -149,5 +149,6 @@ declare module 'vue' {
     VMoe: typeof import('./components/klicker/v-moe.vue')['default']
     VSampleSize: typeof import('./components/klicker/v-sample-size.vue')['default']
     WebNav: typeof import('./components/web-nav.vue')['default']
+    YoutubeCard: typeof import('./components/youtube-card.vue')['default']
   }
 }
