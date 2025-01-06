@@ -41,7 +41,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useIsApp } from '~/composables/app'
 
 export default defineComponent({
   props: {
@@ -51,12 +50,9 @@ export default defineComponent({
     },
   },
   setup() {
-    const { isApp } = useIsApp()
-
     const feedbackModalOpen = ref(false)
 
     return {
-      isApp,
       feedbackModalOpen,
       releaseVersion: import.meta.env.VITE_GIT_REV.substring(0, 7)
     }

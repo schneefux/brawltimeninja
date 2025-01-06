@@ -6,39 +6,16 @@ import { usePreferencesStore } from '~/stores/preferences'
 
 const packageId = 'xyz.schneefux.brawltimeninja'
 
-const detected = ref(false)
-
-export function useIsApp() {
-  const isPwa = ref<boolean>()
-  const isTwa = ref<boolean>()
-
-  onMounted(() => {
-    if (detected.value) {
-      return
-    }
-
-    // track some meta data
-    // play store allows only 1 ad/page - TWA is detected via referrer
-    isPwa.value = window.matchMedia('(display-mode: standalone)').matches
-    isTwa.value = document.referrer.startsWith('android-app');
-
-    (gtagSet as any)('user_properties', {
-      'is_pwa': isPwa.value.toString(),
-      'is_twa': isTwa.value.toString(),
-    })
-
-    detected.value = true
-  })
-
-  const isApp = computed(() => isPwa.value || isTwa.value)
+function detectApp() {
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches
+  const isTWA = document.referrer.startsWith('android-app')
 
   return {
-    isPwa,
-    isTwa,
-    isApp,
+    isApp: isPWA || isTWA,
+    isPWA,
+    isTWA,
   }
 }
-
 
 function detectAndroid() {
   return /android/i.test(navigator.userAgent)
@@ -61,13 +38,19 @@ export function useInstall(source: string) {
   const store = usePreferencesStore()
   const localePath = useLocalePath()
   const router = useRouter()
-  const { isApp } = useIsApp()
 
   const installable = ref(false)
   onMounted(() => {
-    if (!isApp.value && (installPrompt.value !== undefined || detectAndroid() || detectIOS())) {
+    const { isApp, isPWA, isTWA } = detectApp()
+
+    if (!isApp && (installPrompt.value !== undefined || detectAndroid() || detectIOS())) {
       installable.value = true
     }
+
+    (gtagSet as any)('user_properties', {
+      'is_pwa': isPWA.toString(),
+      'is_twa': isTWA.toString(),
+    })
   })
 
   const install = async () => {
@@ -139,13 +122,11 @@ export function clearInstallPrompt() {
 
 export function useReview() {
   const store = usePreferencesStore()
-  const { isTwa } = useIsApp()
+  const reviewable = ref(false)
 
-  const reviewable = computed(() => {
-    if (import.meta.env.SSR) {
-      return false
-    }
-    return isTwa.value
+  onMounted(() => {
+    const { isTWA } = detectApp()
+    reviewable.value = isTWA
   })
 
   const dismissReview = () => {
