@@ -28,6 +28,7 @@
       <div
         v-else
         class="flex justify-center gap-x-4 mb-3"
+        @click.once="$emit('interact')"
       >
         <b-button
           v-for="choice in choices"
@@ -110,8 +111,6 @@ export default defineComponent({
 
     const vote = async (brawlerId: string) => {
       store.addBrawlersSeenInModeSurvey(props.mode, choices.value.map(choice => choice.brawlstarsId))
-
-      emit('interact')
 
       await api.survey.vote.mutate({
         tag: props.player.tag.substring(1),
