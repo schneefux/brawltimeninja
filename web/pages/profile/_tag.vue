@@ -307,12 +307,14 @@
         {{ $t('player.survey.description') }}
       </p>
 
-      <survey-card
-        :player="player"
-        :mode="modeForSurvey"
-        class="mt-8"
-        @interact="trackInteraction('survey')"
-      ></survey-card>
+      <client-only>
+        <survey-card
+          :player="player"
+          :mode="modeForSurvey"
+          class="mt-8"
+          @interact="trackInteraction('survey')"
+        ></survey-card>
+      </client-only>
     </b-page-section>
   </split-page>
 </template>
