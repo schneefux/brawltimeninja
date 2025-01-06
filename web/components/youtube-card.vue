@@ -26,9 +26,11 @@
       <b-button
         class="mx-auto"
         href="https://youtube.com/@brawltimeninja?sub_confirmation=1"
+        target="_blank"
+        tag="a"
         md
         primary
-        @click="clickYoutube"
+        @click="clickYoutube()"
       >
         <fa
           :icon="faYoutube"
