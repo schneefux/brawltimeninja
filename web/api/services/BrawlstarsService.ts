@@ -323,6 +323,9 @@ export default class BrawlstarsService {
 
     const brawlers: Record<string, Brawler> = Object.fromEntries(player.brawlers.map(b => [brawlerId(b), b]))
 
+    // 2024-12-17: name colors have an alpha channel, cut it off
+    player.nameColor = '#' + (player.nameColor?.replace(/^0x/, '') ?? 'ffffff').slice(-6)
+
     return {
       ...player,
       // overwrite brawlers

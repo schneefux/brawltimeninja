@@ -23,7 +23,7 @@ export interface Brawler {
 export interface Player {
   tag: string;
   name: string;
-  nameColor: string|undefined;
+  nameColor: string;
   icon: {
     id: number;
   };
