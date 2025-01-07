@@ -50,7 +50,6 @@
     "openai": "^4.77.0",
     "parse5": "^7.2.1",
     "pinia": "^2.3.0",
-    "pinia-plugin-persistedstate": "^4.2.0",
     "rollup-plugin-visualizer": "^5.13.1",
     "sirv": "^3.0.0",
     "string-similarity": "^4.0.4",

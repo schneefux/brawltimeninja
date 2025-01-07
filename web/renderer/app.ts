@@ -5,11 +5,10 @@ import TRPCPlugin, { createClient as createTrpcClient } from '~/plugins/trpc'
 import type { PageContext } from './types'
 import { setPageContext } from '../composables/page-context'
 import { createPinia } from 'pinia'
-import { createPersistedState } from 'pinia-plugin-persistedstate'
 import VueGtagPlugin, { query } from 'vue-gtag'
 import { createI18n, I18n } from 'vue-i18n'
 import { ClientOnly } from '@schneefux/klicker/components'
-import { CapoPlugin, createHead } from '@unhead/vue'
+import { createHead } from '@unhead/vue'
 import { InferSeoMetaPlugin } from '@unhead/addons'
 import { defaultLocale, locales } from '~/locales'
 import { createRouter } from './router'
@@ -137,11 +136,6 @@ function createApp(pageContext: PageContext) {
   app.use(TRPCPlugin, trpcOptions)
 
   const pinia = createPinia()
-  if (!import.meta.env.SSR) {
-    pinia.use(createPersistedState({
-      storage: localStorage,
-    }))
-  }
   pinia.use(({ store }) => {
     store.api = markRaw(createTrpcClient(trpcOptions.serverOptions))
     store.klicker = markRaw(createKlickerClient(klickerOptions))
