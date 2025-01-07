@@ -7,12 +7,6 @@
           alt="Logo"
           class="mx-auto mt-2 h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 object-contain"
         >
-        <span
-          v-if="$i18n.locale != 'en'"
-          class="absolute bottom-0 right-0 transform -rotate-12 -mr-10 -mb-3 font-bold text-lg md:text-xl"
-        >
-          {{ $t('index.now-in-language') }}
-        </span>
       </div>
 
       <b-page-section id="title" class="text-center">
