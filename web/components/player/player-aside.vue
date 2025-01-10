@@ -163,7 +163,7 @@ import levelIcon from '~/assets/images/icon/level.png'
 import calendarIcon from '~/assets/images/icon/icons8-calendar-100.png'
 import { useI18n } from 'vue-i18n'
 import { ProfileTrackingStatus } from '~/api/services/ProfileUpdaterService'
-import { usePreferencesStore } from '~/stores/preferences'
+import { usePreferences } from '~/stores/preferences'
 import { rankIcons } from '~/lib/rank-icons'
 
 export default defineComponent({
@@ -184,7 +184,7 @@ export default defineComponent({
   setup(props) {
     const i18n = useI18n()
     const sentry = useSentry()
-    const preferencesStore = usePreferencesStore()
+    const preferencesStore = usePreferences()
 
     const $api = useApi()
     const loading = ref(false)
@@ -237,7 +237,7 @@ export default defineComponent({
     const canEnableTracking = computed(() => props.player.battles.length > 0
       && (trackingStatus.value == 'inactive' || trackingStatus.value == 'expired'))
 
-    const trackedPlayer = computed(() => preferencesStore.trackedPlayers.find(p => p.tag == props.player.tag))
+    const trackedPlayer = computed(() => preferencesStore.state.value.trackedPlayers.find(p => p.tag == props.player.tag))
     const canDisableTracking = computed(() => trackingStatus.value == 'active' && trackedPlayer.value != undefined)
 
     const rows = computed<Row[]>(() => {

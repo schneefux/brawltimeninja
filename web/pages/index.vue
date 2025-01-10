@@ -183,7 +183,7 @@ import logoWithCrownUrl from '~/assets/images/logo_with_crown_min.svg'
 import tag1Url from '~/assets/images/tag/tag-1.jpg'
 import tag2Url from '~/assets/images/tag/tag-2.jpg'
 import { useRouter } from 'vue-router'
-import { usePreferencesStore } from '~/stores/preferences'
+import { usePreferences } from '~/stores/preferences'
 import { useI18n } from 'vue-i18n'
 
 interface PlayerLink {
@@ -221,9 +221,9 @@ export default defineComponent({
       link: localePath(`/profile/${p.tag.replace(/^#/, '')}`),
     })
 
-    const preferencesStore = usePreferencesStore()
+    const { state, addLastPlayer, setUserTag } = usePreferences()
 
-    const lastPlayers = computed(() => preferencesStore.lastPlayers
+    const lastPlayers = computed(() => state.value.lastPlayers
       .slice(0, 3)
       .map(mapToPlayerLink))
 
@@ -235,8 +235,6 @@ export default defineComponent({
     const { makeVisibilityCallback } = useTrackScroll('home')
 
     const helpDropdownRef = useTemplateRef<HTMLElement>('helpDropdown')
-
-    const addLastPlayer = (player: PlayerLink) => preferencesStore.addLastPlayer(player)
 
     const router = useRouter()
     const loading = ref(false)
@@ -256,7 +254,7 @@ export default defineComponent({
       try {
         loading.value = true
         await brawlstarsStore.loadPlayer(cleanedTag.value)
-        preferencesStore.addLastPlayer(brawlstarsStore.player!)
+        addLastPlayer(brawlstarsStore.player!)
       } catch (err) {
         if (err instanceof TRPCClientError) {
           if (err.data?.httpStatus == 404) {
@@ -281,7 +279,7 @@ export default defineComponent({
 
       event('search_success')
 
-      preferencesStore.userTag = cleanedTag.value
+      setUserTag(cleanedTag.value)
 
       await router.push(localePath(`/profile/${cleanedTag.value}`))
     }

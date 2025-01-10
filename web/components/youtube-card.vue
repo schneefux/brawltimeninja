@@ -47,7 +47,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
 import { defineComponent, computed } from 'vue'
 import { BCard, BButton, Fa } from '@schneefux/klicker/components'
-import { usePreferencesStore } from '~/stores/preferences'
+import { usePreferences } from '~/stores/preferences'
 import { event } from 'vue-gtag'
 
 export default defineComponent({
@@ -57,20 +57,20 @@ export default defineComponent({
     BCard,
   },
   setup() {
-    const store = usePreferencesStore()
+    const { state, dismissYoutubeBanner } = usePreferences()
 
     const dismissYoutube = () => {
       event('dismissed_youtube')
-      store.youtubeBannerDismissed = true
+      dismissYoutubeBanner()
       console.log('dismissed youtube')
     }
     const clickYoutube = () => {
       event('clicked_youtube')
-      store.youtubeBannerDismissed = true
+      dismissYoutubeBanner()
       console.log('clicked youtube')
     }
 
-    const youtubeBannerDismissed = computed(() => store.youtubeBannerDismissed)
+    const youtubeBannerDismissed = computed(() => state.value.youtubeBannerDismissed)
 
     return {
       faTimes,

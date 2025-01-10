@@ -55,12 +55,12 @@ import { computed, defineComponent } from 'vue'
 import { event } from 'vue-gtag'
 import organizedImage from '~/assets/images/icon/organized.png'
 import chaoticImage from '~/assets/images/icon/chaotic.png'
-import { usePreferencesStore } from '~/stores/preferences'
+import { usePreferences } from '~/stores/preferences'
 
 export default defineComponent({
   setup(props, { emit }) {
-    const store = usePreferencesStore()
-    const resultName = computed(() => store.personalityTestResult)
+    const store = usePreferences()
+    const resultName = computed(() => store.state.value.personalityTestResult)
     const result = computed(() => {
       if (resultName.value == undefined) {
         return undefined

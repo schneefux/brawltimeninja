@@ -1,5 +1,5 @@
-import { ref, onMounted, watch } from 'vue'
-import { defineStore } from 'pinia'
+import { watch, readonly } from 'vue'
+import { useLocalStorage } from '@vueuse/core'
 
 interface StoredPlayer {
   tag: string // with hash
@@ -10,35 +10,62 @@ interface TrackedPlayer extends StoredPlayer {
   deletionToken: string
 }
 
-export const usePreferencesStore = defineStore('preferences', () => {
-  const version = ref<number>()
-  const lastPlayers = ref<StoredPlayer[]>([])
-  const trackedPlayers = ref<TrackedPlayer[]>([])
-  const userTag = ref<string>() // personal tag (last searched)
-  const personalityTestResult = ref<string>()
-  const installBannerDismissed = ref(false)
-  const reviewBannerDismissed = ref(false)
-  const youtubeBannerDismissed = ref(false)
-  const modeSurveyBrawlersSeen = ref<Record<string, string[]>>({})
+const clone = (obj: any) => JSON.parse(JSON.stringify(obj))
 
-  const state = {
-    version,
-    lastPlayers,
-    trackedPlayers,
-    userTag,
-    personalityTestResult,
-    installBannerDismissed,
-    reviewBannerDismissed,
-    youtubeBannerDismissed,
-    modeSurveyBrawlersSeen,
+interface Preferences {
+  version: number;
+  lastPlayers: StoredPlayer[];
+  trackedPlayers: TrackedPlayer[];
+  userTag: string|undefined; // personal tag (last searched)
+  personalityTestResult: string|undefined;
+  installBannerDismissed: boolean;
+  reviewBannerDismissed: boolean;
+  youtubeBannerDismissed: boolean;
+  modeSurveyBrawlersSeen: Record<string, string[]>;
+}
+
+const defaults: Preferences = {
+  version: 14,
+  lastPlayers: [],
+  trackedPlayers: [],
+  userTag: undefined,
+  personalityTestResult: undefined,
+  installBannerDismissed: false,
+  reviewBannerDismissed: false,
+  youtubeBannerDismissed: false,
+  modeSurveyBrawlersSeen: {}
+}
+
+export function usePreferences() {
+  const state = useLocalStorage<Preferences>('brawlstars-ninja', defaults, {
+    mergeDefaults: true,
+    initOnMounted: true, // hydrate with defaults, read later
+  })
+
+  watch(state, (version) => {
+    if (version.version == defaults.version) return
+
+    // v10: migration to pinia-plugin-persistedstate
+    // v11: added trackedPlayers
+    // v12: added modeSurveyBrawlersSeen
+    // v13: added youtubeBannerDismissed
+    // v14: refactor
+    patchState({
+      version: defaults.version,
+    })
+  })
+
+  function patchState(patch: Partial<Preferences>) {
+    state.value = {
+      ...state.value,
+      ...patch,
+    }
   }
 
-  const clone = (obj: any) => JSON.parse(JSON.stringify(obj))
-
   function addLastPlayer(player: StoredPlayer) {
-    const newLastPlayers = [clone(player), ...lastPlayers.value]
+    const newLastPlayers = [clone(player), ...state.value.lastPlayers]
       .filter((player, index, arr) => index == arr.findIndex(p => p.tag == player.tag)) // unique
-    lastPlayers.value = newLastPlayers.slice(0, 4)
+    patchState({ lastPlayers: newLastPlayers.slice(0, 4) })
   }
 
   function addTrackedPlayer(player: StoredPlayer, deletionToken: string) {
@@ -46,58 +73,65 @@ export const usePreferencesStore = defineStore('preferences', () => {
         tag: player.tag,
         name: player.name,
         deletionToken,
-      }, ...trackedPlayers.value]
+      }, ...state.value.trackedPlayers]
       .filter((player, index, arr) => index == arr.findIndex(p => p.tag == player.tag)) // unique
-    trackedPlayers.value = newTrackedPlayers
+    patchState({ trackedPlayers: newTrackedPlayers })
   }
 
   function removeTrackedPlayer(tag: string) {
-    trackedPlayers.value = trackedPlayers.value.filter(p => p.tag !== tag)
+    const newTrackedPlayers = state.value.trackedPlayers.filter(p => p.tag !== tag)
+    patchState({ trackedPlayers: newTrackedPlayers })
   }
 
   function addBrawlersSeenInModeSurvey(mode: string, brawlerIds: string[]) {
-    const responses = modeSurveyBrawlersSeen.value[mode] || []
-    modeSurveyBrawlersSeen.value = {
-      ...modeSurveyBrawlersSeen.value,
-      [mode]: [...responses, ...brawlerIds],
-    }
+    const responses = state.value.modeSurveyBrawlersSeen[mode] || []
+    patchState({
+      modeSurveyBrawlersSeen: {
+        ...state.value.modeSurveyBrawlersSeen,
+        [mode]: [...responses, ...brawlerIds],
+      }
+    })
   }
 
-  // sync with localstorage
-  onMounted(() => {
-    const data = JSON.parse(localStorage.getItem('brawlstars-ninja') || '{}')
-    for (const key in state) {
-      if (key in data) {
-        state[key as keyof typeof state].value = data[key]
-      }
-    }
-    // v10: migration to pinia-plugin-persistedstate
-    // v11: added trackedPlayers
-    // v12: added modeSurveyBrawlersSeen
-    // v13: added youtubeBannerDismissed
-    version.value = 13
-  })
+  function dismissYoutubeBanner() {
+    patchState({ youtubeBannerDismissed: true })
+  }
 
-  watch([...Object.values(state)], () => {
-    if (state.version.value == undefined) {
-      // load first
-      return
-    }
+  function dismissInstallBanner() {
+    patchState({
+      installBannerDismissed: true,
+    })
+  }
 
-    const data: any = {}
-    for (const key in state) {
-      data[key] = state[key as keyof typeof state].value
-    }
-    localStorage.setItem('brawlstars-ninja', JSON.stringify(data))
-  })
+  function dismissReviewBanner() {
+    patchState({
+      reviewBannerDismissed: true,
+    })
+  }
 
+  function setPersonalityTestResult(result: string) {
+    patchState({
+      personalityTestResult: result,
+    })
+  }
+
+  function setUserTag(tag: string) {
+    patchState({
+      userTag: tag,
+    })
+  }
 
   return {
-    ...state,
+    state: readonly(state),
+    patchState,
     addLastPlayer,
     addTrackedPlayer,
     removeTrackedPlayer,
     addBrawlersSeenInModeSurvey,
+    dismissYoutubeBanner,
+    dismissInstallBanner,
+    dismissReviewBanner,
+    setPersonalityTestResult,
+    setUserTag,
   }
-})
-
+}

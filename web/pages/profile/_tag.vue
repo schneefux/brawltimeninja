@@ -329,7 +329,7 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
 import { BScrollSpy, BPageSection, BShimmer } from '@schneefux/klicker/components'
 import { PlayerTotals, useBrawlstarsStore } from '~/stores/brawlstars'
-import { usePreferencesStore } from '~/stores/preferences'
+import { usePreferences } from '~/stores/preferences'
 import { useI18n } from 'vue-i18n'
 import { useLoadAndValidatePlayer, usePlayerRender } from '~/composables/player'
 import { useKlicker } from '@schneefux/klicker/composables'
@@ -351,7 +351,7 @@ export default defineComponent({
     const klicker = useKlicker()
 
     const store = useBrawlstarsStore()
-    const preferences = usePreferencesStore()
+    const preferences = usePreferences()
     const player = computed(() => store.player)
 
     const origin = useSelfOrigin()
@@ -504,7 +504,7 @@ export default defineComponent({
       }
 
       // tag was entered manually
-      if (!preferences.lastPlayers.some((p) => p.tag.substring(1) == playerTag.value)) {
+      if (!preferences.state.value.lastPlayers.some((p) => p.tag.substring(1) == playerTag.value)) {
         return undefined
       }
 

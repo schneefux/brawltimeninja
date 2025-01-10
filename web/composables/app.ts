@@ -2,7 +2,7 @@ import { computed, onMounted, ref } from 'vue'
 import { set as gtagSet, event } from 'vue-gtag'
 import { useRouter } from 'vue-router'
 import { useLocalePath } from './compat'
-import { usePreferencesStore } from '~/stores/preferences'
+import { usePreferences } from '~/stores/preferences'
 
 const packageId = 'xyz.schneefux.brawltimeninja'
 
@@ -35,7 +35,7 @@ function detectIOS() {
 }
 
 export function useInstall(source: string) {
-  const store = usePreferencesStore()
+  const { state, dismissInstallBanner } = usePreferences()
   const localePath = useLocalePath()
   const router = useRouter()
 
@@ -79,7 +79,7 @@ export function useInstall(source: string) {
 
   const dismissInstall = () => {
     event(`dismissed_install_${source}`)
-    store.installBannerDismissed = true
+    dismissInstallBanner()
     clearInstallPrompt()
   }
   const clickInstall = async () => {
@@ -87,7 +87,7 @@ export function useInstall(source: string) {
     await install()
   }
 
-  const installDismissed = computed(() => store.installBannerDismissed)
+  const installDismissed = computed(() => state.value.installBannerDismissed)
 
   return {
     install,
@@ -121,7 +121,7 @@ export function clearInstallPrompt() {
 }
 
 export function useReview() {
-  const store = usePreferencesStore()
+  const { state, dismissReviewBanner } = usePreferences()
   const reviewable = ref(false)
 
   onMounted(() => {
@@ -131,17 +131,17 @@ export function useReview() {
 
   const dismissReview = () => {
     event('dismiss_review')
-    store.reviewBannerDismissed = true
+    dismissReviewBanner()
   }
 
   const clickReview = () => {
     event('click_review')
-    store.reviewBannerDismissed = true
+    dismissReviewBanner()
     window.location.href = 'brawltime://review'
     setTimeout(() => window.open(`https://play.google.com/store/apps/details?id=${packageId}`, '_blank'), 1000)
   }
 
-  const reviewDismissed = computed(() => store.reviewBannerDismissed)
+  const reviewDismissed = computed(() => state.value.reviewBannerDismissed)
 
   return {
     reviewDismissed,

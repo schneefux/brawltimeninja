@@ -69,7 +69,7 @@ import { computed, defineComponent, PropType, onMounted } from 'vue'
 import { brawlerScores, OEJTSEntry } from '~/lib/oejts'
 import { brawlerId, capitalizeWords } from '~/lib/util'
 import { event } from 'vue-gtag'
-import { usePreferencesStore } from '~/stores/preferences'
+import { usePreferences } from '~/stores/preferences'
 import { useSelfOrigin } from '~/composables/compat'
 
 export interface QuizResult {
@@ -92,7 +92,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = usePreferencesStore()
+    const { setPersonalityTestResult } = usePreferences()
 
     const mostSimilarBrawler = computed<QuizResult>(() => {
       const scores = Object.entries(brawlerScores)
@@ -109,7 +109,9 @@ export default defineComponent({
         score: props.result,
       }
     })
-    onMounted(() => store.personalityTestResult = mostSimilarBrawler.value?.name)
+    onMounted(() => {
+      setPersonalityTestResult(mostSimilarBrawler.value?.name)
+    })
 
     const selfOrigin = useSelfOrigin()
     const quizRootUrl = computed(() => `${selfOrigin}/quiz?utm_source=share&utm_medium=image&utm_campaign=quiz`)

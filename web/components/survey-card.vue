@@ -60,7 +60,7 @@
 import { defineComponent, onMounted, ref, computed, PropType } from 'vue'
 import { BrawlerMetadata, useAllBrawlers } from '~/composables/dimension-values'
 import { camelToKebab } from '~/lib/util'
-import { usePreferencesStore } from '~/stores/preferences'
+import { usePreferences } from '~/stores/preferences'
 import { BCard, BProgress } from '@schneefux/klicker/components'
 import { useApi } from '~/composables/compat'
 import { Player } from '~/model/Api'
@@ -82,13 +82,13 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props, { emit }) {
-    const store = usePreferencesStore()
+  setup(props) {
+    const store = usePreferences()
     const brawlers = useAllBrawlers()
     const api = useApi()
 
     const brawlersNotSeen = computed(() => {
-      const brawlersSeenIds = store.modeSurveyBrawlersSeen[props.mode] ?? []
+      const brawlersSeenIds = store.state.value.modeSurveyBrawlersSeen[props.mode] ?? []
       return brawlers.value.filter(brawler => !brawlersSeenIds.includes(brawler.brawlstarsId))
     })
 
