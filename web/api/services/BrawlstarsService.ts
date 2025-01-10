@@ -398,7 +398,8 @@ export default class BrawlstarsService {
       const battleData = await this.getPlayerBattleLog(tag).catch(() => ({ items: [] }))
       const battles = battleData.items.map(b => this.transformBattle(b))
 
-      const timestamps = battles.map(b => b.timestamp).sort()
+      // sort descending
+      const timestamps = battles.map(b => b.timestamp).sort((a, b) => b.valueOf() - a.valueOf())
       lastActive[tag] = timestamps[0]
 
       battles.forEach(b => {
