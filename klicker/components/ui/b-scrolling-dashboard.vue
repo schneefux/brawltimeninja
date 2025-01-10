@@ -23,7 +23,7 @@
     ></div>
 
     <div
-      class="absolute left-0 inset-y-0 w-10 -ml-5 flex-col justify-center hidden"
+      class="absolute left-0 inset-y-0 w-10 -ml-4 flex-col justify-center hidden"
       :class="{
         'lg:flex': !arrivedLeft,
       }"
@@ -41,7 +41,7 @@
     </div>
 
     <div
-      class="absolute right-0 inset-y-0 w-10 -mr-5 flex-col justify-center hidden"
+      class="absolute right-0 inset-y-0 w-10 -mr-4 flex-col justify-center hidden"
       :class="{
         'lg:flex': !arrivedRight,
       }"
