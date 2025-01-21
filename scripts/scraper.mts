@@ -60,7 +60,7 @@ async function main() {
     domain: DOMAIN,
     path: "api.php",
   });
-  const brawlerNames = brawlerPages.map((brawlerPage) => brawlerPage.title);
+  const brawlerNames = ["Bonnie"] // brawlerPages.map((brawlerPage) => brawlerPage.title);
 
   const previously = new Date();
   previously.setDate(previously.getDate());
