@@ -72,6 +72,7 @@ export default defineComponent({
     const brawlerSlices = computed(() => ({
       brawler: [props.brawlerBrawlstarsId],
       powerplay: ['false'],
+      trophyRangeLte: ['15'],
     }))
 
     const filter = computed<CubeQueryFilter>(() => (e) => e.dimensionsRaw.brawler.brawler == props.brawlerBrawlstarsId)
