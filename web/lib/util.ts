@@ -147,37 +147,6 @@ export function getBestBrawlers(brawlers: any[]): any[] {
   return brawlers
 }
 
-interface EventMetadata {
-  id: string
-  map: string
-  mode: string
-  start?: string
-  end?: string
-}
-export function formatAsJsonLd(event: EventMetadata, mediaUrl: string) {
-  const url = `/tier-list/mode/${slugify(event.mode.toLowerCase())}/map/${slugify(event.map)}`
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Event',
-    'name': `${event.mode} - ${event.map}`,
-    ...(event.start != undefined ? {
-      'startDate': event.start,
-    } : {}),
-    ...(event.end != undefined ? {
-      'endDate': event.end!,
-    } : {}),
-    'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
-    'eventStatus': 'https://schema.org/EventScheduled',
-    'url': url,
-    'image': [`${mediaUrl}/map/${event.id}.png`],
-    'location': {
-      '@type': 'VirtualLocation',
-      'url': url,
-    },
-    'description': `${event.map} is a Brawl Stars ${event.mode} map.`,
-  }
-}
-
 export function sloppyParseFloat(number: string) {
   return Math.floor(parseFloat(number) * 10000) / 10000
 }

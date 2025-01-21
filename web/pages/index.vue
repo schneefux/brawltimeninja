@@ -172,7 +172,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useTemplateRef } from 'vue'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { formatAsJsonLd, tagPattern } from '~/lib/util'
+import { tagPattern } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { TRPCClientError } from '@trpc/client'
 import { useMeta, useCacheHeaders, useLocalePath, useConfig, useSentry } from '~/composables/compat'
@@ -285,27 +285,12 @@ export default defineComponent({
     }
 
     useCacheHeaders()
-    useMeta(() => {
-      const structuredData = (events.value || [])
-        .map((event) => ({
-          type: 'application/ld+json',
-          innerHTML: formatAsJsonLd({
-            id: event.id.toString(),
-            map: event.mapTranslated,
-            mode: event.modeTranslated,
-            start: event.start,
-            end: event.end,
-          }, $config.mediaUrl),
-        }))
-
-      return {
-        title: i18n.t('index.meta.title'),
-        meta: [
-          { hid: 'description', name: 'description', content: i18n.t('index.meta.description') },
-        ],
-        script: structuredData,
-      }
-    })
+    useMeta(() => ({
+      title: i18n.t('index.meta.title'),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('index.meta.description') },
+      ],
+    }))
 
     return {
       lastPlayers,

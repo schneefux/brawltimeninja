@@ -91,7 +91,7 @@
 import { computed, defineComponent, useTemplateRef } from 'vue'
 import { useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { formatAsJsonLd, unformatMode } from '~/lib/util'
+import { unformatMode } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { BPageSection, BScrollSpy } from '@schneefux/klicker/components'
 import { useAllEvents } from '~/composables/dimension-values'
@@ -119,27 +119,12 @@ export default defineComponent({
     })
 
     useCacheHeaders()
-    useMeta(() => {
-      const structuredData = (<EventMetadata[]>[]).concat(current.value, upcoming.value)
-        .map((event) => ({
-          type: 'application/ld+json',
-          innerHTML: formatAsJsonLd({
-            id: event.id,
-            map: event.mapTranslated,
-            mode: event.modeTranslated,
-            start: event.start,
-            end: event.end,
-          }, $config.mediaUrl),
-        }))
-
-      return {
-        title: i18n.t('tier-list.maps.meta.title'),
-        meta: [
-          { hid: 'description', name: 'description', content: i18n.t('tier-list.maps.meta.description') },
-        ],
-        script: structuredData,
-      }
-    })
+    useMeta(() => ({
+      title: i18n.t('tier-list.maps.meta.title'),
+      meta: [
+        { hid: 'description', name: 'description', content: i18n.t('tier-list.maps.meta.description') },
+      ],
+    }))
 
     const { makeVisibilityCallback } = useTrackScroll('maps')
 
