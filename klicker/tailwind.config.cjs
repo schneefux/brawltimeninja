@@ -45,7 +45,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ['Roboto', ...defaultTheme.fontFamily.sans],
+        sans: ['Roboto Flex', ...defaultTheme.fontFamily.sans],
       },
       spacing: {
         120: '30rem',

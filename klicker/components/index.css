@@ -3,7 +3,7 @@
 @import "tailwindcss/utilities";
 
 @import "./dashboard.css";
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
 
 .dark {
   --color-background: 24 24 27; /* gray-900 */
