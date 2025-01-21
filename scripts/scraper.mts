@@ -277,7 +277,7 @@ async function main() {
       if (title.includes("Gadget")) {
         gadgetSectionID = i;
       }
-      if (title.includes("Star Powers")) {
+      if (title.includes("Star Powers") || title.includes("Star Power")) {
         starPowerSectionID = i;
       }
       if (title.includes("Tips")) {
@@ -437,6 +437,10 @@ async function main() {
         // pages with 2 have 1 section with 2 child sections
         // if the section title is 'Star Powers', this is the parent section - skip it
         continue;
+      }
+
+      if (name.startsWith("Hypercharge") || name.startsWith("Mutation")) {
+        break;
       }
 
       const description = getFirstParagraphFromSectionJson(starPowerSection);
