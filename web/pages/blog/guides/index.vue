@@ -1,11 +1,11 @@
 <template>
   <split-page title="Brawl Stars Guides">
     <div
-      v-if="posts != undefined"
+      v-if="toc"
       class="flex flex-wrap justify-center"
     >
       <div
-        v-for="post in posts"
+        v-for="post in toc"
         :key="post.title"
         class="contents"
       >
@@ -60,17 +60,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { TocEntry } from '~/model/Web'
-import { useAsync, useCacheHeaders } from '~/composables/compat'
+import { useCacheHeaders } from '~/composables/compat'
+import toc from '~/assets/content/guides/toc.json'
 
 export default defineComponent({
   setup() {
-    const posts = useAsync<TocEntry[]>(() => import('~/assets/content/guides/toc.json').then(d => d.default), 'toc-guides')
-
     useCacheHeaders()
 
     return {
-      posts,
+      toc,
     }
   },
 })

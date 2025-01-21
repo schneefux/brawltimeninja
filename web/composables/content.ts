@@ -2,7 +2,10 @@ import MarkdownIt from 'markdown-it'
 import yaml from 'js-yaml'
 import { useBlockingAsync } from './compat'
 
-const posts = import.meta.glob(`~/assets/content/**/*.md`, { as: 'raw' })
+const posts = import.meta.glob(`~/assets/content/**/*.md`, {
+  query: '?raw',
+  import: 'default',
+})
 
 function renderMarkdown(content: string) {
   const md = new MarkdownIt({
@@ -28,7 +31,7 @@ export async function usePost(folder: string) {
     }
 
     try {
-      const data = await posts[path]()
+      const data = await posts[path]() as string
       const { body, frontmatter } = renderMarkdown(data)
 
       return {
