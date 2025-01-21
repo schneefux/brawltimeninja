@@ -22,6 +22,8 @@ import fandomShadeHtml from "./fixtures/fandom-Shade.html?raw";
 import fandomGemgrabJson from "./fixtures/fandom-gemgrab.json";
 import fandomGemgrabHtml from "./fixtures/fandom-gemgrab.html?raw";
 
+// TODO test Bonnie's Star Power section: for Bonnie, the section is called "Star Power", for others, "Star Powers"
+
 const mockAgent = new MockAgent({ connections: 1 });
 mockAgent.disableNetConnect();
 setGlobalDispatcher(mockAgent);
