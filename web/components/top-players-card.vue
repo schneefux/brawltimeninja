@@ -2,6 +2,7 @@
   <b-card
     :loading="leaderboard == null"
     :title="$t('best.players.long')"
+    :elevation="elevation"
   >
     <template v-slot:content>
       <b-scrolling-list
@@ -18,7 +19,7 @@
             :link="localePath(`/profile/${player.tag.replace('#', '')}`)"
             :icon="`/avatars/${player.icon}`"
             :icon-alt="player.name"
-            :elevation="elevation"
+            :elevation="elevation + 1"
             class="whitespace-nowrap"
             dense
           >

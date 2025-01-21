@@ -19,6 +19,7 @@
         'relative loading': loading,
         'cursor-pointer': $attrs.onClick != undefined || link != undefined,
         'backdrop-blur': !noFilter,
+        'safari-backdrop-none': elevation > 1,
       }"
       class="h-full flex flex-col rounded-2xl"
       @click="onClick"
@@ -289,5 +290,10 @@ export default defineComponent({
     margin-left: 100%;
     margin-right: 0;
   }
+}
+
+/* Safari does not seem to support blur on blur */
+_::-webkit-full-page-media, _:future, :root .safari-backdrop-none {
+  backdrop-filter: none !important;
 }
 </style>
