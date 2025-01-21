@@ -44,28 +44,28 @@ export default defineComponent({
     const i18n = useI18n()
 
     const achievements = computed<Achievement[]>(() => {
-      // 2023-11-07
+      // 2025-01-21
       // select avg(player_highest_trophies), stddev_samp(player_highest_trophies), avg(brawler_highest_trophies), stddev_samp(brawler_highest_trophies), avg(player_3vs3_victories), stddev_samp(player_3vs3_victories), avg(player_solo_victories), stddev_samp(player_solo_victories), avg(player_duo_victories), stddev_samp(player_duo_victories) from brawler where trophy_season_end>=now()-interval 28 day and timestamp>now()-interval 28 day and timestamp<now()-interval 27 day \G
-      const trophiesMu = 35515
-      const trophiesSigma = 15196
+      const trophiesMu = 43999
+      const trophiesSigma = 20790
       const trophiesZ = (props.player.highestTrophies - trophiesMu) / trophiesSigma
 
-      const brawlerMu = 587
-      const brawlerSigma = 266
+      const brawlerMu = 568
+      const brawlerSigma = 313
       const maxHighestBrawlerTrophies = Math.max(...Object.values(props.player.brawlers).map(b => b.highestTrophies))
       const brawlerZ = (maxHighestBrawlerTrophies - brawlerMu) / brawlerSigma
 
       // TODO do not use a normal distribution for these
-      const victoriesMu = 10851
-      const victoriesSigma = 14114
+      const victoriesMu = 8531
+      const victoriesSigma = 8680
       const victoryZ = (props.player['3vs3Victories'] - victoriesMu) / victoriesSigma
 
-      const soloMu = 1524
-      const soloSigma = 1986
+      const soloMu = 1368
+      const soloSigma = 1363
       const soloZ = (props.player.soloVictories - soloMu) / soloSigma
 
-      const duoMu = 1772
-      const duoSigma = 2988
+      const duoMu = 1433
+      const duoSigma = 1539
       const duoZ = (props.player.duoVictories - duoMu) / duoSigma
 
       // TODO create an endpoint?
