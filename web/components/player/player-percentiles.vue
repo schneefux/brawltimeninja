@@ -52,7 +52,7 @@ export default defineComponent({
 
       const brawlerMu = 587
       const brawlerSigma = 266
-      const maxHighestBrawlerTrophies = Math.max.apply(Object.values(props.player.brawlers).map(b => b.highestTrophies))
+      const maxHighestBrawlerTrophies = Math.max(...Object.values(props.player.brawlers).map(b => b.highestTrophies))
       const brawlerZ = (maxHighestBrawlerTrophies - brawlerMu) / brawlerSigma
 
       // TODO do not use a normal distribution for these
