@@ -13,9 +13,10 @@
         :path="`/modes/${camelToKebab(battle.event.mode)}/icon`"
         :alt="$t('mode.' + battle.event.mode)"
         :clazz="'w-8 h-8 object-contain p-1 rounded-full ' +
-          (battle.victory === false ? 'bg-red-500/75' : '') +
-          (battle.victory === true ? 'bg-green-500/75' : '') +
-          (battle.victory == undefined ? 'bg-gray-400' : '')
+          (battle.result == 'Draw' || battle.victory == undefined ?
+            'bg-gray-400' :
+            (battle.victory === true ? 'bg-green-500/75' : 'bg-red-500/75')
+          )
         "
         size="160"
       ></media-img>
