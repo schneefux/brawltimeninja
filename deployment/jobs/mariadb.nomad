@@ -54,15 +54,21 @@ job "mariadb" {
       }
 
       config {
-        image = "mariadb:11.5"
+        image = "mariadb:11.6"
         args = ["--datadir", "/srv/mariadb"]
         ports = ["db"]
       }
 
       resources {
-        cpu = 512 # typically 150
-        memory = 512
-        memory_max = 1024
+        # without survey
+        #cpu = 512 # typically 150
+        #memory = 512
+        #memory_max = 1024
+
+        # with survey
+        cpu = 1024
+        memory = 1024
+        memory_max = 2048
       }
     }
   }

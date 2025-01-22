@@ -8,15 +8,30 @@ job "hcloud-csi-controller" {
 
   constraint {
     attribute = "${node.class}"
-    value = "ingress"
+    value = "database"
   }
 
   group "controller" {
+    count = 2
+
+    constraint {
+      distinct_hosts = true
+    }
+
+    update {
+      max_parallel     = 1
+      canary           = 1
+      min_healthy_time = "10s"
+      healthy_deadline = "1m"
+      auto_revert      = true
+      auto_promote     = true
+    }
+
     task "plugin" {
       driver = "docker"
 
       config {
-        image = "hetznercloud/hcloud-csi-driver:v2.9.0"
+        image = "hetznercloud/hcloud-csi-driver:v2.11.0"
         command = "bin/hcloud-csi-driver-controller"
       }
 
