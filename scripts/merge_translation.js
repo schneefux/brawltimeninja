@@ -11,8 +11,14 @@ async function main() {
     } catch (e) { }
     const yamlString = await readFile(`./translations/auto/${lang}.yaml`, 'utf8')
     const parsed = yaml.load(yamlString)
-    const merged = Object.assign({}, humanTranslation, parsed)
-    await writeFile(`../web/locales/${lang}.json`, JSON.stringify(merged, null, 2))
+
+    for (const key in humanTranslation) {
+      if (humanTranslation[key] !== undefined && humanTranslation[key] !== '') {
+        parsed[key] = humanTranslation[key]
+      }
+    }
+
+    await writeFile(`../web/locales/${lang}.json`, JSON.stringify(parsed, null, 2))
   }
 }
 

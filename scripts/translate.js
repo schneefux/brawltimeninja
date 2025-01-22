@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { readFile, writeFile, mkdir } = require('fs/promises')
 const OpenAI = require('openai')
 const yaml = require('js-yaml')
@@ -6,9 +7,11 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
 async function translateChunk(chunk, targetLanguage) {
   const completion = await openai.chat.completions.create({
+    model: 'gpt-4o-2024-11-20', // about 0.12€ per language
+    temperature: 0.2,
     messages: [
       {
-        role: 'system',
+        role: 'developer',
         content: `
 You are a translator for the Brawl Stars app "Brawl Time Ninja".
 Translate the following YAML values from 'en' to '${targetLanguage}'.
@@ -20,8 +23,6 @@ Use child-friendly, informal language.`,
         content: chunk,
       },
     ],
-    model: 'gpt-4-turbo-preview',
-    temperature: 0.2,
   })
 
   console.log(`consumed ${completion.usage.prompt_tokens} input tokens, ${completion.usage.completion_tokens} completion tokens`)
@@ -36,8 +37,8 @@ async function translate(lang) {
 
   await writeFile(targetYamlPath, '', 'utf-8')
 
-  // gpt-4 output is limited to 4096 tokens which is about 200 lines
-  const chunkSize = 50 // chunk of 50: ~750 prompt tokens, ~2k completion tokens
+  // output is limited to 4096 tokens
+  const chunkSize = 200 // chunk of 100: ~1.5k prompt tokens, ~2k completion tokens
   const allKeys = Object.keys(enJson)
   for (let i = 0; i < allKeys.length; i += chunkSize) {
     const enChunk = yaml.dump(Object.fromEntries(Object.entries(enJson).slice(i, i + chunkSize)), { forceQuotes: true })
@@ -50,10 +51,11 @@ async function translate(lang) {
 }
 
 async function main() {
-  // full run is ~ $10
+  const allLangs = ['bn', 'br', 'cn', 'cz', 'de', 'es', 'fi', 'fr', 'hi', 'it', 'jp', 'kr', 'lt', 'nl', 'pl', 'pt', 'ru', 'sk', 'sv', 'tr', 'vi', 'zh']
+  const args = process.argv.slice(2)
+  const langs = args.length > 0 ? args : allLangs
 
-  const langs = ['bn', 'br', 'cn', 'cz', 'de', 'es', 'fi', 'fr', 'hi', 'it', 'jp', 'kr', 'lt', 'nl', 'pl', 'pt', 'ru', 'sk', 'sv', 'tr', 'vi', 'zh']
-  mkdir('./auto-translations', { recursive: true })
+  await mkdir('./auto-translations', { recursive: true })
   for (const lang of langs) {
     try {
       await readFile(`./translations/auto/${lang}.yaml`, 'utf8')
