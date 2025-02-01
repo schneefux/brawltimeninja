@@ -94,7 +94,7 @@ http {
   real_ip_header CF-Connecting-IP;
 
   proxy_cache_key $host$request_uri;
-  proxy_cache_path /var/cache/nginx/main-cache levels=1:2 keys_zone=main-cache:32m inactive=24h max_size=10g;
+  proxy_cache_path {{ env "NOMAD_ALLOC_DIR" }}/data/nginx-cache-main levels=1:2 keys_zone=main-cache:64m inactive=1h max_size=16g use_temp_path=off;
 
   # A change to this configuration file triggers an nginx reload.
   # Include a timestamp so that nginx reloads when the certbot job

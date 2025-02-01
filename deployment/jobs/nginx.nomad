@@ -26,6 +26,11 @@ job "nginx" {
       port "status" {}
     }
 
+    ephemeral_disk {
+      migrate = true
+      size = 16000
+    }
+
     restart {
       mode = "delay"
       interval = "30s"
