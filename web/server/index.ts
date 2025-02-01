@@ -13,6 +13,7 @@ import {
 } from '@sentry/browser'
 import { getHTTPStatusCodeFromError } from '@trpc/server/http'
 import { parse, serialize } from 'parse5'
+import etag from 'etag'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const host = process.env.HOST || 'localhost'
@@ -164,13 +165,24 @@ async function startServer() {
       }
     }
 
+    const etagHash = etag(body)
+    res.set('etag', etagHash)
+    res.set('document-policy', 'js-profiling')
+
     res.set(Object.fromEntries(headers))
     if (pageContext.responseHeaders != undefined) {
       // overwrite default headers with custom headers
       res.set(pageContext.responseHeaders)
     }
-    res.set('document-policy', 'js-profiling')
+
     res.status(pageContext.statusCode ?? statusCode)
+
+    if (req.get('if-none-match') === res.get('etag')) {
+      res.status(304)
+      res.end()
+      return
+    }
+
     res.send(body)
   })
 
