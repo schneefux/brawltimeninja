@@ -44,7 +44,7 @@ job "brawltime-cron" {
         MYSQL_PASSWORD = "brawltime"
         TRACKING_EXPIRE_AFTER_DAYS = "14"
         TRACKING_REFRESH_MINUTES = "1440"
-        TRACKING_REFRESH_PARALLEL = "25"
+        TRACKING_REFRESH_PARALLEL = "10"
 
         SENTRY_DSN = "${var.sentry_dsn}"
         DD_AGENT_HOST = "${attr.unique.network.ip-address}"

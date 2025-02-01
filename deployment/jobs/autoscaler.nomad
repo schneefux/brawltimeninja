@@ -122,7 +122,7 @@ job "autoscaler" {
                 query_window = "10m"
 
                 strategy "threshold" {
-                  upper_bound = 50
+                  upper_bound = 60
                   lower_bound = 0
                   within_bounds_trigger = 1
                   delta = -1
@@ -150,7 +150,7 @@ job "autoscaler" {
                 query_window = "10m"
 
                 strategy "threshold" {
-                  upper_bound = 50
+                  upper_bound = 60
                   lower_bound = 0
                   within_bounds_trigger = 1
                   delta = -1
