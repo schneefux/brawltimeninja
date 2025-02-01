@@ -82,11 +82,11 @@
         v-if="visible"
         id="vm-av"
         data-format="isvideo"
-        class="aspect-video max-w-lg vm-placement"
+        class="instream vm-placement"
         @click="onVideoPlayerClicked"
       ></div>
       <template v-slot:placeholder>
-        <div class="aspect-video vm-placement"></div>
+        <div class="instream vm-placement"></div>
       </template>
     </client-only>
 
@@ -292,5 +292,12 @@ export default defineComponent({
     max-width: 728px;
     height: 280px;
   }
+}
+
+.instream {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 512px;
+  aspect-ratio: 16 / 9;
 }
 </style>

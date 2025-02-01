@@ -32,7 +32,7 @@
       </b-card>
     </b-page-section>
 
-    <ad takeover></ad>
+    <ad instream></ad>
 
     <b-page-section :title="$t('club.members')">
       <club-member-table
@@ -215,11 +215,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<route>
-{
-  meta: {
-    topBannerType: 'instream',
-  },
-}
-</route>

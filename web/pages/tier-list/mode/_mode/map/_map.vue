@@ -66,7 +66,7 @@
       </p>
     </b-page-section>
 
-    <ad takeover></ad>
+    <ad instream></ad>
 
     <b-page-section>
       <map-views
@@ -187,11 +187,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<route>
-{
-  meta: {
-    topBannerType: 'instream',
-  },
-}
-</route>

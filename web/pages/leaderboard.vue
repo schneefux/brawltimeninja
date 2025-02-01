@@ -14,7 +14,7 @@
       </b-button>
     </div>
 
-    <ad takeover></ad>
+    <ad instream></ad>
 
     <b-page-section id="leaderboard">
       <div class="flex justify-center">
@@ -72,11 +72,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<route>
-{
-  meta: {
-    topBannerType: 'instream',
-  },
-}
-</route>

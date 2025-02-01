@@ -2,7 +2,7 @@
   <split-page :title="$t('oejts.title')">
     <p id="description" class="mt-4 mb-8">{{ $t('oejts.description') }}</p>
 
-    <ad takeover></ad>
+    <ad instream></ad>
 
     <quiz-card
       id="quiz"
@@ -32,11 +32,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<route>
-{
-  meta: {
-    topBannerType: 'instream',
-  },
-}
-</route>

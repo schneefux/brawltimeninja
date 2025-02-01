@@ -9,7 +9,7 @@
       {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
     </p>
 
-    <ad takeover></ad>
+    <ad instream></ad>
 
     <b-page-section
       id="maps"
@@ -89,11 +89,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<route>
-{
-  meta: {
-    topBannerType: 'instream',
-  },
-}
-</route>

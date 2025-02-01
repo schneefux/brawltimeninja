@@ -14,7 +14,7 @@
       </template>
     </b-card>
 
-    <ad takeover></ad>
+    <ad instream></ad>
 
     <c-slicer
       v-model="query"
@@ -107,11 +107,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<route>
-{
-  meta: {
-    topBannerType: 'instream',
-  },
-}
-</route>

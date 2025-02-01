@@ -120,7 +120,7 @@
       </div>
     </div>
 
-    <ad takeover lazy></ad>
+    <ad instream lazy></ad>
 
     <b-page-section
       id="best"
@@ -186,19 +186,12 @@ import { useRouter } from 'vue-router'
 import { usePreferences } from '~/stores/preferences'
 import { useI18n } from 'vue-i18n'
 
-interface PlayerLink {
-  name: string
-  tag: string
-  link: any
-}
-
 export default defineComponent({
   directives: {
     ObserveVisibility,
   },
   setup() {
     const i18n = useI18n()
-    const $config = useConfig()
     const localePath = useLocalePath()
     const sentry = useSentry()
 
@@ -316,11 +309,3 @@ export default defineComponent({
   @apply normal-case;
 }
 </style>
-
-<route>
-{
-  meta: {
-    topBannerType: 'instream',
-  },
-}
-</route>
