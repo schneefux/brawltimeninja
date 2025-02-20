@@ -13,7 +13,7 @@
       {{ $t('tier-list.ranked.description') }}
     </p>
 
-    <ad instream></ad>
+    <ad takeover></ad>
 
     <b-page-section
       id="teambuilder"
@@ -119,3 +119,11 @@ export default defineComponent({
   },
 })
 </script>
+
+<route>
+{
+  meta: {
+    topBannerType: 'instream',
+  },
+}
+</route>

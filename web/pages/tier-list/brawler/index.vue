@@ -9,7 +9,7 @@
       class="mt-8"
     ></brawlers-roll>
 
-    <ad instream></ad>
+    <ad takeover></ad>
 
     <b-page-section
       id="tier-list"
@@ -68,3 +68,11 @@ export default defineComponent({
   },
 })
 </script>
+
+<route>
+{
+  meta: {
+    topBannerType: 'instream',
+  },
+}
+</route>

@@ -120,7 +120,7 @@
       </div>
     </div>
 
-    <ad instream lazy></ad>
+    <ad takeover lazy></ad>
 
     <b-page-section
       id="best"
@@ -309,3 +309,11 @@ export default defineComponent({
   @apply normal-case;
 }
 </style>
+
+<route>
+{
+  meta: {
+    topBannerType: 'instream',
+  },
+}
+</route>

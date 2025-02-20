@@ -13,7 +13,7 @@
       {{ $t('tier-list.maps.description') }}
     </p>
 
-    <ad instream></ad>
+    <ad takeover></ad>
 
     <b-page-section
       id="active"
@@ -165,3 +165,11 @@ export default defineComponent({
   },
 })
 </script>
+
+<route>
+{
+  meta: {
+    topBannerType: 'instream',
+  },
+}
+</route>
