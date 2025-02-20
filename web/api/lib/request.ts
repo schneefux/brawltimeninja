@@ -1,6 +1,7 @@
 import { URLSearchParams, URL } from 'url'
 import StatsD from 'hot-shots'
 import { TRPCError } from '@trpc/server'
+import { fetch } from 'undici'
 
 const stats = new StatsD({ prefix: 'brawltime.api.' })
 
@@ -34,12 +35,17 @@ export function request<T>(
       },
       signal: AbortSignal.timeout(timeoutMs),
     })
-    .then(response => {
+    .then(async response => {
       if (!response.ok) {
         if (response.status == 429) {
           stats.increment(metricName + '.ratelimited')
         } else if (response.status >= 500) {
           stats.increment(metricName + '.servererror')
+        }
+
+        if (response.body) {
+          // consume body to close connection, https://undici.nodejs.org/#/?id=garbage-collection
+          for await (const chunk of response.body) {}
         }
 
         throw new RequestError({
