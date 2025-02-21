@@ -5,6 +5,7 @@ import wtfPluginApi from "wtf-plugin-api";
 import { Cache } from "~/lib/cache";
 import { brawlerId } from "~/lib/util";
 import * as cheerio from "cheerio";
+import { Stats } from "fs";
 
 wtf.extend(wtfPluginApi);
 const wtfOpts = { domain: "brawlstars.fandom.com", path: "api.php" };
@@ -54,30 +55,26 @@ export interface Voiceline {
   asset: Asset | undefined;
 }
 
-export interface Pin {
-  asset: Asset;
+export interface Pin extends AssetAble {
   rarity: string; // "Free" | "Common" | "Rare" | "Epic" | "Exclusive";
   emote: string; // "Happy" | "Sad" | "Angry" | "GG" | "Clap" | "Thanks" | "Phew" | "Special" | "Facepalm" | "Hypercharge";
 }
 
-export interface Spray {
-  asset: Asset;
+export interface Spray extends AssetAble {
   rarity: string;
 }
 
-export interface PetSkin {
+export interface PetSkin extends AssetAble {
   for: string;
-  asset: Asset;
 }
 
-export interface Skin {
+export interface Skin extends AssetAble {
   name: string;
   cost?: string;
   campaign?: string;
   rarity?: string;
   exclusive?: boolean;
   seasonal?: boolean;
-  asset: Asset;
   petSkins: PetSkin[];
   pins: Pin[];
   voicelines: Voiceline[];
@@ -100,15 +97,20 @@ interface StatsAble {
 interface StatsByLevelAble {
   statsByLevel: {
     name: string;
-    list: number[];
+    levels: number[];
+    values: number[];
   }[];
+}
+
+interface AssetAble {
+  asset: Asset;
 }
 
 export interface Attack extends DescribeAble, StatsAble, StatsByLevelAble {}
 
-export interface Super extends DescribeAble, StatsAble, StatsByLevelAble {}
-
 export interface Hypercharge extends DescribeAble, StatsAble {}
+
+export interface Accessory extends DescribeAble, AssetAble, StatsByLevelAble {}
 
 export interface FandomBrawlerData {
   attribution: string;
@@ -116,7 +118,9 @@ export interface FandomBrawlerData {
   fullDescription: string;
   trait: string | undefined;
   attack: Attack;
-  super: Super;
+  altAttack: Attack | undefined;
+  super: Attack;
+  altSuper: Attack | undefined;
   hypercharge: Hypercharge | undefined;
   stats: {
     rarity: string;
@@ -130,10 +134,8 @@ export interface FandomBrawlerData {
   avatar: Asset;
   skins: Skin[];
   history: BalanceHistoryEntry[];
-  /*
-  gadgets: ScrapedAccessory[]
-  starpowers: ScrapedAccessory[]
-  */
+  gadgets: Accessory[]
+  starpowers: Accessory[]
   // videos
   // … translations via GPT-4o
 }
@@ -317,7 +319,7 @@ export default class FandomService {
     };
   }
 
-  private parseHealthByLevel(brawlerPage: any) {
+  private parseHealthByLevel(brawlerPage: any): Pick<FandomBrawlerData, "healthByLevel"> {
     const infobox = brawlerPage.infobox("brawler infobox");
 
     const generateStatsPerLevelList = (base: number) => {
@@ -335,88 +337,189 @@ export default class FandomService {
     };
   }
 
-  private parseAttack(brawlerPage: any, $: cheerio.CheerioAPI) {
-    const attackSection = brawlerPage
-      .sections()
-      .find((s: any) => s.title().startsWith("Attack: "));
+  private parseNameAndDescription(section: any, tag: string): DescribeAble {
+    const name = section?.title().replace(/.*: /, "");
+    const description = this.extractFirstQuote(section?.text());
 
-    const attackName = attackSection?.title().replace("Attack: ", "");
-    const attackDescription = this.extractFirstQuote(attackSection?.text());
-
-    if (attackName == undefined || attackDescription == undefined) {
-      console.warn("Could not parse attack name or description");
+    if (name == undefined || description == undefined) {
+      console.warn("Could not parse " + tag + " name or description");
     }
 
+    return {
+      name: name ?? "",
+      description: description ?? "",
+    }
+  }
+
+  private parseAttack(brawlerPage: any, $: cheerio.CheerioAPI): Pick<FandomBrawlerData, "attack"|"altAttack"> {
+    const attackSections = this.findSectionOrSections(brawlerPage, "Attack");
+
+    if (attackSections.length == 0) {
+      console.warn("Could not find attack section");
+    }
+
+    if (attackSections.length > 2) {
+      console.warn("Found more than two attack sections");
+    }
+
+    const attackSection = attackSections[0];
+    const { name, description } = this.parseNameAndDescription(attackSection, "attack");
     const attackStats = this.parseInfoboxTable($, "Attack");
+
+    let altAttack: Attack | undefined = undefined;
+    const altAttackSection = attackSections[1];
+    if (altAttackSection) {
+      const { name, description } = this.parseNameAndDescription(altAttackSection, "second attack");
+      // TODO split stats and statsByLevel
+
+      altAttack = {
+        name,
+        description,
+        stats: attackStats?.stats ?? [],
+        statsByLevel: attackStats?.statsByLevel ?? [],
+      };
+    }
 
     return {
       attack: {
-        name: attackName ?? "",
-        description: attackDescription ?? "",
+        name,
+        description,
         stats: attackStats?.stats ?? [],
         statsByLevel: attackStats?.statsByLevel ?? [],
       },
+      altAttack,
     };
   }
 
-  private parseSuper(brawlerPage: any, $: cheerio.CheerioAPI) {
-    const superSection = brawlerPage
-      .sections()
-      .find((s: any) => s.title().startsWith("Super: "));
+  private parseSuper(brawlerPage: any, $: cheerio.CheerioAPI): Pick<FandomBrawlerData, "super"|"altSuper"> {
+    const superSections = this.findSectionOrSections(brawlerPage, "Super");
 
-    const superName = superSection?.title().replace("Super: ", "");
-    const superDescription = this.extractFirstQuote(superSection?.text());
-
-    if (superName == undefined || superDescription == undefined) {
-      console.warn("Could not parse super name or description");
+    if (superSections.length == 0) {
+      console.warn("Could not find super section");
     }
 
+    if (superSections.length > 2) {
+      console.warn("Found more than two super sections");
+    }
+
+    const superSection = superSections[0];
+    const { name, description } = this.parseNameAndDescription(superSection, "super");
     const superStats = this.parseInfoboxTable($, "Super");
+
+    let altSuper: Attack | undefined = undefined;
+    const altSuperSection = superSections[1];
+    if (altSuperSection) {
+      const { name, description } = this.parseNameAndDescription(altSuperSection, "second super");
+      // TODO split stats and statsByLevel
+
+      altSuper = {
+        name,
+        description,
+        stats: superStats?.stats ?? [],
+        statsByLevel: superStats?.statsByLevel ?? [],
+      };
+    }
 
     return {
       super: {
-        name: superName ?? "",
-        description: superDescription ?? "",
+        name,
+        description,
         stats: superStats?.stats ?? [],
         statsByLevel: superStats?.statsByLevel ?? [],
       },
+      altSuper,
     };
   }
 
-  private parseHypercharge(brawlerPage: any, $: cheerio.CheerioAPI) {
-    const hyperchargeSection = brawlerPage
+  /** return subsections or the section itself */
+  private findSectionOrSections(brawlerPage: any, startsWith: string) {
+    const section = brawlerPage
       .sections()
-      .find((s: any) => s.title().startsWith("Hypercharge: "));
+      .find((s: any) => s.title().startsWith(startsWith));
 
-    if (hyperchargeSection == undefined) {
+    if (section == undefined) {
+      return [];
+    }
+
+    const subsections = section.sections()
+
+    if (subsections.length > 0) {
+      return subsections;
+    }
+    return [section]
+  }
+
+  private parseHypercharge(brawlerPage: any, $: cheerio.CheerioAPI): Pick<FandomBrawlerData, "hypercharge"> {
+    const hyperchargeSections = this.findSectionOrSections(brawlerPage, "Hypercharge");
+
+    if (hyperchargeSections.length == 0) {
       return {
         hypercharge: undefined,
       };
     }
 
-    const hyperchargeName = hyperchargeSection
-      .title()
-      .replace("Hypercharge: ", "");
-    const hyperchargeDescription = this.extractFirstQuote(
-      hyperchargeSection.text()
-    );
-
-    if (hyperchargeName == undefined || hyperchargeDescription == undefined) {
-      console.warn("Could not parse hypercharge name or description");
+    if (hyperchargeSections.length > 1) {
+      console.warn("Found multiple hypercharge sections");
     }
 
+    const hyperchargeSection = hyperchargeSections[0];
+    const { name, description } = this.parseNameAndDescription(hyperchargeSection, "hypercharge");
     const hyperchargeStats = this.parseInfoboxTable($, "Hypercharge");
 
     return {
       hypercharge: {
-        name: hyperchargeName ?? "",
-        description: hyperchargeDescription ?? "",
+        name,
+        description,
         stats: hyperchargeStats?.stats ?? [],
       },
     };
   }
 
-  private parseInfoboxTable($: cheerio.CheerioAPI, sectionName: string) {
+  private parseGadgets(brawlerName: string, brawlerPage: any, $: cheerio.CheerioAPI): Pick<FandomBrawlerData, "gadgets"> {
+    const gadgetSections = this.findSectionOrSections(brawlerPage, "Gadget");
+
+    const gadgets: Accessory[] = [];
+    for (let gadgetIndex = 0; gadgetIndex < gadgetSections.length; gadgetIndex++) {
+      const gadgetSection = gadgetSections[gadgetIndex];
+      const { name, description } = this.parseNameAndDescription(gadgetSection, "gadget");
+      const gadgetStats = this.parseInfoboxTable($, `Gadget: ${name}`, true);
+
+      gadgets.push({
+        name,
+        description,
+        asset: this.findAssetByAttr($, `GD-${brawlerName}${gadgetIndex + 1}`, "data-image-name")!,
+        statsByLevel: gadgetStats?.statsByLevel ?? [],
+      });
+    }
+
+    return {
+      gadgets,
+    };
+  }
+
+  private parseStarpowers(brawlerName: string, brawlerPage: any, $: cheerio.CheerioAPI): Pick<FandomBrawlerData, "starpowers"> {
+    const starpowerSections = this.findSectionOrSections(brawlerPage, "Star Power");
+
+    const starpowers: Accessory[] = [];
+    for (let starpowerIndex = 0; starpowerIndex < starpowerSections.length; starpowerIndex++) {
+      const starpowerSection = starpowerSections[starpowerIndex];
+      const { name, description } = this.parseNameAndDescription(starpowerSection, "gadget");
+      const starpowerStats = this.parseInfoboxTable($, `Star Power: ${name}`, true);
+
+      starpowers.push({
+        name,
+        description,
+        asset: this.findAssetByAttr($, `SP-${brawlerName}${starpowerIndex + 1}`, "data-image-name")!,
+        statsByLevel: starpowerStats?.statsByLevel ?? [],
+      });
+    }
+
+    return {
+      starpowers,
+    };
+  }
+
+  private parseInfoboxTable($: cheerio.CheerioAPI, sectionName: string, optional = false): (StatsAble & StatsByLevelAble) | undefined {
     const brawlerInfobox = $(".portable-infobox");
     const infoboxSection = brawlerInfobox
       .find("h2")
@@ -425,7 +528,9 @@ export default class FandomService {
       .parent();
 
     if (infoboxSection.length == 0) {
-      console.warn("Could not find infobox section", { sectionName });
+      if (!optional) {
+        console.warn("Could not find infobox section ", { sectionName });
+      }
       return;
     }
 
@@ -465,14 +570,17 @@ export default class FandomService {
       })
       .get();
 
+    const levelColumnIndex = names.findIndex((name) => name == "Level");
+    const levels = values.filter((v) => v.columnIndex == levelColumnIndex).map((v) => v.value);
     const statsByLevel = names
       .map((name, columnIndex) => ({
         name,
-        list: values
+        levels,
+        values: values
           .filter((v) => v.columnIndex == columnIndex)
           .map((v) => v.value),
       }))
-      .filter((s) => s.name != "Level");
+      .filter((s) => s.name != "Level")
 
     return {
       stats,
@@ -485,7 +593,7 @@ export default class FandomService {
       tips: brawlerPage
         .section("Tips")
         .sections()
-        .flatMap((s: any) => s.list(0).lines())
+        .flatMap((s: any) => s.list(0)?.lines() ?? [])
         .map((l: any) => l.text()) as string[],
     };
   }
@@ -604,7 +712,7 @@ export default class FandomService {
   private findAssetByAttr(
     $: cheerio.CheerioAPI,
     value: string,
-    attr: "title" | "alt"
+    attr: "title" | "alt" | "data-image-name"
   ): Asset | undefined {
     const img = $("#content img")
       .filter((i, el) => {
@@ -651,15 +759,15 @@ export default class FandomService {
     };
   }
 
-  private parseDefaultSkin(brawlerName: string, $: cheerio.CheerioAPI) {
+  private parseDefaultSkin(brawlerName: string, $: cheerio.CheerioAPI): Pick<FandomBrawlerData, "model"> {
     return {
       model: this.findAssetByAttr($, `${brawlerName} Skin-Default`, "alt")!,
     };
   }
 
-  private parseAvatar(brawlerName: string, $: cheerio.CheerioAPI) {
+  private parseAvatar(brawlerName: string, $: cheerio.CheerioAPI): Pick<FandomBrawlerData, "avatar"> {
     return {
-      avatar: this.findAssetByAttr($, `${brawlerName} Portrait`, "alt")!,
+      avatar: this.findAssetByAttr($, `${brawlerName} Portrait`, "data-image-name")!,
     };
   }
 
@@ -857,7 +965,7 @@ export default class FandomService {
     brawlerName: string,
     brawlerPage: any,
     $: cheerio.CheerioAPI
-  ) {
+  ): Pick<FandomBrawlerData, "skins"> {
     const skinTemplates: any[] = brawlerPage
       .templates("skin gallery")
       .map((t: any) => t.json());
@@ -1037,7 +1145,7 @@ export default class FandomService {
     };
   }
 
-  private parseBalanceHistory(brawlerPage: any) {
+  private parseBalanceHistory(brawlerPage: any): Pick<FandomBrawlerData, "history"> {
     const balanceHistory = brawlerPage
       .section("History")
       .list(0)
@@ -1095,6 +1203,8 @@ export default class FandomService {
       ...this.parseAvatar(brawlerName, $),
       ...this.parseSkins(brawlerName, brawlerPage, $),
       ...this.parseBalanceHistory(brawlerPage),
+      ...this.parseGadgets(brawlerName, brawlerPage, $),
+      ...this.parseStarpowers(brawlerName, brawlerPage, $),
     };
   }
 }
