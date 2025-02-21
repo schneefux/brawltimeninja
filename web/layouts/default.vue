@@ -48,8 +48,6 @@ export default defineComponent({
     BWebFooter,
   },
   setup() {
-    const containerRef = useTemplateRef<HTMLElement>('container')
-
     const config = useConfig()
     const i18n = useI18n()
     const localePath = useLocalePath()
