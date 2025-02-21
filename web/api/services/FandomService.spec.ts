@@ -1,12 +1,12 @@
-import { expect, test, vi } from "vitest";
+import { expect, test } from "vitest";
 import FandomService, {
+  Accessory,
   Asset,
   Attack,
   BalanceHistoryEntry,
   Hypercharge,
   Skin,
   Spray,
-  Super,
   Voiceline,
 } from "./FandomService";
 import { MockAgent, setGlobalDispatcher } from "undici";
@@ -19,10 +19,10 @@ import fandomNitaJson from "./fixtures/fandom-Nita.json";
 import fandomNitaHtml from "./fixtures/fandom-Nita.html?raw";
 import fandomShadeJson from "./fixtures/fandom-Shade.json";
 import fandomShadeHtml from "./fixtures/fandom-Shade.html?raw";
+import fandomBonnieJson from "./fixtures/fandom-Bonnie.json";
+import fandomBonnieHtml from "./fixtures/fandom-Bonnie.html?raw";
 import fandomGemgrabJson from "./fixtures/fandom-gemgrab.json";
 import fandomGemgrabHtml from "./fixtures/fandom-gemgrab.html?raw";
-
-// TODO test Bonnie's Star Power section: for Bonnie, the section is called "Star Power", for others, "Star Powers"
 
 const mockAgent = new MockAgent({ connections: 1 });
 mockAgent.disableNetConnect();
@@ -97,14 +97,14 @@ test("should parse Brawler page (Edgar)", async () => {
     `Edgar believes nobody understands him. Certainly not his mom, who thinks he's going through a phase. Only he knows the darkness in his soul is eternal.`
   );
   expect(data.fullDescription).toBe(
-    `Edgar is an Epic Brawler who could be unlocked for free as a Brawlidays 2020 gift from December 19th to January 7th or can be unlocked from the Starr Road. He has moderate health, moderately high burst damage and great mobility with his Super and his very fast movement speed, but a short attack range. His Trait allows his Super and Hypercharge to charge itself over time. He attacks with two quick short-ranged punches with an extremely short cooldown and reload speed that also slightly heal him per hit on an enemy Brawler. His Super is a quick jump over obstacles that grants him a speed boost upon landing. His first Gadget, Let's Fly, drastically increases his Trait's Super-charge for a short period of time. His second Gadget, Hardcore, provides him a shield that absorbs damage and decays over time. His first Star Power, Hard Landing, allows his Super to deal moderate damage to enemies in his Super's landing area of effect. His second Star Power, Fisticuffs, increases the amount he heals per punch. His Hypercharge, Outburst, increases his Super charge rate and reload speed after using his Super.`
+    `Edgar is an Epic Brawler who could be unlocked for free as a Brawlidays 2020 gift from December 19th to January 7th or can be unlocked from the Starr Road. He has moderate health, potentially high burst damage and great mobility with his Super and his very fast movement speed, but a short attack range. His Trait allows his Super and Hypercharge to charge itself over time. He attacks with two quick short-ranged punches with an extremely short cooldown and reload speed that also slightly heal him per hit on an enemy Brawler. His Super is a quick jump over obstacles that grants him a speed boost upon landing. His first Gadget, Let's Fly, drastically increases his Trait's Super-charge for a short period of time. His second Gadget, Hardcore, provides him a shield that absorbs damage and decays over time. His first Star Power, Hard Landing, allows his Super to deal moderate damage to enemies in his Super's landing area of effect. His second Star Power, Fisticuffs, increases the amount he heals per punch. His Hypercharge, Outburst, increases his Super charge rate and reload speed after using his Super.`
   );
   expect(data.trait).toBe("This Brawler charges Super over time.");
 
   expect(data.stats).toEqual({
     rarity: "Epic",
     class: "Assassin",
-    movementspeed: `820 (Very Fast), 1017 (with Hypercharge), 3500 (with Super), 1020 (after Super), 1217 (after Super with Hypercharge)`,
+    movementspeed: `820 (Very Fast), 0–2333 (with Super), 1020 (after Super), 1017 (with Hypercharge), 1217 (after Super with Hypercharge)`,
     voiceactor: "David Autovino",
   });
 
@@ -150,14 +150,17 @@ test("should parse Brawler page (Edgar)", async () => {
     statsByLevel: [
       {
         name: "Damage per punch",
-        list: [540, 594, 648, 702, 756, 810, 864, 918, 972, 1026, 1080],
+        levels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        values: [540, 594, 648, 702, 756, 810, 864, 918, 972, 1026, 1080],
       },
       {
         name: "Heal per punch",
-        list: [189, 207, 225, 243, 261, 279, 297, 315, 333, 351, 369],
+        levels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        values: [189, 207, 225, 243, 261, 279, 297, 315, 333, 351, 369],
       },
     ],
   } satisfies Attack);
+  expect(data.altAttack).toBeUndefined();
 
   expect(data.super).toEqual({
     name: "Vault",
@@ -170,7 +173,8 @@ test("should parse Brawler page (Edgar)", async () => {
       },
     ],
     statsByLevel: [],
-  } satisfies Super);
+  } satisfies Attack);
+  expect(data.altSuper).toBeUndefined();
 
   expect(data.hypercharge).toEqual({
     name: "Outburst",
@@ -281,7 +285,7 @@ test("should parse Brawler page (Edgar)", async () => {
     name: "Nightbringer",
     rarity: "Hypercharge",
     campaign: "Angels vs. Demons",
-    cost: "Free from Angelic Drops",
+    cost: "Free from Angelic Drops or Ultra Trophy Boxes",
     exclusive: false,
     seasonal: false,
     asset: {
@@ -414,6 +418,53 @@ test("should parse Brawler page (Edgar)", async () => {
       },
     ] satisfies BalanceHistoryEntry[])
   );
+
+  expect(data.gadgets).toEqual(
+    expect.arrayContaining([expect.objectContaining({ name: "Let's Fly" })])
+  );
+  const letsFlyGadget = data.gadgets.find((g) => g.name == "Let's Fly")!;
+  // TODO connect accessories to database ID
+  expect(letsFlyGadget).toEqual({
+    name: "Let's Fly",
+    description: "Edgar's Super charges faster, 525% for 4 seconds.",
+    asset: {
+      sourceUrl: "https://static.wikia.nocookie.net/brawlstars/images/2/2a/GD-Edgar1.png/revision/latest?cb=20211213120345",
+      filename: "GD-Edgar1.png",
+    },
+    // no stats by level
+    statsByLevel: [],
+  } satisfies Accessory);
+
+  expect(data.gadgets).toEqual(
+    expect.arrayContaining([expect.objectContaining({ name: "Hardcore" })])
+  );
+  const hardcoreGadget = data.gadgets.find((g) => g.name == "Hardcore")!;
+  expect(hardcoreGadget).toEqual(expect.objectContaining({
+    statsByLevel: [{
+      name: "Health",
+      levels: [7, 8, 9, 10, 11],
+      values: [2640, 2805, 2970, 3135, 3300],
+    }],
+  }) satisfies Pick<Accessory, "statsByLevel">);
+
+  expect(data.starpowers).toEqual(
+    expect.arrayContaining([expect.objectContaining({ name: "Hard Landing" })])
+  );
+  const hardLandingStarpower = data.starpowers.find((sp) => sp.name == "Hard Landing")!;
+  expect(hardLandingStarpower).toEqual({
+    name: "Hard Landing",
+    description:
+      "Edgar's Super will also deal 1350 damage to nearby enemies upon landing.",
+    asset: {
+      sourceUrl: "https://static.wikia.nocookie.net/brawlstars/images/c/cb/SP-Edgar1.png/revision/latest?cb=20211108011540",
+      filename: "SP-Edgar1.png",
+    },
+    statsByLevel: [{
+      name: "Damage",
+      levels: [9, 10, 11],
+      values: [1215, 1282, 1350],
+    }],
+  } satisfies Accessory);
 });
 
 test("should parse Brawler voicelines without skin specific voicelines (Shelly)", async () => {
@@ -477,9 +528,11 @@ test("should parse Brawler skins including Pet", async () => {
     "Koala",
     "Whale Watch",
     "Red Nose",
+    "Reinbear",
     "Shiba",
     "Nian",
     "Rui Shou",
+    "Runner",
     "Mechagodzilla",
     "Tusked",
     "True Silver",
@@ -574,6 +627,51 @@ test("should parse Brawler with multiple traits", async () => {
     "This Brawler charges Super from staying close to opposing enemies.\nThis Brawler can move over water."
   );
   expect(data.hypercharge).toBeUndefined();
+});
+
+test("should parse Brawler where section is 'Star Power' and there are multiple attacks/supers (Bonnie)", async () => {
+  const mockPool = mockAgent.get("https://brawlstars.fandom.com");
+
+  mockPool
+    .intercept({
+      path: "/api.php?action=query&format=json&maxlag=5&origin=*&prop=revisions%7Cpageprops&redirects=true&rvprop=content%7Cids%7Ctimestamp&rvslots=main&titles=Bonnie",
+    })
+    .reply(200, fandomBonnieJson);
+
+  mockPool
+    .intercept({
+      path: "/wiki/Bonnie",
+    })
+    .reply(200, fandomBonnieHtml);
+
+  const data = (await fandomService.getBrawlerData("Bonnie"))!;
+
+  expect(data.starpowers).toEqual([
+    expect.objectContaining({ name: "Black Powder" }),
+    expect.objectContaining({ name: "Wisdom Tooth" }),
+  ]);
+
+  expect(data.attack).toEqual(
+    expect.objectContaining({
+      name: "Loose Tooth",
+    } satisfies Partial<Attack>)
+  )
+  expect(data.altAttack).toEqual(
+    expect.objectContaining({
+      name: "Bomber Jacket",
+    } satisfies Partial<Attack>)
+  )
+
+  expect(data.super).toEqual(
+    expect.objectContaining({
+      name: "Star Launcher",
+    } satisfies Partial<Attack>)
+  )
+  expect(data.altSuper).toEqual(
+    expect.objectContaining({
+      name: "Clyde",
+    } satisfies Partial<Attack>)
+  )
 });
 
 /*
