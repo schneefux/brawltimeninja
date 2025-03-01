@@ -1,7 +1,7 @@
 import Knex from 'knex'
 import MarkdownIt from 'markdown-it'
 import knexfile from '../knexfile'
-import { fetch, Agent } from 'undici'
+import { Agent } from 'undici'
 import ReportGeneratorService from '../services/ReportGeneratorService'
 import { BrawltimeKlickerService } from '~/plugins/klicker.service'
 import { publicProcedure, router } from '../trpc'
@@ -9,6 +9,7 @@ import * as z from 'zod'
 import { TRPCError } from '@trpc/server'
 import { locales } from '~/locales'
 import AuthService from '../services/AuthService'
+import customFetch from '~/lib/fetch'
 
 let reportGeneratorService: ReportGeneratorService | undefined
 const authService = new AuthService();
@@ -28,7 +29,7 @@ if (process.env.MYSQL_HOST && CUBE_URL != undefined && OPENAI_API_KEY != undefin
   const klickerService = new BrawltimeKlickerService(
     CUBE_URL,
     () => authService.getToken(),
-    (url, input) => fetch(url as string, {
+    (url, input) => customFetch(url as string, {
       ...input as any,
       dispatcher: agent,
     }) as any

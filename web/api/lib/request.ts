@@ -1,7 +1,7 @@
 import { URLSearchParams, URL } from 'url'
 import StatsD from 'hot-shots'
 import { TRPCError } from '@trpc/server'
-import { fetch } from 'undici'
+import customFetch from '~/lib/fetch'
 
 const stats = new StatsD({ prefix: 'brawltime.api.' })
 
@@ -28,12 +28,8 @@ export function request<T>(
   const urlStr = url.toString()
 
   stats.increment(metricName + '.run')
-  const fun = () => fetch(urlStr, {
-      headers: {
-        'User-Agent': 'BrawlTimeNinja/1.0 (+https://brawltime.ninja; dev@brawltime.ninja)',
-        'Accept-Encoding': 'gzip, deflate, br',
-        ...headers,
-      },
+  const fun = () => customFetch(urlStr, {
+      headers,
       signal: AbortSignal.timeout(timeoutMs),
     })
     .then(async response => {

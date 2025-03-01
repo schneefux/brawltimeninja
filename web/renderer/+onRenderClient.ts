@@ -12,7 +12,8 @@ import { inject } from 'vue'
 export { onRenderClient }
 
 async function onRenderClient(pageContext: PageContext) {
-  const params = createApp(pageContext)
+  // fetch requires window as `this`, so bind it
+  const params = createApp(pageContext, window.fetch.bind(window))
 
   const { registerSW } = await import('virtual:pwa-register') // use dynamic import to fetch sw at runtime
   registerSW({

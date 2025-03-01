@@ -31,7 +31,7 @@ declare module 'pinia' {
   }
 }
 
-function createApp(pageContext: PageContext) {
+function createApp(pageContext: PageContext, customFetch: typeof fetch) {
   const { Page } = pageContext
 
   const app = createSSRApp(Page)
@@ -97,6 +97,7 @@ function createApp(pageContext: PageContext) {
       const api = createTrpcClient(trpcOptions.serverOptions)
       return await api.auth.getToken.mutate()
     },
+    fetch: customFetch,
     router,
   }
   app.use(KlickerPlugin, klickerOptions)

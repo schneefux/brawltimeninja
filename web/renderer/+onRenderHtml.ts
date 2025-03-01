@@ -8,11 +8,13 @@ import { renderSSRHead } from '@unhead/ssr'
 import SuperJSON from 'superjson'
 import { render } from 'vike/abort'
 import { SentryInjectionKey } from './sentry'
+import customFetch from '~/lib/fetch'
 
 export { onRenderHtml }
 
 async function onRenderHtml(pageContext: PageContextServer & PageContext) {
-  const { app, head, pinia, router, queryClient } = createApp(pageContext)
+  // dirty cast undici as fetch - see cube.js source code, that's fine
+  const { app, head, pinia, router, queryClient } = createApp(pageContext, customFetch as any)
 
   app.provide(SentryInjectionKey, pageContext.sentry as any)
 

@@ -7,7 +7,8 @@ import crypto from "crypto";
 import { Player } from "~/model/Api";
 import { calculateAccountRating, xpToHours } from "../../lib/util";
 import { PlayerTotals } from "~/stores/brawlstars";
-import { fetch, Agent } from "undici";
+import { Agent } from "undici";
+import customFetch from "~/lib/fetch";
 
 export default class ProfileView {
   private template: any;
@@ -68,10 +69,7 @@ export default class ProfileView {
       }
     }
 
-    const res = await fetch(u, {
-      headers: {
-        'User-Agent': 'BrawlTimeNinja/1.0 (+https://brawltime.ninja; dev@brawltime.ninja)',
-      },
+    const res = await customFetch(u, {
       dispatcher: this.agent,
     });
     const buffer = Buffer.from(await res.arrayBuffer());
