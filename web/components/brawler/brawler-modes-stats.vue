@@ -48,7 +48,7 @@ export default defineComponent({
     const $klicker = useKlicker()
     const i18n = useI18n()
 
-    async function fetch() {
+    async function fetchModes() {
       return (await $klicker.query({
         cubeId: 'map',
         slices: {
@@ -65,7 +65,7 @@ export default defineComponent({
         return null
       }
 
-      return await fetch()
+      return await fetchModes()
     }, computed(() => `brawler-modes-${props.brawlerMetadata?.name}`))
 
     const description = computed(() => {

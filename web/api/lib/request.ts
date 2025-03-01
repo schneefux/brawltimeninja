@@ -30,6 +30,7 @@ export function request<T>(
   stats.increment(metricName + '.run')
   const fun = () => fetch(urlStr, {
       headers: {
+        'User-Agent': 'BrawlTimeNinja/1.0 (+https://brawltime.ninja; dev@brawltime.ninja)',
         'Accept-Encoding': 'gzip, deflate, br',
         ...headers,
       },

@@ -68,7 +68,12 @@ export default class ProfileView {
       }
     }
 
-    const res = await fetch(u, { dispatcher: this.agent });
+    const res = await fetch(u, {
+      headers: {
+        'User-Agent': 'BrawlTimeNinja/1.0 (+https://brawltime.ninja; dev@brawltime.ninja)',
+      },
+      dispatcher: this.agent,
+    });
     const buffer = Buffer.from(await res.arrayBuffer());
     const filetype = path.extname(new URL(u).pathname) == '.png' ? 'png' : 'jpeg';
     const data = `data:image/${filetype};base64,${buffer.toString("base64")}`;
