@@ -324,7 +324,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, useTemplateRef } from 'vue'
-import { useApi, useAsync, useCacheHeaders, useMeta, useSelfOrigin } from '~/composables/compat'
+import { useApi, useAsync, useCacheHeaders, useConfig, useMeta, useSelfOrigin } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
 import { BScrollSpy, BPageSection, BShimmer } from '@schneefux/klicker/components'
@@ -349,6 +349,7 @@ export default defineComponent({
     const i18n = useI18n()
     const routeParams = useRouteParams()
     const klicker = useKlicker()
+    const config = useConfig()
 
     const store = useBrawlstarsStore()
     const preferences = usePreferences()
@@ -487,6 +488,10 @@ export default defineComponent({
 
     const $api = useApi()
     const playerExtra = useAsync(async () => {
+      if (!config.enableDevfoxApi) {
+        return null
+      }
+
       try {
         return await $api.player.byTagExtra.query(playerTag.value) ?? null
       } catch (err) {
