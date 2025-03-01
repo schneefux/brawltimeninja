@@ -28,7 +28,7 @@ job "nginx" {
 
     ephemeral_disk {
       migrate = true
-      size = 16000
+      size = 16000 # MB for logs and nginx cache
     }
 
     restart {
@@ -76,6 +76,12 @@ job "nginx" {
       env {
         SSL_PATH = "/etc/letsencrypt/live/brawltime.ninja"
         BRAWLSTARS_TOKEN="${var.brawlstars_token}"
+      }
+
+      logs {
+        # 100 * 10MB - written to ephemeral_disk
+        max_files = 100
+        max_file_size = 10
       }
 
       config {
