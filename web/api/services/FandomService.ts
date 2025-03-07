@@ -145,6 +145,12 @@ export interface FandomBrawlerData extends IdAble {
   // … translations via GPT-4o
 }
 
+interface KlickerData {
+  brawlers: string[];
+  gadgets: KlickerAccessory[];
+  starpowers: KlickerAccessory[];
+}
+
 interface KlickerAccessory {
   brawler: string;
   name: string;
@@ -279,7 +285,7 @@ export default class FandomService {
     return text.match(/"(.*)"/)?.[1];
   }
 
-  private parseDescriptions(brawlerPage: any, $: cheerio.CheerioAPI) {
+  private parseDescriptions(brawlerPage: any) {
     const description: string = brawlerPage.section("").text();
     const shortDescription: string = this.extractFirstQuote(description) ?? "";
 
@@ -488,7 +494,12 @@ export default class FandomService {
     };
   }
 
-  private parseGadgets(brawlerName: string, brawlerPage: any, $: cheerio.CheerioAPI, klickerGadgets: KlickerAccessory[]): Pick<FandomBrawlerData, "gadgets"> {
+  private parseGadgets(
+    brawlerName: string,
+    brawlerPage: any,
+    $: cheerio.CheerioAPI,
+    klickerGadgets: KlickerAccessory[],
+  ): Pick<FandomBrawlerData, "gadgets"> {
     const gadgetSections = this.findSectionOrSections(brawlerPage, "Gadget");
 
     const gadgets: Accessory[] = [];
@@ -516,7 +527,12 @@ export default class FandomService {
     };
   }
 
-  private parseStarpowers(brawlerName: string, brawlerPage: any, $: cheerio.CheerioAPI, klickerStarpowers: KlickerAccessory[]): Pick<FandomBrawlerData, "starpowers"> {
+  private parseStarpowers(
+    brawlerName: string,
+    brawlerPage: any,
+    $: cheerio.CheerioAPI,
+    klickerStarpowers: KlickerAccessory[],
+  ): Pick<FandomBrawlerData, "starpowers"> {
     const starpowerSections = this.findSectionOrSections(brawlerPage, "Star Power");
 
     const starpowers: Accessory[] = [];
@@ -544,7 +560,11 @@ export default class FandomService {
     };
   }
 
-  private parseInfoboxTable($: cheerio.CheerioAPI, sectionName: string, optional = false): (StatsAble & StatsByLevelAble) | undefined {
+  private parseInfoboxTable(
+    $: cheerio.CheerioAPI,
+    sectionName: string,
+    optional = false,
+  ): (StatsAble & StatsByLevelAble) | undefined {
     const brawlerInfobox = $(".portable-infobox");
     const infoboxSection = brawlerInfobox
       .find("h2")
@@ -1236,7 +1256,10 @@ export default class FandomService {
     }))
   }
 
-  private parseBrawlerName(brawlerName: string, brawlers: string[]): Pick<FandomBrawlerData, "brawlstarsId"> {
+  private parseBrawlerName(
+    brawlerName: string,
+    brawlers: string[],
+  ): Pick<FandomBrawlerData, "brawlstarsId"> {
     const brawler = brawlers.find(b => this.compareName(brawlerName, b));
 
     if (brawler) {
@@ -1256,8 +1279,21 @@ export default class FandomService {
     return filter(klickerName.toUpperCase()) === filter(fandomName.toUpperCase());
   }
 
+  async getBrawlerKlickerData(): Promise<KlickerData> {
+    const brawlers = await this.getBrawlers();
+    const starpowers = await this.getAccessories('starpower');
+    const gadgets = await this.getAccessories('gadget');
+
+    return {
+      brawlers,
+      starpowers,
+      gadgets,
+    }
+  }
+
   async getBrawlerData(
-    brawlerName: string
+    brawlerName: string,
+    klickerData: KlickerData,
   ): Promise<FandomBrawlerData | undefined> {
     const brawlerPage: any = await wtf.fetch(brawlerName, wtfOpts);
     const url = brawlerPage.url().replace("//en.", "//");
@@ -1268,15 +1304,10 @@ export default class FandomService {
       return undefined;
     }
 
-    // TODO cache these
-    const brawlers = await this.getBrawlers();
-    const starpowers = await this.getAccessories('starpower');
-    const gadgets = await this.getAccessories('gadget');
-
     return {
       attribution: url,
-      ...this.parseBrawlerName(brawlerName, brawlers),
-      ...this.parseDescriptions(brawlerPage, $),
+      ...this.parseBrawlerName(brawlerName, klickerData.brawlers),
+      ...this.parseDescriptions(brawlerPage),
       ...this.parseAttack(brawlerPage, $),
       ...this.parseSuper(brawlerPage, $),
       ...this.parseHypercharge(brawlerPage, $),
@@ -1287,8 +1318,8 @@ export default class FandomService {
       ...this.parseAvatar(brawlerName, $),
       ...this.parseSkins(brawlerName, brawlerPage, $),
       ...this.parseBalanceHistory(brawlerPage),
-      ...this.parseGadgets(brawlerName, brawlerPage, $, gadgets),
-      ...this.parseStarpowers(brawlerName, brawlerPage, $, starpowers),
+      ...this.parseGadgets(brawlerName, brawlerPage, $, klickerData.gadgets),
+      ...this.parseStarpowers(brawlerName, brawlerPage, $, klickerData.starpowers),
     };
   }
 }

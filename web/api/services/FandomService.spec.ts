@@ -78,6 +78,7 @@ const klickerService = new BrawltimeKlickerService(
   }) as any
 )
 const fandomService = new FandomService(klickerService);
+const klickerData = await fandomService.getBrawlerKlickerData();
 
 test("should parse mode page (Gem Grab)", async () => {
   const mockPoolFandom = mockAgent.get("https://brawlstars.fandom.com");
@@ -139,7 +140,7 @@ test("should parse Brawler page (Edgar)", async () => {
     })
     .reply(200, fandomEdgarHtml);
 
-  const data = (await fandomService.getBrawlerData("Edgar"))!;
+  const data = (await fandomService.getBrawlerData("Edgar", klickerData))!;
 
   expect(data.brawlstarsId).toBe("EDGAR");
   expect(data.attribution).toBe("https://brawlstars.fandom.com/wiki/Edgar");
@@ -533,7 +534,7 @@ test("should parse Brawler voicelines without skin specific voicelines (Shelly)"
     })
     .reply(200, fandomShellyHtml);
 
-  const data = (await fandomService.getBrawlerData("Shelly"))!;
+  const data = (await fandomService.getBrawlerData("Shelly", klickerData))!;
 
   expect(data.skins).toEqual(
     expect.arrayContaining([expect.objectContaining({ name: "Default" })])
@@ -570,7 +571,7 @@ test("should parse Brawler skins including Pet", async () => {
     })
     .reply(200, fandomNitaHtml);
 
-  const data = (await fandomService.getBrawlerData("Nita"))!;
+  const data = (await fandomService.getBrawlerData("Nita", klickerData))!;
   expect(data.trait).toBeUndefined();
 
   const skinNames = [
@@ -673,7 +674,7 @@ test("should parse Brawler with multiple traits", async () => {
     })
     .reply(200, fandomShadeHtml);
 
-  const data = (await fandomService.getBrawlerData("Shade"))!;
+  const data = (await fandomService.getBrawlerData("Shade", klickerData))!;
   expect(data.trait).toBe(
     "This Brawler charges Super from staying close to opposing enemies.\nThis Brawler can move over water."
   );
@@ -695,7 +696,7 @@ test("should parse Brawler where section is 'Star Power' and there are multiple 
     })
     .reply(200, fandomBonnieHtml);
 
-  const data = (await fandomService.getBrawlerData("Bonnie"))!;
+  const data = (await fandomService.getBrawlerData("Bonnie", klickerData))!;
 
   expect(data.starpowers).toEqual([
     expect.objectContaining({ name: "Black Powder" }),
