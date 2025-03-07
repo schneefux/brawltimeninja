@@ -23,23 +23,72 @@ import fandomBonnieJson from "./fixtures/fandom-Bonnie.json";
 import fandomBonnieHtml from "./fixtures/fandom-Bonnie.html?raw";
 import fandomGemgrabJson from "./fixtures/fandom-gemgrab.json";
 import fandomGemgrabHtml from "./fixtures/fandom-gemgrab.html?raw";
+import cubeBrawlersJson from "./fixtures/cube-brawlers.json?raw";
+import cubeStarpowersJson from "./fixtures/cube-starpowers.json?raw";
+import cubeGadgetsJson from "./fixtures/cube-gadgets.json?raw";
+import AuthService from "./AuthService";
+import { BrawltimeKlickerService } from "~/plugins/klicker.service";
+import customFetch from "~/lib/fetch";
 
 const mockAgent = new MockAgent({ connections: 1 });
 mockAgent.disableNetConnect();
 setGlobalDispatcher(mockAgent);
 
-const fandomService = new FandomService();
+mockAgent.get("http://cube.test")
+  .intercept({
+    path: /.*/,
+  })
+  .reply<any>((req) => {
+    if (req.path.includes("map.brawler_dimension")) {
+      return {
+        statusCode: 200,
+        data: cubeBrawlersJson,
+      }
+    }
+
+    if (req.path.includes("battle.starpower_dimension")) {
+      return {
+        statusCode: 200,
+        data: cubeStarpowersJson,
+      }
+    }
+
+    if (req.path.includes("battle.gadget_dimension")) {
+      return {
+        statusCode: 200,
+        data: cubeGadgetsJson,
+      }
+    }
+
+    console.warn("Unhandled cube request", req.path);
+
+    return {
+      statusCode: 500,
+    }
+  })
+  .persist();
+
+const authService = new AuthService();
+const klickerService = new BrawltimeKlickerService(
+  'http://cube.test',
+  () => authService.getToken(),
+  (url, input) => customFetch(url as string, {
+    ...input as any,
+    agent: mockAgent,
+  }) as any
+)
+const fandomService = new FandomService(klickerService);
 
 test("should parse mode page (Gem Grab)", async () => {
-  const mockPool = mockAgent.get("https://brawlstars.fandom.com");
+  const mockPoolFandom = mockAgent.get("https://brawlstars.fandom.com");
 
-  mockPool
+  mockPoolFandom
     .intercept({
       path: "/api.php?action=query&format=json&maxlag=5&origin=*&prop=revisions%7Cpageprops&redirects=true&rvprop=content%7Cids%7Ctimestamp&rvslots=main&titles=Gem_Grab",
     })
     .reply(200, fandomGemgrabJson);
 
-  mockPool
+  mockPoolFandom
     .intercept({
       path: "/wiki/Gem_Grab",
     })
@@ -92,6 +141,7 @@ test("should parse Brawler page (Edgar)", async () => {
 
   const data = (await fandomService.getBrawlerData("Edgar"))!;
 
+  expect(data.brawlstarsId).toBe("EDGAR");
   expect(data.attribution).toBe("https://brawlstars.fandom.com/wiki/Edgar");
   expect(data.shortDescription).toBe(
     `Edgar believes nobody understands him. Certainly not his mom, who thinks he's going through a phase. Only he knows the darkness in his soul is eternal.`
@@ -423,8 +473,8 @@ test("should parse Brawler page (Edgar)", async () => {
     expect.arrayContaining([expect.objectContaining({ name: "Let's Fly" })])
   );
   const letsFlyGadget = data.gadgets.find((g) => g.name == "Let's Fly")!;
-  // TODO connect accessories to database ID
   expect(letsFlyGadget).toEqual({
+    brawlstarsId: "23000340",
     name: "Let's Fly",
     description: "Edgar's Super charges faster, 525% for 4 seconds.",
     asset: {
@@ -452,6 +502,7 @@ test("should parse Brawler page (Edgar)", async () => {
   );
   const hardLandingStarpower = data.starpowers.find((sp) => sp.name == "Hard Landing")!;
   expect(hardLandingStarpower).toEqual({
+    brawlstarsId: "23000338",
     name: "Hard Landing",
     description:
       "Edgar's Super will also deal 1350 damage to nearby enemies upon landing.",

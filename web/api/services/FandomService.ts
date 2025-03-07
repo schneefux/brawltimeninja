@@ -3,9 +3,9 @@ import wtf from "wtf_wikipedia";
 // @ts-ignore
 import wtfPluginApi from "wtf-plugin-api";
 import { Cache } from "~/lib/cache";
-import { brawlerId } from "~/lib/util";
+import { brawlerId, formatClickhouseDate, getTodaySeasonEnd } from "~/lib/util";
 import * as cheerio from "cheerio";
-import { Stats } from "fs";
+import { KlickerService } from "@schneefux/klicker/service";
 
 wtf.extend(wtfPluginApi);
 const wtfOpts = { domain: "brawlstars.fandom.com", path: "api.php" };
@@ -106,13 +106,18 @@ interface AssetAble {
   asset: Asset;
 }
 
+interface IdAble {
+  /** identifier used in the API and the database */
+  brawlstarsId: string | undefined;
+}
+
 export interface Attack extends DescribeAble, StatsAble, StatsByLevelAble {}
 
 export interface Hypercharge extends DescribeAble, StatsAble {}
 
-export interface Accessory extends DescribeAble, AssetAble, StatsByLevelAble {}
+export interface Accessory extends DescribeAble, AssetAble, StatsByLevelAble, IdAble {}
 
-export interface FandomBrawlerData {
+export interface FandomBrawlerData extends IdAble {
   attribution: string;
   shortDescription: string;
   fullDescription: string;
@@ -138,6 +143,12 @@ export interface FandomBrawlerData {
   starpowers: Accessory[]
   // videos
   // … translations via GPT-4o
+}
+
+interface KlickerAccessory {
+  brawler: string;
+  name: string;
+  id: string;
 }
 
 wtf.extend((models: any, templates: any) => {
@@ -174,6 +185,8 @@ export default class FandomService {
   private modeCache = new Cache<string, FandomModeData | undefined>(
     FANDOM_CACHE_MINUTES
   );
+
+  constructor(private $klicker: KlickerService) {}
 
   public async update() {}
 
@@ -475,7 +488,7 @@ export default class FandomService {
     };
   }
 
-  private parseGadgets(brawlerName: string, brawlerPage: any, $: cheerio.CheerioAPI): Pick<FandomBrawlerData, "gadgets"> {
+  private parseGadgets(brawlerName: string, brawlerPage: any, $: cheerio.CheerioAPI, klickerGadgets: KlickerAccessory[]): Pick<FandomBrawlerData, "gadgets"> {
     const gadgetSections = this.findSectionOrSections(brawlerPage, "Gadget");
 
     const gadgets: Accessory[] = [];
@@ -483,8 +496,14 @@ export default class FandomService {
       const gadgetSection = gadgetSections[gadgetIndex];
       const { name, description } = this.parseNameAndDescription(gadgetSection, "gadget");
       const gadgetStats = this.parseInfoboxTable($, `Gadget: ${name}`, true);
+      const klickerGadget = klickerGadgets.find((s) => this.compareName(brawlerName, s.brawler) && this.compareName(name, s.name))
+
+      if (klickerGadget == undefined) {
+        console.warn("Could not find corresponding gadget in klicker", { brawler: brawlerName, gadget: name });
+      }
 
       gadgets.push({
+        brawlstarsId: klickerGadget?.id,
         name,
         description,
         asset: this.findAssetByAttr($, `GD-${brawlerName}${gadgetIndex + 1}`, "data-image-name")!,
@@ -497,7 +516,7 @@ export default class FandomService {
     };
   }
 
-  private parseStarpowers(brawlerName: string, brawlerPage: any, $: cheerio.CheerioAPI): Pick<FandomBrawlerData, "starpowers"> {
+  private parseStarpowers(brawlerName: string, brawlerPage: any, $: cheerio.CheerioAPI, klickerStarpowers: KlickerAccessory[]): Pick<FandomBrawlerData, "starpowers"> {
     const starpowerSections = this.findSectionOrSections(brawlerPage, "Star Power");
 
     const starpowers: Accessory[] = [];
@@ -505,8 +524,14 @@ export default class FandomService {
       const starpowerSection = starpowerSections[starpowerIndex];
       const { name, description } = this.parseNameAndDescription(starpowerSection, "gadget");
       const starpowerStats = this.parseInfoboxTable($, `Star Power: ${name}`, true);
+      const klickerStarpower = klickerStarpowers.find((s) => this.compareName(brawlerName, s.brawler) && this.compareName(name, s.name))
+
+      if (klickerStarpower == undefined) {
+        console.warn("Could not find corresponding starpower in klicker", { brawler: brawlerName, starpower: name });
+      }
 
       starpowers.push({
+        brawlstarsId: klickerStarpower?.id,
         name,
         description,
         asset: this.findAssetByAttr($, `SP-${brawlerName}${starpowerIndex + 1}`, "data-image-name")!,
@@ -1178,6 +1203,59 @@ export default class FandomService {
     };
   }
 
+  private async getBrawlers() {
+    const data = await this.$klicker.query({
+      cubeId: 'map',
+      dimensionsIds: ['brawler'],
+      metricsIds: [],
+      slices: {
+        season: [formatClickhouseDate(getTodaySeasonEnd())],
+      },
+      sortId: 'picks',
+    })
+
+    return data.data.map(b => b.dimensionsRaw.brawler.brawler)
+  }
+
+  private async getAccessories(singular: string): Promise<KlickerAccessory[]> {
+    const data = await this.$klicker.query({
+      cubeId: 'battle',
+      dimensionsIds: ['brawler', singular],
+      metricsIds: [],
+      slices: {
+        season: [formatClickhouseDate(getTodaySeasonEnd())],
+        [singular + 'IdNeq']: ['0'],
+      },
+      sortId: 'picks',
+    })
+
+    return data.data.map(a => ({
+      brawler: a.dimensionsRaw.brawler.brawler,
+      name: a.dimensionsRaw[singular][singular + 'Name'],
+      id: a.dimensionsRaw[singular][singular],
+    }))
+  }
+
+  private parseBrawlerName(brawlerName: string, brawlers: string[]): Pick<FandomBrawlerData, "brawlstarsId"> {
+    const brawler = brawlers.find(b => this.compareName(brawlerName, b));
+
+    if (brawler) {
+      return {
+        brawlstarsId: brawler,
+      }
+    }
+
+    console.warn("Could not find a Brawler with a matching name in the database", brawlerName);
+    return {
+      brawlstarsId: undefined,
+    }
+  }
+
+  private compareName(fandomName: string, klickerName: string): boolean {
+    const filter = (str: string) => str.replace(/[^A-Z]/g, '');
+    return filter(klickerName.toUpperCase()) === filter(fandomName.toUpperCase());
+  }
+
   async getBrawlerData(
     brawlerName: string
   ): Promise<FandomBrawlerData | undefined> {
@@ -1190,8 +1268,14 @@ export default class FandomService {
       return undefined;
     }
 
+    // TODO cache these
+    const brawlers = await this.getBrawlers();
+    const starpowers = await this.getAccessories('starpower');
+    const gadgets = await this.getAccessories('gadget');
+
     return {
       attribution: url,
+      ...this.parseBrawlerName(brawlerName, brawlers),
       ...this.parseDescriptions(brawlerPage, $),
       ...this.parseAttack(brawlerPage, $),
       ...this.parseSuper(brawlerPage, $),
@@ -1203,8 +1287,8 @@ export default class FandomService {
       ...this.parseAvatar(brawlerName, $),
       ...this.parseSkins(brawlerName, brawlerPage, $),
       ...this.parseBalanceHistory(brawlerPage),
-      ...this.parseGadgets(brawlerName, brawlerPage, $),
-      ...this.parseStarpowers(brawlerName, brawlerPage, $),
+      ...this.parseGadgets(brawlerName, brawlerPage, $, gadgets),
+      ...this.parseStarpowers(brawlerName, brawlerPage, $, starpowers),
     };
   }
 }
