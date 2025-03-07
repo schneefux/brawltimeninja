@@ -711,7 +711,7 @@ export default class FandomService {
             const sourceUrl = $("audio")
               .map((i, el) => $(el).attr("src"))
               .get()
-              .find((src) => src.includes(data.file.replaceAll(" ", "_")));
+              .find((src) => src.toLowerCase().includes(data.file.toLowerCase().replaceAll(" ", "_")));
 
             voiceline.asset =
               sourceUrl != undefined
