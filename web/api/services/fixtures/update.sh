@@ -2,6 +2,8 @@
 
 for BRAWLER in "Edgar" "Nita" "Shelly" "Shade" "Bonnie"; do
   curl -s -o ./fandom-$BRAWLER.html "https://brawlstars.fandom.com/wiki/$BRAWLER"
+  RU_LINK=$(cat ./fandom-$BRAWLER.html | grep -oE 'https://brawlstars.fandom.com/ru/wiki/[^\"]+' | head -n 1)
+  curl -s -o ./fandom-ru-$BRAWLER.html "$RU_LINK"
   curl -s -o ./fandom-$BRAWLER.json "https://brawlstars.fandom.com/api.php?action=query&format=json&maxlag=5&origin=*&prop=revisions%7Cpageprops&redirects=true&rvprop=content%7Cids%7Ctimestamp&rvslots=main&titles=$BRAWLER"
 done
 

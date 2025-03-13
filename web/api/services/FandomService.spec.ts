@@ -13,14 +13,19 @@ import { MockAgent, setGlobalDispatcher } from "undici";
 
 import fandomEdgarJson from "./fixtures/fandom-Edgar.json";
 import fandomEdgarHtml from "./fixtures/fandom-Edgar.html?raw";
+import fandomEdgarRuHtml from "./fixtures/fandom-ru-Edgar.html?raw";
 import fandomShellyJson from "./fixtures/fandom-Shelly.json";
 import fandomShellyHtml from "./fixtures/fandom-Shelly.html?raw";
+import fandomShellyRuHtml from "./fixtures/fandom-ru-Shelly.html?raw";
 import fandomNitaJson from "./fixtures/fandom-Nita.json";
 import fandomNitaHtml from "./fixtures/fandom-Nita.html?raw";
+import fandomNitaRuHtml from "./fixtures/fandom-ru-Nita.html?raw";
 import fandomShadeJson from "./fixtures/fandom-Shade.json";
 import fandomShadeHtml from "./fixtures/fandom-Shade.html?raw";
+import fandomShadeRuHtml from "./fixtures/fandom-ru-Shade.html?raw";
 import fandomBonnieJson from "./fixtures/fandom-Bonnie.json";
 import fandomBonnieHtml from "./fixtures/fandom-Bonnie.html?raw";
+import fandomBonnieRuHtml from "./fixtures/fandom-ru-Bonnie.html?raw";
 import fandomGemgrabJson from "./fixtures/fandom-gemgrab.json";
 import fandomGemgrabHtml from "./fixtures/fandom-gemgrab.html?raw";
 import cubeBrawlersJson from "./fixtures/cube-brawlers.json?raw";
@@ -139,6 +144,12 @@ test("should parse Brawler page (Edgar)", async () => {
       path: "/wiki/Edgar",
     })
     .reply(200, fandomEdgarHtml);
+
+  mockPool
+    .intercept({
+      path: "/ru/wiki/Эдгар",
+    })
+    .reply(200, fandomEdgarRuHtml);
 
   const data = (await fandomService.getBrawlerData("Edgar", klickerData))!;
 
@@ -326,7 +337,7 @@ test("should parse Brawler page (Edgar)", async () => {
     filename: "Edgar Portrait.png",
   });
 
-  expect(data.skins.length).toBe(15);
+  expect(data.skins).toHaveLength(15);
 
   expect(data.skins).toEqual(
     expect.arrayContaining([expect.objectContaining({ name: "Nightbringer" })])
@@ -517,6 +528,17 @@ test("should parse Brawler page (Edgar)", async () => {
       values: [1215, 1282, 1350],
     }],
   } satisfies Accessory);
+
+  expect(data.conceptArt).not.toHaveLength(1);
+  expect(data.conceptArt).toEqual(
+    expect.arrayContaining([
+      {
+        sourceUrl:
+          "https://static.wikia.nocookie.net/brawlstars/images/f/fc/%D0%92%D0%BD%D0%B5%D1%88%D0%BD%D0%B8%D0%B9_%D0%B2%D0%B8%D0%B4_%D0%AD%D0%B4%D0%B3%D0%B0%D1%80%D0%B0.jpg/revision/latest?cb=20211204091318&path-prefix=ru",
+        filename: "Внешний вид Эдгара.jpg",
+      },
+    ])
+  );
 });
 
 test("should parse Brawler voicelines without skin specific voicelines (Shelly)", async () => {
@@ -533,6 +555,12 @@ test("should parse Brawler voicelines without skin specific voicelines (Shelly)"
       path: "/wiki/Shelly",
     })
     .reply(200, fandomShellyHtml);
+
+  mockPool
+    .intercept({
+      path: "/ru/wiki/Шелли",
+    })
+    .reply(200, fandomShellyRuHtml);
 
   const data = (await fandomService.getBrawlerData("Shelly", klickerData))!;
 
@@ -570,6 +598,12 @@ test("should parse Brawler skins including Pet", async () => {
       path: "/wiki/Nita",
     })
     .reply(200, fandomNitaHtml);
+
+  mockPool
+    .intercept({
+      path: "/ru/wiki/Нита",
+    })
+    .reply(200, fandomNitaRuHtml);
 
   const data = (await fandomService.getBrawlerData("Nita", klickerData))!;
   expect(data.trait).toBeUndefined();
@@ -674,6 +708,12 @@ test("should parse Brawler with multiple traits", async () => {
     })
     .reply(200, fandomShadeHtml);
 
+  mockPool
+    .intercept({
+      path: "/ru/wiki/Шейд",
+    })
+    .reply(200, fandomShadeRuHtml);
+
   const data = (await fandomService.getBrawlerData("Shade", klickerData))!;
   expect(data.trait).toBe(
     "This Brawler charges Super from staying close to opposing enemies.\nThis Brawler can move over water."
@@ -695,6 +735,12 @@ test("should parse Brawler where section is 'Star Power' and there are multiple 
       path: "/wiki/Bonnie",
     })
     .reply(200, fandomBonnieHtml);
+
+  mockPool
+    .intercept({
+      path: "/ru/wiki/Бонни",
+    })
+    .reply(200, fandomBonnieRuHtml);
 
   const data = (await fandomService.getBrawlerData("Bonnie", klickerData))!;
 
@@ -756,7 +802,7 @@ test("template parser", () => {
     unused: "yes",
   });
 
-  expect(parsed.length).toBe(4);
+  expect(parsed).toHaveLength(4);
   expect(parsed).toEqual(
     expect.arrayContaining([
       { name: ["Panda"], rarity: ["Rare"] },

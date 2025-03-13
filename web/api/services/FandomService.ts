@@ -141,6 +141,7 @@ export interface FandomBrawlerData extends IdAble {
   history: BalanceHistoryEntry[];
   gadgets: Accessory[]
   starpowers: Accessory[]
+  conceptArt: Asset[];
   // videos
   // … translations via GPT-4o
 }
@@ -1274,6 +1275,39 @@ export default class FandomService {
     }
   }
 
+  private parseConceptArt(brawlerName: string, $: cheerio.CheerioAPI|undefined): Pick<FandomBrawlerData, "conceptArt"> {
+    if ($ == undefined) {
+      return {
+        conceptArt: [],
+      };
+    }
+
+    const conceptArtSection = $("h2")
+      .filter((i, el) => $(el).text().includes("Концепт-арты") || $(el).text().includes("Концепты и ранние версии"))
+      .first()
+      .nextAll()
+      .filter((i, el) => $(el).hasClass("wikia-gallery"))
+      .first();
+
+    const conceptArt: Asset[] = [];
+    for (const img of conceptArtSection.find("img")) {
+      const asset = this.parseImgAsAsset($(img));
+      if (asset != undefined) {
+        conceptArt.push(asset);
+      }
+    }
+
+    if (conceptArt.length === 0) {
+      console.warn("No concept art found", {
+        brawler: brawlerName,
+      });
+    }
+
+    return {
+      conceptArt,
+    };
+  }
+
   private compareName(fandomName: string, klickerName: string): boolean {
     const filter = (str: string) => str.replace(/[^A-Z]/g, '');
     return filter(klickerName.toUpperCase()) === filter(fandomName.toUpperCase());
@@ -1299,6 +1333,12 @@ export default class FandomService {
     const url = brawlerPage.url().replace("//en.", "//");
     const $ = await cheerio.fromURL(url);
 
+    const ruUrl = $("a")
+      .filter((_, element) => $(element).attr("href")?.includes("/ru/wiki/") ?? false)
+      .first()
+      .attr("href");
+    const $ru = ruUrl ? await cheerio.fromURL(ruUrl) : undefined;
+
     if (brawlerPage == null) {
       // does not exist
       return undefined;
@@ -1320,6 +1360,7 @@ export default class FandomService {
       ...this.parseBalanceHistory(brawlerPage),
       ...this.parseGadgets(brawlerName, brawlerPage, $, klickerData.gadgets),
       ...this.parseStarpowers(brawlerName, brawlerPage, $, klickerData.starpowers),
+      ...this.parseConceptArt(brawlerName, $ru),
     };
   }
 }
