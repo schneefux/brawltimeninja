@@ -144,7 +144,7 @@ export interface FandomBrawlerData extends IdAble {
   gadgets: Accessory[]
   starpowers: Accessory[]
   conceptArt: Asset[];
-  // videos
+  animations: Asset[];
   // … translations via GPT-4o
 }
 
@@ -427,11 +427,6 @@ export default class FandomService {
     let video = ruSection ? this.parseImgAsAsset(ruSection) : undefined;
 
     if (video != undefined && !(await this.checkVideoAttribution(video))) {
-      console.warn("Missing permission to use this video", {
-        attack: tag,
-        brawler: brawlerName,
-        video: video?.sourceUrl,
-      })
       video = undefined;
     }
 
@@ -1306,36 +1301,60 @@ export default class FandomService {
     }
   }
 
-  private parseConceptArt(brawlerName: string, $: cheerio.CheerioAPI|undefined): Pick<FandomBrawlerData, "conceptArt"> {
+  private async parseGallery(brawlerName: string, tag: string, $: cheerio.CheerioAPI, title: string[]): Promise<Asset[]> {
+    const gallery = $("h2")
+      .filter((i, el) => title.some(t => $(el).text().includes(t)))
+      .first()
+      .nextAll()
+      .filter((i, el) => $(el).hasClass("wikia-gallery"))
+      .first();
+
+    const assets: Asset[] = [];
+    for (const img of gallery.find("img")) {
+      const asset = this.parseImgAsAsset($(img));
+      if (asset != undefined && await this.checkVideoAttribution(asset)) {
+        assets.push(asset);
+      }
+    }
+
+    if (assets.length === 0) {
+      console.warn("No " + tag + " found", {
+        brawler: brawlerName,
+      });
+    }
+
+    return assets;
+  }
+
+  private async parseConceptArt(
+    brawlerName: string,
+    $: cheerio.CheerioAPI|undefined,
+  ): Promise<Pick<FandomBrawlerData, "conceptArt">> {
     if ($ == undefined) {
       return {
         conceptArt: [],
       };
     }
 
-    const conceptArtSection = $("h2")
-      .filter((i, el) => $(el).text().includes("Концепт-арты") || $(el).text().includes("Концепты и ранние версии"))
-      .first()
-      .nextAll()
-      .filter((i, el) => $(el).hasClass("wikia-gallery"))
-      .first();
-
-    const conceptArt: Asset[] = [];
-    for (const img of conceptArtSection.find("img")) {
-      const asset = this.parseImgAsAsset($(img));
-      if (asset != undefined) {
-        conceptArt.push(asset);
-      }
-    }
-
-    if (conceptArt.length === 0) {
-      console.warn("No concept art found", {
-        brawler: brawlerName,
-      });
-    }
-
+    const conceptArt = await this.parseGallery(brawlerName, "concept art", $, ["Концепт-арты", "Концепты и ранние версии"]);
     return {
       conceptArt,
+    };
+  }
+
+  private async parseAnimations(
+    brawlerName: string,
+    $: cheerio.CheerioAPI|undefined,
+  ): Promise<Promise<Pick<FandomBrawlerData, "animations">>> {
+    if ($ == undefined) {
+      return {
+        animations: [],
+      };
+    }
+
+    const animations = await this.parseGallery(brawlerName, "animations", $, ["Анимации"]);
+    return {
+      animations,
     };
   }
 
@@ -1359,8 +1378,18 @@ export default class FandomService {
   private async checkVideoAttribution(asset: Asset): Promise<boolean> {
     const imageMetaInfo = await fetch(`https://brawlstars.fandom.com/ru/wikia.php?controller=Lightbox&method=getMediaDetail&fileTitle=${asset.filename}&format=json`)
       .then(res => res.json())
+
     // https://brawlstars.fandom.com/ru/wiki/%D0%A1%D1%82%D0%B5%D0%BD%D0%B0_%D0%BE%D0%B1%D1%81%D1%83%D0%B6%D0%B4%D0%B5%D0%BD%D0%B8%D1%8F:AppleInStudio18?threadId=4400000000000157284
-    return ["AppleInStudio18"].includes(imageMetaInfo.userName);
+    if (["AppleInStudio18"].includes(imageMetaInfo.userName)) {
+      return true;
+    }
+
+    console.warn("Missing permission to use this asset", {
+      ...asset,
+      author: imageMetaInfo.userName,
+    })
+
+    return false;
   }
 
   async getBrawlerData(
@@ -1398,7 +1427,8 @@ export default class FandomService {
       ...this.parseBalanceHistory(brawlerPage),
       ...this.parseGadgets(brawlerName, brawlerPage, $, klickerData.gadgets),
       ...this.parseStarpowers(brawlerName, brawlerPage, $, klickerData.starpowers),
-      ...this.parseConceptArt(brawlerName, $ru),
+      ...await this.parseConceptArt(brawlerName, $ru),
+      ...await this.parseAnimations(brawlerName, $ru),
     };
   }
 }

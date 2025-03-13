@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from "vitest";
+import { beforeEach, expect, test, vi } from "vitest";
 import FandomService, {
   Accessory,
   Asset,
@@ -555,13 +555,22 @@ test("should parse Brawler page (Edgar)", async () => {
     }],
   } satisfies Accessory);
 
-  expect(data.conceptArt).not.toHaveLength(1);
   expect(data.conceptArt).toEqual(
     expect.arrayContaining([
       {
         sourceUrl:
           "https://static.wikia.nocookie.net/brawlstars/images/f/fc/%D0%92%D0%BD%D0%B5%D1%88%D0%BD%D0%B8%D0%B9_%D0%B2%D0%B8%D0%B4_%D0%AD%D0%B4%D0%B3%D0%B0%D1%80%D0%B0.jpg/revision/latest?cb=20211204091318&path-prefix=ru",
         filename: "Внешний вид Эдгара.jpg",
+      },
+    ])
+  );
+
+  expect(data.animations).toEqual(
+    expect.arrayContaining([
+      {
+        sourceUrl:
+          "https://static.wikia.nocookie.net/brawlstars/images/6/68/%D0%AD%D0%B4%D0%B3%D0%B0%D1%80%D0%9F%D0%BE%D0%B1%D0%B5%D0%B4%D0%B0.gif/revision/latest?cb=20231202131348&path-prefix=ru",
+        filename: "ЭдгарПобеда.gif",
       },
     ])
   );
@@ -820,6 +829,8 @@ test("should not use video without permission", async () => {
     .reply(200, fandomEdgarRuHtml);
 
   attributionGranted = false;
+
+  vi.spyOn(console, "warn").mockImplementation(() => {}); // suppress
 
   const data = (await fandomService.getBrawlerData("Edgar", klickerData))!;
 
