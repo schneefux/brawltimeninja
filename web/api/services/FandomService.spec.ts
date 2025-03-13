@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { beforeEach, expect, test } from "vitest";
 import FandomService, {
   Accessory,
   Asset,
@@ -72,6 +72,23 @@ mockAgent.get("http://cube.test")
     }
   })
   .persist();
+
+let attributionGranted: boolean;
+mockAgent.get("https://brawlstars.fandom.com")
+  .intercept({
+    path: /controller=Lightbox/,
+  })
+  .reply(() => {
+    return {
+      statusCode: 200,
+      data: {
+        userName: attributionGranted ? "AppleInStudio18" : "unknown-user",
+      },
+    }
+  })
+  .persist();
+
+beforeEach(() => attributionGranted = true);
 
 const authService = new AuthService();
 const klickerService = new BrawltimeKlickerService(
@@ -221,6 +238,11 @@ test("should parse Brawler page (Edgar)", async () => {
         values: [189, 207, 225, 243, 261, 279, 297, 315, 333, 351, 369],
       },
     ],
+    video: {
+      sourceUrl:
+        "https://static.wikia.nocookie.net/brawlstars/images/4/49/%D0%AD%D0%B4%D0%B3%D0%B0%D1%80%D0%90%D1%82%D0%B0%D0%BA%D0%B0.gif/revision/latest?cb=20231202131323&path-prefix=ru",
+      filename: "ЭдгарАтака.gif",
+    },
   } satisfies Attack);
   expect(data.altAttack).toBeUndefined();
 
@@ -235,6 +257,10 @@ test("should parse Brawler page (Edgar)", async () => {
       },
     ],
     statsByLevel: [],
+    video: {
+      sourceUrl: "https://static.wikia.nocookie.net/brawlstars/images/2/24/%D0%AD%D0%B4%D0%B3%D0%B0%D1%80%D0%A1%D1%83%D0%BF%D0%B5%D1%80.gif/revision/latest?cb=20231202131419&path-prefix=ru",
+      filename: "ЭдгарСупер.gif",
+    },
   } satisfies Attack);
   expect(data.altSuper).toBeUndefined();
 
@@ -770,6 +796,35 @@ test("should parse Brawler where section is 'Star Power' and there are multiple 
       name: "Clyde",
     } satisfies Partial<Attack>)
   )
+});
+
+test("should not use video without permission", async () => {
+  const mockPool = mockAgent.get("https://brawlstars.fandom.com");
+
+  mockPool
+    .intercept({
+      path: "/api.php?action=query&format=json&maxlag=5&origin=*&prop=revisions%7Cpageprops&redirects=true&rvprop=content%7Cids%7Ctimestamp&rvslots=main&titles=Edgar",
+    })
+    .reply(200, fandomEdgarJson);
+
+  mockPool
+    .intercept({
+      path: "/wiki/Edgar",
+    })
+    .reply(200, fandomEdgarHtml);
+
+  mockPool
+    .intercept({
+      path: "/ru/wiki/Эдгар",
+    })
+    .reply(200, fandomEdgarRuHtml);
+
+  attributionGranted = false;
+
+  const data = (await fandomService.getBrawlerData("Edgar", klickerData))!;
+
+  expect(data.attack.video).toBeUndefined();
+  expect(data.super.video).toBeUndefined();
 });
 
 /*

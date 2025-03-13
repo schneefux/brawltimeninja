@@ -111,7 +111,9 @@ interface IdAble {
   brawlstarsId: string | undefined;
 }
 
-export interface Attack extends DescribeAble, StatsAble, StatsByLevelAble {}
+export interface Attack extends DescribeAble, StatsAble, StatsByLevelAble {
+  video: Asset | undefined;
+}
 
 export interface Hypercharge extends DescribeAble, StatsAble {}
 
@@ -371,25 +373,39 @@ export default class FandomService {
     }
   }
 
-  private parseAttack(brawlerPage: any, $: cheerio.CheerioAPI): Pick<FandomBrawlerData, "attack"|"altAttack"> {
-    const attackSections = this.findSectionOrSections(brawlerPage, "Attack");
+  private async parseGenericAttack(
+    tag: string,
+    sectionName: string,
+    sectionNameRu: string,
+    brawlerName: string,
+    brawlerPage: any,
+    $: cheerio.CheerioAPI,
+    $ru: cheerio.CheerioAPI | undefined,
+  ): Promise<{ attack: Attack, alt: Attack | undefined }> {
+    const sections = this.findSectionOrSections(brawlerPage, sectionName);
 
-    if (attackSections.length == 0) {
-      console.warn("Could not find attack section");
+    if (sections.length == 0) {
+      console.warn("Could not find section", {
+        attack: tag,
+        brawler: brawlerName,
+      });
     }
 
-    if (attackSections.length > 2) {
-      console.warn("Found more than two attack sections");
+    if (sections.length > 2) {
+      console.warn("Found more than two sections", {
+        attack: tag,
+        brawler: brawlerName
+      });
     }
 
-    const attackSection = attackSections[0];
-    const { name, description } = this.parseNameAndDescription(attackSection, "attack");
-    const attackStats = this.parseInfoboxTable($, "Attack");
+    const attackSection = sections[0];
+    const { name, description } = this.parseNameAndDescription(attackSection, tag);
+    const attackStats = this.parseInfoboxTable($, sectionName);
 
     let altAttack: Attack | undefined = undefined;
-    const altAttackSection = attackSections[1];
+    const altAttackSection = sections[1];
     if (altAttackSection) {
-      const { name, description } = this.parseNameAndDescription(altAttackSection, "second attack");
+      const { name, description } = this.parseNameAndDescription(altAttackSection, "second " + tag);
       // TODO split stats and statsByLevel
 
       altAttack = {
@@ -397,7 +413,33 @@ export default class FandomService {
         description,
         stats: attackStats?.stats ?? [],
         statsByLevel: attackStats?.statsByLevel ?? [],
+        video: undefined,
       };
+    }
+
+    const ruSection = $ru ? $ru("h3")
+      .filter((i, el) => $(el).text().startsWith(sectionNameRu + ": "))
+      .first()
+      .nextAll()
+      .find("img")
+      .first() : undefined;
+
+    let video = ruSection ? this.parseImgAsAsset(ruSection) : undefined;
+
+    if (video != undefined && !(await this.checkVideoAttribution(video))) {
+      console.warn("Missing permission to use this video", {
+        attack: tag,
+        brawler: brawlerName,
+        video: video?.sourceUrl,
+      })
+      video = undefined;
+    }
+
+    if (video == undefined) {
+      console.warn("Could not find video", {
+        attack: tag,
+        brawler: brawlerName,
+      });
     }
 
     return {
@@ -406,48 +448,37 @@ export default class FandomService {
         description,
         stats: attackStats?.stats ?? [],
         statsByLevel: attackStats?.statsByLevel ?? [],
+        video,
       },
-      altAttack,
+      alt: altAttack,
     };
   }
 
-  private parseSuper(brawlerPage: any, $: cheerio.CheerioAPI): Pick<FandomBrawlerData, "super"|"altSuper"> {
-    const superSections = this.findSectionOrSections(brawlerPage, "Super");
-
-    if (superSections.length == 0) {
-      console.warn("Could not find super section");
-    }
-
-    if (superSections.length > 2) {
-      console.warn("Found more than two super sections");
-    }
-
-    const superSection = superSections[0];
-    const { name, description } = this.parseNameAndDescription(superSection, "super");
-    const superStats = this.parseInfoboxTable($, "Super");
-
-    let altSuper: Attack | undefined = undefined;
-    const altSuperSection = superSections[1];
-    if (altSuperSection) {
-      const { name, description } = this.parseNameAndDescription(altSuperSection, "second super");
-      // TODO split stats and statsByLevel
-
-      altSuper = {
-        name,
-        description,
-        stats: superStats?.stats ?? [],
-        statsByLevel: superStats?.statsByLevel ?? [],
-      };
-    }
+  private async parseAttack(
+    brawlerName: string,
+    brawlerPage: any,
+    $: cheerio.CheerioAPI,
+    $ru: cheerio.CheerioAPI | undefined,
+  ): Promise<Pick<FandomBrawlerData, "attack"|"altAttack">> {
+    const attack = await this.parseGenericAttack("attack", "Attack", "Атака", brawlerName, brawlerPage, $, $ru);
 
     return {
-      super: {
-        name,
-        description,
-        stats: superStats?.stats ?? [],
-        statsByLevel: superStats?.statsByLevel ?? [],
-      },
-      altSuper,
+      attack: attack.attack,
+      altAttack: attack.alt,
+    };
+  }
+
+  private async parseSuper(
+    brawlerName: string,
+    brawlerPage: any,
+    $: cheerio.CheerioAPI,
+    $ru: cheerio.CheerioAPI | undefined,
+  ): Promise<Pick<FandomBrawlerData, "super"|"altSuper">> {
+    const attack = await this.parseGenericAttack("super", "Super", "Супер", brawlerName, brawlerPage, $, $ru);
+
+    return {
+      super: attack.attack,
+      altSuper: attack.alt,
     };
   }
 
@@ -1325,6 +1356,13 @@ export default class FandomService {
     }
   }
 
+  private async checkVideoAttribution(asset: Asset): Promise<boolean> {
+    const imageMetaInfo = await fetch(`https://brawlstars.fandom.com/ru/wikia.php?controller=Lightbox&method=getMediaDetail&fileTitle=${asset.filename}&format=json`)
+      .then(res => res.json())
+    // https://brawlstars.fandom.com/ru/wiki/%D0%A1%D1%82%D0%B5%D0%BD%D0%B0_%D0%BE%D0%B1%D1%81%D1%83%D0%B6%D0%B4%D0%B5%D0%BD%D0%B8%D1%8F:AppleInStudio18?threadId=4400000000000157284
+    return ["AppleInStudio18"].includes(imageMetaInfo.userName);
+  }
+
   async getBrawlerData(
     brawlerName: string,
     klickerData: KlickerData,
@@ -1348,8 +1386,8 @@ export default class FandomService {
       attribution: url,
       ...this.parseBrawlerName(brawlerName, klickerData.brawlers),
       ...this.parseDescriptions(brawlerPage),
-      ...this.parseAttack(brawlerPage, $),
-      ...this.parseSuper(brawlerPage, $),
+      ...await this.parseAttack(brawlerName, brawlerPage, $, $ru),
+      ...await this.parseSuper(brawlerName, brawlerPage, $, $ru),
       ...this.parseHypercharge(brawlerPage, $),
       ...this.parseHealthByLevel(brawlerPage),
       ...this.parseStats(brawlerPage),
