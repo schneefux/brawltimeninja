@@ -1,5 +1,5 @@
-import { beforeEach, expect, test, vi } from "vitest";
-import FandomService, {
+import { expect, test } from "vitest";
+import FandomScraper, {
   Accessory,
   Asset,
   Attack,
@@ -8,7 +8,7 @@ import FandomService, {
   Skin,
   Spray,
   Voiceline,
-} from "./FandomService";
+} from "./FandomScraper";
 import { MockAgent, setGlobalDispatcher } from "undici";
 
 import fandomEdgarJson from "./fixtures/fandom-Edgar.json";
@@ -73,23 +73,6 @@ mockAgent.get("http://cube.test")
   })
   .persist();
 
-let attributionGranted: boolean;
-mockAgent.get("https://brawlstars.fandom.com")
-  .intercept({
-    path: /controller=Lightbox/,
-  })
-  .reply(() => {
-    return {
-      statusCode: 200,
-      data: {
-        userName: attributionGranted ? "AppleInStudio18" : "unknown-user",
-      },
-    }
-  })
-  .persist();
-
-beforeEach(() => attributionGranted = true);
-
 const authService = new AuthService();
 const klickerService = new BrawltimeKlickerService(
   'http://cube.test',
@@ -99,7 +82,7 @@ const klickerService = new BrawltimeKlickerService(
     agent: mockAgent,
   }) as any
 )
-const fandomService = new FandomService(klickerService);
+const fandomService = new FandomScraper(klickerService);
 const klickerData = await fandomService.getBrawlerKlickerData();
 
 test("should parse mode page (Gem Grab)", async () => {
@@ -242,6 +225,7 @@ test("should parse Brawler page (Edgar)", async () => {
       sourceUrl:
         "https://static.wikia.nocookie.net/brawlstars/images/4/49/%D0%AD%D0%B4%D0%B3%D0%B0%D1%80%D0%90%D1%82%D0%B0%D0%BA%D0%B0.gif/revision/latest?cb=20231202131323&path-prefix=ru",
       filename: "ЭдгарАтака.gif",
+      requiresAttribution: true,
     },
   } satisfies Attack);
   expect(data.altAttack).toBeUndefined();
@@ -260,6 +244,7 @@ test("should parse Brawler page (Edgar)", async () => {
     video: {
       sourceUrl: "https://static.wikia.nocookie.net/brawlstars/images/2/24/%D0%AD%D0%B4%D0%B3%D0%B0%D1%80%D0%A1%D1%83%D0%BF%D0%B5%D1%80.gif/revision/latest?cb=20231202131419&path-prefix=ru",
       filename: "ЭдгарСупер.gif",
+      requiresAttribution: true,
     },
   } satisfies Attack);
   expect(data.altSuper).toBeUndefined();
@@ -312,6 +297,7 @@ test("should parse Brawler page (Edgar)", async () => {
           sourceUrl:
             "https://static.wikia.nocookie.net/brawlstars/images/d/d3/Edgar_start_vo_01.ogg/revision/latest?cb=20201216203133",
           filename: "Edgar start vo 01.ogg",
+          requiresAttribution: false,
         },
       },
     ] satisfies Voiceline[])
@@ -323,6 +309,7 @@ test("should parse Brawler page (Edgar)", async () => {
         sourceUrl:
           "https://static.wikia.nocookie.net/brawlstars/images/7/7b/Edgar-Spray.png/revision/latest?cb=20220903144124",
         filename: "Edgar-Spray.png",
+        requiresAttribution: false,
       },
     },
     {
@@ -331,6 +318,7 @@ test("should parse Brawler page (Edgar)", async () => {
         sourceUrl:
           "https://static.wikia.nocookie.net/brawlstars/images/6/69/Edgar_Hypercharge-Spray.png/revision/latest?cb=20231212184440",
         filename: "Edgar Hypercharge-Spray.png",
+        requiresAttribution: false,
       },
     },
   ] satisfies Spray[]);
@@ -341,11 +329,13 @@ test("should parse Brawler page (Edgar)", async () => {
         sourceUrl:
           "https://static.wikia.nocookie.net/brawlstars/images/6/64/Edgar1-pfp.png/revision/latest?cb=20220429014048",
         filename: "Edgar1-pfp.png",
+        requiresAttribution: false,
       },
       {
         sourceUrl:
           "https://static.wikia.nocookie.net/brawlstars/images/2/20/Edgar_Hypercharge-pfp.png/revision/latest?cb=20231212181544",
         filename: "Edgar Hypercharge-pfp.png",
+        requiresAttribution: false,
       },
     ] satisfies Asset[])
   );
@@ -355,13 +345,15 @@ test("should parse Brawler page (Edgar)", async () => {
     sourceUrl:
       "https://static.wikia.nocookie.net/brawlstars/images/2/2b/Edgar_Skin-Default.png/revision/latest?cb=20230219113721",
     filename: "Edgar Skin-Default.png",
-  });
+    requiresAttribution: false,
+  } satisfies Asset);
 
   expect(data.avatar).toEqual({
     sourceUrl:
       "https://static.wikia.nocookie.net/brawlstars/images/b/b4/Edgar_Portrait.png/revision/latest?cb=20201218104515",
     filename: "Edgar Portrait.png",
-  });
+    requiresAttribution: false,
+  } satisfies Asset);
 
   expect(data.skins).toHaveLength(15);
 
@@ -380,6 +372,7 @@ test("should parse Brawler page (Edgar)", async () => {
       sourceUrl:
         "https://static.wikia.nocookie.net/brawlstars/images/f/f2/Edgar_Skin-Nightbringer.png/revision/latest?cb=20241117122248",
       filename: "Edgar Skin-Nightbringer.png",
+      requiresAttribution: false,
     },
     pins: [
       {
@@ -387,6 +380,7 @@ test("should parse Brawler page (Edgar)", async () => {
           sourceUrl:
             "https://static.wikia.nocookie.net/brawlstars/images/d/d2/Edgar_Nightbringer_Pin-Special.png/revision/latest?cb=20241028142135",
           filename: "Edgar Nightbringer Pin-Special.png",
+          requiresAttribution: false,
         },
         rarity: "Exclusive",
         emote: "Special",
@@ -413,6 +407,7 @@ test("should parse Brawler page (Edgar)", async () => {
       sourceUrl:
         "https://static.wikia.nocookie.net/brawlstars/images/8/83/Edgar_Skin-True_Gold.png/revision/latest?cb=20221225151257",
       filename: "Edgar Skin-True Gold.png",
+      requiresAttribution: false,
     },
     pins: expect.arrayContaining([]),
     petSkins: [],
@@ -436,6 +431,7 @@ test("should parse Brawler page (Edgar)", async () => {
       sourceUrl:
         "https://static.wikia.nocookie.net/brawlstars/images/e/e4/Edgar_Skin-Orochi.png/revision/latest?cb=20220127002251",
       filename: "Edgar Skin-Orochi.png",
+      requiresAttribution: false,
     },
     pins: expect.arrayContaining([]),
     petSkins: [],
@@ -454,7 +450,8 @@ test("should parse Brawler page (Edgar)", async () => {
     sourceUrl:
       "https://static.wikia.nocookie.net/brawlstars/images/7/7f/Edgar_Skin-Mecha.png/revision/latest?cb=20231029153551",
     filename: "Edgar Skin-Mecha.png",
-  });
+    requiresAttribution: false,
+  } satisfies Asset);
 
   // spray is called "Mecha Edgar" but skin is called "Edgar"
   expect(mechaSkin.sprays).toEqual([
@@ -464,6 +461,7 @@ test("should parse Brawler page (Edgar)", async () => {
         sourceUrl:
           "https://static.wikia.nocookie.net/brawlstars/images/3/34/Mecha_Edgar-Spray.png/revision/latest?cb=20230905141225",
         filename: "Mecha Edgar-Spray.png",
+        requiresAttribution: false,
       },
     },
   ] satisfies Spray[]);
@@ -480,6 +478,7 @@ test("should parse Brawler page (Edgar)", async () => {
         sourceUrl:
           "https://static.wikia.nocookie.net/brawlstars/images/2/23/Edgar_Tata-Spray.png/revision/latest?cb=20220629091903",
         filename: "Edgar Tata-Spray.png",
+        requiresAttribution: false,
       },
     },
   ] satisfies Spray[]);
@@ -518,6 +517,7 @@ test("should parse Brawler page (Edgar)", async () => {
     asset: {
       sourceUrl: "https://static.wikia.nocookie.net/brawlstars/images/2/2a/GD-Edgar1.png/revision/latest?cb=20211213120345",
       filename: "GD-Edgar1.png",
+      requiresAttribution: false,
     },
     // no stats by level
     statsByLevel: [],
@@ -547,6 +547,7 @@ test("should parse Brawler page (Edgar)", async () => {
     asset: {
       sourceUrl: "https://static.wikia.nocookie.net/brawlstars/images/c/cb/SP-Edgar1.png/revision/latest?cb=20211108011540",
       filename: "SP-Edgar1.png",
+      requiresAttribution: false,
     },
     statsByLevel: [{
       name: "Damage",
@@ -561,8 +562,9 @@ test("should parse Brawler page (Edgar)", async () => {
         sourceUrl:
           "https://static.wikia.nocookie.net/brawlstars/images/f/fc/%D0%92%D0%BD%D0%B5%D1%88%D0%BD%D0%B8%D0%B9_%D0%B2%D0%B8%D0%B4_%D0%AD%D0%B4%D0%B3%D0%B0%D1%80%D0%B0.jpg/revision/latest?cb=20211204091318&path-prefix=ru",
         filename: "Внешний вид Эдгара.jpg",
+        requiresAttribution: false,
       },
-    ])
+    ] satisfies Asset[])
   );
 
   expect(data.animations).toEqual(
@@ -571,8 +573,9 @@ test("should parse Brawler page (Edgar)", async () => {
         sourceUrl:
           "https://static.wikia.nocookie.net/brawlstars/images/6/68/%D0%AD%D0%B4%D0%B3%D0%B0%D1%80%D0%9F%D0%BE%D0%B1%D0%B5%D0%B4%D0%B0.gif/revision/latest?cb=20231202131348&path-prefix=ru",
         filename: "ЭдгарПобеда.gif",
+        requiresAttribution: true,
       },
-    ])
+    ] satisfies Asset[])
   );
 });
 
@@ -613,6 +616,7 @@ test("should parse Brawler voicelines without skin specific voicelines (Shelly)"
           sourceUrl:
             "https://static.wikia.nocookie.net/brawlstars/images/3/3a/Shelly_start_01.ogg/revision/latest?cb=20190803143405",
           filename: "Shelly start 01.ogg",
+          requiresAttribution: false,
         },
       },
     ] satisfies Voiceline[])
@@ -677,6 +681,7 @@ test("should parse Brawler skins including Pet", async () => {
       sourceUrl:
         "https://static.wikia.nocookie.net/brawlstars/images/9/9d/Nita_Skin-Tusked.png/revision/latest?cb=20231213185144",
       filename: "Nita Skin-Tusked.png",
+      requiresAttribution: false,
     },
     pins: expect.arrayContaining([]),
     sprays: expect.arrayContaining([]),
@@ -689,6 +694,7 @@ test("should parse Brawler skins including Pet", async () => {
           sourceUrl:
             "https://static.wikia.nocookie.net/brawlstars/images/c/ca/Nita_start_vo_evil_03.ogg/revision/latest?cb=20231026113115",
           filename: "Nita start vo evil 03.ogg",
+          requiresAttribution: false,
         },
       },
     ]),
@@ -699,6 +705,7 @@ test("should parse Brawler skins including Pet", async () => {
           sourceUrl:
             "https://static.wikia.nocookie.net/brawlstars/images/b/bf/Nita_Minion-Tusked.png/revision/latest?cb=20231028002842",
           filename: "Nita Minion-Tusked.png",
+          requiresAttribution: false,
         },
       },
     ],
@@ -719,6 +726,7 @@ test("should parse Brawler skins including Pet", async () => {
       sourceUrl:
         "https://static.wikia.nocookie.net/brawlstars/images/0/0a/Nita_Skin-Nian.png/revision/latest?cb=20221222212700",
       filename: "Nita Skin-Nian.png",
+      requiresAttribution: false,
     },
     pins: expect.arrayContaining([]),
     petSkins: expect.arrayContaining([]),
@@ -805,37 +813,6 @@ test("should parse Brawler where section is 'Star Power' and there are multiple 
       name: "Clyde",
     } satisfies Partial<Attack>)
   )
-});
-
-test("should not use video without permission", async () => {
-  const mockPool = mockAgent.get("https://brawlstars.fandom.com");
-
-  mockPool
-    .intercept({
-      path: "/api.php?action=query&format=json&maxlag=5&origin=*&prop=revisions%7Cpageprops&redirects=true&rvprop=content%7Cids%7Ctimestamp&rvslots=main&titles=Edgar",
-    })
-    .reply(200, fandomEdgarJson);
-
-  mockPool
-    .intercept({
-      path: "/wiki/Edgar",
-    })
-    .reply(200, fandomEdgarHtml);
-
-  mockPool
-    .intercept({
-      path: "/ru/wiki/Эдгар",
-    })
-    .reply(200, fandomEdgarRuHtml);
-
-  attributionGranted = false;
-
-  vi.spyOn(console, "warn").mockImplementation(() => {}); // suppress
-
-  const data = (await fandomService.getBrawlerData("Edgar", klickerData))!;
-
-  expect(data.attack.video).toBeUndefined();
-  expect(data.super.video).toBeUndefined();
 });
 
 /*

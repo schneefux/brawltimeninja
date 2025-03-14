@@ -4,7 +4,7 @@ import { Prompt } from "./PromptTemplateRenderService"
 import { scaleEntriesIntoTiers } from "@schneefux/klicker/util"
 import { winRateAdjMergedMetric } from "~/lib/klicker.cubes"
 import { formatDistanceToNow, subWeeks, differenceInDays } from 'date-fns'
-import { FandomModeData } from "./FandomService"
+import { FandomModeData } from "./FandomScraper"
 import { Locale, loadLocaleWithFallback, locales } from "~/locales"
 import { config } from "~/config/config"
 

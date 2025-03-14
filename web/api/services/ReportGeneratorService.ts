@@ -1,7 +1,7 @@
 import { Knex } from 'knex'
 import { StatsD } from 'hot-shots'
 import { differenceInMinutes, parseISO } from "date-fns"
-import FandomService from './FandomService'
+import FandomScraper from './FandomScraper'
 import { KlickerService } from '@schneefux/klicker/service'
 import MapReport from './MapReport'
 import PromptTemplateRenderService from './PromptTemplateRenderService'
@@ -24,7 +24,7 @@ export interface Report {
 export default class ReportGeneratorService {
   private mapReport: MapReport
   private openaiService: OpenAIService
-  private fandomService = new FandomService()
+  private fandomService = new FandomScraper()
   private promptTemplateRenderService = new PromptTemplateRenderService()
 
   constructor(openAiApiKey: string, private knex: Knex, private $klicker: KlickerService) {
