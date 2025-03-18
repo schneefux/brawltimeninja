@@ -8,7 +8,7 @@
         <b-dashboard-cell
           v-for="accessory in scrapedData[prop as 'gadgets'|'starpowers']"
           :key="accessory.name"
-          :rows="2"
+          :rows="1"
           :columns="3"
         >
           <brawler-accessory-card
@@ -22,34 +22,10 @@
         v-else
         v-for="i in 2"
         :key="prop + '-' + i"
-        :rows="2"
+        :rows="1"
         :columns="3"
       ></b-dashboard-cell>
     </template>
-
-    <b-dashboard-cell
-      :rows="2"
-      :columns="4"
-    >
-      <brawler-accessory-roll
-        v-if="brawlerMetadata != undefined"
-        :brawler-brawlstars-id="brawlerMetadata.brawlstarsId"
-        kind="gears"
-      ></brawler-accessory-roll>
-    </b-dashboard-cell>
-
-    <b-dashboard-cell
-      :rows="2"
-      :columns="3"
-    >
-      <b-card :title="$t('info')">
-        <template v-slot:content>
-          <p>
-            {{ $t('starpower-gadget-comparison.info') }}
-          </p>
-        </template>
-      </b-card>
-    </b-dashboard-cell>
   </b-scrolling-dashboard>
 </template>
 

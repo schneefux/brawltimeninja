@@ -74,6 +74,22 @@
     </b-page-section>
 
     <b-page-section
+      id="accessoryStats"
+      ref="accessoryStatsSection"
+      :title="$t('brawler.accessories.stats')"
+      v-observe-visibility="{
+        callback: makeVisibilityCallback('accessoriesStats'),
+        once: true,
+      }"
+      lazy
+    >
+      <brawler-accessories-stats
+        v-if="brawlerMetadata != undefined"
+        :brawler-metadata="brawlerMetadata"
+      ></brawler-accessories-stats>
+    </b-page-section>
+
+    <b-page-section
       id="synergy"
       ref="synergySection"
       :title="$t('brawler.synergies-and-weaknesses-for', { brawler: brawlerMetadata?.name })"
@@ -309,6 +325,7 @@ export default defineComponent({
       brawlerSection: useTemplateRef<InstanceType<typeof BPageSection>>('brawlerSection'),
       overviewSection: useTemplateRef<InstanceType<typeof BPageSection>>('overviewSection'),
       accessorySection: useTemplateRef<InstanceType<typeof BPageSection>>('accessorySection'),
+      accessoryStatsSection: useTemplateRef<InstanceType<typeof BPageSection>>('accessoryStatsSection'),
       synergySection: useTemplateRef<InstanceType<typeof BPageSection>>('synergySection'),
       mapsSection: useTemplateRef<InstanceType<typeof BPageSection>>('mapsSection'),
       modesSection: useTemplateRef<InstanceType<typeof BPageSection>>('modesSection'),
@@ -332,6 +349,10 @@ export default defineComponent({
       id: 'accessory',
       title: i18n.t('brawler.accessories'),
       element: sectionRefs.accessorySection.value?.$el,
+    }, {
+      id: 'gear',
+      title: i18n.t('brawler.accessories.stats'),
+      element: sectionRefs.accessoryStatsSection.value?.$el,
     }, {
       id: 'synergy',
       title: i18n.t('brawler.synergies-and-weaknesses-for', { brawler: brawlerMetadata.value?.name }),

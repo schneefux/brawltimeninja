@@ -33,10 +33,9 @@
 
 <script lang="ts">
 import { PropType, computed, defineComponent } from 'vue'
-import { CQuery, VKvTable } from '@schneefux/klicker/components'
+import { CQuery, VKvTable, BShimmer } from '@schneefux/klicker/components'
 import { CubeQueryFilter } from '@schneefux/klicker/types'
 import { BrawlerMetadata } from '~/composables/dimension-values'
-import { BShimmer } from '@schneefux/klicker/components'
 
 export default defineComponent({
   components: {
@@ -51,13 +50,13 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const query = computed(() => ({
+    const query = {
       cubeId: 'map',
       metricsIds: ['winRate', 'useRate', 'picks'],
       dimensionsIds: ['brawler'],
       sortId: 'winRate',
       slices: {},
-    }))
+    }
 
     const filter = computed<CubeQueryFilter>(() => (e) => e.dimensionsRaw.brawler.brawler == props.brawlerMetadata?.brawlstarsId)
 
