@@ -244,7 +244,16 @@ export default class BrawlstarsService {
     b.event.map = b.event.map || ''
     // FIXME since 2020-10-22, battle.event.mode is missing - patch it back
     // FIXME since 2022-01, battle.event.mode may be "unknown"
-    b.event.mode = b.event.mode != undefined && b.event.mode != 'unknown' ? b.event.mode : b.battle.mode
+    if (b.event.mode == undefined || b.event.mode == 'unknown') {
+      // FIXME since 2025-03-18:
+      //  * battle.event.mode=unknown && battle.battle.mode=brawlBall: Brawl Hockey (special Brawl Ball mode)
+      //  * battle.event.mode=brawlBall && battle.battle.mode=brawlBall: Brawl Ball
+      if (b.battle.mode == 'brawlBall') {
+        b.event.mode = 'brawlHockey';
+      } else {
+        b.event.mode = b.battle.mode
+      }
+    }
 
     // FIXME API bug 2020-07-26
     if (['roboRumble', 'bigGame'].includes(b.event.mode) && b.battle.result == undefined) {
