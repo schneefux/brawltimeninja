@@ -37,9 +37,11 @@
       </div>
     </template>
 
-    <template v-slot:preview>
+    <template
+      v-if="linkWithParams != undefined"
+      v-slot:preview
+    >
       <router-link
-        v-if="linkWithParams != undefined"
         :to="linkWithParams"
         class="opacity-75"
       >
