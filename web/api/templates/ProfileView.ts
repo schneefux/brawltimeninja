@@ -98,7 +98,7 @@ export default class ProfileView {
 
     const headers = [
       {
-        image: await this.readRemote(`${mediaUrl}/brawlers/${brawlerId}/avatar.png?size=160`),
+        image: await this.readRemote(`${mediaUrl}/avatars/${player.icon.id}.png?size=200`),
         title: player.name,
         subtitle: player.tag,
         color: player.nameColor,
