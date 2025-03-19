@@ -138,8 +138,18 @@ router.get(
       font: {
         fontFiles: [
           new URL(`../../assets/fonts/LilitaOne-Regular.ttf`, import.meta.url).pathname,
+          // fallback fonts for names with unicode characters
+          new URL(`../../assets/fonts/NotoSansLiving-Regular.ttf`, import.meta.url).pathname,
+          new URL(`../../assets/fonts/NotoSansHistorical-Regular.ttf`, import.meta.url).pathname,
+          new URL(`../../assets/fonts/NotoSansJP-Regular.ttf`, import.meta.url).pathname,
+          new URL(`../../assets/fonts/NotoSansTC-Regular.ttf`, import.meta.url).pathname,
+          new URL(`../../assets/fonts/NotoSansKR-Regular.ttf`, import.meta.url).pathname,
+          new URL(`../../assets/fonts/NotoMusic-Regular.ttf`, import.meta.url).pathname,
+          new URL(`../../assets/fonts/NotoEmoji-Regular.ttf`, import.meta.url).pathname,
+          new URL(`../../assets/fonts/NotoSansSymbols-Regular.ttf`, import.meta.url).pathname,
+          new URL(`../../assets/fonts/NotoSansSymbols2-Regular.ttf`, import.meta.url).pathname,
         ],
-        loadSystemFonts: false,
+        loadSystemFonts: false, // improves performance
       },
       /*
       // 2x DPI
