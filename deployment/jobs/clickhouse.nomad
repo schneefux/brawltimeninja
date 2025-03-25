@@ -76,7 +76,7 @@ job "clickhouse" {
       }
 
       config {
-        image = "clickhouse/clickhouse-server:24.12-alpine"
+        image = "clickhouse/clickhouse-server:25.3-alpine"
         network_mode = "host"
 
         volumes = [
