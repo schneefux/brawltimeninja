@@ -108,7 +108,7 @@ export interface Column {
   header?: boolean
 }
 
-interface IndexedColumn extends Column {
+export interface IndexedColumn extends Column {
   index: number
 }
 

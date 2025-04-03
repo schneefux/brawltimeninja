@@ -89,7 +89,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="postcss">
+<style scoped>
 /*
   aspect ratio 1.91 : 1
   https://www.business2community.com/brandviews/presto-media/best-social-media-image-sizes-photo-sharing-every-major-social-network-01911894

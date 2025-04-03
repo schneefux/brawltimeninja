@@ -11,14 +11,14 @@
         'bg-contrast/[0.08]': elevation == 1,
         'bg-white/[.02]': elevation == 2,
         'bg-white/[.01]': elevation > 2,
-        'shadow-sm': elevation == 0,
-        'shadow': elevation == 1,
+        'shadow-xs': elevation == 0,
+        'shadow-sm': elevation == 1,
         'shadow-md': elevation == 2,
         'shadow-lg': elevation == 3,
         'shadow-xl': elevation == 4,
-        'relative loading': loading,
+        'relative before:absolute before:bottom-0 before:left-0 before:bg-primary-500 before:h-1 before:animate-[running-progress_2s_cubic-bezier(0.4,_0,_0.2,_1)_infinite]': loading,
         'cursor-pointer': $attrs.onClick != undefined || link != undefined,
-        'backdrop-blur': !noFilter,
+        'backdrop-blur-sm': !noFilter,
         'safari-backdrop-none': elevation > 1,
       }"
       class="h-full flex flex-col rounded-2xl"
@@ -43,8 +43,8 @@
           'pt-2': !dense && 'infobar' in $slots,
           'px-3 gap-x-2 pt-2': dense,
           'rounded-t-2xl': !('infobar' in $slots),
-          'grid-cols-[auto,1fr,auto]': 'icon' in $slots || icon != undefined,
-          'grid-cols-[1fr,auto]': !('icon' in $slots || icon != undefined),
+          'grid-cols-[auto_1fr_auto]': 'icon' in $slots || icon != undefined,
+          'grid-cols-[1fr_auto]': !('icon' in $slots || icon != undefined),
           'cursor-pointer': $attrs.onClickHeader != undefined,
         }]"
         class="shrink-0 grid items-center overflow-hidden"
@@ -113,14 +113,14 @@
       <div
         v-if="'content' in $slots"
         :class="[{
-          'bg-cover bg-center bg-filter relative z-10': background != undefined,
+          'bg-cover bg-center relative z-10 after:block after:absolute after:top-0 after:left-0 after:w-full after:h-full after:backdrop-filter-[brightness(50%)_grayscale(25%)] after:-z-1': background != undefined,
           'px-6': !dense,
           'pt-4': background == undefined && !dense && !renderTitle,
           'pb-4': background == undefined && !dense && !('actions' in $slots),
           'py-2': background != undefined && !dense,
           'px-3 py-1': dense,
-          'rounded-t-2xl bg-filter-rounded-t-2xl': !renderTitle,
-          'rounded-b-2xl bg-filter-rounded-b-2xl': !('actions' in $slots),
+          'rounded-t-2xl after:rounded-t-2xl': !renderTitle,
+          'rounded-b-2xl after:rounded-b-2xl': !('actions' in $slots),
         }]"
         :style="{
           'background-image': background != undefined ? `url('${background}')` : undefined,
@@ -255,25 +255,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="postcss" scoped>
-.bg-filter::after {
-  content: '';
-  @apply block absolute top-0 left-0 w-full h-full;
-  backdrop-filter: brightness(50%) grayscale(25%);
-  z-index: -1;
-}
-
-.bg-filter-rounded-b-2xl::after {
-  @apply rounded-b-2xl;
-}
-
-.loading:before {
-  @apply absolute bottom-0 left-0 bg-primary-500 h-1;
-
-  content: '';
-  animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
+<style>
 @keyframes running-progress {
   0% {
     width: 0%;

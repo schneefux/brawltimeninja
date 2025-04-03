@@ -5,7 +5,7 @@
     dense
   >
     <template v-slot:content>
-      <div class="text-xs grid grid-cols-[auto,auto] gap-x-1 gap-y-px">
+      <div class="text-xs grid grid-cols-[auto_auto] gap-x-1 gap-y-px">
         <dl
           v-for="annotation in annotations"
           :key="annotation.label"

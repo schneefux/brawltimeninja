@@ -130,7 +130,7 @@ export default defineComponent({
       'content_type': 'quiz',
     })
 
-    const onShareCancel = () => event('cancel_share_quiz')
+    const onShareCancel = () => event('cancel_share_quiz', {})
 
     return {
       quizRootUrl,

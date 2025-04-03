@@ -3,7 +3,7 @@ t<template>
     class="fixed z-30 inset-0 w-full h-full flex justify-center items-center"
     style="background-color: rgba(0, 0, 0, 0.75)"
   >
-    <section class="mx-2 py-2 max-w-xl rounded bg-background text-text flex flex-col justify-center items-center">
+    <section class="mx-2 py-2 max-w-xl rounded-sm bg-background text-text flex flex-col justify-center items-center">
       <h1 class="text-center text-xl">
         {{ translate('cookie-consent.title') }} 🍪
       </h1>

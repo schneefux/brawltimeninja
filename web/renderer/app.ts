@@ -5,14 +5,13 @@ import TRPCPlugin, { createClient as createTrpcClient } from '~/plugins/trpc'
 import type { PageContext } from './types'
 import { setPageContext } from '../composables/page-context'
 import { createPinia } from 'pinia'
-import VueGtagPlugin, { query } from 'vue-gtag'
+import { createGtag, query } from 'vue-gtag'
 import { createI18n, I18n } from 'vue-i18n'
 import { ClientOnly } from '@schneefux/klicker/components'
-import { createHead } from '@unhead/vue'
-import { InferSeoMetaPlugin } from '@unhead/addons'
 import { defaultLocale, locales } from '~/locales'
 import { createRouter } from './router'
 import { localePath, useSentry } from '~/composables/compat'
+import { VueHeadClient } from '@unhead/vue'
 
 export { createApp }
 
@@ -31,7 +30,7 @@ declare module 'pinia' {
   }
 }
 
-function createApp(pageContext: PageContext, customFetch: typeof fetch) {
+function createApp(pageContext: PageContext, head: VueHeadClient, customFetch: typeof fetch) {
   const { Page } = pageContext
 
   const app = createSSRApp(Page)
@@ -40,7 +39,7 @@ function createApp(pageContext: PageContext, customFetch: typeof fetch) {
     app.config.performance = true
   }
 
-  setPageContext(app, reactive(pageContext))
+  setPageContext(app, pageContext) // TODO muss das reactive sein?
 
   const i18n = createI18n({
     legacy: false,
@@ -52,11 +51,6 @@ function createApp(pageContext: PageContext, customFetch: typeof fetch) {
   app.use(i18n)
 
   const themeColor = '#facc15' // yellow-400
-  const head = createHead({
-    plugins: [
-      InferSeoMetaPlugin(),
-    ],
-  })
   head.push({
     titleTemplate: (title) => title != undefined ? `${title} - Brawl Time Ninja` : 'Brawl Time Ninja',
     bodyAttrs: {
@@ -147,18 +141,22 @@ function createApp(pageContext: PageContext, customFetch: typeof fetch) {
 
   app.config.globalProperties.localePath = (path: string) => localePath(path, i18n.global)
 
-  app.use(VueGtagPlugin, {
-    config: {
-      id: pageContext.envConfig.ga4Id,
+  const gtag = createGtag({
+    tagId: pageContext.envConfig.ga4Id,
+    hooks: {
+      'script:loaded': () => {
+        query('js', new Date())
+      },
     },
-    onReady() {
-      query('js', new Date())
+    pageTracker: {
+      router,
     },
-  }, router)
+  })
+
+  app.use(gtag)
 
   return {
     app,
-    head,
     pinia,
     router,
     queryClient,

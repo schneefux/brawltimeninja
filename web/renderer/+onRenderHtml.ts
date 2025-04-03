@@ -9,12 +9,20 @@ import SuperJSON from 'superjson'
 import { render } from 'vike/abort'
 import { SentryInjectionKey } from './sentry'
 import customFetch from '~/lib/fetch'
+import { createHead } from '@unhead/vue/server'
+import { InferSeoMetaPlugin } from '@unhead/addons'
 
 export { onRenderHtml }
 
 async function onRenderHtml(pageContext: PageContextServer & PageContext) {
+  const head = createHead({
+    plugins: [
+      InferSeoMetaPlugin(),
+    ],
+  })
+
   // dirty cast undici as fetch - see cube.js source code, that's fine
-  const { app, head, pinia, router, queryClient } = createApp(pageContext, customFetch as any)
+  const { app, pinia, router, queryClient } = createApp(pageContext, head, customFetch as any)
 
   app.provide(SentryInjectionKey, pageContext.sentry as any)
 

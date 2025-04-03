@@ -49,7 +49,7 @@
 
         <b-progress
           :value="progress"
-          class="absolute bottom-0 inset-x-0 !h-2 px-3"
+          class="absolute bottom-0 inset-x-0 h-2! px-3"
         ></b-progress>
       </div>
     </template>

@@ -1,7 +1,8 @@
 <template>
   <b-scrolling-dashboard>
     <template
-      v-for="prop in ['gadgets', 'starpowers']"
+      v-if="brawlerMetadata != undefined"
+      v-for="prop in ['gadgets', 'starpowers'] as const"
       :key="prop"
     >
       <b-dashboard-cell
@@ -43,7 +44,6 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { ScrapedBrawler } from '~/model/Web'
 import { BScrollingDashboard, BDashboardCell, BCard } from '@schneefux/klicker/components'
 import { BrawlerMetadata } from '~/composables/dimension-values';
 

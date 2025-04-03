@@ -2,18 +2,25 @@ import { createApp } from './app'
 import type { PageContext } from './types'
 import { hydrate } from '@tanstack/vue-query'
 import SuperJSON from 'superjson'
+import { createHead } from '@unhead/vue/client'
+import { inject } from 'vue'
+import { InferSeoMetaPlugin } from '@unhead/addons'
 
 // polyfills
 import 'core-js/stable/structured-clone' // used by vega-lite
 import 'core-js/stable/object/from-entries'
 import { SentryInjectionKey, initSentry } from './sentry'
-import { inject } from 'vue'
 
 export { onRenderClient }
 
 async function onRenderClient(pageContext: PageContext) {
+  const head = createHead({
+    plugins: [
+      InferSeoMetaPlugin(),
+    ],
+  })
   // fetch requires window as `this`, so bind it
-  const params = createApp(pageContext, window.fetch.bind(window))
+  const params = createApp(pageContext, head, window.fetch.bind(window))
 
   const { registerSW } = await import('virtual:pwa-register') // use dynamic import to fetch sw at runtime
   registerSW({

@@ -1,163 +1,138 @@
-@layer utilities {
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
+/* note! order matters */
 
-  .var--rows-1 {
-    --rows: 1;
-  }
-  .var--rows-2 {
-    --rows: 2;
-  }
-  .var--rows-3 {
-    --rows: 3;
-  }
-  .var--rows-4 {
-    --rows: 4;
-  }
-  .var--rows-5 {
-    --rows: 5;
-  }
-  .var--rows-6 {
-    --rows: 6;
-  }
-  .var--columns-1 {
-    --columns: 1
-  }
-  .var--columns-2 {
-    --columns: 2;
-  }
-  .var--columns-3 {
-    --columns: 3;
-  }
-  .var--columns-4 {
-    --columns: 4;
-  }
-  .var--columns-5 {
-    --columns: 5;
-  }
-  .var--columns-6 {
-    --columns: 6;
+@utility dashboard {
+  --cell-size: 96px;
+  --cell-gap: 16px;
+
+  display: grid;
+  /*
+   * Add as many rows as necessary, at least 96px.
+   * If the min-content is more than 96px, stretch that row.
+   */
+  grid-auto-rows: minmax(var(--cell-size), min-content);
+  /*
+   * Fit as many columns as possible, each at least 96px wide.
+   * If the min-content is more than 96px, stretch the columns up to 150%.
+   */
+  grid-template-columns: repeat(auto-fill, minmax(var(--cell-size), auto));
+  /**
+   * Tell the browser that children won't affect anything outside of the grid
+   */
+  contain: content;
+  /*
+   * Add a gap so the desktop layout looks less cramped.
+   * Cells spanning multiple rows/columns can use this space.
+   */
+  gap: var(--cell-gap);
+  /*
+   * Densely pack rows, filling remaining space.
+   */
+  grid-auto-flow: row dense;
+}
+
+@utility dashboard--horizontal {
+  /*
+   * Render as few rows as possible and scroll horizontally.
+   */
+  grid-auto-flow: column dense;
+  grid-template-columns: none;
+  grid-auto-columns: minmax(var(--cell-size), min-content);
+  overflow-x: auto;
+  @apply snap-x snap-proximity lg:snap-none;
+
+  & .dashboard_cell {
+    scroll-snap-align: center;
   }
 }
 
-@layer components {
-  .dashboard {
-    --cell-size: 96px;
-    --cell-gap: 16px;
+@utility dashboard--fixed {
+  /*
+   * Set a fixed width and scroll horizontally.
+   */
+  --columns: 12;
+  grid-template-columns: repeat(
+    var(--columns),
+    minmax(var(--cell-size), min-content)
+  );
+  overflow-x: auto;
+}
 
-    display: grid;
-    /*
-     * Add as many rows as necessary, at least 96px.
-     * If the min-content is more than 96px, stretch that row.
-     */
-    grid-auto-rows: minmax(var(--cell-size), min-content);
-    /*
-     * Fit as many columns as possible, each at least 96px wide.
-     * If the min-content is more than 96px, stretch the columns up to 150%.
-     */
-    grid-template-columns: repeat(auto-fill, minmax(var(--cell-size), auto));
-    /**
-     * Tell the browser that children won't affect anything outside of the grid
-     */
-    contain: content;
-    /*
-     * Add a gap so the desktop layout looks less cramped.
-     * Cells spanning multiple rows/columns can use this space.
-     */
-    gap: var(--cell-gap);
-    /*
-     * Densely pack rows, filling remaining space.
-     */
-    grid-auto-flow: row dense;
-  }
-
-  .dashboard--horizontal {
-    /*
-     * Render as few rows as possible and scroll horizontally.
-     */
-    grid-auto-flow: column dense;
-    grid-template-columns: none;
-    grid-auto-columns: minmax(var(--cell-size), min-content);
-    overflow-x: auto;
-    @apply snap-x snap-proximity lg:snap-none
-  }
-
-  .dashboard--horizontal .dashboard__cell {
-    scroll-snap-align: center;
-  }
-
-  .dashboard--fixed {
-    /*
-     * Set a fixed width and scroll horizontally.
-     */
-    --columns: 12;
-    grid-template-columns: repeat(var(--columns), minmax(var(--cell-size), min-content));
-    overflow-x: auto;
-  }
-
-  .dashboard .dashboard__cell {
+@utility dashboard {
+  & .dashboard__cell {
     grid-row: span var(--rows) / span var(--rows);
     grid-column: span var(--columns) / span var(--columns);
   }
+}
 
-  .dashboard--responsive .dashboard__cell {
-    grid-column: span min(max(1, calc(var(--columns-max) - var(--columns-margin))), var(--columns)) / span min(max(1, calc(var(--columns-max) - var(--columns-margin))), var(--columns));
+@utility dashboard--responsive {
+  & .dashboard__cell {
+  grid-column: span
+    min(
+      max(1, calc(var(--columns-max) - var(--columns-margin))),
+      var(--columns)
+    ) /
+    span
+    min(
+      max(1, calc(var(--columns-max) - var(--columns-margin))),
+      var(--columns)
+    );
   }
 
   /* TODO does not support var so these are hardcoded */
-  .dashboard--responsive {
+  & {
     --columns-max: 1;
     --columns-margin: 0;
   }
   @media (min-width: 224px) {
-    .dashboard--responsive {
+    & {
       --columns-max: 2;
     }
   }
   @media (min-width: 352px) {
-    .dashboard--responsive {
+    & {
       --columns-max: 3;
     }
   }
   @media (min-width: 480px) {
-    .dashboard--responsive {
+    & {
       --columns-max: 4;
     }
   }
   @media (min-width: 768px) {
-    .dashboard--responsive {
+    & {
       --columns-max: 5;
     }
   }
   @media (min-width: 864px) {
-    .dashboard--responsive {
+    & {
       --columns-max: 6;
     }
   }
   @media (min-width: 992px) {
-    .dashboard--responsive {
+    & {
       --columns-max: 7;
     }
   }
   @media (min-width: 1120px) {
-    .dashboard--responsive {
+    & {
       --columns-max: 8;
     }
   }
   @media (min-width: 1248px) {
-    .dashboard--responsive {
+    & {
       --columns-max: 9;
     }
   }
+}
 
-  .dashboard--margin-1 {
-    --columns-margin: 1;
-  }
-  .dashboard--margin-2 {
-    --columns-margin: 2;
-  }
-  .dashboard--margin-3 {
-    --columns-margin: 3;
-  }
+@utility dashboard--margin-1 {
+  --columns-margin: 1;
+}
+
+@utility dashboard--margin-2 {
+  --columns-margin: 2;
+}
+
+@utility dashboard--margin-3 {
+  --columns-margin: 3;
 }

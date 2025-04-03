@@ -1,11 +1,11 @@
-import { inject } from 'vue'
+import { inject, reactive, Reactive } from 'vue'
 import type { App, InjectionKey } from 'vue'
 import { PageContext } from '../renderer/types'
 
 export { usePageContext }
 export { setPageContext }
 
-const key: InjectionKey<PageContext> = Symbol('pageContext')
+const key: InjectionKey<Reactive<PageContext>> = Symbol('pageContext')
 
 function usePageContext() {
   const pageContext = inject(key)
@@ -14,5 +14,5 @@ function usePageContext() {
 }
 
 function setPageContext(app: App, pageContext: PageContext) {
-  app.provide(key, pageContext)
+  app.provide(key, reactive(pageContext))
 }

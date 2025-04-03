@@ -17,7 +17,7 @@
 
     <div
       v-if="canSave"
-      class="mt-8 grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center"
+      class="mt-8 grid grid-cols-[max-content_max-content] gap-x-8 gap-y-4 items-center"
     >
       <label :for="`${prefix}-editor-url`">
         {{ $t('action.editor-url') }}

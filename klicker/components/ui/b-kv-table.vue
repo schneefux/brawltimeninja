@@ -8,7 +8,7 @@
       :key="row.key"
       class="flex justify-between gap-x-2"
     >
-      <dt class="basis-[min-content] flex-grow text-text/75">
+      <dt class="basis-[min-content] grow text-text/75">
         {{ row.title }}
       </dt>
       <dd class="basis-[auto] text-text text-right">

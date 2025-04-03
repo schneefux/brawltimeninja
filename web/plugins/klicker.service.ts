@@ -24,7 +24,7 @@ export interface EventMetadata {
 export class BrawltimeKlickerService extends KlickerService {
   constructor(
     private cubeUrl: string|undefined,
-    tokenProvider: () => Promise<string|undefined>,
+    tokenProvider: () => Promise<string>,
     fetchImplementation: typeof fetch
   ) {
     if (!cubeUrl) {

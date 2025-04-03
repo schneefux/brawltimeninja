@@ -2,7 +2,7 @@
   <progress
     :value="value"
     :max="max"
-    class="w-full h-3 progress"
+    class="w-full h-3 progress-bar:rounded-full progress-bar:bg-contrast/10 progress-value:rounded-full progress-value:bg-primary-400"
   >{{ value != undefined ? (Math.floor(100 * value / max) + '%') : '' }}</progress>
 </template>
 
@@ -23,13 +23,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="postcss" scoped>
-.progress::-webkit-progress-bar {
-  @apply rounded-full bg-contrast/10;
-}
-
-.progress::-webkit-progress-value {
-  @apply rounded-full bg-primary-400;
-}
-</style>

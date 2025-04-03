@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="w-full grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center">
+    <div class="w-full grid grid-cols-[max-content_max-content] gap-x-8 gap-y-4 items-center">
       <label :for="`${prefix}-title`">
         Title
       </label>
@@ -83,7 +83,7 @@
             title="Configure Widget Dimensions"
           >
             <template v-slot:content>
-              <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
+              <div class="grid grid-cols-[max-content_max-content] gap-x-8 gap-y-4 my-2 items-center">
                 <label :for="`${prefix}-columns`">
                   Columns
                 </label>

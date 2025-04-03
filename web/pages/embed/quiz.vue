@@ -44,7 +44,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .sharepic {
   width: 600px;
   height: 315px;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="w-full grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 items-center">
+    <div class="w-full grid grid-cols-[max-content_max-content] gap-x-8 gap-y-4 items-center">
       <label :for="`${prefix}-title`">
         Title
       </label>
@@ -52,7 +52,7 @@
     </div>
 
     <div
-      class="w-full h-[75vh] relative mx-1 my-3 border-4 rounded border-gray-400"
+      class="w-full h-[75vh] relative mx-1 my-3 border-4 rounded-sm border-gray-400"
       style="overflow: hidden; user-select: unset !important;"
       ref="containerParent"
     >

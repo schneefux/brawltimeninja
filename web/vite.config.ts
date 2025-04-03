@@ -1,5 +1,5 @@
 import vue from '@vitejs/plugin-vue'
-import ssr from 'vike/plugin'
+import vike from 'vike/plugin'
 import Components from 'unplugin-vue-components/vite'
 import UnheadVite from '@unhead/addons/vite'
 import { UserConfig } from 'vite'
@@ -12,6 +12,7 @@ import { vavite } from 'vavite'
 import legacy from '@vitejs/plugin-legacy'
 import manifest from './config/manifest'
 import { SENTRY_APPLICATION_KEY, SENTRY_REPO } from './config/sentry'
+import tailwindcss from '@tailwindcss/vite'
 
 const config: UserConfig = {
   buildSteps: [
@@ -56,7 +57,8 @@ const config: UserConfig = {
       manifest,
     }),
     UnheadVite(),
-    ssr({ disableAutoFullBuild: true }),
+    vike(),
+    tailwindcss(),
     legacy(),
     process.env.VITE_GIT_REV != undefined ? sentryVitePlugin({
       applicationKey: SENTRY_APPLICATION_KEY,
@@ -91,8 +93,8 @@ const config: UserConfig = {
   },
   ssr: {
     noExternal: [
-      // vega-embed has a broken ESM config since https://github.com/vega/vega-embed/pull/1301/files
-      'vega-embed',
+      // broken ESM config
+      '@panzoom/panzoom',
       // force transpilation of wtf_wikipedia to apply the above alias
       'wtf_wikipedia',
     ],

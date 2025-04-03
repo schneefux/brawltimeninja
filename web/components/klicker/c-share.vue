@@ -31,12 +31,12 @@ export default defineComponent({
         })
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {
-          event('cancel_share_dashboard')
+          event('cancel_share_dashboard', {})
           return
         }
 
         console.error(err);
-        event('error_share_dashboard')
+        event('error_share_dashboard', {})
       }
     }
 

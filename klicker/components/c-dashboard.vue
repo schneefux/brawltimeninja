@@ -3,7 +3,7 @@
     <div
       class="grid gap-4 grid-cols-1"
       :class="{
-        'lg:grid-cols-[3fr,5fr]': configurator && slicer,
+        'lg:grid-cols-[3fr_5fr]': configurator && slicer,
       }"
     >
       <c-configurator

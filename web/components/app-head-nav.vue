@@ -27,7 +27,7 @@
     </b-button>
 
     <locale-switcher
-      class="h-6 !text-2xs pr-7"
+      class="h-6 text-2xs! pr-7!"
     ></locale-switcher>
   </b-app-head-nav>
 </template>

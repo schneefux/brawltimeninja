@@ -1,7 +1,7 @@
 <template>
   <div
     ref="rootContainer"
-    class="overflow-y-auto hide-scrollbar"
+    class="overflow-y-auto scrollbar:hidden"
   >
     <nav
       ref="toc"

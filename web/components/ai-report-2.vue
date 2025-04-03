@@ -74,7 +74,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .fade-out {
   mask-image: linear-gradient(180deg, #000 60%, transparent);
   -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent);

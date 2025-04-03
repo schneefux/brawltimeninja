@@ -17,7 +17,7 @@
           </template>
 
           <template v-slot:content>
-            <div class="grid grid-cols-[auto,1fr] gap-x-4">
+            <div class="grid grid-cols-[auto_1fr] gap-x-4">
               <d-auto
                 tag="div"
                 :response="response"

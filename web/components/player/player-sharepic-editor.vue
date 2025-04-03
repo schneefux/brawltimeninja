@@ -8,7 +8,7 @@
         v-if="editing"
         class="
           grid grid-cols-1
-          md:grid-cols-[auto,minmax(0,1fr)]
+          md:grid-cols-[auto_minmax(0,1fr)]
           items-center
           gap-x-6 gap-y-2
           md:gap-y-4
@@ -228,12 +228,12 @@ export default defineComponent({
     }
     const onShareCancel = () => {
       emit('interact')
-      event('cancel_share_sharepic')
+      event('cancel_share_sharepic', {})
     }
 
     const onDownload = () => {
       emit('interact')
-      event('download_sharepic')
+      event('download_sharepic', {})
     }
 
     const i18n = useI18n()

@@ -1,3 +1,129 @@
+<template>
+  <div
+    ref="wrap"
+    :class="['vue-range-slider slider-component slider-horizontal', { 'slider-disabled': isDisabled }, stateClass]"
+    :style="[wrapStyles, isDisabled ? disabledStyle : null]"
+    @click="wrapClick"
+  >
+    <div
+      ref="elem"
+      class="slider ring-2 focus:ring-2 focus:ring-contrast/20 ring-contrast/10 hover:ring-contrast/20 bg-contrast/5"
+      :style="[elemStyles, bgStyle]"
+      aria-hidden="true"
+    >
+      <!-- Dot 0 -->
+      <div
+        ref="dot0"
+        :class="['slider-dot', tooltipStatus, { 'slider-dot-dragging': flag && currentSlider === 0, 'slider-dot-disabled': !isDisabled && disabledArray[0] }]"
+        :style="dotStyles"
+      >
+        <slot
+          name="dot"
+          :index="0"
+          :value="currentValue[0]"
+          :disabled="disabledArray[0]"
+        >
+          <div
+            class="slider-dot-handle bg-primary-500"
+            :style="[(!isDisabled && disabledArray[0]) ? disabledDotStyles[0] : null, sliderStyles[0]]"
+          ></div>
+        </slot>
+        <div
+          ref="tooltip0"
+          :class="['slider-tooltip-wrap', '*:bg-contrast/[0.08] *:shadow *:rounded-2xl', `slider-tooltip-${tooltipDirection[0]}`]"
+        >
+          <slot
+            name="tooltip"
+            :value="currentValue[0]"
+            :index="0"
+            :disabled="!isDisabled && disabledArray[0]"
+          >
+            <span
+              class="slider-tooltip"
+              :style="tooltipStyles[0]"
+            >
+              {{ formatter ? formatting(currentValue[0]) : currentValue[0] }}
+            </span>
+          </slot>
+        </div>
+      </div>
+
+      <!-- Dot 1 -->
+      <div
+        ref="dot1"
+        :class="['slider-dot', tooltipStatus, { 'slider-dot-dragging': flag && currentSlider === 1, 'slider-dot-disabled': !isDisabled && disabledArray[1] }]"
+        :style="dotStyles"
+      >
+        <slot
+          name="dot"
+          :index="1"
+          :value="currentValue[1]"
+          :disabled="disabledArray[1]"
+        >
+          <div
+            class="slider-dot-handle bg-primary-500"
+            :style="[(!isDisabled && disabledArray[1]) ? disabledDotStyles[1] : null, sliderStyles[1]]"
+          ></div>
+        </slot>
+        <div
+          ref="tooltip1"
+          :class="['slider-tooltip-wrap', '*:bg-contrast/[0.08] *:shadow *:rounded-2xl', `slider-tooltip-${tooltipDirection[1]}`]"
+        >
+          <slot
+            name="tooltip"
+            :value="currentValue[1]"
+            :index="1"
+            :disabled="!isDisabled && disabledArray[1]"
+          >
+            <span
+              class="slider-tooltip"
+              :style="tooltipStyles[1]"
+            >
+              {{ formatter ? formatting(currentValue[1]) : currentValue[1] }}
+            </span>
+          </slot>
+        </div>
+      </div>
+
+      <!-- Process -->
+      <div
+        ref="process"
+        class="slider-process bg-primary-300"
+        :style="processStyle"
+      >
+        <div
+          ref="mergedTooltip"
+          :class="['merged-tooltip slider-tooltip-wrap', '*:bg-contrast/[0.08] *:shadow *:rounded-2xl', `slider-tooltip-${tooltipDirection[0]}`]"
+          :style="tooltipMergedPosition"
+        >
+          <slot
+            name="tooltip"
+            :value="currentValue"
+            merge
+          >
+            <span
+              class="slider-tooltip"
+              :style="tooltipStyles"
+            >
+              {{
+                mergeFormatter
+                  ? mergeFormatting(currentValue[0], currentValue[1])
+                  : (formatter
+                    ? (currentValue[0] === currentValue[1]
+                      ? formatting(currentValue[0])
+                      : `${formatting(currentValue[0])} - ${formatting(currentValue[1])}`)
+                    : (currentValue[0] === currentValue[1]
+                      ? currentValue[0]
+                      : `${currentValue[0]} - ${currentValue[1]}`))
+              }}
+            </span>
+          </slot>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script>
 // adapted and ported to Vue 3 from https://github.com/xwpongithub/vue-range-slider (MIT license)
 
@@ -143,127 +269,6 @@ export default defineComponent({
       dragFlag: false,
       crossFlag: false,
     }
-  },
-  render() {
-    const sliderConBlocks = []
-
-    // dot
-    const dot0 = h('div', {
-      ref: 'dot0',
-      class: ['slider-dot', this.tooltipStatus, {
-        'slider-dot-dragging': this.flag && this.currentSlider === 0,
-        'slider-dot-disabled': !this.isDisabled && this.disabledArray[0]
-      }],
-      style: this.dotStyles
-    }, [
-      this.$slots.dot ? this.$slots.dot({
-        index: 0,
-        value: this.currentValue[0],
-        disabled: this.disabledArray[0]
-      }) : ([
-        h('div', {
-          class: 'slider-dot-handle',
-          style: [
-            (!this.isDisabled && this.disabledArray[0]) ? this.disabledDotStyles[0] : null,
-            this.sliderStyles[0],
-          ]
-        })
-      ]),
-      h('div', {
-        ref: 'tooltip0',
-        class: ['slider-tooltip-wrap', `slider-tooltip-${this.tooltipDirection[0]}`]
-      }, this.$slots.tooltip ? this.$slots.tooltip({
-        value: this.currentValue[0],
-        index: 0,
-        disabled: !this.isDisabled && this.disabledArray[0]
-      }) : ([
-        h('span', {
-          class: 'slider-tooltip',
-          style: this.tooltipStyles[0]
-        }, this.formatter ? this.formatting(this.currentValue[0]) : this.currentValue[0])
-      ]))
-    ])
-    sliderConBlocks.push(dot0)
-
-    const dot1 = h('div', {
-      ref: 'dot1',
-      class: ['slider-dot', this.tooltipStatus, {
-        'slider-dot-dragging': this.flag && this.currentSlider === 1,
-        'slider-dot-disabled': !this.isDisabled && this.disabledArray[1]
-      }],
-      style: this.dotStyles
-    }, [
-      this.$slots.dot ? this.$slots.dot({
-        index: 1,
-        value: this.currentValue[1],
-        disabled: this.disabledArray[1]
-      }) : ([
-        h('div', {
-          class: 'slider-dot-handle',
-          style: [
-            (!this.isDisabled && this.disabledArray[1]) ? this.disabledDotStyles[1] : null,
-            this.sliderStyles[1],
-          ]
-        })
-      ]),
-      h('div', {
-        ref: 'tooltip1',
-        class: ['slider-tooltip-wrap', `slider-tooltip-${this.tooltipDirection[1]}`]
-      }, [
-        this.$slots.tooltip ? this.$slots.tooltip({
-          value: this.currentValue[1],
-          index: 1,
-          disabled: !this.isDisabled && this.disabledArray[1]
-        }) : ([
-          h('span', {
-            class: 'slider-tooltip',
-            style: this.tooltipStyles[1]
-          }, this.formatter ? this.formatting(this.currentValue[1]) : this.currentValue[1])
-        ])
-      ])
-    ])
-    sliderConBlocks.push(dot1)
-
-    // process
-    const processBlock = h('div', {
-      ref: 'process',
-      class: 'slider-process',
-      style: this.processStyle,
-    }, [
-      h('div', {
-        ref: 'mergedTooltip',
-        class: ['merged-tooltip slider-tooltip-wrap', `slider-tooltip-${this.tooltipDirection[0]}`],
-        style: this.tooltipMergedPosition
-      }, [
-        this.$slots.tooltip ? this.$slots.tooltip({
-          value: this.currentValue,
-          merge: true
-        }) : ([
-          h('span', {
-              class: 'slider-tooltip',
-              style: this.tooltipStyles
-            }, this.mergeFormatter ? this.mergeFormatting(this.currentValue[0], this.currentValue[1]) : (this.formatter ? (this.currentValue[0] === this.currentValue[1] ? this.formatting(this.currentValue[0]) : `${this.formatting(this.currentValue[0])} - ${this.formatting(this.currentValue[1])}`) : (this.currentValue[0] === this.currentValue[1] ? this.currentValue[0] : `${this.currentValue[0]} - ${this.currentValue[1]}`))
-          )
-        ])
-      ])
-    ])
-    sliderConBlocks.push(processBlock)
-
-    return h('div', {
-      ref: 'wrap',
-      class: ['vue-range-slider slider-component slider-horizontal', {
-        'slider-disabled': this.isDisabled,
-      }, this.stateClass],
-      style: [this.wrapStyles, this.isDisabled ? this.disabledStyle : null],
-      onClick: e => this.wrapClick(e),
-    }, [
-      h('div', {
-        ref: 'elem',
-        class: 'slider',
-        style: [this.elemStyles, this.bgStyle],
-        'aria-hidden': true
-      }, sliderConBlocks)
-    ])
   },
   computed: {
     currentIndex() {
@@ -756,7 +761,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="postcss">
+<style>
 /**
  * vue-range-slider v1.0.3
  * (c) 2016-2019 xwpongithub
@@ -775,7 +780,6 @@ export default defineComponent({
   position: relative;
   display: block;
   border-radius: 15px;
-  @apply ring-2 focus:ring-2 focus:ring-contrast/20 ring-contrast/10 hover:ring-contrast/20 bg-contrast/5;
 }
 .vue-range-slider.slider-component .slider::after {
   content: '';
@@ -798,8 +802,6 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background-color: #fff;
-  @apply bg-primary-500;
   -webkit-box-shadow: 0.5px 0.5px 2px 1px rgba(0,0,0,0.32);
           box-shadow: 0.5px 0.5px 2px 1px rgba(0,0,0,0.32);
 }
@@ -819,7 +821,6 @@ export default defineComponent({
   position: absolute;
   border-radius: 15px;
   z-index: 1;
-  @apply bg-primary-300;
 }
 .vue-range-slider.slider-component .slider .slider-input {
   position: absolute;
@@ -931,7 +932,6 @@ export default defineComponent({
   min-width: 20px;
   text-align: center;
   color: #fff;
-  @apply bg-contrast/[0.08] shadow rounded-2xl;
 }
 .vue-range-slider.slider-component.slider-disabled {
   opacity: 0.5;

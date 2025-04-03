@@ -1,4 +1,5 @@
 export default {
+  disableAutoFullBuild: true,
   passToClient: [
     'vueQueryState',
     'piniaState',

@@ -8,7 +8,7 @@
 
     <loading-indicator></loading-indicator>
 
-    <div id="main" class="fill-layout-height">
+    <div id="main" class="min-h-(--mobile-layout-height) lg:min-h-(--desktop-layout-height)">
       <slot></slot>
     </div>
 
@@ -85,18 +85,13 @@ export default defineComponent({
 })
 </script>
 
-<style lang="postcss">
+<style>
 /* do not use scoped to suppress Vue warning about non-prop attributes */
 
 /* main content size = 100vh - header - footer */
 
-.fill-layout-height {
-  min-height: calc(100vh - 56px - 56px);
-}
-
-@media screen(lg) {
-  .fill-layout-height {
-    min-height: calc(100vh - 76px - 160px);
-  }
+:root {
+  --mobile-layout-height: calc(100vh - 56px - 56px);
+  --desktop-layout-height: calc(100vh - 76px - 160px);
 }
 </style>

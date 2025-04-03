@@ -30,7 +30,7 @@
           :key="index"
           :class="{
             'mt-8': battle.teams.length == 3,
-            'mx-1 rounded-sm flex-col': team.length == 2,
+            'mx-1 rounded-xs flex-col': team.length == 2,
           }"
           class="flex flex-wrap justify-center z-10 my-1"
         >
@@ -41,7 +41,7 @@
             :to="localePath(`/profile/${mate.tag}`)"
             :class="{
               'border-2 border-gray-300 ': highlightTags.includes(mate.tag),
-              'mx-1 rounded-sm ': team.length != 2,
+              'mx-1 rounded-xs ': team.length != 2,
             }"
             class="w-14 h-16 bg-background/75 p-px relative overflow-hidden text-xs flex flex-col gap-y-px"
             @click.stop

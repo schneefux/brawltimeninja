@@ -1,7 +1,6 @@
 <template>
   <div
-    ref="container"
-    :class="['inject-colors relative', {
+    :class="['relative', {
       'w-full': fullWidth,
       'h-full': fullHeight,
     }]"
@@ -9,10 +8,10 @@
     <b-shimmer
       ref="graph"
       :loading="loading"
-      :class="{
+      :class="['inject-colors text-primary-400', {
         'w-full': fullWidth,
         'h-full': fullHeight,
-      }"
+      }]"
     >
     </b-shimmer>
 
@@ -76,20 +75,20 @@ export default defineComponent({
     const graphRef = useTemplateRef<InstanceType<typeof BShimmer>>('graph')
 
     const refresh = async () => {
-      if (graphRef.value?.$el == undefined || containerRef.value == undefined) {
+      if (graphRef.value?.$el == undefined) {
         return
       }
 
       loading.value = true
       cleanup()
 
-      const computedStyle = window.getComputedStyle(containerRef.value)
+      const computedStyle = window.getComputedStyle(graphRef.value.$el)
       const textColor = computedStyle.getPropertyValue('--text-color')
       const gridColor = computedStyle.getPropertyValue('--grid-color')
-      const primaryColor = computedStyle.getPropertyValue('--primary-color')
+      const primaryColor = computedStyle.getPropertyValue('color')
 
       const defaults: VisualizationSpec = {
-        $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+        $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
         ...(props.fullWidth ? {
           width: 'container',
         } : {}),
@@ -157,11 +156,11 @@ export default defineComponent({
       width: 600*1.25,
       height: 315*1.25,
     }) => {
-      if (result.value == undefined || containerRef.value == undefined) {
+      if (result.value == undefined || graphRef.value == undefined) {
         return
       }
 
-      const backgroundColor = window.getComputedStyle(containerRef.value)
+      const backgroundColor = window.getComputedStyle(graphRef.value.$el)
         .getPropertyValue('--background-color')
 
       result.value.view.background(opts.background ?? backgroundColor)
@@ -183,8 +182,6 @@ export default defineComponent({
 
     useResizeObserver(graphRef, () => window.requestAnimationFrame(() => refresh()))
 
-    const containerRef = useTemplateRef<HTMLElement>('container')
-
     return {
       loading,
       result,
@@ -195,11 +192,10 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="postcss">
+<style scoped>
 .inject-colors {
-  --text-color:rgb(var(--color-text) / 0.75);
-  --grid-color:rgb(var(--color-text) / 0.25);
-  --background-color:var(--color-background);
-  --primary-color:theme('colors.primary.400');
+  --text-color: rgb(var(--color-text) / 0.75);
+  --grid-color: rgb(var(--color-text) / 0.25);
+  --background-color: rgb(var(--color-background));
 }
 </style>

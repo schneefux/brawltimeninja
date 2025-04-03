@@ -17,7 +17,7 @@
 
     <div
       v-if="canSave"
-      class="mt-8 grid grid-cols-[max-content,max-content] gap-x-4 gap-y-8 items-center"
+      class="mt-8 grid grid-cols-[max-content_max-content] gap-x-4 gap-y-8 items-center"
     >
       <template v-if="report.id != undefined">
         <label :for="`${prefix}-editor-url`">

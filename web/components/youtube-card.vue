@@ -60,12 +60,12 @@ export default defineComponent({
     const { state, dismissYoutubeBanner } = usePreferences()
 
     const dismissYoutube = () => {
-      event('dismissed_youtube')
+      event('dismissed_youtube', {})
       dismissYoutubeBanner()
       console.log('dismissed youtube')
     }
     const clickYoutube = () => {
-      event('clicked_youtube')
+      event('clicked_youtube', {})
       dismissYoutubeBanner()
       console.log('clicked youtube')
     }

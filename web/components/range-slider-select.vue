@@ -21,7 +21,7 @@
           lazy
         >
           <template v-slot:tooltip="{ value }">
-            <span class="slider-tooltip !bg-gray-600 !border-gray-600">
+            <span class="slider-tooltip bg-gray-600! border-gray-600!">
               {{ Array.isArray(value) ? `${format(value[0])} - ${format(value[1])}` : format(value) }}
             </span>
           </template>

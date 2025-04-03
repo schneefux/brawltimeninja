@@ -6,7 +6,7 @@
       class="my-3"
     >
       <div class="flex justify-center items-center space-x-1 text-sm">
-        <span class="!mr-2 flex-1 text-right">
+        <span class="mr-2! flex-1 text-right">
           <slot name="low" :id="id"></slot>
         </span>
         <b-radio
@@ -24,7 +24,7 @@
           primary
           @update:modelValue="(v: any) => $emit('update:modelValue', { ...modelValue, [id]: v })"
         ></b-radio>
-        <span class="!ml-2 flex-1 text-left">
+        <span class="ml-2! flex-1 text-left">
           <slot name="high" :id="id"></slot>
         </span>
       </div>

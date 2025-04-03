@@ -6,7 +6,7 @@
     >
       <template v-slot:content>
         <div>
-          <div class="grid grid-cols-[max-content,max-content] gap-x-8 gap-y-4 my-2 items-center">
+          <div class="grid grid-cols-[max-content_max-content] gap-x-8 gap-y-4 my-2 items-center">
             <label :for="`${prefix}-widget`">
               Widget
             </label>

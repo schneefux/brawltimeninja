@@ -11,7 +11,7 @@
           callback: makeVisibilityCallback('aside'),
           once: true,
         }"
-        class="!h-auto max-w-sm"
+        class="h-auto! max-w-sm"
       ></club-aside>
     </template>
 

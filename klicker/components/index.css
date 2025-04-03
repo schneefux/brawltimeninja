@@ -1,9 +1,8 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss';
+@config '../tailwind.config.cjs';
 
-@import "./dashboard.css";
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+@import './dashboard.css';
 
 .dark {
   --color-background: 24 24 27; /* gray-900 */

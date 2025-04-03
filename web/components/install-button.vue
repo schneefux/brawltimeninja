@@ -1,7 +1,7 @@
 <template>
   <b-button
     v-show="installable"
-    class="!py-1 !px-2 -my-1 !text-xs md:text-sm whitespace-nowrap"
+    class="py-1! px-2! -my-1 text-xs! md:text-sm whitespace-nowrap"
     secondary
     sm
     @click="clickInstall"

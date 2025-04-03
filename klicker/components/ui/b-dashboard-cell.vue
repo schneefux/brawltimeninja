@@ -2,7 +2,7 @@
   <div
     ref="cell"
     :class="{
-      'hide-empty': hideEmpty && visible,
+      'empty:hidden': hideEmpty && visible,
     }"
     :style="{
       '--rows': rows,
@@ -60,9 +60,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped lang="postcss">
-.hide-empty:empty {
-  display: none;
-}
-</style>

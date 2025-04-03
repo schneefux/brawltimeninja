@@ -2,7 +2,7 @@
   <component
     :is="tag"
     :class="{
-      'relative overflow-hidden shimmer': loading,
+      'shimmer relative overflow-hidden before:block before:absolute before:h-full before:top-0 before:left-[-200px] before:w-[200px] before:bg-[linear-gradient(to_right,_transparent_0%,_rgb(var(--color-contrast))_50%,_transparent_100%)] before:animate-[load_1s_ease_infinite]': loading,
     }"
     :style="{
       width: widthPx != undefined ? widthPx + 'px' : undefined,
@@ -38,16 +38,6 @@ export default defineComponent({
 </script>
 
 <style lang="postcss">
-.shimmer::before {
-  content: '';
-  @apply block absolute h-full top-0;
-  left: -200px;
-  width: 200px;
-  background: linear-gradient(to right, transparent 0%, theme('colors.contrast') 50%, transparent 100%);
-  animation: load 1s ease;
-  animation-iteration-count: infinite;
-}
-
 @keyframes load {
   from {
     left: -150px;

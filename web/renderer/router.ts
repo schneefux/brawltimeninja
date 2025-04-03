@@ -1,5 +1,5 @@
 import { defaultLocale, loadLocaleWithFallback, locales } from '~/locales'
-import { MergeHead, VueHeadClient } from '@unhead/vue'
+import { VueHeadClient } from '@unhead/vue'
 import { createMemoryHistory, createRouter as _createRouter, createWebHistory, RouteRecordRaw, RouteLocationNormalized } from 'vue-router'
 // @ts-ignore
 import routes from '~pages'
@@ -10,7 +10,7 @@ import { Config } from '~/config/config'
 
 export { createRouter }
 
-function createRouter(i18n: AppI18n, pageContext: PageContext, head: VueHeadClient<MergeHead>, config: Config) {
+function createRouter(i18n: AppI18n, pageContext: PageContext, head: VueHeadClient, config: Config) {
   const origin = getSelfOrigin(pageContext)
 
   const updateLocale = async (locale: typeof locales[0], to: RouteLocationNormalized) => {

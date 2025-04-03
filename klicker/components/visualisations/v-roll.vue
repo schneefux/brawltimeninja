@@ -6,7 +6,7 @@
     <template v-slot:content>
       <div
         ref="wrapper"
-        class="h-full w-full overflow-x-auto hide-scrollbar flex flex-col"
+        class="h-full w-full overflow-x-auto scrollbar:hidden flex flex-col"
       >
         <table class="h-full w-full border-separate border-spacing-0">
           <tbody>
@@ -224,9 +224,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped lang="postcss">
-.border-spacing-0 {
-  border-spacing: 0;
-}
-</style>

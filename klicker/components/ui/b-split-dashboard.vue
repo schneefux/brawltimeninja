@@ -2,9 +2,9 @@
   <div
     class="grid grid-cols-1 lg:gap-8"
     :class="{
-      'lg:grid-cols-[20rem,minmax(0,1fr),0]': ('aside-left' in $slots) && !('aside-right' in $slots),
-      'lg:grid-cols-[0,minmax(0,1fr),20rem]': !('aside-left' in $slots) && ('aside-right' in $slots),
-      'lg:grid-cols-[20rem,minmax(0,1fr)] 2xl:grid-cols-[20rem,minmax(0,1fr),20rem]': ('aside-left' in $slots) && ('aside-right' in $slots),
+      'lg:grid-cols-[20rem_minmax(0,1fr)_0]': ('aside-left' in $slots) && !('aside-right' in $slots),
+      'lg:grid-cols-[0_minmax(0,1fr)_20rem]': !('aside-left' in $slots) && ('aside-right' in $slots),
+      'lg:grid-cols-[20rem_minmax(0,1fr)] 2xl:grid-cols-[20rem_minmax(0,1fr)_20rem]': ('aside-left' in $slots) && ('aside-right' in $slots),
     }"
   >
     <aside class="order-1">

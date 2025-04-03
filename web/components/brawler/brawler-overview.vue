@@ -26,7 +26,7 @@
               <template v-slot:level>
                 <b-select
                   v-model="level"
-                  class="!py-px !pr-8 leading-tight mx-1 my-[2px]"
+                  class="py-px! pr-8! leading-tight mx-1 my-[2px]"
                 >
                   <option
                     v-for="i in 11"
@@ -82,7 +82,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const level = ref('1')
+    const level = ref(1)
 
     const i18n = useI18n()
     const overviewKvRows = computed(() => props.scrapedData == undefined ? [] : [{
@@ -91,7 +91,7 @@ export default defineComponent({
       slot: 'level',
     }, {
       title: i18n.t('metric.health'),
-      key: `healthByLevel.${parseInt(level.value) - 1}`,
+      key: `healthByLevel.${level.value - 1}`,
     }, ...Object.keys(props.scrapedData.stats).map((key) => ({
       title: i18n.t('metric.' + key),
       key,

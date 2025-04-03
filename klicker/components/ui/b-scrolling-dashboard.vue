@@ -2,7 +2,7 @@
   <div class="relative">
     <div
       ref="wrapper"
-      class="dashboard dashboard--horizontal dashboard--responsive gap-x-8 -mx-4 px-4 scroll-px-4 lg:mx-0 lg:px-0 lg:scroll-px-0 hide-scrollbar"
+      class="dashboard dashboard--horizontal dashboard--responsive gap-x-8 -mx-4 px-4 scroll-px-4 lg:mx-0 lg:px-0 lg:scroll-px-0 scrollbar:hidden"
       :style="{
         'scroll-snap-type': disableScrollSnap ? 'none' : undefined,
       }"
@@ -13,13 +13,13 @@
     <div
       v-show="!arrivedRight"
       data-testid="scroll-hint-right"
-      class="absolute inset-y-0 -right-4 pointer-events-none w-4 bg-gradient-to-r from-transparent to-text/20 z-10 lg:hidden"
+      class="absolute inset-y-0 -right-4 pointer-events-none w-4 bg-linear-to-r from-transparent to-text/20 z-10 lg:hidden"
     ></div>
 
     <div
       v-show="!arrivedLeft"
       data-testid="scroll-hint-left"
-      class="absolute inset-y-0 -left-4 pointer-events-none w-4 bg-gradient-to-l from-transparent to-text/20 z-10 lg:hidden"
+      class="absolute inset-y-0 -left-4 pointer-events-none w-4 bg-linear-to-l from-transparent to-text/20 z-10 lg:hidden"
     ></div>
 
     <div

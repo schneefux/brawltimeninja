@@ -1,7 +1,7 @@
 <template>
   <b-select
     v-model="locale"
-    class="!py-1 -my-1 !text-xs md:text-sm focus:!bg-white"
+    class="py-1! -my-1 text-xs! md:text-sm focus:bg-white!"
     sm
   >
     <option

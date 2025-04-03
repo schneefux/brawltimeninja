@@ -93,6 +93,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouteParams } from '~/composables/route-params'
 import { useTrackScroll } from '~/composables/gtag'
 import { getMapName } from '~/composables/map'
+import { injectHead } from '@unhead/vue'
 
 interface Map {
   id: string
@@ -113,6 +114,7 @@ export default defineComponent({
     const i18n = useI18n()
     const routeParams = useRouteParams()
     const { trackInteraction } = useTrackScroll('map')
+    const head = injectHead()
 
     useCacheHeaders()
 
@@ -174,7 +176,7 @@ export default defineComponent({
           ...(event.value.id != undefined && event.value.id != '0' ? [{ hid: 'og:image', property: 'og:image', content: $config.mediaUrl + '/maps/' + event.value.id + '.png' }] : []),
         ]
       }
-    })
+    }, head)
 
     return {
       event,

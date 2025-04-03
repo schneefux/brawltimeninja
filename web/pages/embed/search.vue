@@ -11,7 +11,7 @@
         :placeholder="$t('action.enter-tag')"
         type="text"
         autocomplete="off"
-        class="w-48 text-black uppercase placeholder:normal-case font-semibold appearance-none focus:outline-none ml-3 mr-2"
+        class="w-48 text-black uppercase placeholder:normal-case font-semibold appearance-none focus:outline-hidden ml-3 mr-2"
       >
       <b-button
         type="submit"
@@ -58,10 +58,10 @@ export default defineComponent({
       tagValid.value = tagPattern.test(cleanedTag.value)
 
       if (tagValid.value) {
-        event('embedded_search_success')
+        event('embedded_search_success', {})
       } else {
         e.preventDefault()
-        event('embedded_search_invalid')
+        event('embedded_search_invalid', {})
       }
 
       return tagValid.value
@@ -76,12 +76,6 @@ export default defineComponent({
   },
 })
 </script>
-
-<style>
-.placeholder\:normal-case::placeholder {
-  @apply normal-case;
-}
-</style>
 
 <route>
 {

@@ -2,7 +2,7 @@
   <input
     v-model="value"
     type="checkbox"
-    class="form-input rounded transition duration-100 ease-in-out focus:ring-0 bg-contrast/5 hover:bg-contrast/10 focus:bg-contrast/20 text-contrast/30 checked:text-contrast/40"
+    class="form-input rounded-sm transition duration-100 ease-in-out focus:ring-0 bg-contrast/5 hover:bg-contrast/10 focus:bg-contrast/20 text-contrast/30 checked:text-contrast/40"
   >
 </template>
 

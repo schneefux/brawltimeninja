@@ -18,16 +18,13 @@
   </div>
 </template>
 
-<style lang="postcss" scoped>
+<style>
+/* do not use scoped to suppress Vue warning about non-prop attributes */
+
 /* main content size = 100vh - header - footer */
 
-.fill-height {
-  min-height: calc(100vh - 56px - 56px);
-}
-
-@media screen(lg) {
-  .fill-height {
-    min-height: calc(100vh - 76px - 160px);
-  }
+:root {
+  --mobile-layout-height: calc(100vh - 56px - 56px);
+  --desktop-layout-height: calc(100vh - 76px - 160px);
 }
 </style>

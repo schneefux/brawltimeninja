@@ -1,5 +1,6 @@
 const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
+const plugin = require('tailwindcss/plugin')
 
 function withOpacityValue(variable) {
   return ({ opacityValue }) => {
@@ -58,5 +59,10 @@ module.exports = {
     // prettier checkboxes etc.
     // https://tailwindcss-forms.netlify.app/
     require('@tailwindcss/forms'),
+    plugin(function({ addVariant }) {
+      addVariant('progress-bar', ['&::-webkit-progress-bar', '&::progress-bar'])
+      addVariant('progress-value', ['&::-webkit-progress-value', '&::progress-value'])
+      addVariant('scrollbar', ['&::-webkit-scrollbar', '&::scrollbar'])
+    }),
   ],
 }

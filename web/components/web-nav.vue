@@ -30,7 +30,7 @@
       <install-button></install-button>
 
       <locale-switcher
-        class="border-0 align-text-top !text-2xs pr-7"
+        class="border-0 align-text-top text-2xs! pr-7!"
       ></locale-switcher>
     </template>
   </b-web-nav>

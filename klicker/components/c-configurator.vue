@@ -5,7 +5,7 @@
   >
     <template v-slot:content>
       <div class="flex flex-wrap items-center">
-        <div class="grid grid-cols-[auto,auto] gap-6 items-center">
+        <div class="grid grid-cols-[auto_auto] gap-6 items-center">
           <label
             v-if="configureCube"
             :for="id"

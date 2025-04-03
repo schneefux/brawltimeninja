@@ -1,9 +1,9 @@
-import { computed, ComputedRef, inject, onMounted, onServerPrefetch, Ref, toRef, unref } from "vue"
+import { computed, ComputedRef, inject, onMounted, onServerPrefetch, Ref, toRef, unref, toRaw } from "vue"
 import { useQuery, keepPreviousData } from "@tanstack/vue-query";
 import { useI18n } from 'vue-i18n'
 import { usePageContext } from '~/composables/page-context'
 import { TrpcInjectionKey } from "~/plugins/trpc"
-import { useHead, ReactiveHead } from "@unhead/vue"
+import { useHead, ReactiveHead, VueHeadClient } from "@unhead/vue"
 import { LocaleCode, locales } from "~/locales";
 import { MaybeRef } from "@vueuse/shared";
 import Cookies from 'js-cookie'
@@ -129,10 +129,15 @@ export function useLocaleCookieRedirect() {
   })
 }
 
-export function useMeta(fun: () => ReactiveHead) {
+/**
+ * careful when combining with async components
+ * see https://unhead.unjs.io/docs/vue/head/guides/core-concepts/reactivity-and-context#managing-async-context
+ */
+export function useMeta(fun: () => ReactiveHead, head?: VueHeadClient) {
   const meta = computed(fun)
-  useHead(meta)
+  useHead(meta, { head })
 }
+
 interface ValidateContext {
   params: Record<string, string|string[]>
   redirect: (status: RedirectStatusCode, url: string) => void
@@ -218,9 +223,9 @@ export function useSentry() {
   return inject(SentryInjectionKey)!
 }
 
-export function getSelfOrigin(pageContext: PageContext) {
+export function getSelfOrigin({ server }: { server: PageContext['server'] }) {
   if (import.meta.env.SSR) {
-    const host = pageContext.server.requestHeaders['host']
+    const host = server.requestHeaders['host']
     return `https://${host}`
   }
   return window.location.origin

@@ -12,7 +12,7 @@ interface Options {
   cubeUrl: string
   managerUrl: string
   translate: (key: string, args: any) => string
-  tokenProvider: () => Promise<string|undefined>
+  tokenProvider: () => Promise<string>
   fetch: typeof fetch
   router: Router
 }

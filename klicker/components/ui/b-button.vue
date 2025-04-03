@@ -9,13 +9,13 @@
       'text-sm py-2 px-4 border-1': sm,
       'text-sm py-2 px-4 border-2': md,
       'py-4 px-8 border-4': lg,
-      'bg-contrast/10 border-contrast/10 hover:bg-border-contrast/25 hover:bg-contrast/25 focus:ring-text text-text': light || dark,
-      'bg-primary-400 border-primary-400 hover:bg-primary-300 hover:border-primary-300 focus:ring-primary-300 text-on-primary': primary,
+      'bg-contrast/10 border-contrast/10 hover:bg-border-contrast/25 hover:bg-contrast/25 focus:ring-text/50 text-text': light || dark,
+      'bg-primary-400 border-primary-400 hover:bg-primary-300 hover:border-primary-300 focus:ring-primary-300/50 text-on-primary': primary,
       'border-primary-600': primary && outline,
-      'bg-secondary-600 border-secondary-600 hover:bg-secondary-500 hover:border-secondary-500 focus:ring-secondary-500 text-on-secondary': secondary,
+      'bg-secondary-600 border-secondary-600 hover:bg-secondary-500 hover:border-secondary-500 focus:ring-secondary-500/50 text-on-secondary': secondary,
     }"
     :to="to"
-    class="transition duration-100 ease-in-out focus:ring focus:ring-offset-0 focus:ring-opacity-50 focus:outline-none font-semibold"
+    class="transition duration-100 ease-in-out focus:ring-3 focus:ring-offset-0 focus:outline-hidden font-semibold"
   >
     <slot></slot>
   </component>

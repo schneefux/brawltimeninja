@@ -53,7 +53,6 @@ export function initSentry(dsn: string, app: App<Element>, router?: Router) {
     tracePropagationTargets: ['localhost', /^https?:\/\/brawltime\.ninja/],
     tracesSampleRate: 0.01,
     profilesSampleRate: 0.25, // relative to tracesSampleRate
-    trackComponents: true,
     beforeSend(event, hint) {
       const error = hint.originalException as any
 

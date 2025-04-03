@@ -1,7 +1,7 @@
 <template>
   <ul
     v-show="links.length > 0"
-    class="grid gap-y-2 gap-x-2 grid-cols-[1.5rem,1fr]"
+    class="grid gap-y-2 gap-x-2 grid-cols-[1.5rem_1fr]"
     role="group"
   >
     <li

@@ -123,7 +123,7 @@ async function startServer() {
     res.redirect(301, `//adstxt.venatusmedia.com/${process.env.VENATUS_SITE_ID}_ads.txt`)
   })
 
-  app.get('*', async (req, res, next) => {
+  app.get('*splat', async (req, res, next) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       server: {

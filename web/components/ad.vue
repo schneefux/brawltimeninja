@@ -2,7 +2,7 @@
   <b-dashboard-cell
     v-if="cell"
     :rows="3"
-    class="!col-span-full self-center"
+    class="col-span-full! self-center"
     hide-empty
     lazy
   >
@@ -216,7 +216,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .placeholder-takeover {
   margin: 0 auto;
   width: 100%;

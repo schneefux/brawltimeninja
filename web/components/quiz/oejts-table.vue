@@ -1,12 +1,12 @@
 <template>
-  <div class="grid grid-cols-[6rem,1fr,6rem] items-center text-center gap-x-1">
+  <div class="grid grid-cols-[6rem_1fr_6rem] items-center text-center gap-x-1">
     <span class="mt-1 col-span-3 font-semibold">{{ oejtsAbbreviation }}</span>
     <template
       v-for="(value, attr) in oejts"
       :key="attr"
     >
       <span class="text-left">{{ oejtsMap[attr[0] as keyof typeof oejtsMap] }}</span>
-      <div class="h-2 bg-gray-100 rounded relative">
+      <div class="h-2 bg-gray-100 rounded-sm relative">
         <div
           :style="{ 'width': Math.min(Math.abs(value)/2 * 50, 50) + '%' }"
           :class="['h-full bg-yellow-500 absolute', {

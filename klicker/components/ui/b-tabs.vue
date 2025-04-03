@@ -8,7 +8,7 @@
     >
       <ul
         ref="headerContainer"
-        class="flex overflow-x-auto hide-scrollbar bg-background"
+        class="flex overflow-x-auto scrollbar:hidden bg-background"
       >
         <li
           v-for="tab in tabs"
@@ -35,7 +35,7 @@
 
     <div
       ref="tabContainer"
-      class="mt-4 px-4 scroll-px-4 lg:px-0 lg:scroll-px-0 snap-x snap-mandatory grid auto-cols-[100%] grid-flow-col gap-x-8 overflow-x-auto hide-scrollbar"
+      class="mt-4 px-4 scroll-px-4 lg:px-0 lg:scroll-px-0 snap-x snap-mandatory grid auto-cols-[100%] grid-flow-col gap-x-8 overflow-x-auto scrollbar:hidden"
     >
       <div
         v-for="tab in tabs"
@@ -46,7 +46,7 @@
         :class="{
           // shrink pages that are outside of the viewport
           // so that the active page does not grow
-          'h-screen overflow-y-auto hide-scrollbar': tab.slot != activeTab,
+          'h-screen overflow-y-auto scrollbar:hidden': tab.slot != activeTab,
           'snap-center snap-always': scrollSnap,
         }"
         role="tabpanel"

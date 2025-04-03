@@ -35,7 +35,7 @@
               :placeholder="$t('action.enter-tag')"
               type="text"
               autocomplete="off"
-              class="transition duration-100 ease-in-out form-input w-40 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent focus:ring-0 border-none ml-3 mr-2 py-4 !rounded-full"
+              class="transition duration-100 ease-in-out form-input w-40 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent focus:ring-0 border-none ml-3 mr-2 py-4 rounded-full!"
             >
             <b-button
               type="submit"
@@ -236,7 +236,7 @@ export default defineComponent({
       error.value = undefined
 
       if (!tagPattern.test(cleanedTag.value)) {
-        event('search_tag_invalid')
+        event('search_tag_invalid', {})
         error.value = i18n.t('error.tag.invalid')
         const dropdown = helpDropdownRef.value!
         dropdown.setAttribute('open', '')
@@ -252,25 +252,25 @@ export default defineComponent({
         if (err instanceof TRPCClientError) {
           if (err.data?.httpStatus == 404) {
             error.value = i18n.t('error.tag.not-found')
-            event('search_not_found')
+            event('search_not_found', {})
             return
           }
           if (err.data?.httpStatus >= 400) {
             error.value = i18n.t('error.api-unavailable')
-            event('search_timeout')
+            event('search_timeout', {})
             return
           }
         }
 
         error.value = i18n.t('error.api-unavailable')
         sentry.captureException(err)
-        event('search_api_error')
+        event('search_api_error', {})
         return
       } finally {
         loading.value = false
       }
 
-      event('search_success')
+      event('search_success', {})
 
       setUserTag(cleanedTag.value)
 
@@ -303,12 +303,6 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped lang="postcss">
-.placeholder\:normal-case::placeholder {
-  @apply normal-case;
-}
-</style>
 
 <route>
 {

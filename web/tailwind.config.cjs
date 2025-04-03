@@ -1,14 +1,6 @@
 const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
-
-function withOpacityValue(variable) {
-  return ({ opacityValue }) => {
-    if (opacityValue === undefined) {
-      return `rgb(var(${variable}))`
-    }
-    return `rgb(var(${variable}) / ${opacityValue})`
-  }
-}
+const plugin = require('tailwindcss/plugin')
 
 module.exports = {
   darkMode: 'class',
@@ -42,9 +34,9 @@ module.exports = {
       purple: colors.violet,
       pink: colors.pink,
 
-      background: withOpacityValue('--color-background'),
-      contrast: withOpacityValue('--color-contrast'),
-      text: withOpacityValue('--color-text'),
+      background: 'rgba(var(--color-background) / <alpha-value>)',
+      contrast: 'rgba(var(--color-contrast) / <alpha-value>)',
+      text: 'rgba(var(--color-text) / <alpha-value>)',
     },
     extend: {
       fontFamily: {
@@ -66,5 +58,10 @@ module.exports = {
     // prettier checkboxes etc.
     // https://tailwindcss-forms.netlify.app/
     require('@tailwindcss/forms'),
+    plugin(function({ addVariant }) {
+      addVariant('progress-bar', ['&::-webkit-progress-bar', '&::progress-bar'])
+      addVariant('progress-value', ['&::-webkit-progress-value', '&::progress-value'])
+      addVariant('scrollbar', ['&::-webkit-scrollbar', '&::scrollbar'])
+    }),
   ],
 }

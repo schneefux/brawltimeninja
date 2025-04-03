@@ -41,7 +41,7 @@ export default defineComponent({
       required: true
     },
     level: {
-      type: String,
+      type: Number,
       required: true
     },
   },
@@ -53,7 +53,7 @@ export default defineComponent({
     const kvTableRows = computed(() => ([
       ...scrapedDataProp.value.statsByLevel.map((attack, index) => ({
         title: attack.name,
-        key: `statsByLevel.${index}.list.${parseInt(props.level) - 1}`,
+        key: `statsByLevel.${index}.list.${props.level - 1}`,
       })),
       ...Object.keys(scrapedDataProp.value.stats).map((key) => ({
         title: i18n.t('metric.' + key.replace(props.prop, '')),

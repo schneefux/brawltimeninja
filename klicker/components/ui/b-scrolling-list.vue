@@ -3,7 +3,7 @@
     <ul
       v-if="'preview' in $slots"
       ref="preview"
-      class="flex overflow-x-auto hide-scrollbar"
+      class="flex overflow-x-auto scrollbar:hidden"
     >
       <!-- same layout as b-tabs -->
       <li
@@ -13,7 +13,7 @@
           'border-primary-400 text-text': entry.from < state.end && entry.to >= state.start,
           'border-contrast/[.1] hover:border-primary-200 text-text/75 hover:text-text': !(entry.from < state.end && entry.to >= state.start),
         }"
-        class="block py-2 px-3 whitespace-nowrap transition duration-100 ease-in-out border-b-2 empty:hidden flex-shrink-0 cursor-pointer"
+        class="block py-2 px-3 whitespace-nowrap transition duration-100 ease-in-out border-b-2 empty:hidden shrink-0 cursor-pointer"
         @click="scrollTo(entry.from)"
       >
         <slot

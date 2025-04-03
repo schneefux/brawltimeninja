@@ -9,7 +9,7 @@
     </template>
     <template v-slot:content>
       <div id="ai-report" class="mx-auto prose dark:prose-invert">
-        <details class="outline-none">
+        <details class="outline-hidden">
           <summary
             class="cursor-pointer flex flex-col items-center"
             @click="handleClick()"

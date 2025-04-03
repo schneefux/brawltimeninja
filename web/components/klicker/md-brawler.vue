@@ -22,7 +22,7 @@
           :path="`/brawlers/${brawlerAllyId}/avatar`"
           :alt="brawlerAllyName"
           size="80"
-          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1 object-contain object-top-right"
+          clazz="w-8 absolute top-0 right-0 bg-gray-900/75 rounded-full p-1 object-contain object-top-right"
           loading="lazy"
         ></media-img>
         <media-img
@@ -30,7 +30,7 @@
           :path="`/starpowers/${starpowerId}`"
           :alt="starpowerName"
           size="80"
-          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1 object-contain object-top-right"
+          clazz="w-8 absolute top-0 right-0 bg-gray-900/75 rounded-full p-1 object-contain object-top-right"
           loading="lazy"
         ></media-img>
         <media-img
@@ -38,7 +38,7 @@
           :path="`/gadgets/${gadgetId}`"
           :alt="gadgetName"
           size="80"
-          clazz="w-8 absolute top-0 right-0 bg-gray-900 bg-opacity-75 rounded-full p-1 object-contain object-top-right"
+          clazz="w-8 absolute top-0 right-0 bg-gray-900/75 rounded-full p-1 object-contain object-top-right"
           loading="lazy"
         ></media-img>
       </span>

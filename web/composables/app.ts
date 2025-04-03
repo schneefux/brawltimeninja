@@ -58,32 +58,32 @@ export function useInstall(source: string) {
     if (pwaSupported) {
       installPrompt.value.prompt()
       const choice = await installPrompt.value.userChoice
-      event(`prompt_install_${choice.outcome}`)
+      event(`prompt_install_${choice.outcome}`, {})
       clearInstallPrompt()
       return
     }
 
     if (detectAndroid()) {
       const referrer = '&referrer=utm_source%3Dwebsite%26utm_medium%3Dfallback'
-      event('redirect_android_store')
+      event('redirect_android_store', {})
       window.open(`https://play.google.com/store/apps/details?id=${packageId}${referrer}`, '_blank')
       return
     }
 
     if (detectIOS()) {
-      event('redirect_ios_guide')
+      event('redirect_ios_guide', {})
       await router.push(localePath('/install/ios'))
       return
     }
   }
 
   const dismissInstall = () => {
-    event(`dismissed_install_${source}`)
+    event(`dismissed_install_${source}`, {})
     dismissInstallBanner()
     clearInstallPrompt()
   }
   const clickInstall = async () => {
-    event(`clicked_install_${source}`)
+    event(`clicked_install_${source}`, {})
     await install()
   }
 
@@ -106,7 +106,7 @@ export function setInstallPrompt(prompt: any) {
 
 export function useInstallPromptListeners() {
   if (!import.meta.env.SSR) {
-    const installed = () => event('install')
+    const installed = () => event('install', {})
 
     window.addEventListener('appinstalled', installed)
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -130,12 +130,12 @@ export function useReview() {
   })
 
   const dismissReview = () => {
-    event('dismiss_review')
+    event('dismiss_review', {})
     dismissReviewBanner()
   }
 
   const clickReview = () => {
-    event('click_review')
+    event('click_review', {})
     dismissReviewBanner()
     window.location.href = 'brawltime://review'
     setTimeout(() => window.open(`https://play.google.com/store/apps/details?id=${packageId}`, '_blank'), 1000)

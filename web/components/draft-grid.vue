@@ -63,11 +63,11 @@
               :path="`/brawlers/${brawler.id}/avatar`"
               :alt="brawler.brawlerName"
               size="160"
-              clazz="rounded-sm"
+              clazz="rounded-xs"
             ></media-img>
             <span
               v-if="brawler.selectable"
-              class="absolute bottom-0 right-0 px-1 bg-gray-800 bg-opacity-80 leading-tight text-sm md:text-base rounded-br-sm"
+              class="absolute bottom-0 right-0 px-1 bg-gray-800/80 leading-tight text-sm md:text-base rounded-br-sm"
               :class="{
                 'text-red-400': brawler.normContributingWinRate < 0.33,
                 'text-green-400': brawler.normContributingWinRate >= 0.66,

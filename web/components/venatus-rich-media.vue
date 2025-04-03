@@ -6,15 +6,17 @@
   ></venatus-placement>
 </template>
 
-<style lang="postcss">
+<style>
+@reference "~/assets/css/tailwind.css";
+
 /* leave space for sticky footer */
 main {
-  @apply max-md:pb-[100px] !important; /* sticky footer height */
+  @apply max-md:pb-[100px]!; /* sticky footer height */
 }
 
 /* push footer above bottom nav */
 .vm-footer {
-  @apply max-md:bottom-14 !important; /* 3.5rem (14) for footer */
+  @apply max-md:bottom-14!; /* 3.5rem (14) for footer */
 }
 
 /* push instream video player above bottom nav and sticky ad */
