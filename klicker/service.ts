@@ -94,8 +94,6 @@ class HttpTransport implements ITransport<ResultSet> {
 
 export class KlickerService implements IKlickerService {
   private cubejsApi: CubeApi
-  private transport: HttpTransport
-  private tokenPromise: Promise<void>|undefined
   public visualisations: VisualisationSpec[] = defaultVisualisations
   public staticWidgets: StaticWidgetSpec[] = defaultStaticWidgets
   public slicers: SlicerSpec[] = []
@@ -104,7 +102,7 @@ export class KlickerService implements IKlickerService {
 
   constructor(
       cubeUrl: string,
-      private tokenProvider: () => Promise<string|undefined>,
+      tokenProvider: () => Promise<string>,
       public config: Config,
       visualisations: VisualisationSpec[],
       staticWidgets: StaticWidgetSpec[],
@@ -114,36 +112,14 @@ export class KlickerService implements IKlickerService {
       private fetchImplementation: typeof fetch,
   ) {
     const apiUrl = cubeUrl + '/cubejs-api/v1'
-    this.transport = new HttpTransport(apiUrl, this.fetchImplementation)
+    const transport = new HttpTransport(apiUrl, this.fetchImplementation)
     // @ts-ignore
-    this.cubejsApi = new CubeApi('', { transport: this.transport })
+    this.cubejsApi = new CubeApi(tokenProvider, { transport })
     this.visualisations = defaultVisualisations.concat(visualisations)
     this.staticWidgets = defaultStaticWidgets.concat(staticWidgets)
     this.slicers = slicers
     this.dimensionRenderers = dimensionRenderers
     this.metricRenderers = metricRenderers
-  }
-
-  private async updateCubeToken() {
-    // prevent concurrent calls to tokenProvider
-    if (this.tokenPromise) {
-      return this.tokenPromise
-    }
-
-    this.tokenPromise = (async () => {
-      try {
-        const token = await this.tokenProvider()
-        if (token == undefined) {
-          throw new Error('No authentication token available')
-        }
-
-        this.transport.authorization = token
-      } finally {
-        this.tokenPromise = undefined
-      }
-    })();
-
-    return this.tokenPromise
   }
 
   // override & extend
@@ -366,21 +342,7 @@ export class KlickerService implements IKlickerService {
    * Send a query to cube.js
    */
   protected async load(query: Query) {
-    if (this.transport.authorization == '') {
-      await this.updateCubeToken()
-    }
-
-    try {
-      return await this.cubejsApi.load(query)
-    } catch (e: any) {
-      if (e.status == 403) {
-        // token is expired, get a new one
-        await this.updateCubeToken()
-        return await this.cubejsApi.load(query)
-      }
-
-      throw e
-    }
+    return await this.cubejsApi.load(query)
   }
 
   public async comparingQueryAsSerialized(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<SerializableCubeComparingResponse> {
