@@ -123,6 +123,7 @@ import { TRPCClientError } from '@trpc/client'
 import { BPageSection, BCard, BShimmer } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 import { ClubActivityStatistics } from '~/model/Api'
+import { injectHead } from '@unhead/vue'
 
 export default defineComponent({
   directives: {
@@ -137,6 +138,7 @@ export default defineComponent({
     const i18n = useI18n()
     const $api = useApi()
     const sentry = useSentry()
+    const head = injectHead()
 
     useCacheHeaders()
 
@@ -196,7 +198,7 @@ export default defineComponent({
           content: club.value != undefined ? i18n.t('club.meta.description', { club: club.value.name }) + ' ' + club.value.description : '',
         } ],
       }
-    })
+    }, head)
 
     const { makeVisibilityCallback, trackInteraction } = useTrackScroll('club')
 
