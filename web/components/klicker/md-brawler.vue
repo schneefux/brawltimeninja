@@ -2,7 +2,7 @@
   <a
     :href="href"
     :title="title"
-    @click.stop
+    @click.stop="navigate"
   >
     <figure class="inline-flex items-center">
       <span
@@ -112,10 +112,11 @@ export default defineComponent({
     const gadgetId = computed(() => props.row.dimensionsRaw.gadget?.gadget)
 
     // render <a> directly to improve performance
-    const { href } = useLink({ to: link })
+    const { href, navigate } = useLink({ to: link })
 
     return {
       href,
+      navigate,
       title,
       brawler,
       ally,
