@@ -5,6 +5,7 @@ import SuperJSON from 'superjson'
 import { createHead } from '@unhead/vue/client'
 import { inject } from 'vue'
 import { InferSeoMetaPlugin } from '@unhead/addons'
+import { createGtag } from 'vue-gtag'
 
 // polyfills
 import 'core-js/stable/structured-clone' // used by vega-lite
@@ -21,6 +22,19 @@ async function onRenderClient(pageContext: PageContext) {
   })
   // fetch requires window as `this`, so bind it
   const params = createApp(pageContext, head, window.fetch.bind(window))
+
+  // FIXME in v3, vue-gtag SSR seems to be broken
+  params.app.use(createGtag({
+    tagId: pageContext.envConfig.ga4Id,
+    hooks: {
+      'script:error': (error) => {
+        console.error('Error loading gtag script', error)
+      },
+    },
+    pageTracker: {
+      router: params.router,
+    },
+  }))
 
   const { registerSW } = await import('virtual:pwa-register') // use dynamic import to fetch sw at runtime
   registerSW({

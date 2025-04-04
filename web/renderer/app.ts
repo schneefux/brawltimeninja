@@ -1,11 +1,10 @@
-import { createSSRApp, markRaw, reactive } from 'vue'
+import { createSSRApp, markRaw } from 'vue'
 import { QueryCache, QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import KlickerPlugin, { createClient as createKlickerClient } from '~/plugins/klicker'
 import TRPCPlugin, { createClient as createTrpcClient } from '~/plugins/trpc'
 import type { PageContext } from './types'
 import { setPageContext } from '../composables/page-context'
 import { createPinia } from 'pinia'
-import { createGtag, query } from 'vue-gtag'
 import { createI18n, I18n } from 'vue-i18n'
 import { ClientOnly } from '@schneefux/klicker/components'
 import { defaultLocale, locales } from '~/locales'
@@ -140,20 +139,6 @@ function createApp(pageContext: PageContext, head: VueHeadClient, customFetch: t
   app.component('ClientOnly', ClientOnly)
 
   app.config.globalProperties.localePath = (path: string) => localePath(path, i18n.global)
-
-  const gtag = createGtag({
-    tagId: pageContext.envConfig.ga4Id,
-    hooks: {
-      'script:loaded': () => {
-        query('js', new Date())
-      },
-    },
-    pageTracker: {
-      router,
-    },
-  })
-
-  app.use(gtag)
 
   return {
     app,

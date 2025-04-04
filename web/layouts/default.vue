@@ -35,13 +35,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useTemplateRef } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { BWebFooter } from '@schneefux/klicker/components'
 import { useInstallPromptListeners } from '~/composables/app'
 import { useI18n } from 'vue-i18n'
 import { useConfig, useLocaleCookieRedirect, useLocalePath } from '~/composables/compat'
 import { useQuantcast } from '~/composables/quantcast'
 import { useVenatus } from '~/composables/venatus'
+import { useInstallGtag } from '~/composables/gtag'
 
 export default defineComponent({
   components: {
@@ -76,6 +77,11 @@ export default defineComponent({
 
     if (config.quantcastChoiceId) {
       useQuantcast(config.quantcastChoiceId)
+    }
+
+    const enableGtag = config.ga4Id != ''
+    if (enableGtag) {
+      useInstallGtag(config.ga4Id)
     }
 
     return {
