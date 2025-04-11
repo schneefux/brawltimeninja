@@ -9,12 +9,13 @@ import BrawlerNamesMap from '~/api/lib/brawler-names.json'
 import { TRPCError } from '@trpc/server'
 const BrawlerNames: Record<string, string> = BrawlerNamesMap
 import { Cache } from '~/lib/cache'
+import { hashCode } from '@schneefux/klicker/util'
 
 const brawlapiUrl = process.env.BRAWLAPI_URL || 'https://api.brawlapi.com/v1/';
 const brawlapiToken = process.env.BRAWLAPI_TOKEN || '';
 
-const brawlstarsUrl = process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/';
-const brawlstarsToken = process.env.BRAWLSTARS_TOKEN || '';
+const brawlstarsUrls = (process.env.BRAWLSTARS_URL || 'https://api.brawlstars.com/v1/').split(',');
+const brawlstarsTokens = (process.env.BRAWLSTARS_TOKEN || '').split(',');
 
 const devfoxUrl = process.env.HPDEVFOX_URL || 'https://api.hpdevfox.ru/';
 const devfoxToken = process.env.HPDEVFOX_TOKEN || '';
@@ -56,8 +57,11 @@ export default class BrawlstarsService {
   }
 
   private async apiRequest<T>(path: string, metricName: string, timeout: number = 1000) {
-    return request<T>(path, brawlstarsUrl, metricName,
-      {}, { 'Authorization': 'Bearer ' + brawlstarsToken }, timeout)
+    // perform hash-based load balancing between multiple API proxies based on path hash
+    const index = Math.abs(hashCode(path)) % brawlstarsUrls.length
+    const token = brawlstarsTokens[index] ?? brawlstarsTokens[0]
+    return request<T>(path, brawlstarsUrls[index], metricName,
+      {}, { 'Authorization': 'Bearer ' + token }, timeout)
   }
 
   // TODO official API does not show all future events as of 2022-01-07
@@ -106,13 +110,9 @@ export default class BrawlstarsService {
   }
 
   private async getPlayer(tag: string): Promise<BrawlstarsPlayer> {
-    return request<BrawlstarsPlayer>(
+    return this.apiRequest<BrawlstarsPlayer>(
       'players/%23' + tag,
-      brawlstarsUrl,
       'fetch_player',
-      { },
-      { 'Authorization': 'Bearer ' + brawlstarsToken },
-      1000,
     );
   }
 
@@ -144,13 +144,9 @@ export default class BrawlstarsService {
   }
 
   private async getPlayerBattleLog(tag: string): Promise<BattleLog> {
-    return request<BattleLog>(
+    return this.apiRequest<BattleLog>(
       'players/%23' + tag + '/battlelog',
-      brawlstarsUrl,
       'fetch_player_battles',
-      { },
-      { 'Authorization': 'Bearer ' + brawlstarsToken },
-      1000,
     )
   }
 
@@ -381,13 +377,9 @@ export default class BrawlstarsService {
   }
 
   public async getClubStatistics(tag: string) {
-    const club = await request<Club>(
+    const club = await this.apiRequest<Club>(
       'clubs/%23' + tag,
-      brawlstarsUrl,
       'fetch_club',
-      { },
-      { 'Authorization': 'Bearer ' + brawlstarsToken },
-      1000,
     )
     // official API: with hash, unofficial API: no hash
     // brawltime assumes no hash

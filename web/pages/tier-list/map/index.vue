@@ -109,7 +109,6 @@ export default defineComponent({
   },
   setup() {
     const i18n = useI18n()
-    const $config = useConfig()
     const { current, upcoming } = useCurrentAndUpcomingEvents()
 
     const allEvents = useAllEvents()
