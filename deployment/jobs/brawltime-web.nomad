@@ -113,7 +113,7 @@ job "brawltime-web" {
         NODE_ENVIRONMENT = "production"
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
 
-        BRAWLSTARS_URL = "http://proxy.${var.domain}/v1/"
+        BRAWLSTARS_URL = "http://proxy1.${var.domain}/v1/,http://proxy2.${var.domain}/v1/"
         MEDIA_URL = "https://media.${var.domain}"
         MANAGER_URL = "https://manager.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"
@@ -191,7 +191,8 @@ job "brawltime-web" {
           "media.${var.domain}:10.0.0.2",
           "manager.${var.domain}:10.0.0.2",
           "render.${var.domain}:10.0.0.2",
-          "proxy.${var.domain}:10.0.0.2"
+          "proxy1.${var.domain}:10.0.0.2",
+          "proxy2.${var.domain}:10.0.0.2"
         ]
 
         auth {

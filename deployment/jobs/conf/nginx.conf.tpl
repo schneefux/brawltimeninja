@@ -117,6 +117,8 @@ http {
     keepalive 100;
   }
 
+  # https://github.com/hashicorp/consul-template/blob/main/docs/templating-language.md#loop
+  {{- range $i := loop 1 3 }}
   server {
     listen 80;
     listen [::]:80;
@@ -127,12 +129,12 @@ http {
     allow ::1;
     deny all;
 
-    server_name proxy.brawltime.ninja;
+    server_name {{ printf "proxy%d.brawltime.ninja" $i }};
 
     location / {
       resolver 8.8.8.8 ipv6=off;
       proxy_pass https://brawlstars;
-      proxy_set_header Authorization "Bearer {{ env "BRAWLSTARS_TOKEN" }}";
+      proxy_set_header Authorization "Bearer {{ env (printf "BRAWLSTARS_TOKEN%d" $i) }}";
       proxy_set_header Host $http_host;
 
       add_header X-Proxy-Cache $upstream_cache_status;
@@ -145,6 +147,7 @@ http {
       proxy_set_header Connection "";
     }
   }
+  {{- end }}
 
   upstream traefik {
     zone traefik_upstreams 64K; # share memory to improve performance

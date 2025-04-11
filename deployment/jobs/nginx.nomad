@@ -1,4 +1,5 @@
-variable "brawlstars_token" {}
+variable "brawlstars_token1" {}
+variable "brawlstars_token2" {}
 
 job "nginx" {
   datacenters = ["dc1"]
@@ -75,7 +76,8 @@ job "nginx" {
 
       env {
         SSL_PATH = "/etc/letsencrypt/live/brawltime.ninja"
-        BRAWLSTARS_TOKEN="${var.brawlstars_token}"
+        BRAWLSTARS_TOKEN1="${var.brawlstars_token1}"
+        BRAWLSTARS_TOKEN2="${var.brawlstars_token2}"
       }
 
       logs {
