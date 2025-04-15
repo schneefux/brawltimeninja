@@ -43,7 +43,8 @@ export function useInstall(source: string) {
   onMounted(() => {
     const { isApp, isPWA, isTWA } = detectApp()
 
-    if (!isApp && (installPrompt.value !== undefined || detectAndroid() || detectIOS())) {
+    // FIXME add android check back when the app is restored in the Play Store
+    if (!isApp && (installPrompt.value !== undefined || /* detectAndroid() || */ detectIOS())) {
       installable.value = true
     }
 
