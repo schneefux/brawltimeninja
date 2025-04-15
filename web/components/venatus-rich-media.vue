@@ -10,7 +10,7 @@
 @reference "~/assets/css/tailwind.css";
 
 /* leave space for sticky footer */
-main {
+#main {
   @apply max-md:pb-[100px]!; /* sticky footer height */
 }
 

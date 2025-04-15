@@ -10,6 +10,10 @@
 
     <div id="main" class="min-h-(--mobile-layout-height) lg:min-h-(--desktop-layout-height)">
       <slot></slot>
+
+      <copyright
+        class="mx-4 my-4 text-sm lg:hidden"
+      ></copyright>
     </div>
 
     <app-bottom-nav id="app-bottom-nav" class="lg:hidden"></app-bottom-nav>

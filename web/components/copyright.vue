@@ -1,12 +1,5 @@
 <template>
   <div class="space-y-3">
-    <p>
-      &#169; 2018 - 2024 Brawl Time Ninja
-      ({{ releaseVersion }})
-      <span v-if="$i18n.locale != 'en'">
-        &mdash; {{ $t('footer.translated-by') }} {{ $t('translators') }}
-      </span>
-    </p>
     <div class="flex flex-wrap justify-center items-center gap-x-3 gap-y-2">
       <div class="flex flex-wrap justify-center items-center gap-2">
         <b-button
@@ -32,6 +25,13 @@
         >Twitter</b-button>
       </div>
     </div>
+    <p>
+      &#169; 2018 - 2025 Brawl Time Ninja
+      ({{ releaseVersion }})
+      <span v-if="$i18n.locale != 'en'">
+        &mdash; {{ $t('footer.translated-by') }} {{ $t('translators') }}
+      </span>
+    </p>
     <p class="text-xs leading-tight">
       This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see Supercell's Fan Content Policy: www.supercell.com/fan-content-policy.
     </p>
