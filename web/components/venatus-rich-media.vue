@@ -1,10 +1,39 @@
-<template>
-  <!-- Stickies and instream -->
-  <venatus-placement
-    ad-id="65f9504e767223575b4de5b7"
-    ad-type="rich-media"
-  ></venatus-placement>
-</template>
+<script lang="ts">
+import { defineComponent, onBeforeUnmount, ref, onMounted } from 'vue'
+
+export default defineComponent({
+  setup() {
+    const placements = ref<{ name: string, instance: any }[]>([])
+
+    onMounted(() => {
+      self.__VM.push(function (admanager: any, scope: any) {
+        console.log("[PROSPER] add vertical_sticky")
+        scope.Config.verticalSticky().display()
+        for (const name of ["horizontal_sticky", "mobile_horizontal_sticky"]) {
+          console.log("[PROSPER] add", name)
+          placements.value.push({
+            name,
+            instance: scope.Config.get(name).displayBody(),
+          })
+        }
+      })
+    })
+
+    onBeforeUnmount(() => {
+      self.__VM.push(function (admanager: any, scope: any) {
+        placements.value.forEach((placement) => {
+          console.log("[PROSPER] removed", placement.name)
+          if (placement.name === "vertical_sticky") {
+            scope.Config.verticalSticky().destroy()
+          } else {
+            placement.instance.remove()
+          }
+        })
+      })
+    })
+  },
+})
+</script>
 
 <style>
 @reference "~/assets/css/tailwind.css";

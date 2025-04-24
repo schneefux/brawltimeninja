@@ -32,7 +32,7 @@
       </b-card>
     </b-page-section>
 
-    <ad takeover></ad>
+    <ad kind="first"></ad>
 
     <b-page-section :title="$t('club.members')">
       <club-member-table
@@ -41,7 +41,7 @@
       ></club-member-table>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="battles"
@@ -98,7 +98,7 @@
       ></club-retention-graph>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       :title="$t('club.member-activity')"

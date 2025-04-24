@@ -1,62 +1,69 @@
 <template>
   <div
     ref="placement"
-    :data-id="adId"
-    :ad-type="adType"
-    :data-display-type="adType == 'hybrid-banner' ? 'hybrid-banner' : undefined"
-    :style="adType == 'rich-media' ? 'display: none' : undefined"
     class="vm-placement"
+    :data-placement="placementName"
   ></div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, nextTick, onMounted, useTemplateRef } from 'vue'
+import { defineComponent, onBeforeUnmount, nextTick, onMounted, useTemplateRef, PropType } from 'vue'
 
 export default defineComponent({
   props: {
-    adId: {
-      type: String,
+    placementName: {
+      type: String as PropType<'billboard'|'leaderboard'|'double_mpu'|'mpu'|'mobile_banner'|'mobile_mpu'|'skyscraper'|'video'|'desktop_takeover'|'mobile_takeover'|'video_slider'|'vertical_sticky'|'mobile_horizontal_sticky'|'horizontal_sticky'|'interstitial'>,
       required: true
     },
-    adType: {
+    instanceName: {
       type: String,
-      default: 'desktop-ad'
+      required: false
     },
-    // TODO can I set data-publisher-ref?
   },
   setup(props) {
-    const placementRef = useTemplateRef<HTMLDivElement>('placement')
+    const elRef = useTemplateRef<HTMLDivElement>('placement')
+    let placement: any
 
     // log statements were requested by Venatus
     const addPlacement = (el: HTMLElement) => {
-      window.top!.__vm_add = window.top!.__vm_add || []
-      window.top!.__vm_add.push(el)
-      console.log(`_vm_add, mount of ${props.adId} Venatus ${props.adType} ad`, el)
+      self.__VM.push(function (admanager: any, scope: any) {
+        console.log("[PROSPER] add", props.placementName)
+        if (props.placementName === "vertical_sticky") {
+          scope.Config.verticalSticky().display()
+        } else if (
+          props.placementName === "horizontal_sticky" ||
+          props.placementName === "mobile_horizontal_sticky" ||
+          props.placementName === "video_slider"
+        ) {
+          placement = scope.Config.get(props.placementName).displayBody()
+        } else {
+          placement = scope.Config.get(props.placementName).display(elRef.value)
+        }
+      })
     }
 
     const removePlacement = (el: HTMLElement) => {
-      if (props.adType == 'rich-media') {
-        window.top!.__vm_remove_category = window.top!.__vm_remove_category || []
-        window.top!.__vm_remove_category.push('richmedia_all')
-        console.log(`_vm_remove by category: Rich Media, ${props.adId}`, el)
-      } else {
-        window.top!.__vm_remove = window.top!.__vm_remove || []
-        window.top!.__vm_remove.push(el)
-        console.log(`_vm_remove placement: ${props.adId} Venatus ${props.adType} ad`, el)
-      }
+      self.__VM.push(function (admanager: any, scope: any) {
+        console.log("[PROSPER] removed", props.placementName)
+        if (props.placementName === "vertical_sticky") {
+          scope.Config.verticalSticky().destroy()
+        } else {
+         placement.remove()
+        }
+      })
     }
 
     onMounted(() => {
       nextTick(() => {
-        if (placementRef.value != null) {
-          addPlacement(placementRef.value)
+        if (elRef.value != null) {
+          addPlacement(elRef.value)
         }
       })
     })
 
     onBeforeUnmount(() => {
-      if (placementRef.value != null) {
-        removePlacement(placementRef.value)
+      if (elRef.value != null) {
+        removePlacement(elRef.value)
       }
     })
   },

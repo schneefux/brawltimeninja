@@ -12,7 +12,7 @@
       <slot></slot>
 
       <copyright
-        class="mx-4 my-4 text-sm lg:hidden"
+        class="mx-4 mt-16 mb-8 text-sm lg:hidden"
       ></copyright>
     </div>
 
@@ -76,7 +76,7 @@ export default defineComponent({
 
     const enableVenatus = config.venatusSiteId != ''
     if (enableVenatus) {
-      useVenatus(config.venatusSiteId)
+      useVenatus()
     }
 
     if (config.quantcastChoiceId) {

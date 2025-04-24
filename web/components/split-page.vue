@@ -1,14 +1,5 @@
 <template>
-  <ad
-    v-if="topBannerType == 'takeover'"
-    takeover
-    plain
-  ></ad>
-  <ad
-    v-else-if="topBannerType == 'instream'"
-    instream
-    plain
-  ></ad>
+  <ad kind="top"></ad>
 
   <b-page no-container>
     <!-- desktop: title above ads, mobile: title below ads -->

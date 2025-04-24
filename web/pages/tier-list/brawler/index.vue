@@ -9,7 +9,7 @@
       class="mt-8"
     ></brawlers-roll>
 
-    <ad takeover></ad>
+    <ad kind="first"></ad>
 
     <b-page-section
       id="tier-list"

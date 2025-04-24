@@ -3,7 +3,7 @@
     title="Brawl Stars Meta Dashboard"
     no-container
   >
-    <ad instream></ad>
+    <ad kind="first"></ad>
 
     <c-dashboard
       v-model="query"

@@ -120,7 +120,7 @@
       </div>
     </div>
 
-    <ad takeover lazy></ad>
+    <ad kind="first"></ad>
 
     <b-page-section
       id="best"
@@ -149,7 +149,7 @@
       </div>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="events"
@@ -303,11 +303,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<route>
-{
-  meta: {
-    topBannerType: 'instream',
-  },
-}
-</route>

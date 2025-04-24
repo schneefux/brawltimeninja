@@ -21,7 +21,7 @@
         once: true,
       }"
     >
-      <div class="flex flex-wrap gap-8 items-center">
+      <div class="lg:flex flex-wrap gap-8 items-center">
         <b-shimmer
           v-if="player == undefined"
           height-px="512"
@@ -35,7 +35,7 @@
           class="flex-auto max-w-md"
         ></player-aside>
 
-        <ad instream plain lazy></ad>
+        <ad kind="first"></ad>
       </div>
     </b-page-section>
 
@@ -119,7 +119,7 @@
       ></player-trophy-statistics>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="brawlers"
@@ -150,7 +150,7 @@
       ></player-brawlers>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <template
       v-if="player == undefined || player.battles.length > 0"
@@ -184,7 +184,7 @@
         ></battles-list>
       </b-page-section>
 
-      <ad lazy></ad>
+      <ad></ad>
     </template>
 
     <b-page-section
@@ -216,7 +216,7 @@
       ></player-mode-winrates>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="progression"
@@ -246,7 +246,7 @@
       ></player-progression>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="records"
@@ -276,7 +276,7 @@
       ></player-percentiles>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="quiz"

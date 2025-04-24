@@ -66,7 +66,7 @@
       </p>
     </b-page-section>
 
-    <ad takeover></ad>
+    <ad kind="first"></ad>
 
     <b-page-section>
       <map-views

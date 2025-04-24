@@ -13,7 +13,7 @@
       {{ $t('tier-list.maps.description') }}
     </p>
 
-    <ad takeover></ad>
+    <ad kind="first"></ad>
 
     <b-page-section
       id="active"
@@ -50,7 +50,7 @@
       </b-button>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="upcoming"
@@ -68,7 +68,7 @@
       ></events-roll>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="season"

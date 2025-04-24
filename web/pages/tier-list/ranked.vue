@@ -13,7 +13,7 @@
       {{ $t('tier-list.ranked.description') }}
     </p>
 
-    <ad takeover></ad>
+    <ad kind="first"></ad>
 
     <b-page-section
       id="teambuilder"

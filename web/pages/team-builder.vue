@@ -14,7 +14,7 @@
       </template>
     </b-card>
 
-    <ad takeover></ad>
+    <ad kind="first"></ad>
 
     <c-slicer
       v-model="query"

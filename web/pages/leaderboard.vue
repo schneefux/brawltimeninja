@@ -14,7 +14,7 @@
       </b-button>
     </div>
 
-    <ad takeover></ad>
+    <ad kind="first"></ad>
 
     <b-page-section id="leaderboard">
       <div class="flex justify-center">

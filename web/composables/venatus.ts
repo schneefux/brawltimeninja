@@ -8,13 +8,11 @@ declare global {
   }
 }
 
-export function useVenatus(siteId: string) {
+export function useVenatus() {
   useMeta(() => ({
     script: [ {
       key: 'venatus',
-      src: `https://hb.vntsm.com/v3/live/ad-manager.min.js`,
-      'data-site-id': siteId,
-      'data-mode': 'scan',
+      src: `https://hb.vntsm.com/v4/live/vms/sites/brawltime.ninja/index.js`,
       async: true,
       tagPriority: 31,
     } ],

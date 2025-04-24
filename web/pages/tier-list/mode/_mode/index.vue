@@ -9,7 +9,7 @@
       {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
     </p>
 
-    <ad takeover></ad>
+    <ad kind="first"></ad>
 
     <b-page-section
       id="maps"
@@ -29,7 +29,7 @@
       <events-roll :events="events"></events-roll>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section id="dashboard">
       <map-views

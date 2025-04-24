@@ -1,123 +1,144 @@
 <template>
+  <!--
+    top of the page unit
+      - desktop: takeover billboard
+      - mobile: video
+      - eager
+  -->
+  <div
+    v-if="kind == 'top'"
+    v-bind="$attrs"
+    ref="ad"
+    class="text-center max-lg:w-full max-lg:max-w-[480px] max-lg:mx-auto"
+  >
+    <client-only>
+      <venatus-placement
+        v-if="desktop"
+        placement-name="desktop_takeover"
+        class="section"
+      ></venatus-placement>
+
+      <!-- Video - at least 410px wide, must be 16:9 -->
+      <venatus-placement
+        v-else
+        placement-name="video"
+        class="video"
+      ></venatus-placement>
+
+      <template v-slot:placeholder>
+        <div class="top-placeholder vm-placement"></div>
+      </template>
+    </client-only>
+  </div>
+
+  <!--
+    first mid page unit
+      - desktop: video
+      - mobile: takeover MPU
+      - lazy
+  -->
+  <b-page-section
+    v-else-if="kind == 'first'"
+    v-bind="$attrs"
+    ref="ad"
+    class="text-center lg:w-full lg:max-w-[480px] lg:mx-auto"
+  >
+    <client-only>
+      <template v-if="visible">
+        <venatus-placement
+          v-if="desktop"
+          placement-name="video"
+          class="video"
+        ></venatus-placement>
+
+        <venatus-placement
+          v-if="!desktop"
+          placement-name="mobile_takeover"
+          class="section"
+        ></venatus-placement>
+      </template>
+      <div
+        v-else
+        class="first-placeholder vm-placement"
+      ></div>
+
+      <template v-slot:placeholder>
+        <div class="first-placeholder vm-placement"></div>
+      </template>
+    </client-only>
+  </b-page-section>
+
+  <!--
+    unit within a dashboard
+      - same as mid page unit below
+      - parent takes care of lazy-loading and placeholder
+  -->
   <b-dashboard-cell
-    v-if="cell"
+    v-else-if="kind == 'cell'"
     :rows="3"
     class="col-span-full! self-center"
     hide-empty
     lazy
   >
     <client-only>
-      <!-- Desktop - In-Content: 300x250, 336x280, 728x90 -->
       <venatus-placement
         v-if="desktop"
-        ad-id="65f94d69767223575b4de5b1"
-        class="desktop-incontent"
+        placement-name="billboard"
+        class="section"
       ></venatus-placement>
 
-      <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
       <venatus-placement
-        v-if="!desktop"
-        ad-id="65f94f9ddd5aea6a13fd04a1"
-        class="mobile-incontent"
+        v-else
+        placement-name="mobile_mpu"
+        class="section"
       ></venatus-placement>
     </client-only>
   </b-dashboard-cell>
 
-  <component
-    v-else
-    :is="plain ? 'div' : 'b-page-section'"
+  <!--
+    mid page unit
+      - desktop: billboard
+      - mobile: MPU
+      - lazy
+  -->
+  <b-page-section
+    v-else-if="kind == 'section'"
     v-bind="$attrs"
     ref="ad"
-    :class="{
-      'text-center': true,
-      'w-full max-w-[480px] lg:mx-auto': plain && instream,
-    }"
+    class="text-center"
   >
-    <!-- in-content (hybrid-banner) for takeover -->
-    <client-only v-if="takeover">
-      <!-- Desktop - Multisize Leaderboard: 728x90, 970x90, 970x250 -->
-      <venatus-placement
-        v-if="desktop && visible"
-        ad-id="65f94d46dd5aea6a13fd049b"
-        ad-type="hybrid-banner"
-        class="desktop-multileaderboard"
-      ></venatus-placement>
+    <client-only>
+      <template v-if="visible">
+        <!-- Desktop - Billboard: 970x90, 728x90, 970x250, 300x250, 468x60 -->
+        <venatus-placement
+          v-if="desktop"
+          placement-name="billboard"
+          class="section"
+        ></venatus-placement>
 
-      <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
-      <venatus-placement
-        v-if="!desktop && visible"
-        ad-id="65f94f9ddd5aea6a13fd04a1"
-        ad-type="hybrid-banner"
-        class="mobile-incontent"
-      ></venatus-placement>
-
-      <template v-slot:placeholder>
-        <div class="placeholder-takeover"></div>
+        <!-- Mobile - Mobile Mid Page Unit (MPU): 300x250, 300x100, 300x50, 320x50, 336x280 -->
+        <venatus-placement
+          v-else
+          placement-name="mobile_mpu"
+          class="section"
+        ></venatus-placement>
       </template>
-    </client-only>
-
-    <client-only v-else-if="banner">
-      <!-- Desktop - Article: 728x90, 970x90 -->
-      <venatus-placement
-        v-if="desktop && visible"
-        ad-id="65f94ee2dd5aea6a13fd049f"
-        class="desktop-article"
-      ></venatus-placement>
-
-      <!-- Mobile - Leaderboard: 300x50, 320x50, 300x100, 320x100 -->
-      <venatus-placement
-        v-if="!desktop && visible"
-        ad-id="65f94f6d767223575b4de5b3"
-        class="mobile-leaderboard"
-      ></venatus-placement>
-
-      <template v-slot:placeholder>
-        <div class="placeholder-banner"></div>
-      </template>
-    </client-only>
-
-    <!-- Instream - at least 410px wide, must be 16:9 -->
-    <client-only v-else-if="instream">
       <div
-        v-if="visible"
-        id="vm-av"
-        data-format="isvideo"
-        class="instream vm-placement"
-        @click="onVideoPlayerClicked"
+        v-else
+        class="section vm-placement"
       ></div>
-      <template v-slot:placeholder>
-        <div class="instream vm-placement"></div>
-      </template>
-    </client-only>
-
-    <!-- default -->
-    <client-only v-else>
-      <!-- Desktop - Multisize Leaderboard: 728x90, 970x90, 970x250 -->
-      <venatus-placement
-        v-if="desktop && visible"
-        ad-id="65f94d46dd5aea6a13fd049b"
-        class="desktop-multileaderboard"
-      ></venatus-placement>
-
-      <!-- Mobile - In-Content: 300x250, 336x280, 320x100, 300x100 -->
-      <venatus-placement
-        v-if="!desktop && visible"
-        ad-id="65f94f9ddd5aea6a13fd04a1"
-        class="mobile-incontent"
-      ></venatus-placement>
 
       <template v-slot:placeholder>
-        <div class="placeholder-section"></div>
+        <div class="section"></div>
       </template>
     </client-only>
-  </component>
+  </b-page-section>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, useTemplateRef } from 'vue'
+import { defineComponent, PropType, ref, useTemplateRef } from 'vue'
 import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
 import { BDashboardCell, BPageSection } from '@schneefux/klicker/components'
-import { useTrackScroll } from '~/composables/gtag'
 
 export default defineComponent({
   inheritAttrs: false,
@@ -126,40 +147,14 @@ export default defineComponent({
     BPageSection,
   },
   props: {
-    /** takeover and instream do not implement lazy-loading because they are usually ATF */
-    lazy: {
-      type: Boolean,
-      default: false
-    },
-    /** do not render b-section wrapper */
-    plain: {
-      type: Boolean,
-      default: false
-    },
-    /** instream video */
-    instream: {
-      type: Boolean,
-      default: false
-    },
-    /** in-content unit */
-    takeover: {
-      type: Boolean,
-      default: false
-    },
-    /** short unit */
-    banner: {
-      type: Boolean,
-      default: false
-    },
-    /** in-content unit with b-dashboard-cell wrapper */
-    cell: {
-      type: Boolean,
-      default: false
+    kind: {
+      type: String as PropType<'top'|'first'|'cell'|'section'>,
+      default: 'section',
     },
   },
-  setup(props) {
+  setup() {
     const adRef = useTemplateRef<HTMLElement>('ad')
-    const visible = ref(!props.lazy)
+    const visible = ref(false)
 
     if (!import.meta.env.SSR && !visible.value) {
       const { isSupported, stop } = useIntersectionObserver(adRef, ([{ isIntersecting, target }]) => {
@@ -178,123 +173,72 @@ export default defineComponent({
       }
     }
 
-    const { trackInteraction: trackInteractionVideo } = useTrackScroll('video')
-    const { trackInteraction: trackInteractionInstream } = useTrackScroll('instream')
-
-    const onVideoPlayerClicked = async (e: MouseEvent) => {
-      const isPlayingAd = (document.querySelector('.avp-video-ad') as any)?.style.visibility != 'hidden'
-      const trackInteraction = (type: string) => {
-        console.log('interacted with video player: %s, ad playing: %s', type, isPlayingAd)
-        if (isPlayingAd) {
-          trackInteractionInstream(type)
-        } else {
-          trackInteractionVideo(type)
-        }
-      }
-
-      const target = e.target as HTMLElement|null
-      if (target?.closest('.avp-close-floating-button,#fullscreen')) {
-        trackInteraction('close-floating')
-      }
-
-      if (target?.closest('.avp-fullscreen-button')) {
-        trackInteraction('maximize')
-      }
-    }
-
     const breakpoints = useBreakpoints({
-      desktop: 1028,
+      desktop: 1024, // breakpoint which Venatus uses
     })
     const desktop = breakpoints.greaterOrEqual('desktop')
 
     return {
       visible,
       desktop,
-      onVideoPlayerClicked,
     }
   },
 })
 </script>
 
 <style scoped>
-.placeholder-takeover {
+.top-placeholder {
+  /* video */
+  margin: 0 auto;
+  width: 100%;
+  max-width: 512px;
+  aspect-ratio: 16 / 9;
+}
+
+@media (min-width: 1024px) {
+  .top-placeholder {
+    /* section */
+    margin: 0 auto;
+    width: 100%;
+    max-width: 970px;
+    height: 250px;
+    aspect-ratio: unset;
+  }
+}
+
+.first-placeholder {
+  /* section */
   margin: 0 auto;
   width: 100%;
   max-width: 336px;
   height: 280px;
 }
 
-@media (min-width: 1028px) {
-  .placeholder-takeover {
+@media (min-width: 1024px) {
+  .first-placeholder {
+    /* video */
+    margin: 0 auto;
+    width: 100%;
+    max-width: 512px;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+.section {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 336px;
+  height: 280px;
+}
+
+@media (min-width: 1024px) {
+  .section {
     max-width: 970px;
     height: 250px;
   }
 }
 
-.desktop-article {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 970px;
-  height: 90px;
-}
-
-.mobile-leaderboard {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 320px;
-  height: 100px;
-}
-
-.placeholder-banner {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 320px;
-  height: 100px;
-}
-
-@media (min-width: 1028px) {
-  .placeholder-banner {
-    max-width: 970px;
-    height: 90px;
-  }
-}
-
-.desktop-multileaderboard {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 970px;
-  height: 250px;
-}
-
-.mobile-incontent {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 336px;
-  height: 280px;
-}
-
-.desktop-incontent {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 728px;
-  height: 280px;
-}
-
-.placeholder-section {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 336px;
-  height: 280px;
-}
-
-@media (min-width: 1028px) {
-  .placeholder-section {
-    max-width: 728px;
-    height: 280px;
-  }
-}
-
-.instream {
+.video {
   margin: 0 auto;
   width: 100%;
   max-width: 512px;

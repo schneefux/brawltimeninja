@@ -29,14 +29,14 @@
         once: true,
       }"
     >
-      <div class="flex flex-wrap gap-8 items-center">
+      <div class="lg:flex flex-wrap gap-8 items-center">
         <brawler-aside
           id="aside"
           :brawler-metadata="brawlerMetadata"
           class="flex-auto max-w-md"
         ></brawler-aside>
 
-        <ad instream plain></ad>
+        <ad kind="first"></ad>
       </div>
     </b-page-section>
 
@@ -55,7 +55,7 @@
       ></brawler-overview>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="accessory"
@@ -104,7 +104,7 @@
       ></brawler-synergies>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="maps"
@@ -140,7 +140,7 @@
       </p>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="trends"
@@ -183,7 +183,7 @@
       </p>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <!--
       some Brawlers don't have skins, pins, voicelines etc.
@@ -241,7 +241,7 @@
       ></brawler-voicelines>
     </b-page-section>
 
-    <ad lazy></ad>
+    <ad></ad>
 
     <b-page-section
       id="balance-changes"
