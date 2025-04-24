@@ -1,3 +1,5 @@
+<template></template>
+
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, ref, onMounted } from 'vue'
 
@@ -6,6 +8,7 @@ export default defineComponent({
     const placements = ref<{ name: string, instance: any }[]>([])
 
     onMounted(() => {
+      self.__VM = self.__VM || []
       self.__VM.push(function (admanager: any, scope: any) {
         console.log("[PROSPER] add vertical_sticky")
         scope.Config.verticalSticky().display()

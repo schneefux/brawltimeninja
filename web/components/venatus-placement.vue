@@ -26,6 +26,7 @@ export default defineComponent({
 
     // log statements were requested by Venatus
     const addPlacement = (el: HTMLElement) => {
+      self.__VM = self.__VM || []
       self.__VM.push(function (admanager: any, scope: any) {
         console.log("[PROSPER] add", props.placementName)
         if (props.placementName === "vertical_sticky") {
