@@ -1,12 +1,5 @@
-import { useMeta } from "./compat";
-
-declare global {
-  interface Window {
-    __vm_add: HTMLElement[];
-    __vm_remove: HTMLElement[];
-    __vm_remove_category: string[];
-  }
-}
+import { onMounted } from "vue"
+import { useMeta } from "./compat"
 
 export function useVenatus() {
   useMeta(() => ({
@@ -17,4 +10,13 @@ export function useVenatus() {
       tagPriority: 31,
     } ],
   }))
+
+  onMounted(() => {
+    self.__VM = self.__VM || []
+    self.__VM.push((admanager: any, scope: any) => {
+      scope.Instances.pageManager.on('navigated', () => {
+        scope.Instances.pageManager.newPageSession(false)
+      }, false)
+    })
+  })
 }
