@@ -11,6 +11,7 @@ import { defaultLocale, locales } from '~/locales'
 import { createRouter } from './router'
 import { localePath, useSentry } from '~/composables/compat'
 import { VueHeadClient } from '@unhead/vue'
+import Ad from '~/components/ad.vue'
 
 export { createApp }
 
@@ -136,7 +137,8 @@ function createApp(pageContext: PageContext, head: VueHeadClient, customFetch: t
   })
   app.use(pinia)
 
-  app.component('ClientOnly', ClientOnly)
+  app.component('ClientOnly', ClientOnly) // very frequently used
+  app.component('Ad', Ad) // register globally so placeholder styles are available immediately to avoid CLS
 
   app.config.globalProperties.localePath = (path: string) => localePath(path, i18n.global)
 
