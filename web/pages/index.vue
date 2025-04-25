@@ -3,19 +3,19 @@
     <b-page-section id="title">
       <div class="w-full max-w-lg md:mx-auto space-y-4 flex flex-col md:items-center">
         <div class="w-full">
-        <img
-          :src="logoWithCrownUrl"
-          alt="Logo"
-          class="float-right h-18 w-18 object-contain"
-        >
+          <img
+            :src="logoWithCrownUrl"
+            alt="Logo"
+            class="float-right h-18 w-18 object-contain"
+          >
 
-        <h1 class="mb-2 text-3xl font-bold">
-          {{ $t('index.title') }}
-        </h1>
+          <h1 class="mb-2 text-3xl font-bold">
+            {{ $t('index.title') }}
+          </h1>
 
-        <p class="text-lg">
-          {{ $t('index.subtitle') }}
-        </p>
+          <p class="text-lg">
+            {{ $t('index.subtitle') }}
+          </p>
         </div>
 
         <form
@@ -24,7 +24,7 @@
             callback: makeVisibilityCallback('section'),
             once: true,
           }"
-          :action="`/profile/${cleanedTag}`"
+          :action="cleanedTag ? `/profile/${cleanedTag}` : ''"
           @submit.prevent="search"
         >
           <div class="w-full flex">
