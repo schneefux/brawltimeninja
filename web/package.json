@@ -8,7 +8,8 @@
     "knex": "cd ./api && tsx ../node_modules/.bin/knex",
     "start": "cross-env NODE_ENV=production node ./dist/server/index.mjs",
     "start:debug": "cross-env NODE_ENV=production node --inspect ./dist/server/index.mjs",
-    "cli": "cross-env NODE_ENV=production tsx ./api/cli.ts"
+    "cli": "cross-env NODE_ENV=production tsx ./api/cli.ts",
+    "generate-pwa-assets": "pwa-assets-generator"
   },
   "dependencies": {
     "@clickhouse/client": "^1.11.0",
@@ -78,6 +79,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^22.14.0",
+    "@vite-pwa/assets-generator": "^1.0.0",
     "@vitejs/plugin-legacy": "^6.0.2",
     "@vue/compiler-sfc": "^3.5.13",
     "autoprefixer": "^10.4.21",
