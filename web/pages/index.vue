@@ -1,124 +1,134 @@
 <template>
   <split-page>
-    <div class="flex flex-col justify-center">
-      <div id="logo" class="mx-auto relative">
+    <b-page-section id="title">
+      <div class="w-full max-w-xl md:mx-6 xl:mx-auto space-y-4">
         <img
           :src="logoWithCrownUrl"
           alt="Logo"
-          class="mx-auto mt-2 h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 object-contain"
+          class="float-right h-18 w-18 object-contain"
         >
-      </div>
 
-      <b-page-section id="title" class="text-center">
-        <h1 class="text-4xl font-bold">
+        <h1 class="mb-2 text-3xl font-bold">
           {{ $t('index.title') }}
         </h1>
-        <p class="mt-3 text-center text-lg mx-2">
+
+        <p class="text-lg">
           {{ $t('index.subtitle') }}
         </p>
-      </b-page-section>
 
-      <form
-        id="search"
-        v-observe-visibility="{
-          callback: makeVisibilityCallback('section'),
-          once: true,
-        }"
-        :action="`/profile/${cleanedTag}`"
-        class="mt-4 mx-4 flex flex-wrap justify-center"
-        @submit.prevent="search"
-      >
-        <div class="w-full flex justify-center">
-          <div class="py-2 border-4 rounded-full border-yellow-400 bg-contrast/10 whitespace-nowrap">
-            <input
-              v-model="tag"
-              :placeholder="$t('action.enter-tag')"
-              type="text"
-              autocomplete="off"
-              class="transition duration-100 ease-in-out form-input w-40 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent focus:ring-0 border-none ml-3 mr-2 py-4 rounded-full!"
-            >
+        <form
+          id="search"
+          v-observe-visibility="{
+            callback: makeVisibilityCallback('section'),
+            once: true,
+          }"
+          :action="`/profile/${cleanedTag}`"
+          @submit.prevent="search"
+        >
+          <div class="w-full flex">
+            <div class="py-2 border-4 rounded-full border-primary-400 bg-contrast/10 whitespace-nowrap">
+              <input
+                v-model="tag"
+                :placeholder="$t('action.enter-tag')"
+                type="text"
+                autocomplete="off"
+                class="transition duration-100 ease-in-out form-input w-40 text-lg tracking-wider uppercase placeholder:normal-case font-semibold text-gray-200 bg-transparent focus:ring-0 border-none ml-3 mr-2 py-4 rounded-full!"
+              >
+              <b-button
+                type="submit"
+                class="shrink-0 mr-3"
+                secondary
+                round
+                lg
+              >{{ $t('action.search') }}</b-button>
+            </div>
+          </div>
+          <p
+            v-show="loading"
+            class="mt-4 text-red-400"
+          >
+            {{ $t('state.searching') }}…
+          </p>
+          <p
+            v-show="error"
+            class="mt-4 text-red-400"
+          >
+            {{ error }}
+          </p>
+        </form>
+
+        <div id="recommended" class="flex flex-wrap">
+          <div class="mt-2">
+            <template v-if="lastPlayers.length === 0">
+              {{ $t('index.recommended') }}
+            </template>
+            <template v-else-if="featuredPlayers.length > 0">
+              {{ $t('index.recents') }}
+            </template>
+          </div>
+          <div class="ml-2">
             <b-button
-              type="submit"
-              class="shrink-0 mr-3"
-              secondary
-              round
-              lg
-            >{{ $t('action.search') }}</b-button>
+              v-for="player in (lastPlayers.length > 0 ? lastPlayers : featuredPlayers)"
+              :key="player.tag"
+              :to="player.link"
+              class="ml-2 mt-1"
+              xs
+              primary
+              @click.passive="addLastPlayer(player)"
+            >
+              {{ player.name }}
+            </b-button>
           </div>
         </div>
-        <p
-          v-show="loading"
-          class="mt-4 text-red-400"
-        >
-          {{ $t('state.searching') }}…
-        </p>
-        <p
-          v-show="error"
-          class="mt-4 text-red-400"
-        >
-          {{ error }}
-        </p>
-      </form>
 
-      <div id="help" class="mt-4 mx-6 flex justify-center">
-        <div class="flex justify-center">
-          <details
-            ref="helpDropdown"
-            class="mx-6"
+        <details
+          id="help"
+          ref="helpDropdown"
+        >
+          <summary>
+            {{ $t('tag-help.title') }}
+          </summary>
+          <b-card
+            :title="$t('tag-help.title')"
+            class="mt-4"
           >
-            <summary>
-              {{ $t('tag-help.title') }}
-            </summary>
-            <b-card
-              :title="$t('tag-help.title')"
-              class="mt-6 text-left"
-            >
-              <template v-slot:content>
-                <div>
-                  <p>{{ $t('tag-help.step.1') }}</p>
-                  <p>{{ $t('tag-help.step.2') }}</p>
+            <template v-slot:content>
+              <ol class="space-y-4 list-decimal list-inside">
+                <li>
+                  <b-button
+                    tag="a"
+                    href="https://link.brawlstars.com/"
+                    target="_blank"
+                    rel="nofollow noopener noreferrer"
+                    class="ml-2"
+                    primary
+                    xs
+                  >
+                    {{ $t('tag-help.step.1') }}
+                  </b-button>
+                </li>
+                <li>
+                  {{ $t('tag-help.step.2') }}
                   <img
                     loading="lazy"
                     :src="tag1Url"
-                    class="px-8 mt-1 w-80 max-w-full"
+                    class="px-6 mt-2 w-80 max-w-full"
                   >
-                  <p class="mt-3">{{ $t('tag-help.step.3') }}</p>
+                </li>
+                <li>
+                  {{ $t('tag-help.step.3') }}
                   <img
                     loading="lazy"
                     :src="tag2Url"
-                    class="px-8 mt-1 w-80 max-w-full"
+                    class="px-6 mt-2 w-80 max-w-full"
                   >
-                </div>
-              </template>
-            </b-card>
-          </details>
-        </div>
+                </li>
+              </ol>
+            </template>
+          </b-card>
+        </details>
       </div>
-
-      <div id="recommended" class="mt-2 mx-6 flex flex-wrap justify-center">
-        <div class="mt-2">
-          <template v-if="lastPlayers.length === 0">
-            {{ $t('index.recommended') }}
-          </template>
-          <template v-else-if="featuredPlayers.length > 0">
-            {{ $t('index.recents') }}
-          </template>
-        </div>
-        <div class="ml-2">
-          <b-button
-            v-for="player in (lastPlayers.length > 0 ? lastPlayers : featuredPlayers)"
-            :key="player.tag"
-            :to="player.link"
-            class="ml-2 mt-1"
-            xs
-            primary
-            @click.passive="addLastPlayer(player)"
-          >
-            {{ player.name }}
-          </b-button>
-        </div>
-      </div>
-    </div>
+    </b-page-section>
 
     <ad kind="first"></ad>
 
@@ -175,11 +185,11 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import { tagPattern } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
 import { TRPCClientError } from '@trpc/client'
-import { useMeta, useCacheHeaders, useLocalePath, useConfig, useSentry } from '~/composables/compat'
+import { useMeta, useCacheHeaders, useLocalePath, useSentry } from '~/composables/compat'
 import { useActiveEvents } from '~/composables/dimension-values'
 import { useBrawlstarsStore } from '~/stores/brawlstars'
 import { event } from 'vue-gtag'
-import logoWithCrownUrl from '~/assets/images/logo_with_crown_min.svg'
+import logoWithCrownUrl from '~/assets/images/logo.min.svg'
 import tag1Url from '~/assets/images/tag/tag-1.jpg'
 import tag2Url from '~/assets/images/tag/tag-2.jpg'
 import { useRouter } from 'vue-router'

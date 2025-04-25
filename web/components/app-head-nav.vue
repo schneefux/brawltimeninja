@@ -36,7 +36,7 @@
 import { defineComponent } from 'vue'
 import { faInfo } from '@fortawesome/free-solid-svg-icons'
 import { BAppHeadNav, Fa } from '@schneefux/klicker/components'
-import crownUrl from '~/assets/images/logo_with_crown_min.svg'
+import crownUrl from '~/assets/images/logo.min.svg'
 
 export default defineComponent({
   components: {

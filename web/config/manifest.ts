@@ -1,4 +1,5 @@
 import { ManifestOptions } from "vite-plugin-pwa";
+import { themeColor } from "../theme-colors.config.js";
 
 export default {
   id: '/?standalone=true',
@@ -6,7 +7,7 @@ export default {
   name: 'Brawl Time Ninja',
   short_name: 'Brawl Time',
   description: 'Track Brawl Stars stats, hours played and view Tier Lists.',
-  theme_color: '#facc15', // yellow-400
+  theme_color: themeColor,
   icons: [
   // opaque background, centered
   {

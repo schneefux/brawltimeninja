@@ -7,8 +7,8 @@
   >
     <div
       ref="elem"
-      class="slider ring-2 focus:ring-2 focus:ring-contrast/20 ring-contrast/10 hover:ring-contrast/20 bg-contrast/5"
-      :style="[elemStyles, bgStyle]"
+      class="slider ring-2 focus:ring-2 focus:ring-contrast/20 ring-contrast/10 hover:ring-contrast/20 bg-contrast/5 bg-primary-100"
+      :style="[elemStyles]"
       aria-hidden="true"
     >
       <!-- Dot 0 -->
@@ -88,8 +88,7 @@
       <!-- Process -->
       <div
         ref="process"
-        class="slider-process bg-primary-300"
-        :style="processStyle"
+        class="slider-process bg-primary-400"
       >
         <div
           ref="mergedTooltip"
@@ -251,10 +250,6 @@ export default defineComponent({
     sliderStyle: [Array, Object, Function],
     // 组件禁用状态下样式
     disabledStyle: Object,
-    // 进度条样式
-    processStyle: Object,
-    // 组件背景样式
-    bgStyle: Object,
     disabledDotStyle: [Array, Object, Function],
     labelStyle: Object,
     labelActiveStyle: Object

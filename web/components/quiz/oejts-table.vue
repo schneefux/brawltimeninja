@@ -9,7 +9,7 @@
       <div class="h-2 bg-gray-100 rounded-sm relative">
         <div
           :style="{ 'width': Math.min(Math.abs(value)/2 * 50, 50) + '%' }"
-          :class="['h-full bg-yellow-500 absolute', {
+          :class="['h-full bg-primary-500 absolute', {
             'left-1/2 rounded-r': value > 0,
             'right-1/2 rounded-l': value < 0,
           }]"

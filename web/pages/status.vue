@@ -4,11 +4,11 @@
       <p v-show="status == undefined">{{ $t('state.checking') }}…</p>
       <div v-show="status == 'down'">
         <media-img path="/brawlers/spike_loss/model" clazz="mt-8 w-40 mx-auto" alt="Spike"></media-img>
-        <h2 class="text-3xl font-bold text-center tracking-wide text-yellow-400">{{ $t('status.down.title') }}</h2>
+        <h2 class="text-3xl font-bold text-center tracking-wide">{{ $t('status.down.title') }}</h2>
         <p class="mt-6">{{ $t('status.down.description') }}</p>
       </div>
       <div v-show="status == 'up'">
-        <h2 class="text-3xl font-bold text-center tracking-wide text-yellow-400">{{ $t('status.up.title') }}</h2>
+        <h2 class="text-3xl font-bold text-center tracking-wide">{{ $t('status.up.title') }}</h2>
         <media-img path="/brawlers/poco/model" clazz="mt-8 w-40 mx-auto" alt="Poco"></media-img>
         <p class="mt-6">{{ $t('status.up.description') }}</p>
       </div>

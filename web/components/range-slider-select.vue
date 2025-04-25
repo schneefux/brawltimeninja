@@ -15,8 +15,6 @@
           :max="max"
           :step="1"
           :min-range="minRange"
-          :bg-style="bgStyle"
-          :process-style="processStyle"
           tooltip-dir="top"
           lazy
         >
@@ -78,19 +76,10 @@ export default defineComponent({
       }
     })
 
-    const bgStyle = {
-      backgroundColor: 'rgb(253, 230, 138)', // yellow-200
-    }
-    const processStyle = {
-      backgroundColor: 'rgb(251, 191, 36)', // yellow-400
-    }
-
     const isClient = !import.meta.env.SSR
 
     return {
       value,
-      bgStyle,
-      processStyle,
       isClient,
     }
   },

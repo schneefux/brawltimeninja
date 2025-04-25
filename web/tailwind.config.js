@@ -1,8 +1,9 @@
-const colors = require('tailwindcss/colors')
-const defaultTheme = require('tailwindcss/defaultTheme')
-const plugin = require('tailwindcss/plugin')
+import colors from 'tailwindcss/colors'
+import defaultTheme from 'tailwindcss/defaultTheme'
+import plugin from 'tailwindcss/plugin'
+import { colors as themeColors } from './theme-colors.config.js'
 
-module.exports = {
+export default {
   darkMode: 'class',
   content: [
     'components/**/*.{js,jsx,ts,tsx,vue}',
@@ -19,24 +20,18 @@ module.exports = {
       inherit: 'inherit',
 
       gray: colors.zinc,
-      yellow: colors.amber,
-      primary: colors.amber,
-      'on-primary': colors.gray['800'],
-      red: colors.red,
-      secondary: colors.red,
-      'on-secondary': colors.gray['200'],
 
       white: colors.white,
       black: colors.black,
       green: colors.emerald,
       orange: colors.orange,
-      blue: colors.blue,
-      purple: colors.violet,
-      pink: colors.pink,
+      red: colors.red,
 
       background: 'rgba(var(--color-background) / <alpha-value>)',
       contrast: 'rgba(var(--color-contrast) / <alpha-value>)',
       text: 'rgba(var(--color-text) / <alpha-value>)',
+
+      ...themeColors,
     },
     extend: {
       fontFamily: {

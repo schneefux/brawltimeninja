@@ -5,7 +5,7 @@
     target="_blank"
     @submit="search"
   >
-    <div class="py-2 rounded-lg bg-yellow-400">
+    <div class="py-2 rounded-lg bg-primary-400">
       <input
         v-model="tag"
         :placeholder="$t('action.enter-tag')"

@@ -12,6 +12,7 @@ import { createRouter } from './router'
 import { localePath, useSentry } from '~/composables/compat'
 import { VueHeadClient } from '@unhead/vue'
 import Ad from '~/components/ad.vue'
+import { themeColor } from '~/theme-colors.config.js'
 
 export { createApp }
 
@@ -50,7 +51,6 @@ function createApp(pageContext: PageContext, head: VueHeadClient, customFetch: t
   })
   app.use(i18n)
 
-  const themeColor = '#facc15' // yellow-400
   head.push({
     titleTemplate: (title) => title != undefined ? `${title} - Brawl Time Ninja` : 'Brawl Time Ninja',
     bodyAttrs: {

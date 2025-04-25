@@ -39,7 +39,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { BWebNav } from '@schneefux/klicker/components'
-import crownUrl from '~/assets/images/logo_with_crown_min.svg'
+import crownUrl from '~/assets/images/logo.min.svg'
 import { useScreens } from '~/composables/screens'
 import { useRoute } from 'vue-router';
 
