@@ -12,29 +12,16 @@
         <media-img path="/brawlers/poco/model" clazz="mt-8 w-40 mx-auto" alt="Poco"></media-img>
         <p class="mt-6">{{ $t('status.up.description') }}</p>
       </div>
-
-      <p v-show="status != undefined" class="mt-4">
-        {{ $t('status.check-twitter') }}
-      </p>
-
-      <div class="mt-8">
-        <Timeline id="BrawlStars" sourceType="profile" :options="{ theme: 'dark', height: 600, dnt: true }" />
-      </div>
     </div>
   </split-page>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
-// @ts-ignore
-import { Timeline } from '@jacksongross/vue-tweet-embed'
 import { useApi, useCacheHeaders, useMeta } from '~/composables/compat'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
-  components: {
-    Timeline,
-  },
   setup() {
     const i18n = useI18n()
 

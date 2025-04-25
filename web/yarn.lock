@@ -1278,11 +1278,6 @@
   resolved "https://registry.yarnpkg.com/@intlify/shared/-/shared-11.1.2.tgz#d780bc8eb4e3c3ef8a3e45c421f0f5ecf59651f2"
   integrity sha512-dF2iMMy8P9uKVHV/20LA1ulFLL+MKSbfMiixSmn6fpwqzvix38OIc7ebgnFbBqElvghZCW9ACtzKTGKsTGTWGA==
 
-"@jacksongross/vue-tweet-embed@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@jacksongross/vue-tweet-embed/-/vue-tweet-embed-3.0.1.tgz#4169140ed7168a42162c20d9acde96fd2da9eec9"
-  integrity sha512-BqwnRlrNg/QQZVk7yAPrG2lJug75APKaKnBGNDk9y4vqNl9YNVLkz3hqjtu20z5uf8HA6wozZZyTTTDpIMIVUQ==
-
 "@jridgewell/gen-mapping@^0.3.5":
   version "0.3.8"
   resolved "https://registry.yarnpkg.com/@jridgewell/gen-mapping/-/gen-mapping-0.3.8.tgz#4f0e06362e01362f823d348f1872b08f666d8142"

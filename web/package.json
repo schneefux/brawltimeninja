@@ -15,7 +15,6 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
-    "@jacksongross/vue-tweet-embed": "^3.0.1",
     "@resvg/resvg-js": "^2.6.2",
     "@schneefux/klicker": "link:../klicker",
     "@sentry-internal/feedback": "^9.11.0",
