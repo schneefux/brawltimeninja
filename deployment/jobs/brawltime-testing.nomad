@@ -80,7 +80,7 @@ job "brawltime-testing" {
         TRADUORA_SECRET = "${var.web_traduora_secret}"
         TRADUORA_PROJECT_ID = "${var.web_traduora_project_id}"
 
-        QUANTCAST_CHOICE_ID = "Zj670A0xwScEY"
+        #QUANTCAST_CHOICE_ID = "Zj670A0xwScEY"
         VENATUS_SITE_ID = "65e870e95daddd2733903a31"
       }
 

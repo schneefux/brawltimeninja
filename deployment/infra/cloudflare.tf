@@ -66,3 +66,20 @@ resource "cloudflare_record" "mbo_dkim" {
   zone_id = var.cloudflare_zone_id
 }
 
+resource "cloudflare_record" "mbo_spf" {
+  name = "brawltime.ninja"
+  proxied = false
+  ttl = 1
+  type = "TXT"
+  value = "v=spf1 include:mailbox.org ~all"
+  zone_id = var.cloudflare_zone_id
+}
+
+resource "cloudflare_record" "mbo_dmarc" {
+  name = "_dmarc"
+  proxied = false
+  ttl = 1
+  type = "TXT"
+  value = "v=DMARC1;p=none"
+  zone_id = var.cloudflare_zone_id
+}
