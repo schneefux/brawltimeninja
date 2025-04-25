@@ -1,7 +1,8 @@
 <template>
   <split-page>
     <b-page-section id="title">
-      <div class="w-full max-w-xl md:mx-6 xl:mx-auto space-y-4">
+      <div class="w-full max-w-lg md:mx-auto space-y-4 flex flex-col md:items-center">
+        <div class="w-full">
         <img
           :src="logoWithCrownUrl"
           alt="Logo"
@@ -15,6 +16,7 @@
         <p class="text-lg">
           {{ $t('index.subtitle') }}
         </p>
+        </div>
 
         <form
           id="search"
