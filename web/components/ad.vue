@@ -9,7 +9,7 @@
     v-if="kind == 'top'"
     v-bind="$attrs"
     ref="ad"
-    class="text-center max-lg:w-full max-lg:max-w-[480px] max-lg:mx-auto"
+    class="text-center max-lg:w-full max-lg:max-w-[440px] max-lg:mx-auto"
   >
     <client-only>
       <venatus-placement
@@ -41,7 +41,7 @@
     v-else-if="kind == 'first'"
     v-bind="$attrs"
     ref="ad"
-    class="text-center lg:w-full lg:max-w-[480px] lg:mx-auto"
+    class="text-center lg:w-full lg:max-w-[440px] lg:mx-auto"
   >
     <client-only>
       <template v-if="visible">
