@@ -4,11 +4,11 @@
     :class="{
       'lg:grid-cols-[20rem_minmax(0,1fr)_0]': ('aside-left' in $slots) && !('aside-right' in $slots),
       'lg:grid-cols-[0_minmax(0,1fr)_20rem]': !('aside-left' in $slots) && ('aside-right' in $slots),
-      'lg:grid-cols-[20rem_minmax(0,1fr)] 2xl:grid-cols-[20rem_minmax(0,1fr)_20rem]': ('aside-left' in $slots) && ('aside-right' in $slots),
+      'xl:grid-cols-[20rem_minmax(0,1fr)] 2xl:grid-cols-[20rem_minmax(0,1fr)_20rem]': ('aside-left' in $slots) && ('aside-right' in $slots),
     }"
   >
     <aside class="order-1">
-      <div class="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:flex lg:flex-col lg:items-end">
+      <div class="xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)] xl:flex xl:flex-col xl:items-end">
         <slot name="aside-left"></slot>
       </div>
     </aside>
@@ -18,7 +18,7 @@
     </div>
 
     <aside class="order-2 md:hidden 2xl:block 2xl:order-3">
-      <div class="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:flex lg:flex-col lg:items-start">
+      <div class="xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)] xl:flex xl:flex-col xl:items-start">
         <slot name="aside-right"></slot>
       </div>
     </aside>
