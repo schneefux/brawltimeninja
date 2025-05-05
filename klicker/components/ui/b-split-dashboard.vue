@@ -1,9 +1,9 @@
 <template>
   <div
-    :class="['grid grid-cols-1', {
-      'lg:grid-cols-[20rem_minmax(0,1fr)_0]': ('aside-left' in $slots) && !('aside-right' in $slots),
-      'lg:grid-cols-[0_minmax(0,1fr)_20rem]': !('aside-left' in $slots) && ('aside-right' in $slots),
-      'xl:grid-cols-[20rem_minmax(0,1fr)] 2xl:grid-cols-[20rem_minmax(0,1fr)_20rem]': ('aside-left' in $slots) && ('aside-right' in $slots),
+    :class="['grid grid-cols-1 lg:gap-y-4 justify-center [--content-size:1fr]', {
+      'lg:grid-cols-[20rem_minmax(0,var(--content-size))_0]': ('aside-left' in $slots) && !('aside-right' in $slots),
+      'lg:grid-cols-[0_minmax(0,var(--content-size))_20rem]': !('aside-left' in $slots) && ('aside-right' in $slots),
+      'xl:grid-cols-[20rem_minmax(0,var(--content-size))] 2xl:grid-cols-[20rem_minmax(0,var(--content-size))_20rem]': ('aside-left' in $slots) && ('aside-right' in $slots),
     }]"
   >
     <aside class="order-1">
@@ -12,7 +12,7 @@
       </div>
     </aside>
 
-    <div :class="['order-3 lg:my-0 2xl:order-2 bg-background text-text lg:px-8 lg:py-6 lg:rounded-2xl', centerClass]">
+    <div class="order-3 lg:my-0 2xl:order-2 bg-background text-text lg:px-8 lg:py-6 lg:rounded-2xl">
       <slot></slot>
     </div>
 
@@ -39,11 +39,5 @@ import { defineComponent } from 'vue'
  *   - mobile: L/R/M from top to down
  */
 export default defineComponent({
-  props: {
-    centerClass: {
-      type: String,
-      default: ''
-    }
-  },
 })
 </script>

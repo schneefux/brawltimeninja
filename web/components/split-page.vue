@@ -1,21 +1,20 @@
 <template>
   <ad kind="top"></ad>
 
-  <b-page>
+  <main class="px-4 py-6 xl:pt-0 mt-2">
     <!-- desktop: title above ads, mobile: title below ads -->
-    <b-title
+    <h1
       v-if="title"
-      :title="title"
-      class="mb-4 md:hidden"
-    ></b-title>
+      class="text-3xl md:hidden"
+    >{{ title }}</h1>
 
-    <b-split-dashboard center-class="vm-main-content justify-self-center">
+    <b-split-dashboard class="vm-main-content">
       <template v-slot:aside-left>
+        <!-- set nav background color and padding to overlap Venatus' takeover -->
         <div
           v-if="leftSidebarHasContent || sections.length > 0"
-          class="bg-background lg:px-6 lg:py-4 lg:rounded-2xl empty:hidden"
+          class="bg-background lg:px-6 lg:py-4 lg:rounded-2xl xl:mr-4 empty:hidden"
         >
-          <!-- set nav background color and padding to overlap Venatus' takeover -->
           <b-scroll-spy
             v-if="sections.length > 0"
             id="sidenav"
@@ -31,22 +30,21 @@
         <slot name="aside-right"></slot>
       </template>
 
-      <b-title
+      <h1
         v-if="title"
-        :title="title"
-        class="hidden md:block"
-      ></b-title>
+        class="text-3xl hidden md:block"
+      >{{ title }}</h1>
 
       <div>
         <slot></slot>
       </div>
     </b-split-dashboard>
-  </b-page>
+  </main>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
-import { BPage, BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
+import { BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
 import { useRoute } from 'vue-router'
 import { Section } from '@schneefux/klicker/components/ui/b-scroll-spy.vue'
 
@@ -58,7 +56,6 @@ export default defineComponent({
   components: {
     BSplitDashboard,
     BScrollSpy,
-    BPage,
   },
   props: {
     title: {

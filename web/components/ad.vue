@@ -9,7 +9,7 @@
     v-if="kind == 'top'"
     v-bind="$attrs"
     ref="ad"
-    class="lg:flex lg:justify-center"
+    class="flex justify-center"
   >
     <client-only>
       <!--
@@ -20,17 +20,17 @@
         v-if="desktop"
         placement-name="desktop_takeover"
         data-display-type="hybrid-banner"
-        class="top-ad"
+        class="flex-auto top-ad"
       ></venatus-placement>
 
       <venatus-placement
         v-else
         placement-name="video"
-        class="top-ad"
+        class="flex-auto top-ad"
       ></venatus-placement>
 
       <template v-slot:placeholder>
-        <div class="top-ad vm-placement"></div>
+        <div class="flex-auto top-ad vm-placement"></div>
       </template>
     </client-only>
   </div>

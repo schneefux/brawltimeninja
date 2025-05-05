@@ -1,5 +1,5 @@
 .dev .vm-placement {
-  /*background-color: #f687b3;*/
+  background-color: #f687b3;
 }
 
 /* takeover */
@@ -13,6 +13,6 @@
   }
 
   .dev .vm-main-content {
-    max-width: 1167px;
+    --content-size: 1167px;
   }
 }

@@ -1,4 +1,4 @@
-import { BButton, BCard, BCheckbox, BLightbox, BPage, BPageSection, BRadio, BScrollingDashboard, BSelect, BShimmer, CQuery } from '@schneefux/klicker/components'
+import { BButton, BCard, BCheckbox, BLightbox, BPageSection, BRadio, BScrollingDashboard, BSelect, BShimmer, CQuery } from '@schneefux/klicker/components'
 import { KlickerConfigInjectionKey } from '@schneefux/klicker/composables/klicker'
 import { App, Ref, onServerPrefetch } from 'vue'
 import { useQuery, keepPreviousData } from '@tanstack/vue-query'
@@ -34,7 +34,6 @@ function install(app: App, options: Options) {
   app.component('b-lightbox', BLightbox)
   app.component('b-checkbox', BCheckbox)
   app.component('b-radio', BRadio)
-  app.component('b-page', BPage)
   app.component('b-page-section', BPageSection)
   app.component('b-scrolling-dashboard', BScrollingDashboard)
 

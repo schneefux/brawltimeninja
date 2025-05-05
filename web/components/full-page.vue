@@ -1,33 +1,23 @@
 <template>
   <ad kind="top"></ad>
 
-  <b-page
-    :title="title"
-    class="bg-background text-text vm-main-content lg:mx-auto lg:rounded-2xl lg:px-6 lg:py-4"
-  >
-    <b-title
-      v-if="title"
-      :title="title"
-      class="mb-4 md:hidden"
-    ></b-title>
+  <main class="px-4 py-6 mt-2 bg-background text-text lg:mx-auto lg:rounded-2xl vm-main-content [--content-size:unset] w-[var(--content-size)]">
+    <h1
+      v-if="title != ''"
+      class="text-3xl"
+    >{{ title }}</h1>
 
-    <div>
-      <slot></slot>
-    </div>
-  </b-page>
+    <slot></slot>
+  </main>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { BPage } from '@schneefux/klicker/components'
 
 /**
  * single column page layout
  */
 export default defineComponent({
-  components: {
-    BPage,
-  },
   props: {
     title: {
       type: String,
