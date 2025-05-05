@@ -1,14 +1,8 @@
 <template>
-  <split-page :title="$t('tier-list.maps.title')">
-    <template v-slot:aside-left>
-      <b-scroll-spy
-        id="sidenav"
-        :sections="sections"
-        toc-class="hidden lg:block"
-        nav-class="top-14"
-      ></b-scroll-spy>
-    </template>
-
+  <split-page
+    :title="$t('tier-list.maps.title')"
+    :sections="sections"
+  >
     <p id="description" class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.maps.description') }}
     </p>
@@ -89,15 +83,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, useTemplateRef } from 'vue'
-import { useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
+import { useCacheHeaders, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { unformatMode } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
-import { BPageSection, BScrollSpy } from '@schneefux/klicker/components'
+import { BPageSection } from '@schneefux/klicker/components'
 import { useAllEvents } from '~/composables/dimension-values'
 import { useCurrentAndUpcomingEvents } from '~/composables/events'
 import { useI18n } from 'vue-i18n'
-import { EventMetadata } from '~/plugins/klicker.service'
 
 export default defineComponent({
   directives: {
@@ -105,7 +98,6 @@ export default defineComponent({
   },
   components: {
     BPageSection,
-    BScrollSpy,
   },
   setup() {
     const i18n = useI18n()

@@ -1,14 +1,8 @@
 <template>
-  <split-page :title="brawlerMetadata?.name">
-    <template v-slot:aside-left>
-      <b-scroll-spy
-        id="sidenav"
-        :sections="sections"
-        toc-class="hidden lg:block"
-        nav-class="top-14"
-      ></b-scroll-spy>
-    </template>
-
+  <split-page
+    :title="brawlerMetadata?.name"
+    :sections="sections"
+  >
     <breadcrumbs
       id="breadcrumbs"
       :links="[{
@@ -36,7 +30,7 @@
           class="flex-auto max-w-md"
         ></brawler-aside>
 
-        <ad kind="first"></ad>
+        <ad kind="first" class="lg:ml-auto"></ad>
       </div>
     </b-page-section>
 
@@ -278,7 +272,7 @@
 import { computed, defineComponent, useTemplateRef } from 'vue'
 import { useAsync, useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { BScrollSpy, BPageSection } from '@schneefux/klicker/components'
+import { BPageSection } from '@schneefux/klicker/components'
 import { useTrackScroll } from '~/composables/gtag'
 import { ScrapedBrawler } from '~/model/Web'
 import { useI18n } from 'vue-i18n'
@@ -290,7 +284,6 @@ export default defineComponent({
     ObserveVisibility,
   },
   components: {
-    BScrollSpy,
     BPageSection,
   },
   setup() {

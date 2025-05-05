@@ -4,6 +4,7 @@
       <b-shimmer
         v-if="event == undefined"
         height-px="40"
+        width-px="240"
         class="my-4"
         loading
       ></b-shimmer>
@@ -32,6 +33,7 @@
         <b-shimmer
           v-if="event == undefined"
           height-px="310"
+          width-px="240"
           loading
         ></b-shimmer>
         <event-picture-card

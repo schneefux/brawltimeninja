@@ -1,14 +1,8 @@
 <template>
-  <split-page :title="$t('tier-list.ranked.title')">
-    <template v-slot:aside-left>
-      <b-scroll-spy
-        id="sidenav"
-        :sections="sections"
-        toc-class="hidden lg:block"
-        nav-class="top-14"
-      ></b-scroll-spy>
-    </template>
-
+  <split-page
+    :title="$t('tier-list.ranked.title')"
+    :sections="sections"
+  >
     <p id="description" class="mt-4 prose dark:prose-invert">
       {{ $t('tier-list.ranked.description') }}
     </p>
@@ -56,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { BPageSection, BDashboardCell, BScrollSpy } from '@schneefux/klicker/components'
+import { BPageSection, BDashboardCell } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { defineComponent, computed, ref, useTemplateRef } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
@@ -73,7 +67,6 @@ export default defineComponent({
   components: {
     BPageSection,
     BDashboardCell,
-    BScrollSpy,
   },
   setup() {
     const i18n = useI18n()

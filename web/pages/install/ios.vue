@@ -1,5 +1,5 @@
 <template>
-  <b-page :title="$t('install.title')">
+  <split-page :title="$t('install.title')">
     <b-page-section>
       <ol class="flex flex-wrap justify-center gap-8">
         <li>
@@ -34,20 +34,19 @@
         </li>
       </ol>
     </b-page-section>
-  </b-page>
+  </split-page>
 </template>
 
 <script lang="ts">
 import { useCacheHeaders } from '~/composables/compat';
 import { defineComponent } from 'vue';
-import { BPage, BPageSection, BCard } from '@schneefux/klicker/components';
+import { BPageSection, BCard } from '@schneefux/klicker/components';
 import Step1 from '~/assets/images/install/ios-1_arrow.jpg';
 import Step2 from '~/assets/images/install/ios-2_arrow.jpg';
 import Step3 from '~/assets/images/install/ios-3_arrow.jpg';
 
 export default defineComponent({
   components: {
-    BPage,
     BPageSection,
     BCard,
   },

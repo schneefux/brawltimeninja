@@ -1,8 +1,5 @@
 <template>
-  <b-page
-    title="Brawl Stars Meta Dashboard"
-    no-container
-  >
+  <full-page title="Brawl Stars Meta Dashboard">
     <ad kind="first"></ad>
 
     <c-dashboard
@@ -43,7 +40,7 @@
     </c-dashboard>
 
     <c-share class="mt-4"></c-share>
-  </b-page>
+  </full-page>
 </template>
 
 <script lang="ts">

@@ -90,7 +90,7 @@
 import { defineComponent, onMounted, PropType, ref, watch, nextTick, computed, useTemplateRef } from 'vue'
 import { useIntersectionObserver, breakpointsTailwind, useBreakpoints, onClickOutside } from '@vueuse/core'
 
-interface Section {
+export interface Section {
   id: string
   element: null|undefined|HTMLElement
   title: string

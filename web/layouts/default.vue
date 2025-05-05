@@ -1,14 +1,14 @@
 <template>
   <div
     ref="container"
-    class="min-h-screen bg-background text-text"
+    class="min-h-screen"
   >
     <web-nav id="web-nav" class="hidden lg:flex"></web-nav>
     <app-head-nav id="app-nav" class="lg:hidden"></app-head-nav>
 
     <loading-indicator></loading-indicator>
 
-    <div id="main" class="min-h-(--mobile-layout-height) lg:min-h-(--desktop-layout-height)">
+    <div id="main" class="min-h-(--mobile-layout-height) lg:min-h-(--desktop-layout-height) bg-background text-text vm-main">
       <slot></slot>
 
       <copyright

@@ -1,5 +1,5 @@
 <template>
-  <b-page :title="$t('dashboard-designer.title')" no-container>
+  <full-page :title="$t('dashboard-designer.title')">
     <c-grid
       v-model="grid"
       :default-query="defaultQuery"
@@ -44,11 +44,11 @@
       <p>Log in to share this report.</p>
       <login-button></login-button>
     </div>
-  </b-page>
+  </full-page>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, useId } from "vue"
+import { defineComponent, computed, onMounted, useId } from "vue"
 import { CGrid, BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { Grid, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'

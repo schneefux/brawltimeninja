@@ -3,16 +3,8 @@
   <split-page
     v-if="playerTag != undefined"
     :title="$t('player.meta.title', { name: player?.name ?? '#' + playerTag })"
+    :sections="sections"
   >
-    <template v-slot:aside-left>
-      <b-scroll-spy
-        id="sidenav"
-        :sections="sections"
-        toc-class="hidden lg:block"
-        nav-class="top-14"
-      ></b-scroll-spy>
-    </template>
-
     <b-page-section
       id="profile"
       ref="profileSection"
@@ -327,7 +319,7 @@ import { computed, defineComponent, useTemplateRef } from 'vue'
 import { useApi, useAsync, useCacheHeaders, useConfig, useMeta, useSelfOrigin } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
-import { BScrollSpy, BPageSection, BShimmer } from '@schneefux/klicker/components'
+import { BPageSection, BShimmer } from '@schneefux/klicker/components'
 import { PlayerTotals, useBrawlstarsStore } from '~/stores/brawlstars'
 import { usePreferences } from '~/stores/preferences'
 import { useI18n } from 'vue-i18n'
@@ -342,7 +334,6 @@ export default defineComponent({
   },
   components: {
     BPageSection,
-    BScrollSpy,
     BShimmer,
   },
   async setup() {

@@ -1,5 +1,5 @@
 <template>
-  <b-page :title="$t('brawler-records.title')">
+  <split-page :title="$t('brawler-records.title')">
     <b-page-section :title="$t('info')">
       <p class="prose dark:prose-invert">
         {{ $t('brawler-records.info') }}
@@ -37,7 +37,7 @@
         </template>
       </c-dashboard>
     </b-page-section>
-  </b-page>
+  </split-page>
 </template>
 
 <script lang="ts">

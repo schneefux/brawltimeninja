@@ -12,7 +12,7 @@
 
     <b-lightbox
       v-model="lightboxOpen"
-      class="top-14 lg:top-20 bottom-14 lg:bottom-0 h-[calc(100vh-2*3.5rem)] lg:h-[calc(100vh-5rem)] overscroll-contain"
+      class="top-14 lg:top-0 bottom-14 lg:bottom-0 h-[calc(100vh-2*3.5rem)] lg:h-screen overscroll-contain"
     >
       <b-card
         class="w-full overflow-y-auto overscroll-contain"

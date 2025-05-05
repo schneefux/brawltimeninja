@@ -1,3 +1,18 @@
 .dev .vm-placement {
-  background-color: #f687b3;
+  /*background-color: #f687b3;*/
+}
+
+/* takeover */
+@media (min-width: 1024px) {
+  .dev .vm-main {
+    background-color: unset;
+    background-image: linear-gradient(135deg, #f687b3 25%, transparent 25%, transparent 50%, #f687b3 50%, #f687b3 75%, transparent 75%, transparent);
+    background-size: 4rem 4rem;
+    background-repeat: repeat;
+    background-position: 0 0;
+  }
+
+  .dev .vm-main-content {
+    max-width: 1167px;
+  }
 }

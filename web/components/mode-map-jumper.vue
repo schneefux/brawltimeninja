@@ -10,7 +10,7 @@
       <s-mode-map
         :model-value="slices"
         :on-input="jumpToModeMap"
-        class="my-4"
+        class="mt-2 mb-4"
       ></s-mode-map>
     </div>
   </div>

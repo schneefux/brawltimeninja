@@ -1,5 +1,5 @@
 <template>
-  <b-page :title="$t('report-designer.title')" no-container>
+  <full-page :title="$t('report-designer.title')">
     <c-canvas
       v-model="report"
       :default-query="defaultQuery"
@@ -52,11 +52,11 @@
       <p>Log in to share this report.</p>
       <login-button></login-button>
     </div>
-  </b-page>
+  </full-page>
 </template>
 
 <script lang='ts'>
-import { defineComponent, computed, onMounted, ref, useId } from "vue"
+import { defineComponent, computed, onMounted, useId } from "vue"
 import { CCanvas, BTextbox, BDashboardCell } from '@schneefux/klicker/components'
 import { Report, CubeQuery } from '@schneefux/klicker/types'
 import { useStorage } from '@schneefux/klicker/composables'

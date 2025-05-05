@@ -67,6 +67,7 @@ declare module 'vue' {
     EventPictureCard: typeof import('./components/event-picture-card.vue')['default']
     EventsRoll: typeof import('./components/events-roll.vue')['default']
     Experiment: typeof import('./components/experiment.vue')['default']
+    FullPage: typeof import('./components/full-page.vue')['default']
     GadgetStarpowerDisclaimer: typeof import('./components/gadget-starpower-disclaimer.vue')['default']
     HistoryGraph: typeof import('./components/history-graph.vue')['default']
     HistoryGraphAnnotations: typeof import('./components/history-graph-annotations.vue')['default']

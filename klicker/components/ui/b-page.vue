@@ -1,10 +1,5 @@
 <template>
-  <main
-    class="p-4 mt-8 mb-8"
-    :class="{
-      'container mx-auto': !noContainer,
-    }"
-  >
+  <main class="px-4 pt-10 lg:pt-2 pb-8">
     <h1
       v-if="title != ''"
       class="text-3xl"
@@ -25,13 +20,6 @@ export default defineComponent({
     title: {
       type: String,
       default: ''
-    },
-    /**
-     * When set, render a full-width layout across the whole page
-     */
-    noContainer: {
-      type: Boolean,
-      default: false
     },
   },
 })

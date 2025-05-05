@@ -1,5 +1,5 @@
 <template>
-  <b-page title="Account">
+  <split-page title="Account">
     <b-page-section
       v-if="user != undefined"
       title="Your Reports"
@@ -85,7 +85,7 @@
     <div v-if="user == undefined" class="mt-4">
       <login-button></login-button>
     </div>
-  </b-page>
+  </split-page>
 </template>
 
 <script lang="ts">
