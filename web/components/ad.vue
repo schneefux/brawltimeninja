@@ -11,9 +11,14 @@
     ref="ad"
   >
     <client-only>
+      <!--
+        data-display-type is not documented in prosper,
+        but sometimes it breaks ("Section hybrid-banner defect:  Destroying. No hybrid-banner")
+      -->
       <venatus-placement
         v-if="desktop"
         placement-name="desktop_takeover"
+        data-display-type="hybrid-banner"
         class="top-ad"
       ></venatus-placement>
 
