@@ -9,24 +9,22 @@
     v-if="kind == 'top'"
     v-bind="$attrs"
     ref="ad"
-    class="text-center max-lg:w-full max-lg:max-w-[440px] max-lg:mx-auto"
   >
     <client-only>
       <venatus-placement
         v-if="desktop"
         placement-name="desktop_takeover"
-        class="section"
+        class="top-ad"
       ></venatus-placement>
 
-      <!-- Video - at least 410px wide, must be 16:9 -->
       <venatus-placement
         v-else
         placement-name="video"
-        class="video"
+        class="top-ad"
       ></venatus-placement>
 
       <template v-slot:placeholder>
-        <div class="top-placeholder vm-placement"></div>
+        <div class="top-ad vm-placement"></div>
       </template>
     </client-only>
   </div>
@@ -41,29 +39,28 @@
     v-else-if="kind == 'first'"
     v-bind="$attrs"
     ref="ad"
-    class="text-center lg:w-full lg:max-w-[440px] lg:mx-auto"
   >
     <client-only>
       <template v-if="visible">
         <venatus-placement
           v-if="desktop"
           placement-name="video"
-          class="video"
+          class="first-ad"
         ></venatus-placement>
 
         <venatus-placement
           v-if="!desktop"
           placement-name="mobile_takeover"
-          class="section"
+          class="first-ad"
         ></venatus-placement>
       </template>
       <div
         v-else
-        class="first-placeholder vm-placement"
+        class="first-ad vm-placement"
       ></div>
 
       <template v-slot:placeholder>
-        <div class="first-placeholder vm-placement"></div>
+        <div class="first-ad vm-placement"></div>
       </template>
     </client-only>
   </b-page-section>
@@ -84,13 +81,13 @@
       <venatus-placement
         v-if="desktop"
         placement-name="billboard"
-        class="section"
+        class="section-ad"
       ></venatus-placement>
 
       <venatus-placement
         v-else
         placement-name="mobile_mpu"
-        class="section"
+        class="section-ad"
       ></venatus-placement>
     </client-only>
   </b-dashboard-cell>
@@ -105,31 +102,28 @@
     v-else-if="kind == 'section'"
     v-bind="$attrs"
     ref="ad"
-    class="text-center"
   >
     <client-only>
       <template v-if="visible">
-        <!-- Desktop - Billboard: 970x90, 728x90, 970x250, 300x250, 468x60 -->
         <venatus-placement
           v-if="desktop"
           placement-name="billboard"
-          class="section"
+          class="section-ad"
         ></venatus-placement>
 
-        <!-- Mobile - Mobile Mid Page Unit (MPU): 300x250, 300x100, 300x50, 320x50, 336x280 -->
         <venatus-placement
           v-else
           placement-name="mobile_mpu"
-          class="section"
+          class="section-ad"
         ></venatus-placement>
       </template>
       <div
         v-else
-        class="section vm-placement"
+        class="section-ad vm-placement"
       ></div>
 
       <template v-slot:placeholder>
-        <div class="section"></div>
+        <div class="section-ad"></div>
       </template>
     </client-only>
   </b-page-section>
@@ -187,61 +181,67 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.top-placeholder {
-  /* video */
-  margin: 0 auto;
-  width: 100%;
-  max-width: 512px;
-  aspect-ratio: 16 / 9;
-}
+/*
+  prosper will:
+  - insert a span container
+  - expand it to the largest configured size
+  - center the ad within this container
 
-@media (min-width: 1024px) {
-  .top-placeholder {
-    /* section */
-    margin: 0 auto;
-    width: 100%;
-    max-width: 970px;
-    height: 250px;
-    aspect-ratio: unset;
-  }
-}
+  so our placeholders will reserve the largest configured size
+  and use min-width/height in case prosper renders a larger one
+*/
 
-.first-placeholder {
-  /* section */
-  margin: 0 auto;
-  width: 100%;
-  max-width: 336px;
-  height: 280px;
-}
-
-@media (min-width: 1024px) {
-  .first-placeholder {
+@media (max-width: 1023px) {
+  .top-ad {
     /* video */
+    /* at least 410px wide, must be 16:9, configured for 440px by Venatus */
     margin: 0 auto;
-    width: 100%;
-    max-width: 512px;
+    max-width: 440px;
     aspect-ratio: 16 / 9;
   }
 }
 
-.section {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 336px;
-  height: 280px;
-}
-
 @media (min-width: 1024px) {
-  .section {
-    max-width: 970px;
-    height: 250px;
+  .top-ad {
+    /* billboard/takeover */
+    /* 970x90, 728x90, 970x250, 300x250, 468x60 */
+    min-width: 970px;
+    min-height: 250px;
   }
 }
 
-.video {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 512px;
-  aspect-ratio: 16 / 9;
+@media (max-width: 1023px) {
+  .first-ad {
+    /* mobile MPU */
+    /* 300x250, 300x100, 300x50, 320x50, 336x280 */
+    /* TODO mobile takeover seems misconfigured on Venatus' end, it's missing 336x280 */
+    min-width: 330px;
+    min-height: 250px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .first-ad {
+    /* video */
+    margin: 0 auto;
+    width: 440px;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 1023px) {
+  .section-ad {
+    /* mobile MPU */
+    min-width: 336px;
+    min-height: 280px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-ad {
+    /* billboard */
+    min-width: 970px;
+    min-height: 250px;
+  }
 }
 </style>

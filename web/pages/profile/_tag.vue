@@ -35,7 +35,7 @@
           class="flex-auto max-w-md"
         ></player-aside>
 
-        <ad kind="first"></ad>
+        <ad kind="first" class="lg:ml-auto"></ad>
       </div>
     </b-page-section>
 
