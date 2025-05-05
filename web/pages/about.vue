@@ -1,7 +1,7 @@
 <template>
   <div class="light">
     <split-page title="About">
-      <div class="mx-4 lg:mx-0 prose prose-sm sm:prose lg:prose-lg">
+      <div class="m-4 lg:mx-0 prose prose-sm sm:prose lg:prose-lg">
         <p>
           Brawl Time Ninja allows you to check competitive and fun statistics for your Brawl Stars account.
           Brawl Time Ninja uses the official Brawl Stars API and the meowAPI by hpdevfox.
