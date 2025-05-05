@@ -9,11 +9,11 @@
       class="mb-4 md:hidden"
     ></b-title>
 
-    <b-split-dashboard center-class="vm-main-content">
+    <b-split-dashboard center-class="vm-main-content justify-self-center">
       <template v-slot:aside-left>
         <div
           v-if="leftSidebarHasContent || sections.length > 0"
-          class="bg-background lg:px-6 lg:py-4 lg:rounded-2xl xl:mr-4 empty:hidden"
+          class="bg-background lg:px-6 lg:py-4 lg:rounded-2xl empty:hidden"
         >
           <!-- set nav background color and padding to overlap Venatus' takeover -->
           <b-scroll-spy

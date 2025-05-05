@@ -9,6 +9,7 @@
     v-if="kind == 'top'"
     v-bind="$attrs"
     ref="ad"
+    class="lg:flex lg:justify-center"
   >
     <client-only>
       <!--
@@ -200,7 +201,6 @@ export default defineComponent({
   .top-ad {
     /* video */
     /* at least 410px wide, must be 16:9, configured for 440px by Venatus */
-    margin: 0 auto;
     max-width: 440px;
     aspect-ratio: 16 / 9;
   }
