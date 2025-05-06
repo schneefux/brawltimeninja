@@ -66,6 +66,7 @@ job "brawltime-testing" {
         NODE_OPTIONS = "--max-old-space-size=${NOMAD_MEMORY_MAX_LIMIT}"
 
         BRAWLSTARS_URL = "http://proxy.${var.domain}/v1/"
+        ENABLE_EXTRA_API = "true"
         MEDIA_URL = "https://media.${var.domain}"
         MANAGER_URL = "https://manager.${var.domain}"
         RENDER_URL = "https://render.${var.domain}"

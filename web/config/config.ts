@@ -3,7 +3,7 @@ export interface Config {
   cubeUrl: string
   managerUrl: string
   renderUrl: string
-  enableDevfoxApi: boolean
+  enableExtraApi: boolean
   ga4Id: string
   sentryDsn: string
   venatusSiteId: string
@@ -21,7 +21,7 @@ export const config: Config = {
   cubeUrl: process.env.CUBE_URL ?? '',
   managerUrl: process.env.MANAGER_URL ?? '',
   renderUrl: process.env.RENDER_URL ?? '',
-  enableDevfoxApi: !!process.env.HPDEVFOX_TOKEN,
+  enableExtraApi: !!process.env.ENABLE_EXTRA_API,
   ga4Id: process.env.GA4_ID ?? '',
   venatusSiteId: process.env.VENATUS_SITE_ID ?? '',
   quantcastChoiceId: process.env.QUANTCAST_CHOICE_ID ?? '',

@@ -151,7 +151,8 @@ export interface ClubRanking {
   memberCount: number
 }
 
-export interface DevfoxPlayerResponse {
+// https://api.hpdevfox.ru/profile/V8LLPPC
+export interface Devfox1PlayerResponse {
   state: 0|1 // 0: success, 1: error
   tag: string // with hash
   response: {
@@ -161,6 +162,7 @@ export interface DevfoxPlayerResponse {
       Mastery: number // current Mastery points
     }[]
     Stats: {
+      // documented here: https://github.com/kubune/meowAPI-Doucmentation/wiki/Endpoints#stats-data
       22: number // highest ranked
       23: number // current ranked
       24: number // current ranked points
@@ -168,6 +170,88 @@ export interface DevfoxPlayerResponse {
       27: number // account creation year
       29: number // season highest trophies
       30: number // season prestige
+    }
+  }
+}
+
+// https://testapi.hpdevfox.ru/profile?tag=V8LLPPC
+export interface Devfox2PlayerResponse {
+  Profile: {
+    Winstreak: number
+    Heroes: {
+      Score: number
+      HighestScore: number // trophies
+      HighestSeasonScore: number // trophies
+      PowerLevel: number
+      MasteryPoints: number
+      Character: {
+        m_globalId: number // Brawler ID
+        Name: string // internal Brawler name
+      }
+      Skin: null|{
+        m_globalId: number // Skin ID
+        Name: string // internal Skin name
+      }
+    }[]
+    Stats: [{
+      X: number // stat id, see above
+      Y: number // stat value
+    }]
+    DisplayData: {
+      Name: string
+      LegendaryLevel: number
+      PlayerThumbnailId: number
+      NameColorId: number
+      ColorGradientId: number
+    }
+    FavoriteBrawlerSkin: null
+    FavoriteBrawler: null
+    WinstreakBrawler: {
+      m_globalId: number // Brawler ID
+      Name: string // internal Brawler name
+    }
+    BattleCardSlot1: null|{
+      m_globalId: number // card ID
+      Name: string // internal card name
+    }
+    BattleCardSlot2: null|{
+      m_globalId: number // card ID
+      Name: string // internal card name
+    }
+    BattleCardEmoji: null|{
+      m_globalId: number // emoji ID
+      Name: string // internal emoji name
+    }
+    Title: null
+  }
+}
+
+// https://api.rnt.dev/profile?tag=V8LLPPC
+export interface RntPlayerResponse {
+  credit: string
+  ok: true
+  result: {
+    winstreak_brawler: number // Brawler ID
+    brawlers: {
+      brawler_id: number
+      skin_equipped: number
+      trophies: number
+      highest_trophies: number
+      highest_season_trophies: number
+      power_level: number
+      mastery: number
+    }[]
+    stats: [{
+      stat_id: number // see above
+      value: number
+    }]
+    brawlpass: number // -1: none
+    max_winstreak: number
+    battle_card: {
+      favorite_skin: number // ?
+      first_profile_avatar: number // id
+      second_profile_avatar: number // id
+      battle_card_emote: number // id
     }
   }
 }

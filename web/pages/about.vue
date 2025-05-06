@@ -4,11 +4,19 @@
       <div class="m-4 lg:mx-0 prose prose-sm sm:prose lg:prose-lg">
         <p>
           Brawl Time Ninja allows you to check competitive and fun statistics for your Brawl Stars account.
-          Brawl Time Ninja uses the official Brawl Stars API and the meowAPI by hpdevfox.
-          The service may be unreliable at times.
+          It uses the following APIs:
         </p>
 
+        <ul>
+          <li>Official Brawl Stars API (<a href="https://developer.brawlstars.com" rel="nofollow">homepage</a>)</li>
+          <li>BrawlAPI by Henry (<a href="https://brawlapi.com/" rel="nofollow">homepage</a>)</li>
+          <li>meowAPI by hpdevfox (<a href="https://api.hpdevfox.ru/docs" rel="nofollow">documentation</a>)</li>
+          <li>BrawlAPI by RemoteAccess (<a href="https://api.rnt.dev/discord" rel="nofollow">Discord</a>)</li>
+          <li>Brawl Stars Fandom's API (<a href="https://brawlstars.fandom.com/" rel="nofollow">homepage</a>)</li>
+        </ul>
+
         <p>
+          Their uptime is not guaranteed so some data may be unavailable at times. <br>
           You can view this site's source code <a href="https://github.com/schneefux/brawltimeninja">on GitHub</a>.
         </p>
 
@@ -49,7 +57,7 @@
         <p>Our website uses these "cookies" to collection information and to improve our Service. You have the option to either accept or refuse these cookies, and know when a cookie is being sent to your computer. If you choose to refuse our cookies, you may not be able to use some portions of our Service.</p>
         <h2>Advertisements</h2>
         <p>Ads appearing on our website may be delivered to users by Venatus Media, who may set cookies. These cookies allow the ad server to recognize your computer each time they send you an online advertisement to compile information about you or others who use your computer. This information allows ad networks to, among other things, deliver targeted advertisements that they believe will be of most interest to you.</p>
-        <p>Please refer to the <a href="https://www.venatus.com/privacy-policy">Venatus Media Privacy Policy</a> for more information.</p>
+        <p>Please refer to the <a href="https://www.venatus.com/privacy-policy" rel="nofollow">Venatus Media Privacy Policy</a> for more information.</p>
         <h2>Google Analytics</h2>
         <p>We use a tool called "Google Analytics" to collect information about use of this site. Google Analytics collects information such as how often users visit this site, what pages they visit when they do so, and what other sites they used prior to coming to this site. We use the information we get from Google Analytics only to improve this site. Google Analytics collects only the IP address assigned to you on the date you visit this site, rather than your name or other identifying information. We do not combine the information collected through the use of Google Analytics with personally identifiable information. Although Google Analytics plants a permanent cookie on your web browser to identify you as a unique user the next time you visit this site, the cookie cannot be used by anyone but Google. Google’s ability to use and share information collected by Google Analytics about your visits to this site is restricted by the <a href="http://www.google.com/analytics/tos.html" class="underline">Google Analytics Terms of Use</a> and the <a href="http://www.google.com/privacypolicy.html" class="underline">Google Privacy Policy</a>.</p>
         <h2>Service Providers</h2>

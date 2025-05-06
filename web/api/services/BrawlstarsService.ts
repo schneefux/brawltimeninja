@@ -1,5 +1,5 @@
 import { brawlerId, capitalize, formatLeagueRanks, parseApiTime, unformatMode } from '../../lib/util'
-import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking, DevfoxPlayerResponse } from '../../model/Brawlstars'
+import { Player as BrawlstarsPlayer, BattleLog, BattlePlayer, Club, BattlePlayerMultiple, PlayerRanking, ClubRanking, Devfox1PlayerResponse, Devfox2PlayerResponse, RntPlayerResponse } from '../../model/Brawlstars'
 import { Battle, Brawler, Player, ActiveEvent, ClubActivityStatistics, PlayerExtra, BrawlerExtra } from '../../model/Api'
 import { request } from '../lib/request'
 import { StarlistBrawler, StarlistEvent } from '../../model/Starlist'
@@ -19,6 +19,8 @@ const brawlstarsTokens = (process.env.BRAWLSTARS_TOKEN || '').split(',');
 
 const devfoxUrl = process.env.HPDEVFOX_URL || 'https://api.hpdevfox.ru/';
 const devfoxToken = process.env.HPDEVFOX_TOKEN || '';
+const devfoxUrl2 = process.env.HPDEVFOX2_URL || 'https://testapi.hpdevfox.ru/';
+const rntUrl = process.env.RNT_URL || 'https://api.rnt.dev/';
 
 const clickhouseUrl = process.env.CLICKHOUSE_URL
 const twoMonths = 2*4*7*24*60*60*1000
@@ -116,12 +118,34 @@ export default class BrawlstarsService {
     );
   }
 
-  private async getPlayerDevfox(tag: string): Promise<DevfoxPlayerResponse> {
-    return request<DevfoxPlayerResponse>(
+  private async getPlayerDevfox1(tag: string): Promise<Devfox1PlayerResponse> {
+    return request<Devfox1PlayerResponse>(
       'profile/' + tag + (devfoxToken ? '?api_key=' + devfoxToken : ''),
       devfoxUrl,
       'fetch_player_devfox',
       { },
+      { },
+      1000,
+    );
+  }
+
+  private async getPlayerDevfox2(tag: string): Promise<Devfox2PlayerResponse> {
+    return request<Devfox2PlayerResponse>(
+      'profile',
+      devfoxUrl2,
+      'fetch_player_devfox2',
+      { tag },
+      { },
+      1000,
+    );
+  }
+
+  private async getPlayerRnt(tag: string): Promise<RntPlayerResponse> {
+    return request<RntPlayerResponse>(
+      'profile',
+      rntUrl,
+      'fetch_player_rnt',
+      { tag },
       { },
       1000,
     );
@@ -339,29 +363,7 @@ export default class BrawlstarsService {
     };
   }
 
-  public async getPlayerExtraStatistics(tag: string): Promise<PlayerExtra> {
-    const brawlerMap = await this.getBrawlerMeta()
-    const devfoxResponse = await this.getPlayerDevfox(tag)
-
-    if (devfoxResponse.state != 0) {
-      throw new TRPCError({
-        code: 'NOT_FOUND',
-        message: 'Error from devfox API',
-      })
-    }
-
-    const brawlers: Record<string, BrawlerExtra> = Object.fromEntries(
-      devfoxResponse.response.Heroes.map(b => [
-        brawlerId({ name: brawlerMap[b.Character] }),
-        {
-          masteryPoints: b.Mastery,
-        }
-      ])
-    )
-
-    const rankPoints = devfoxResponse.response.Stats[24]
-    const highestRankPoints = devfoxResponse.response.Stats[25]
-
+  private createPlayerExtra(rankPoints: number, highestRankPoints: number, accountCreationYear: number, brawlers: Record<string, BrawlerExtra>): PlayerExtra {
     return {
       rank: {
         points: rankPoints,
@@ -371,9 +373,76 @@ export default class BrawlstarsService {
         points: highestRankPoints,
         ...formatLeagueRanks(Math.floor(highestRankPoints / 500 + 1)),
       },
-      accountCreationYear: devfoxResponse.response.Stats[27],
+      accountCreationYear,
       brawlers,
     }
+  }
+
+  public async getPlayerExtraStatistics(tag: string): Promise<PlayerExtra|undefined> {
+    const brawlerMap = await this.getBrawlerMeta()
+
+    if (rntUrl) { // promises to be fastest and most stable
+      const rntResponse = await this.getPlayerRnt(tag)
+      // note: error message for timeout and not found is the same
+
+      const brawlers = Object.fromEntries(
+        rntResponse.result.brawlers.map(b => [
+          brawlerId({ name: brawlerMap[b.brawler_id] }),
+          { masteryPoints: b.mastery }
+        ])
+      )
+
+      const stats = rntResponse.result.stats
+      const rankPoints = stats.find(s => s.stat_id == 24)!.value
+      const highestRankPoints = stats.find(s => s.stat_id == 25)!.value
+      const accountCreationYear = stats.find(s => s.stat_id == 27)!.value
+
+      return this.createPlayerExtra(rankPoints, highestRankPoints, accountCreationYear, brawlers)
+    }
+
+    if (devfoxUrl2) { // new iteration of devfox API
+      const devfoxResponse = await this.getPlayerDevfox2(tag)
+      const brawlers = Object.fromEntries(
+        devfoxResponse.Profile.Heroes.map(b => [
+          brawlerId({ name: brawlerMap[b.Character.m_globalId] }),
+          { masteryPoints: b.MasteryPoints }
+        ])
+      )
+
+      const stats = devfoxResponse.Profile.Stats
+      const rankPoints = stats.find(s => s.X == 24)!.Y
+      const highestRankPoints = stats.find(s => s.X == 25)!.Y
+      const accountCreationYear = stats.find(s => s.X == 27)!.Y
+
+      return this.createPlayerExtra(rankPoints, highestRankPoints, accountCreationYear, brawlers)
+    }
+
+    if (devfoxUrl && devfoxToken) { // frequent outages and timeouts
+      const devfoxResponse = await this.getPlayerDevfox1(tag)
+
+      if (devfoxResponse.state != 0) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Error from devfox API',
+        })
+      }
+
+      const brawlers = Object.fromEntries(
+        devfoxResponse.response.Heroes.map(b => [
+          brawlerId({ name: brawlerMap[b.Character] }),
+          { masteryPoints: b.Mastery }
+        ])
+      )
+
+      const stats = devfoxResponse.response.Stats
+      const rankPoints = stats[24]
+      const highestRankPoints = stats[25]
+      const accountCreationYear = stats[27]
+
+      return this.createPlayerExtra(rankPoints, highestRankPoints, accountCreationYear, brawlers)
+    }
+
+    return undefined
   }
 
   public async getClubStatistics(tag: string) {

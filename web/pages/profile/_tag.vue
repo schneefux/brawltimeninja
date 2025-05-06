@@ -479,7 +479,7 @@ export default defineComponent({
 
     const $api = useApi()
     const playerExtra = useAsync(async () => {
-      if (!config.enableDevfoxApi) {
+      if (!config.enableExtraApi) {
         return null
       }
 
