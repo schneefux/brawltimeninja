@@ -31,10 +31,6 @@
     </b-web-footer>
 
     <adblock-bait></adblock-bait>
-    <!-- request by Venatus: ads should be refreshed on page navigation -->
-    <venatus-rich-media
-      :key="`rich-media-${$route.path}`"
-    ></venatus-rich-media>
   </div>
 </template>
 
@@ -103,5 +99,27 @@ export default defineComponent({
 :root {
   --mobile-layout-height: calc(100vh - 56px - 56px);
   --desktop-layout-height: calc(100vh - 76px - 160px);
+}
+
+/* styles for Venatus ads */
+
+@reference "~/assets/css/tailwind.css";
+
+/* leave space for sticky footer */
+#main {
+  @apply max-md:pb-[100px]!; /* sticky footer height */
+}
+
+/* push footer above bottom nav */
+.vm-footer {
+  @apply max-md:bottom-14!; /* 3.5rem (14) for footer */
+}
+
+/* push instream video player above bottom nav and sticky ad */
+avp-player-ui {
+  /* 3.5rem (14) for footer + 50px for mobile footer ad + 0.75rem padding */
+  --avp-offset-bottom: 120px !important;
+
+  --avp-offset-right: 8px !important;
 }
 </style>
