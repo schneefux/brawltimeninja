@@ -162,7 +162,7 @@ export default defineComponent({
           modes.value.map(m => ({
             id: m,
             name: i18n.t('mode.' + m),
-            target: localePath(`/tier-list/mode/${m}`),
+            target: localePath(`/tier-list/mode/${camelToKebab(m)}`),
             children: (<Link[]> []).concat(
               mapViewTabs.map(tab => ({
                 id: `${m}#${tab}`,
