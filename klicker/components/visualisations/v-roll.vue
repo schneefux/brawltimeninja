@@ -164,11 +164,13 @@ export default defineComponent({
         return pageSize.value
       }
 
-      const pxPerItem = firstItemElement.getBoundingClientRect().width
+      // Safari's float widths cause some rounding errors, so do some generous rounding
 
-      const pxForHeader = headingRef.value.getBoundingClientRect().width
+      const pxPerItem = Math.floor(firstItemElement.getBoundingClientRect().width)
 
-      const pxWholeWidth = wrapperRef.value.getBoundingClientRect().width
+      const pxForHeader = Math.floor(headingRef.value.getBoundingClientRect().width)
+
+      const pxWholeWidth = Math.ceil(wrapperRef.value.getBoundingClientRect().width)
       const pxAvailableForItems = pxWholeWidth - pxForHeader
 
       return Math.min(Math.max(Math.floor(pxAvailableForItems / pxPerItem), 1), headings.value.length)

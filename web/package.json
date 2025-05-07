@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "node --inspect ./node_modules/.bin/vite",
+    "dev": "node --inspect ./node_modules/.bin/vite --host 0.0.0.0",
     "typecheck": "vue-tsc --noEmit",
     "build": "vavite",
     "test": "cd ./api && NODE_OPTIONS='--import tsx/esm' ../node_modules/.bin/vitest",
