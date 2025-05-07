@@ -55,4 +55,49 @@ export const surveyRouter = router({
 
       stats.increment('vote')
     }),
+  getSummary: publicProcedure
+    .input(z.object({
+      mode: z.string().optional(),
+    }))
+    .query(async ({ ctx, input }) => {
+      if (!knex) {
+        throw new TRPCError({
+          code: 'NOT_IMPLEMENTED',
+          message: 'Survey is not available'
+        })
+      }
+
+      // get number of "best" votes by brawler since 2 weeks ago
+      const twoWeeksAgo = new Date()
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
+
+      const query = knex('survey_vote')
+        .select('best')
+        .count('best as votes')
+        .max('timestamp as timestamp')
+        .groupBy('best')
+        .orderBy('votes', 'desc')
+        .where('timestamp', '>=', twoWeeksAgo)
+
+      if (input.mode) {
+        query.where('mode', input.mode)
+      }
+
+      const data = await query
+
+      const votesSum = data.reduce((acc, vote) => acc + vote.votes, 0)
+      const lastUpdate = data.reduce((acc, vote) => (vote.timestamp > acc ? vote.timestamp : acc), new Date(0))
+      const votes = data.map((vote) => ({
+        brawler: vote.best as string,
+        voteRate: parseFloat((vote.votes / votesSum).toFixed(4)),
+      }))
+
+      ctx.res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60, stale-if-error=900')
+      return {
+        sum: votesSum,
+        since: twoWeeksAgo,
+        lastUpdate,
+        votes,
+      }
+    }),
 })

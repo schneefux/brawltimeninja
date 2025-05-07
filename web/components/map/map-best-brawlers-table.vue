@@ -30,9 +30,13 @@ export default defineComponent({
       type: Object as PropType<SliceValue>,
       default: () => ({})
     },
+    limit: {
+      type: Number,
+      default: undefined
+    },
   },
   setup(props) {
-    const { eventId, slices } = toRefs(props)
+    const { eventId, slices, limit } = toRefs(props)
     const title = useTopNTitle('best.brawlers', slices, eventId)
 
     const query = computed<CubeQuery>(() => ({
@@ -41,6 +45,7 @@ export default defineComponent({
         metricsIds: ['winRateAdj', 'useRate'],
         slices: slices.value,
         sortId: 'winRateAdj',
+        limit: limit.value,
       }
     ))
 

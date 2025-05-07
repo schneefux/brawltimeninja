@@ -459,10 +459,12 @@
     "tier-list.maps.meta.description": "Brawl Stars Tier List with Win Rates, Pick Rates and Rankings. Find the best Brawlers for all maps.",
     "tier-list.maps.meta.title": "Active Maps in Brawl Stars",
     "tier-list.maps.title": "Map Tier Lists",
-    "tier-list.mode.description": "Use the {mode} Tier List to find the best Brawler for all {mode} maps in Brawl Stars.",
+    "tier-list.mode.description": "Find the best Brawlers for every {mode} map in Brawl Stars with the Tier List or win rates and use rates, updated in real-time. Explore top teams, builds, Star Powers, Gadgets, Gears, and player leaderboards in the dashboard.",
     "tier-list.mode.meta.description": "Brawl Stars {mode} Tier List. Find the best Brawlers for {mode} with Win Rates and Rankings.",
-    "tier-list.mode.meta.title": "{mode} Tier List",
-    "tier-list.mode.title": "{mode} Tier List",
+    "tier-list.mode.meta.title": "{mode} Tier List & Best Brawlers ({date})",
+    "tier-list.mode.title": "{mode} Best Brawlers & Tier List",
+    "tier-list.mode.tier-list": "{mode} Tier List",
+    "tier-list.mode.dashboard": "{mode} Dashboard",
     "tier-list.modes.description": "Open a Mode to view the Tier List for it.",
     "tier-list.modes.title": "Mode Tier Lists",
     "tier-list.open-historical": "Open historical data",
@@ -663,5 +665,6 @@
     "banner.youtube.title": "Subscribe on YouTube",
     "banner.youtube.catchphrase": "Watch Brawl Stars videos and tutorials on the Brawl Time Ninja YouTube channel.",
     "action.subscribe": "Subscribe",
-    "mode.brawlHockey": "Brawl Hockey"
+    "mode.brawlHockey": "Brawl Hockey",
+    "tier-list.description": "This tier list was voted by the Brawl Time Ninja community. {sampleSize} votes were collected since {since}, with the last collected {lastUpdate}."
 }
