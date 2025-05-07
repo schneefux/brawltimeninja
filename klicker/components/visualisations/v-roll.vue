@@ -8,7 +8,7 @@
         ref="wrapper"
         class="h-full w-full overflow-x-auto scrollbar:hidden flex flex-col"
       >
-        <table class="h-full w-full border-separate border-spacing-0">
+        <table class="flex-auto w-full border-separate border-spacing-0">
           <tbody>
             <tr>
               <th
