@@ -1,5 +1,8 @@
 <template>
-  <ad kind="top"></ad>
+  <ad
+    kind="top"
+    class="[--content-size:100%] max-w-[var(--content-size)] mx-auto vm-main-content"
+  ></ad>
 
   <main class="px-4 py-6 xl:pt-0 mt-2">
     <!-- desktop: title above ads, mobile: title below ads -->
