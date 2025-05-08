@@ -1,81 +1,24 @@
 <template>
-  <!--
-    top of the page unit
-      - desktop: takeover billboard
-      - mobile: video
-      - eager
-  -->
   <div
     v-if="kind == 'top'"
     v-bind="$attrs"
-    ref="ad"
-    class="flex justify-center"
-  >
-    <client-only>
-      <!--
-        data-display-type is not documented in prosper,
-        but sometimes it breaks ("Section hybrid-banner defect:  Destroying. No hybrid-banner")
-      -->
-      <venatus-placement
-        v-if="desktop"
-        placement-name="desktop_takeover"
-        data-display-type="hybrid-banner"
-        class="flex-auto top-ad"
-      ></venatus-placement>
+    :id="placementId"
+    ref="placement"
+    data-display-type="hybrid-banner"
+    class="top-ad vm-placement"
+  ></div>
 
-      <venatus-placement
-        v-else
-        placement-name="video"
-        class="flex-auto top-ad"
-      ></venatus-placement>
-
-      <template v-slot:placeholder>
-        <div class="flex-auto top-ad vm-placement"></div>
-      </template>
-    </client-only>
-  </div>
-
-  <!--
-    first mid page unit
-      - desktop: video
-      - mobile: takeover MPU
-      - lazy
-  -->
   <b-page-section
     v-else-if="kind == 'first'"
     v-bind="$attrs"
-    ref="ad"
   >
-    <client-only>
-      <template v-if="visible">
-        <venatus-placement
-          v-if="desktop"
-          placement-name="video"
-          class="first-ad"
-        ></venatus-placement>
-
-        <venatus-placement
-          v-if="!desktop"
-          placement-name="mobile_takeover"
-          class="first-ad"
-        ></venatus-placement>
-      </template>
-      <div
-        v-else
-        class="first-ad vm-placement"
-      ></div>
-
-      <template v-slot:placeholder>
-        <div class="first-ad vm-placement"></div>
-      </template>
-    </client-only>
+    <div
+      :id="placementId"
+      ref="placement"
+      class="first-ad vm-placement"
+    ></div>
   </b-page-section>
 
-  <!--
-    unit within a dashboard
-      - same as mid page unit below
-      - parent takes care of lazy-loading and placeholder
-  -->
   <b-dashboard-cell
     v-else-if="kind == 'cell'"
     :rows="3"
@@ -83,62 +26,29 @@
     hide-empty
     lazy
   >
-    <client-only>
-      <venatus-placement
-        v-if="desktop"
-        placement-name="billboard"
-        class="section-ad"
-      ></venatus-placement>
-
-      <venatus-placement
-        v-else
-        placement-name="mobile_mpu"
-        class="section-ad"
-      ></venatus-placement>
-    </client-only>
+    <div
+      :id="placementId"
+      ref="placement"
+      class="section-ad vm-placement"
+    ></div>
   </b-dashboard-cell>
 
-  <!--
-    mid page unit
-      - desktop: billboard
-      - mobile: MPU
-      - lazy
-  -->
   <b-page-section
     v-else-if="kind == 'section'"
     v-bind="$attrs"
-    ref="ad"
   >
-    <client-only>
-      <template v-if="visible">
-        <venatus-placement
-          v-if="desktop"
-          placement-name="billboard"
-          class="section-ad"
-        ></venatus-placement>
-
-        <venatus-placement
-          v-else
-          placement-name="mobile_mpu"
-          class="section-ad"
-        ></venatus-placement>
-      </template>
-      <div
-        v-else
-        class="section-ad vm-placement"
-      ></div>
-
-      <template v-slot:placeholder>
-        <div class="section-ad"></div>
-      </template>
-    </client-only>
+    <div
+      :id="placementId"
+      ref="placement"
+      class="section-ad vm-placement"
+    ></div>
   </b-page-section>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, useTemplateRef } from 'vue'
-import { useBreakpoints, useIntersectionObserver } from '@vueuse/core'
+import { defineComponent, PropType, useTemplateRef, useId, computed } from 'vue'
 import { BDashboardCell, BPageSection } from '@schneefux/klicker/components'
+import { usePlacement } from '~/composables/venatus'
 
 export default defineComponent({
   inheritAttrs: false,
@@ -152,35 +62,68 @@ export default defineComponent({
       default: 'section',
     },
   },
-  setup() {
-    const adRef = useTemplateRef<HTMLElement>('ad')
-    const visible = ref(false)
+  setup(props) {
+    const placementRef = useTemplateRef<HTMLElement>('placement')
 
-    if (!import.meta.env.SSR && !visible.value) {
-      const { isSupported, stop } = useIntersectionObserver(adRef, ([{ isIntersecting, target }]) => {
-        const hidden = (target as HTMLElement)?.offsetParent === null
+    const id = useId()
+    const placementId = computed(() => `ad-${id}`)
 
-        if (isIntersecting && !hidden) {
-          visible.value = true
-          stop()
+    const placementNames = computed(() => {
+      if (props.kind == 'first') {
+        /*
+          first mid page unit
+            - desktop: video
+            - mobile: takeover MPU
+        */
+        return {
+          desktop: 'video',
+          mobile: 'mobile_takeover',
         }
-      }, {
-        rootMargin: `0px 0px 200px 0px`,
-      })
-
-      if (!isSupported) {
-        visible.value = true
       }
-    }
 
-    const breakpoints = useBreakpoints({
-      desktop: 1024, // breakpoint which Venatus uses
+      if (props.kind == 'top') {
+        /*
+          top of the page unit
+            - desktop: takeover billboard
+            - mobile: video
+        */
+        return {
+          /*
+            data-display-type is not documented as requirement for takeovers in prosper,
+            but sometimes it breaks ("Section hybrid-banner defect:  Destroying. No hybrid-banner")
+          */
+          desktop: 'desktop_takeover',
+          mobile: 'video',
+        }
+      }
+
+      if (props.kind == 'cell') {
+        /*
+          unit within a dashboard
+            - desktop: billboard
+            - mobile: MPU
+        */
+        return {
+          desktop: 'billboard',
+          mobile: 'mobile_mpu',
+        }
+      }
+
+      /*
+        mid page unit
+          - desktop: billboard
+          - mobile: MPU
+      */
+      return {
+        desktop: 'billboard',
+        mobile: 'mobile_mpu',
+      }
     })
-    const desktop = breakpoints.greaterOrEqual('desktop')
+
+    usePlacement(placementId, placementRef, placementNames)
 
     return {
-      visible,
-      desktop,
+      placementId,
     }
   },
 })
