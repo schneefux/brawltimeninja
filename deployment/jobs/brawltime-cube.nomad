@@ -196,6 +196,7 @@ job "brawltime-cube" {
         data = <<-EOF
           {{ with nomadService "clickhouse" }}
             CUBEJS_DB_HOST = "{{ with index . 0 }}{{ .Address }}{{ end }}"
+            CUBEJS_DB_PORT = "{{ with index . 0 }}{{ .Port }}{{ end }}"
           {{ end }}
           {{ with nomadService "redis" }}
             CUBEJS_REDIS_URL = "redis://{{ with index . 0 }}{{ .Address }}:{{ .Port }}{{ end }}"

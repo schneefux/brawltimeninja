@@ -351,3 +351,20 @@ resource "cloudflare_record" "traefik" {
   value = "brawltime.ninja"
 }
 
+resource "minio_s3_bucket" "clickhouse_backup" {
+  bucket = "brawltime-clickhouse-backup"
+  acl = "private"
+  object_locking = false
+}
+
+# create any ilm first or terraform will fail with NoSuchLifecycleConfiguration
+# ex.: mc ilm rule add brawltime/brawltime-clickhouse-backup --expire-days 10
+# (this policy will overwrite existing rules)
+resource "minio_ilm_policy" "clickhouse_backup_full" {
+  bucket = minio_s3_bucket.clickhouse_backup.bucket
+
+  rule {
+    id = "expire-90-days"
+    expiration = "90d"
+  }
+}

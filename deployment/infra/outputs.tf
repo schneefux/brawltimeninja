@@ -15,3 +15,7 @@ output "public_ip4" {
 output "network_id" {
   value = hcloud_network.default.id
 }
+
+output "clickhouse_backup_url" {
+  value = "${minio_s3_bucket.clickhouse_backup.bucket}"
+}

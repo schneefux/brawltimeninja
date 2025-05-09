@@ -4,6 +4,8 @@ variable "web_traduora_project_id" {}
 variable "github_user" {}
 variable "github_token" {}
 variable "brawlapi_token" {}
+variable "hpdevfox_token" {}
+variable "cubejs_secret" {}
 
 # git hash or "latest"
 variable "tag" {
@@ -122,6 +124,8 @@ job "brawltime-testing" {
       template {
         data = <<-EOF
           BRAWLAPI_TOKEN="${var.brawlapi_token}"
+          HPDEVFOX_TOKEN="${var.hpdevfox_token}"
+          CUBEJS_API_SECRET="${var.cubejs_secret}"
         EOF
         destination = "secrets/tokens.env"
         env = true

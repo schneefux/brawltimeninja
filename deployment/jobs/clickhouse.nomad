@@ -62,6 +62,12 @@ job "clickhouse" {
       }
     }
 
+    service {
+      name = "clickhouse-native"
+      provider = "nomad"
+      port = "tcp"
+    }
+
     task "clickhouse" {
       driver = "docker"
 
@@ -76,7 +82,7 @@ job "clickhouse" {
       }
 
       config {
-        image = "clickhouse/clickhouse-server:25.3-alpine"
+        image = "clickhouse/clickhouse-server:25.4-alpine"
         network_mode = "host"
 
         volumes = [
