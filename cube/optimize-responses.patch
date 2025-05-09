@@ -1,0 +1,34 @@
+--- orig.js	2025-05-09 16:44:29
++++ node_modules/@cubejs-backend/api-gateway/dist/src/gateway.js	2025-05-09 17:25:20
+@@ -1528,12 +1528,30 @@
+     }
+     resToResultFn(res) {
+         return async (message, { status } = {}) => {
++            if (res?.req?.method == 'GET' && res.req?.route?.path?.startsWith('/cubejs-api/v1/load') && message?.error == undefined) {
++                res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=120, stale-if-error=1800');
++            }
++
+             if (status) {
+                 res.status(status);
+             }
+             if (message.isWrapper) {
+                 res.set('Content-Type', 'application/json');
+-                res.send(Buffer.from(await message.getFinalResult()));
++
++                const json = JSON.parse(Buffer.from(await message.getFinalResult()));
++                if (json.results) {
++                  // multi query (default) - delete unused properties
++                  json.results.forEach(r => {
++                    Object.keys(r).forEach(k => {
++                      if (['data', 'query', 'slowQuery'].includes(k) === false) {
++                        delete r[k];
++                      }
++                    });
++                  });
++                  delete json.pivotQuery;
++                }
++
++                res.send(json);
+             }
+             else {
+                 res.json(message);

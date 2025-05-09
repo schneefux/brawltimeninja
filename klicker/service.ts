@@ -342,7 +342,11 @@ export class KlickerService implements IKlickerService {
    * Send a query to cube.js
    */
   protected async load(query: Query) {
-    return await this.cubejsApi.load(query)
+    return await this.cubejsApi.load({
+      ...query,
+      // use array-based response, see https://github.com/cube-js/cube/issues/1030
+      responseFormat: 'compact',
+    })
   }
 
   public async comparingQueryAsSerialized(query: CubeComparingQuery, filter?: CubeComparingQueryFilter): Promise<SerializableCubeComparingResponse> {

@@ -2,10 +2,15 @@ const ClickhouseDriver = require('@cubejs-backend/clickhouse-driver')
 
 module.exports = {
   dbType: 'clickhouse',
-  driverFactory: () => new ClickhouseDriver({
-    readOnly: true,
-    database: 'brawltime',
-    queryOptions: {
+  apiSecret: process.env.CUBEJS_API_SECRET || 'changeme',
+  telemetry: false,
+  driverFactory: () => {
+    const driver = new ClickhouseDriver({
+      readOnly: true,
+      database: 'brawltime',
+    })
+
+    driver.config.clickhouseSettings = {
       readonly: 1,
       join_use_nulls: 1,
       max_threads: 1,
@@ -13,10 +18,10 @@ module.exports = {
       allow_experimental_window_functions: 1,
       // maximum estimated execution time, in seconds
       max_execution_time: 300,
-    },
-  }),
-  apiSecret: process.env.CUBEJS_API_SECRET || 'changeme',
-  telemetry: false,
+    }
+
+    return driver
+  },
   // TODO: set up datadog monitoring
   http: {
     cors: {
