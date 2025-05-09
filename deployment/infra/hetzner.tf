@@ -113,13 +113,11 @@ variable "servers" {
       location = "nbg1"
     }
     */
-    /*
     dynamike = {
-      server_type = "cpx41"
+      server_type = "cax21"
       class = "database"
       location = "nbg1"
     }
-    */
     pam = {
       server_type = "cax41"
       class = "database"

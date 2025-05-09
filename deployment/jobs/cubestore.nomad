@@ -41,6 +41,7 @@ job "cubestore" {
       driver = "docker"
 
       env {
+        IMAGE = "${IMAGE}"
         CUBESTORE_SERVER_NAME = "${NOMAD_ADDR_http}"
         CUBESTORE_META_PORT = "${NOMAD_PORT_router}"
         CUBESTORE_WORKERS = "" # no preaggregations - no workers needed
@@ -50,9 +51,16 @@ job "cubestore" {
         CUBESTORE_LOG_LEVEL = "info"
       }
 
+      template {
+        data = <<-EOF
+          TAG_VARIANT={{ if eq (env "attr.cpu.arch") "arm64" }}-arm64v8{{ else }}{{ end }}
+        EOF
+        destination = "local/tag.env"
+        env = true
+      }
+
       config {
-        # FIXME there is a memory leak in the rate limiter https://github.com/cube-js/cube/issues/7545
-        image = "cubejs/cubestore:v0.34.0"
+        image = "cubejs/cubestore:v1.3${TAG_VARIANT}"
         ports = ["http", "db", "router", "status"]
         volumes = [
           "cubestore:/cube/data",
