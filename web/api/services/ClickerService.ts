@@ -3,16 +3,20 @@ import StatsD from 'hot-shots'
 import { Player, BattleLog, BattlePlayer, BattlePlayerMultiple } from '../../model/Brawlstars'
 import { performance } from 'perf_hooks'
 import { parseApiTime, tagToId, validateTag, getSeasonEnd, formatClickhouse, formatClickhouseDate } from '../../lib/util'
+import { SurveyVote } from '../../model/SurveyVote'
 
 const stats = new StatsD({ prefix: 'brawltime.clicker.' })
 
 const ENABLE_ASYNC_INSERT = !!process.env.CLICKHOUSE_ASYNC_INSERT;
 
+const twoMonths = 2*4*7*24*60*60*1000
+const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '') || (Date.now() - twoMonths))
+
 export default class ClickerService {
   private ch: ClickHouseClient;
   private seasonSliceStart: Date;
 
-  constructor(clickhouseUrl: string, balanceChangesDate: Date) {
+  constructor(clickhouseUrl: string) {
     this.ch = createClient({
       url: clickhouseUrl,
       clickhouse_settings: {
@@ -300,5 +304,62 @@ export default class ClickerService {
     }
 
     stats.timing('brawler.insert.timer', performance.now() - brawlerInsertStart)
+  }
+
+  public async storeVote(entry: SurveyVote) {
+    const battleInsertStart = performance.now()
+
+    try {
+      await this.ch.insert({
+        table: 'brawltime.survey_vote',
+        values: [{
+          timestamp: formatClickhouseDate(new Date()),
+          fingerprint: entry.fingerprint,
+          player_id: tagToId(entry.tag),
+          player_tag: entry.tag,
+          mode: entry.mode,
+          brawler_best: entry.best,
+          brawler_rest: entry.rest,
+          player_trophies: entry.player_trophies,
+          'player_brawlers.brawler_name': entry.player_brawler_trophies.map(brawler => brawler.name),
+          'player_brawlers.brawler_power': entry.player_brawler_trophies.map(brawler => brawler.power),
+          'player_brawlers.brawler_trophies': entry.player_brawler_trophies.map(brawler => brawler.trophies),
+        }],
+        format: 'JSONEachRow',
+      })
+      stats.increment('vote.insert.run')
+    } catch (err) {
+      stats.increment('vote.insert.error')
+      console.error(`error inserting vote for ${entry.tag} (${tagToId(entry.tag)})`, entry, err)
+    }
+
+    stats.timing('vote.insert.timer', performance.now() - battleInsertStart)
+  }
+
+  // TODO move to cube
+  async queryVoteSummary(mode: string|undefined) {
+    const votesSummaryResultSet = await this.ch.query({
+      query:
+`SELECT
+  brawler_best AS best,
+  count(brawler_best) AS votes,
+  min(timestamp) AS min_timestamp,
+  max(timestamp) AS max_timestamp
+FROM brawltime.survey_vote
+WHERE timestamp >= {from:String} ${mode ? 'AND mode = {modeFilter:String}' : ''}
+GROUP BY brawler_best
+ORDER BY votes DESC`,
+      format: 'JSONEachRow',
+      query_params: {
+        from: formatClickhouseDate(this.seasonSliceStart),
+        modeFilter: mode,
+      }
+    })
+    return (await votesSummaryResultSet.json()).map((r: any) => ({
+      best: r.best,
+      votes: parseInt(r.votes),
+      min_timestamp: new Date(r.min_timestamp),
+      max_timestamp: new Date(r.max_timestamp),
+    }))
   }
 }

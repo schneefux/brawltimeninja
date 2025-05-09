@@ -1,22 +1,18 @@
 import { TRPCError } from '@trpc/server'
 import { StatsD } from 'hot-shots'
 import { tagWithoutHashType } from '../schema/types'
-import Knex from 'knex'
-import knexfile from '../knexfile'
 import { publicProcedure, router } from '../trpc'
 import { z } from 'zod'
-
-const environment = process.env.NODE_ENV || 'development'
-
-let knex: ReturnType<typeof Knex> | undefined
-
-if (process.env.MYSQL_HOST) {
-  knex = Knex(knexfile[environment])
-} else {
-  console.warn('MYSQL_HOST is not set, survey will be unavailable')
-}
+import ClickerService from '../services/ClickerService'
+import { SurveyVote } from '../../model/SurveyVote'
 
 const stats = new StatsD({ prefix: 'brawltime.survey.' })
+
+const clickhouseUrl = process.env.CLICKHOUSE_URL
+let clickerService: ClickerService | undefined
+if (clickhouseUrl) {
+  clickerService = new ClickerService(clickhouseUrl);
+}
 
 export const surveyRouter = router({
   vote: publicProcedure
@@ -35,24 +31,24 @@ export const surveyRouter = router({
       }),
     }))
     .mutation(async ({ ctx, input }) => {
-      if (!knex) {
+      if (!clickerService) {
         throw new TRPCError({
           code: 'NOT_IMPLEMENTED',
           message: 'Survey is not available'
         })
       }
 
-      await knex('survey_vote')
-        .insert({
-          fingerprint: ctx.fingerprint,
-          tag: input.tag,
-          mode: input.mode,
-          best: input.best,
-          rest: JSON.stringify(input.rest),
-          player_trophies: input.player.trophies,
-          player_brawler_trophies: JSON.stringify(input.player.brawlersTrophies),
-        })
+      const vote: SurveyVote = {
+        fingerprint: ctx.fingerprint,
+        tag: input.tag,
+        mode: input.mode,
+        best: input.best,
+        rest: input.rest,
+        player_trophies: input.player.trophies,
+        player_brawler_trophies: input.player.brawlersTrophies,
+      }
 
+      await clickerService.storeVote(vote)
       stats.increment('vote')
     }),
   getSummary: publicProcedure
@@ -60,33 +56,19 @@ export const surveyRouter = router({
       mode: z.string().optional(),
     }))
     .query(async ({ ctx, input }) => {
-      if (!knex) {
+      if (!clickerService) {
         throw new TRPCError({
           code: 'NOT_IMPLEMENTED',
           message: 'Survey is not available'
         })
       }
 
-      // get number of "best" votes by brawler since 2 weeks ago
-      const twoWeeksAgo = new Date()
-      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
-
-      const query = knex('survey_vote')
-        .select('best')
-        .count('best as votes')
-        .max('timestamp as timestamp')
-        .groupBy('best')
-        .orderBy('votes', 'desc')
-        .where('timestamp', '>=', twoWeeksAgo)
-
-      if (input.mode) {
-        query.where('mode', input.mode)
-      }
-
-      const data = await query
+      // get number of "best" votes by brawler
+      const data = await clickerService.queryVoteSummary(input.mode)
 
       const votesSum = data.reduce((acc, vote) => acc + vote.votes, 0)
-      const lastUpdate = data.reduce((acc, vote) => (vote.timestamp > acc ? vote.timestamp : acc), new Date(0))
+      const lastUpdate = data.reduce((acc, vote) => (vote.max_timestamp > acc ? vote.max_timestamp : acc), new Date(0))
+      const firstUpdate = data.reduce((acc, vote) => (vote.min_timestamp < acc ? vote.min_timestamp : acc), new Date())
       const votes = data.map((vote) => ({
         brawler: vote.best as string,
         voteRate: parseFloat((vote.votes / votesSum).toFixed(4)),
@@ -95,7 +77,7 @@ export const surveyRouter = router({
       ctx.res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60, stale-if-error=900')
       return {
         sum: votesSum,
-        since: twoWeeksAgo,
+        since: firstUpdate,
         lastUpdate,
         votes,
       }

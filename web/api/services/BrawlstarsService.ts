@@ -23,8 +23,6 @@ const devfoxUrl2 = process.env.HPDEVFOX2_URL || 'https://testapi.hpdevfox.ru/';
 const rntUrl = process.env.RNT_URL || 'https://api.rnt.dev/';
 
 const clickhouseUrl = process.env.CLICKHOUSE_URL
-const twoMonths = 2*4*7*24*60*60*1000
-const balanceChangesDate = new Date(Date.parse(process.env.BALANCE_CHANGES_DATE || '') || (Date.now() - twoMonths))
 
 /*
 // cn API is unavailable
@@ -52,7 +50,7 @@ export default class BrawlstarsService {
 
   constructor() {
     if (clickhouseUrl != undefined) {
-      this.clicker = new ClickerService(clickhouseUrl, balanceChangesDate);
+      this.clicker = new ClickerService(clickhouseUrl);
     } else {
       console.warn('CLICKHOUSE_URL is not set, data storage will be unavailable')
     }
