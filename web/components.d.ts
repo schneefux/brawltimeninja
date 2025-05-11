@@ -133,6 +133,7 @@ declare module 'vue' {
     SModeMap: typeof import('./components/klicker/s-mode-map.vue')['default']
     SPlayerName: typeof import('./components/klicker/s-player-name.vue')['default']
     SPlayerTag: typeof import('./components/klicker/s-player-tag.vue')['default']
+    SPlayerTrophies: typeof import('./components/klicker/s-player-trophies.vue')['default']
     SplitPage: typeof import('./components/split-page.vue')['default']
     SPower: typeof import('./components/klicker/s-power.vue')['default']
     SPowerplay: typeof import('./components/klicker/s-powerplay.vue')['default']

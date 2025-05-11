@@ -1970,6 +1970,151 @@ const brawlerCube: Cube = {
   },
 }
 
+const surveyModeDimension: Dimension = {
+  id: 'mode',
+  name: 'Mode',
+  naturalIdAttribute: 'mode',
+  formatter: 'formatMode',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'mode',
+    type: 'string',
+  },
+}
+
+const surveyBrawlerDimension: Dimension = {
+  id: 'brawler',
+  name: 'Brawler',
+  naturalIdAttribute: 'brawler',
+  formatter: 'capitalizeWords',
+  additionalMetrics: [],
+  type: 'nominal',
+  config: {
+    sql: 'brawler_best',
+    type: 'string',
+  },
+}
+
+const surveyPlayerTrophyRangeDimension: Dimension = {
+  id: 'playerTrophyRange',
+  name: 'Player Trophy Range',
+  naturalIdAttribute: 'playerTrophyRange',
+  additionalMetrics: [],
+  hidden: true,
+  type: 'ordinal',
+  formatter: 'playerTrophyRange',
+  config: {
+    sql: 'intDiv(player_trophies, 10000)',
+    type: 'string',
+  },
+}
+
+const surveySlices = asSlice({
+  playerTrophyRangeLte: {
+    id: 'playerTrophyRangeLte',
+    config: {
+      member: 'playerTrophyRange_dimension',
+      operator: 'lte',
+    },
+  },
+  playerTrophyRangeGte: {
+    id: 'playerTrophyRangeGte',
+    config: {
+      member: 'playerTrophyRange_dimension',
+      operator: 'gte',
+    },
+  },
+  brawler: {
+    id: 'brawler',
+    config: {
+      member: 'brawler_dimension',
+      operator: 'equals',
+    },
+  },
+})
+
+const votesMetric: Metric = {
+  id: 'picks',
+  name: 'Votes',
+  formatter: '.2s',
+  d3formatter: '.2s',
+  sign: -1,
+  type: 'quantitative',
+  config: {
+    sql: '',
+    type: 'count',
+  },
+}
+
+const voteRateMetric: Metric = {
+  id: 'pickRate',
+  name: 'Vote Rate',
+  formatter: '.2%',
+  d3formatter: '.2%',
+  sign: -1,
+  type: 'quantitative',
+  vega: {
+    scale: {
+      zero: false,
+    },
+  },
+  config: {
+    sql: '',
+    type: 'count',
+  },
+  transform: percentageOver('pickRate', brawlerDimension),
+}
+
+const surveySeasonDimension: Dimension = {
+  id: 'season',
+  name: 'Bi-Week',
+  childIds: ['day', 'timestamp'],
+  naturalIdAttribute: 'season',
+  formatter: 'yyyy-MM-dd',
+  additionalMetrics: [],
+  type: 'temporal',
+  scale: {
+    nice: 'week',
+  },
+  config: {
+    sql: 'toDate(toStartOfInterval(timestamp, INTERVAL 14 DAY, toDateTime(\'2020-07-13 08:00:00\')) + interval 14 day)',
+    type: 'time',
+  },
+}
+
+const surveyCube: Cube = {
+  id: 'survey',
+  table: 'survey_vote',
+  name: 'Survey Votes',
+  dimensions: [
+    surveySeasonDimension,
+    dayDimension,
+    timestampDimension,
+    surveyModeDimension,
+    surveyBrawlerDimension,
+    surveyPlayerTrophyRangeDimension,
+  ],
+  defaultDimensionsIds: ['brawler'],
+  metrics: [
+    timestampMetric,
+    votesMetric,
+    voteRateMetric,
+  ],
+  defaultMetricIds: ['voteRate'],
+  metaMetrics: ['timestamp', 'picks'],
+  slices: [
+    commonSlices.season,
+    commonSlices.seasonExact,
+    surveySlices.playerTrophyRangeGte,
+    surveySlices.playerTrophyRangeLte,
+    surveySlices.brawler,
+  ],
+  defaultSliceValues: {
+    season: [monthAgoSeason],
+  },
+}
+
 const cubes: Record<string, Cube> = {
   brawler: brawlerCube,
   battle: battleCube,
@@ -1980,6 +2125,7 @@ const cubes: Record<string, Cube> = {
   gear: gearCube, // excludes 0 gears
   brawlerAllies: brawlerAlliesCube, // joins allies
   brawlerEnemies: brawlerEnemiesCube, // joins enemies
+  survey: surveyCube,
 }
 
 export default cubes

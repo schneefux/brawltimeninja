@@ -666,5 +666,7 @@
     "banner.youtube.catchphrase": "Watch Brawl Stars videos and tutorials on the Brawl Time Ninja YouTube channel.",
     "action.subscribe": "Subscribe",
     "mode.brawlHockey": "Brawl Hockey",
-    "tier-list.description": "This tier list was voted by the Brawl Time Ninja community. {sampleSize} votes were collected since {since}, with the last collected {lastUpdate}."
+    "tier-list.description": "This tier list was voted by the Brawl Time Ninja community. {sampleSize} votes were collected since {since}, with the last collected {lastUpdate}.",
+    "metric.votes": "Votes",
+    "metric.voteRate": "Vote Rate"
 }

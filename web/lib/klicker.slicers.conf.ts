@@ -72,6 +72,13 @@ const slicers: SlicerSpec[] = [{
     return dimensions.some(d => d.id == 'trophyRange')
   },
 }, {
+  name: 'Player Trophies',
+  component: 's-player-trophies',
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "s-custom" */ '~/components/klicker/s-player-trophies.vue')),
+  applicable(dimensions) {
+    return dimensions.some(d => d.id == 'playerTrophyRange')
+  },
+}, {
   name: 'With Gadget',
   component: 's-with-gadget',
   import: defineAsyncComponent(() => import(/* webpackChunkName: "s-custom" */ '~/components/klicker/s-with-gadget.vue')),

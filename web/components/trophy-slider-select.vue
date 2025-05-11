@@ -1,7 +1,7 @@
 <template>
   <range-slider-select
     v-model="value"
-    :name="name == 'playerTrophies' ? $t('metric.playerTrophies') : ''"
+    :name="name == 'brawlerTrophies' ? $t('metric.playerTrophies') : ''"
     :min="min"
     :max="max"
     :format="format"
@@ -19,8 +19,8 @@ export default defineComponent({
       required: true,
     },
     name: {
-      type: String as PropType<'playerTrophies'|'playerLeague'>,
-      default: 'playerTrophies'
+      type: String as PropType<'playerTrophies'|'brawlerTrophies'|'playerLeague'>,
+      default: 'brawlerTrophies'
     },
   },
   emits: {
@@ -28,15 +28,38 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const format = computed(() => {
+      if (props.name == 'brawlerTrophies') {
+        return (n?: number) => n == undefined ? '' : n * 100 + (n == max.value ? '+' : '')
+      }
       if (props.name == 'playerLeague') {
         return (n?: number) => n == undefined ? '' : formatLeagueRanks(n).formatted
-      } else {
-        return (n?: number) => n == undefined ? '' : n * 100 + (n == max.value ? '+' : '')
+      }
+      if (props.name == 'playerTrophies') {
+        return (n?: number) => n == undefined ? '' : n * 10000 + (n == max.value ? '+' : '')
       }
     })
 
-    const min = computed(() => props.name == 'playerTrophies' ? 0 : 1)
-    const max = computed(() => props.name == 'playerTrophies' ? 15 : 19)
+    const min = computed(() => {
+      if (props.name == 'brawlerTrophies' || props.name == 'playerTrophies') {
+        return 0
+      }
+      if (props.name == 'playerLeague') {
+        return 1
+      }
+      throw new Error('Invalid name prop')
+    })
+    const max = computed(() => {
+      if (props.name == 'brawlerTrophies') {
+        return 15
+      }
+      if (props.name == 'playerLeague') {
+        return 19
+      }
+      if (props.name == 'playerTrophies') {
+        return 10
+      }
+      throw new Error('Invalid name prop')
+    })
 
     const value = computed({
       get() {

@@ -1,7 +1,7 @@
 <template>
   <trophy-slider-select
     v-model="model"
-    :name="isPowerplay ? 'playerLeague' : 'brawlerTrophies'"
+    name="playerTrophies"
   ></trophy-slider-select>
 </template>
 
@@ -21,27 +21,22 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const isPowerplay = computed(() => {
-      return (props.modelValue.powerplay || [])[0] == 'true'
-    })
-
     const model = computed({
       get() {
         return {
-          gte: parseInt(props.modelValue.trophyRangeGte?.[0] as string) || undefined,
-          lte: parseInt(props.modelValue.trophyRangeLte?.[0] as string) || undefined,
+          gte: parseInt(props.modelValue.playerTrophyRangeGte?.[0] as string) || undefined,
+          lte: parseInt(props.modelValue.playerTrophyRangeLte?.[0] as string) || undefined,
         }
       },
       set(v: { gte?: number, lte?: number }) {
         props.onInput({
-          trophyRangeGte: v.gte != undefined ? [v.gte.toString()] : [],
-          trophyRangeLte: v.lte != undefined ? [v.lte.toString()] : [],
+          playerTrophyRangeGte: v.gte != undefined ? [v.gte.toString()] : [],
+          playerTrophyRangeLte: v.lte != undefined ? [v.lte.toString()] : [],
         })
       }
     })
 
     return {
-      isPowerplay,
       model,
     }
   }

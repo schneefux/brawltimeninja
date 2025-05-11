@@ -207,7 +207,7 @@ export function idToTag(idString: string) {
   in SQL:
     date_add(from_days(ceil(to_days(date_sub(date_sub(timestamp, interval 8 hour), interval 1 day)) / 14) * 14 + 2), interval 8 hour)
   in clickhouse SQL:
-    addHours(addDays(toStartOfInterval(subtractDays(subtractHours(timestamp, 8), 4), interval 336 hour, 'UTC'), 14+4), 8)
+    toStartOfInterval(now(), toIntervalDay(14), toDateTime('2020-07-13 08:00:00')) + toIntervalDay(14)
 */
 /**
  * Round timestamp up to next legacy trophy season interval.

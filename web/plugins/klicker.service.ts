@@ -68,6 +68,9 @@ export class BrawltimeKlickerService extends KlickerService {
         // TODO format leagues
         return (value * 100) as any as string // TODO allow format to return numbers
       }
+      if (spec.formatter == 'playerTrophyRange') {
+        return (value * 10000) as any as string // TODO allow format to return numbers
+      }
     }
     return super.format(spec, value)
   }
