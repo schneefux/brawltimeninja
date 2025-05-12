@@ -15,47 +15,60 @@ export function useVenatus() {
 
   const placements = ref<Record<string, any>>({})
 
-  const mountStickies = () => {
-    if (Object.keys(self.__VM_payload_stickies).length > 0) {
-      placements.value = self.__VM_payload_stickies
-      self.__VM_payload_stickies = {}
+  const mountSticky = (name: string) => {
+    if (self.__VM_payload_stickies[name]) {
+      placements.value[name] = self.__VM_payload_stickies[name]
+      delete self.__VM_payload_stickies[name]
       // rendered by page load script, skip
       return
     }
 
     self.__VM = self.__VM || []
     self.__VM.push(function (admanager: any, scope: any) {
-      for (const name of ["vertical_sticky", "horizontal_sticky", "mobile_horizontal_sticky"]) {
-        console.log("[PROSPER] add", name)
-
-        let instance;
-        if (name === "vertical_sticky") {
-          instance = scope.Config.verticalSticky()
-        } else {
-          instance = scope.Config.get(name).displayBody()
-        }
-
-        placements.value = {
-          ...placements.value,
-          [name]: instance,
-        }
-      }
-    })
-  }
-
-  const unmountStickies = () => {
-    self.__VM.push(function (admanager: any, scope: any) {
-      Object.keys(placements.value).forEach((name) => {
+      let instance = placements.value[name]
+      if (instance) {
         console.log("[PROSPER] remove", name)
         if (name === "vertical_sticky") {
           scope.Config.verticalSticky().destroy()
         } else {
-          placements.value[name].instance.remove()
+          instance.remove()
         }
-      })
+        instance = undefined
+      }
 
-      placements.value = {}
+      console.log("[PROSPER] add", name)
+      if (name === "vertical_sticky") {
+        instance = scope.Config.verticalSticky()
+      } else {
+        instance = scope.Config.get(name).displayBody()
+      }
+
+      placements.value[name] = instance
     })
+  }
+
+  const unmountSticky = (name: string) => {
+    self.__VM.push(function (admanager: any, scope: any) {
+      console.log("[PROSPER] remove", name)
+      if (name === "vertical_sticky") {
+        scope.Config.verticalSticky().destroy()
+      } else {
+        placements.value[name].instance.remove()
+      }
+      delete placements.value[name]
+    })
+  }
+
+  const stickies = ["vertical_sticky", "horizontal_sticky", "mobile_horizontal_sticky"]
+  const mountStickies = () => {
+    for (const name of stickies) {
+      mountSticky(name)
+    }
+  }
+  const unmountStickies = () => {
+    for (const name of stickies) {
+      unmountSticky(name)
+    }
   }
 
   onMounted(() => mountStickies())
@@ -63,10 +76,7 @@ export function useVenatus() {
 
   // request by Venatus: ads should be refreshed on page navigation
   const route = useRoute()
-  watch(route, () => {
-    unmountStickies()
-    mountStickies()
-  })
+  watch(route, () => mountStickies())
 
   useMeta(() => {
     if (!import.meta.env.SSR) {
@@ -156,8 +166,8 @@ export const usePlacement = (
   idRef: Ref<string>,
   placementRef: Ref<HTMLElement|null>,
   placementNames: Ref<{
-    desktop: string,
-    mobile: string,
+    desktop: PlacementName,
+    mobile: PlacementName,
   }>,) => {
   const breakpoints = useBreakpoints({
     desktop: 1024, // breakpoint which Venatus uses
