@@ -23,6 +23,13 @@ const slicers: SlicerSpec[] = [{
     return dimensions.some(d => d.id == 'map')
   },
 }, {
+  name: 'Modes',
+  component: 's-mode',
+  import: defineAsyncComponent(() => import(/* webpackChunkName: "s-custom" */ '~/components/klicker/s-mode.vue')),
+  applicable(dimensions) {
+    return dimensions.some(d => d.id == 'mode') && !dimensions.some(d => d.id == 'map')
+  },
+}, {
   name: 'Maps and Modes',
   component: 's-mode-map',
   import: defineAsyncComponent(() => import(/* webpackChunkName: "s-custom" */ '~/components/klicker/s-mode-map.vue')),

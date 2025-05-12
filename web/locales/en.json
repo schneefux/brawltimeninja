@@ -215,6 +215,7 @@
     "metric.losses.letter": "L",
     "metric.name": "Name",
     "metric.picks": "Picks Recorded",
+    "metric.pickRate": "Pick Rate",
     "metric.player": "Player",
     "metric.potentialTrophies": "Potential Trophies",
     "metric.potentialTrophies.subtext": "(with all Brawlers unlocked)",
@@ -335,6 +336,7 @@
     "option.all-brawlers": "All Brawlers",
     "option.any-brawler": "Any Brawler",
     "option.any-season": "Any Season",
+    "option.any-mode": "Any Mode",
     "option.season-at": "At {season}",
     "option.season-since": "Since {season}",
     "option.competition-maps.include": "Include Competition Maps",
@@ -666,7 +668,7 @@
     "banner.youtube.catchphrase": "Watch Brawl Stars videos and tutorials on the Brawl Time Ninja YouTube channel.",
     "action.subscribe": "Subscribe",
     "mode.brawlHockey": "Brawl Hockey",
-    "tier-list.description": "This tier list was voted by the Brawl Time Ninja community. {sampleSize} votes were collected since {since}, with the last collected {lastUpdate}.",
+    "tier-list.description": "This tier list was voted by the Brawl Time Ninja community. {sampleSize} votes were collected since {since}, with the last vote collected {lastUpdate}.",
     "metric.votes": "Votes",
     "metric.voteRate": "Vote Rate"
 }

@@ -1,15 +1,14 @@
 <template>
-  <v-card-wrapper
-    :card="card"
-    :loading="loading"
-    component="v-tier-list"
+  <component
+    :is="vwrapper.is"
+    v-bind="vwrapper.props"
   >
     <template v-slot:content>
-      <ul>
+      <ul class="space-y-2">
         <li
           v-for="(entries, tier) in tiers"
           :key="tier"
-          class="my-4 flex"
+          class="flex"
         >
           <div class="w-6 mr-3 flex justify-center items-center">
             <span class="text-2xl sm:text-2xl md:text-3xl font-bold">{{ tier }}</span>
@@ -29,19 +28,17 @@
         </li>
       </ul>
     </template>
-  </v-card-wrapper>
+  </component>
 </template>
 
 <script lang="ts">
+import { computed, toRef, defineComponent } from 'vue'
 import { Metric, MetaGridEntry } from '../../types'
 import { VisualisationProps } from '../../props'
-import BCard from '../ui/b-card.vue'
 import { scaleEntriesIntoTiers } from '../../util'
-import { computed } from 'vue'
-import { defineComponent } from 'vue'
 import { useCubeResponseProps } from '../../composables/response'
-import VCardWrapper from './v-card-wrapper.vue'
 import DAuto from './d-auto.vue'
+import { useVWrapper, vwrappers } from '../../composables/vwrapper'
 
 export interface TierList {
   [tier: string]: MetaGridEntry[]
@@ -62,9 +59,8 @@ function groupTiers(entries: MetaGridEntry[], m: Metric): TierList {
 
 export default defineComponent({
   components: {
-    VCardWrapper,
-    BCard,
     DAuto,
+    ...vwrappers,
   },
   props: {
     ...VisualisationProps,
@@ -73,7 +69,10 @@ export default defineComponent({
     const { metrics } = useCubeResponseProps(props)
     const tiers = computed(() => groupTiers(props.response.data, metrics.value[0]))
 
+    const vwrapper = useVWrapper(toRef(props, 'card'), toRef(props, 'loading'))
+
     return {
+      vwrapper,
       tiers,
     }
   },

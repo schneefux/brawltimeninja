@@ -35,7 +35,7 @@
             :limit="3"
           ></map-best-brawlers-table>
         </expand>
-        <expand v-if="false" size="h-72">
+        <expand size="h-72">
           <survey-tier-list
             ref="tierlistSection"
             v-observe-visibility="{

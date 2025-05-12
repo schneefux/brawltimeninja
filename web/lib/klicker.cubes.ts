@@ -2032,39 +2032,14 @@ const surveySlices = asSlice({
       operator: 'equals',
     },
   },
-})
-
-const votesMetric: Metric = {
-  id: 'picks',
-  name: 'Votes',
-  formatter: '.2s',
-  d3formatter: '.2s',
-  sign: -1,
-  type: 'quantitative',
-  config: {
-    sql: '',
-    type: 'count',
-  },
-}
-
-const voteRateMetric: Metric = {
-  id: 'pickRate',
-  name: 'Vote Rate',
-  formatter: '.2%',
-  d3formatter: '.2%',
-  sign: -1,
-  type: 'quantitative',
-  vega: {
-    scale: {
-      zero: false,
+  mode: {
+    id: 'mode',
+    config: {
+      member: 'mode_dimension',
+      operator: 'equals',
     },
   },
-  config: {
-    sql: '',
-    type: 'count',
-  },
-  transform: percentageOver('pickRate', brawlerDimension),
-}
+})
 
 const surveySeasonDimension: Dimension = {
   id: 'season',
@@ -2098,14 +2073,15 @@ const surveyCube: Cube = {
   defaultDimensionsIds: ['brawler'],
   metrics: [
     timestampMetric,
-    votesMetric,
-    voteRateMetric,
+    picksMetric,
+    pickRateMetric,
   ],
-  defaultMetricIds: ['voteRate'],
+  defaultMetricIds: ['pickRate'],
   metaMetrics: ['timestamp', 'picks'],
   slices: [
     commonSlices.season,
     commonSlices.seasonExact,
+    surveySlices.mode,
     surveySlices.playerTrophyRangeGte,
     surveySlices.playerTrophyRangeLte,
     surveySlices.brawler,

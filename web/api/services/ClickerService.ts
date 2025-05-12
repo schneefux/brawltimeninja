@@ -335,31 +335,4 @@ export default class ClickerService {
 
     stats.timing('vote.insert.timer', performance.now() - battleInsertStart)
   }
-
-  // TODO move to cube
-  async queryVoteSummary(mode: string|undefined) {
-    const votesSummaryResultSet = await this.ch.query({
-      query:
-`SELECT
-  brawler_best AS best,
-  count(brawler_best) AS votes,
-  min(timestamp) AS min_timestamp,
-  max(timestamp) AS max_timestamp
-FROM brawltime.survey_vote
-WHERE timestamp >= {from:String} ${mode ? 'AND mode = {modeFilter:String}' : ''}
-GROUP BY brawler_best
-ORDER BY votes DESC`,
-      format: 'JSONEachRow',
-      query_params: {
-        from: formatClickhouseDate(this.seasonSliceStart),
-        modeFilter: mode,
-      }
-    })
-    return (await votesSummaryResultSet.json()).map((r: any) => ({
-      best: r.best,
-      votes: parseInt(r.votes),
-      min_timestamp: new Date(r.min_timestamp),
-      max_timestamp: new Date(r.max_timestamp),
-    }))
-  }
 }
