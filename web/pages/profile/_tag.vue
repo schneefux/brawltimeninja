@@ -38,12 +38,11 @@
         callback: makeVisibilityCallback('hours'),
         once: true,
       }"
-      lazy
     >
-      <player-time-statistics
+      <lazy-player-time-statistics
         :player="player"
         @interact="trackInteraction('hours')"
-      ></player-time-statistics>
+      ></lazy-player-time-statistics>
     </b-page-section>
 
     <b-page-section
@@ -78,14 +77,13 @@
         once: true,
       }"
       :title="$t('player.sharepic.title')"
-      lazy
     >
       <div class="flex flex-wrap justify-between items-center gap-8">
-        <player-sharepic-editor
+        <lazy-player-sharepic-editor
           :player-tag="playerTag"
           :player="player"
           @interact="trackInteraction('sharepic')"
-        ></player-sharepic-editor>
+        ></lazy-player-sharepic-editor>
 
         <div>
           <affiliate-card></affiliate-card>
@@ -101,14 +99,13 @@
         once: true,
       }"
       :title="$t('player.trophy-statistics')"
-      lazy
     >
-      <player-trophy-statistics
+      <lazy-player-trophy-statistics
         :player="player"
         :player-tag="playerTag"
         :player-totals="playerTotals"
         @interact="trackInteraction('trophies')"
-      ></player-trophy-statistics>
+      ></lazy-player-trophy-statistics>
     </b-page-section>
 
     <ad></ad>
@@ -121,7 +118,6 @@
         once: true,
       }"
       :title="$t('brawler', 2)"
-      lazy
     >
       <p class="prose dark:prose-invert">
         {{ $t('player.brawlers.description') }}
@@ -133,13 +129,13 @@
         class="mt-4"
         loading
       ></b-shimmer>
-      <player-brawlers
+      <lazy-player-brawlers
         v-else
         :player="player"
         :player-extra="playerExtra ?? undefined"
         class="mt-4"
         @interact="trackInteraction('brawlers')"
-      ></player-brawlers>
+      ></lazy-player-brawlers>
     </b-page-section>
 
     <ad></ad>
@@ -155,7 +151,6 @@
           once: true,
         }"
         :title="$t('battle-log', 1)"
-        lazy
       >
         <p class="mt-4 prose dark:prose-invert w-full">
           {{ $t('player.battle-log.description') }}
@@ -167,13 +162,13 @@
           class="mt-8"
           loading
         ></b-shimmer>
-        <battles-list
+        <lazy-battles-list
           v-else
           :battles="player.battles"
           :highlight-tags="[playerTag]"
           class="mt-8"
           @interact="trackInteraction('battles')"
-        ></battles-list>
+        ></lazy-battles-list>
       </b-page-section>
 
       <ad></ad>
@@ -187,7 +182,6 @@
         once: true,
       }"
       :title="$t('mode', 2)"
-      lazy
     >
       <p class="prose dark:prose-invert">
         {{ $t('player.modes.description') }}
@@ -199,13 +193,13 @@
         class="mt-4"
         loading
       ></b-shimmer>
-      <player-mode-winrates
+      <lazy-player-mode-winrates
         v-else
         :player="player"
         :battles="player.battles"
         class="mt-4"
         @interact="trackInteraction('gamemodes')"
-      ></player-mode-winrates>
+      ></lazy-player-mode-winrates>
     </b-page-section>
 
     <ad></ad>
@@ -218,7 +212,6 @@
         once: true,
       }"
       :title="$t('player.progression.title')"
-      lazy
     >
       <p class="mt-4 prose dark:prose-invert w-full">
         {{ $t('player.progression.description') }}
@@ -230,12 +223,12 @@
         height-px="112"
         loading
       ></b-shimmer>
-      <player-progression
+      <lazy-player-progression
         v-else
         :player="player"
         class="mt-8"
         @interact="trackInteraction('progression')"
-      ></player-progression>
+      ></lazy-player-progression>
     </b-page-section>
 
     <ad></ad>
@@ -248,7 +241,6 @@
         once: true,
       }"
       :title="$t('player.records.title')"
-      lazy
     >
       <p class="mt-4 prose dark:prose-invert w-full">
         {{ $t('player.records.description') }}
@@ -260,12 +252,12 @@
         height-px="112"
         loading
       ></b-shimmer>
-      <player-percentiles
+      <lazy-player-percentiles
         v-else
         :player="player"
         class="mt-8"
         @interact="trackInteraction('records')"
-      ></player-percentiles>
+      ></lazy-player-percentiles>
     </b-page-section>
 
     <ad></ad>
@@ -278,7 +270,6 @@
         once: true,
       }"
       :title="$t('player.quiz.title')"
-      lazy
     >
       <client-only>
         <quiz-card
@@ -297,7 +288,6 @@
           once: true,
         }"
         :title="$t('player.survey.title')"
-        lazy
       >
         <p class="mt-4 prose dark:prose-invert w-full">
           {{ $t('player.survey.description') }}
@@ -315,7 +305,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useTemplateRef } from 'vue'
+import { computed, defineAsyncComponent, defineComponent, hydrateOnVisible, useTemplateRef } from 'vue'
 import { useApi, useAsync, useCacheHeaders, useConfig, useMeta, useSelfOrigin } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useTrackScroll } from '~/composables/gtag'
@@ -335,6 +325,38 @@ export default defineComponent({
   components: {
     BPageSection,
     BShimmer,
+    LazyPlayerTimeStatistics: defineAsyncComponent({
+      loader: () => import('~/components/player/player-time-statistics.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyPlayerSharepicEditor: defineAsyncComponent({
+      loader: () => import('~/components/player/player-sharepic-editor.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyPlayerTrophyStatistics: defineAsyncComponent({
+      loader: () => import('~/components/player/player-trophy-statistics.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyPlayerBrawlers: defineAsyncComponent({
+      loader: () => import('~/components/player/player-brawlers.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBattlesList: defineAsyncComponent({
+      loader: () => import('~/components/battles-list.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyPlayerModeWinrates: defineAsyncComponent({
+      loader: () => import('~/components/player/player-mode-winrates.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyPlayerProgression: defineAsyncComponent({
+      loader: () => import('~/components/player/player-progression.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyPlayerPercentiles: defineAsyncComponent({
+      loader: () => import('~/components/player/player-percentiles.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
   },
   async setup() {
     const i18n = useI18n()

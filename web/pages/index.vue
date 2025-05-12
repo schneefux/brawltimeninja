@@ -134,12 +134,9 @@
 
     <ad kind="first"></ad>
 
-    <b-page-section
-      id="best"
-      lazy
-    >
+    <b-page-section id="best">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <top-brawlers-card
+        <async-top-brawlers-card
           id="top-brawlers"
           v-observe-visibility="{
             callback: makeVisibilityCallback('best_brawlers'),
@@ -147,9 +144,9 @@
           }"
           :limit="4"
           :elevation="1"
-        ></top-brawlers-card>
+        ></async-top-brawlers-card>
 
-        <top-players-card
+        <async-top-players-card
           id="top-players"
           v-observe-visibility="{
             callback: makeVisibilityCallback('best_players'),
@@ -157,7 +154,7 @@
           }"
           :limit="4"
           :elevation="1"
-        ></top-players-card>
+        ></async-top-players-card>
       </div>
     </b-page-section>
 
@@ -171,18 +168,17 @@
         callback: makeVisibilityCallback('live_events'),
         once: true,
       }"
-      lazy
     >
-      <events-roll
+      <async-events-roll
         :events="events"
         with-data
-      ></events-roll>
+      ></async-events-roll>
     </b-page-section>
   </split-page>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useTemplateRef } from 'vue'
+import { computed, defineAsyncComponent, defineComponent, hydrateOnVisible, ref, useTemplateRef } from 'vue'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { tagPattern } from '~/lib/util'
 import { useTrackScroll } from '~/composables/gtag'
@@ -199,6 +195,20 @@ import { usePreferences } from '~/stores/preferences'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
+  components: {
+    AsyncTopBrawlersCard: defineAsyncComponent({
+      loader: () => import('~/components/top-brawlers-card.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    AsyncTopPlayersCard: defineAsyncComponent({
+      loader: () => import('~/components/top-players-card.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    AsyncEventsRoll: defineAsyncComponent({
+      loader: () => import('~/components/events-roll.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+  },
   directives: {
     ObserveVisibility,
   },

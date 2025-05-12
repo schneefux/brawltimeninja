@@ -9256,11 +9256,6 @@ vue-tsc@^2.2.8:
     "@volar/typescript" "~2.4.11"
     "@vue/language-core" "2.2.8"
 
-vue3-lazy-hydration@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/vue3-lazy-hydration/-/vue3-lazy-hydration-1.2.1.tgz#a1c179f2049c6d0fe796f84ff1d5a56e8c3f1fda"
-  integrity sha512-0KEU+t1ZcOFomf2xhpKPMU2XBdZDVyVjvkxcXAJRpZ818Om4MMhKxbrmIK6hZ+NZOyoRAgMHl/N1zFZJuQoSJA==
-
 vue3-moveable@^0.28.0:
   version "0.28.0"
   resolved "https://registry.yarnpkg.com/vue3-moveable/-/vue3-moveable-0.28.0.tgz#d6684929d4e0d4546deef9e2a2ea904ce183a11a"

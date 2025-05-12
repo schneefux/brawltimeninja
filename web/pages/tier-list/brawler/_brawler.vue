@@ -59,12 +59,11 @@
         callback: makeVisibilityCallback('accessories'),
         once: true,
       }"
-      lazy
     >
-      <brawler-accessories
+      <lazy-brawler-accessories
         :brawler-metadata="brawlerMetadata"
         :scraped-data="scrapedData"
-      ></brawler-accessories>
+      ></lazy-brawler-accessories>
     </b-page-section>
 
     <b-page-section
@@ -75,12 +74,11 @@
         callback: makeVisibilityCallback('accessoriesStats'),
         once: true,
       }"
-      lazy
     >
-      <brawler-accessories-stats
+      <lazy-brawler-accessories-stats
         v-if="brawlerMetadata != undefined"
         :brawler-metadata="brawlerMetadata"
-      ></brawler-accessories-stats>
+      ></lazy-brawler-accessories-stats>
     </b-page-section>
 
     <b-page-section
@@ -91,11 +89,10 @@
         callback: makeVisibilityCallback('synergies'),
         once: true,
       }"
-      lazy
     >
-      <brawler-synergies
+      <lazy-brawler-synergies
         :brawler-metadata="brawlerMetadata"
-      ></brawler-synergies>
+      ></lazy-brawler-synergies>
     </b-page-section>
 
     <ad></ad>
@@ -108,11 +105,10 @@
         callback: makeVisibilityCallback('current-maps'),
         once: true,
       }"
-      lazy
     >
-      <brawler-active-events
+      <lazy-brawler-active-events
         :brawler-metadata="brawlerMetadata"
-      ></brawler-active-events>
+      ></lazy-brawler-active-events>
     </b-page-section>
 
     <b-page-section
@@ -123,11 +119,10 @@
         callback: makeVisibilityCallback('modes'),
         once: true,
       }"
-      lazy
     >
-      <brawler-modes-stats
+      <lazy-brawler-modes-stats
         :brawler-metadata="brawlerMetadata"
-      ></brawler-modes-stats>
+      ></lazy-brawler-modes-stats>
 
       <p class="mt-4 prose dark:prose-invert text-text/75">
         {{ $t('brawler.viable-info') }}
@@ -144,7 +139,6 @@
         callback: makeVisibilityCallback('trends'),
         once: true,
       }"
-      lazy
     >
       <template v-slot:description>
         <p class="mt-4 prose dark:prose-invert text-text/75">
@@ -152,10 +146,10 @@
         </p>
       </template>
 
-      <brawler-trends-card
+      <lazy-brawler-trends-card
         :brawler-brawlstars-id="brawlerMetadata?.brawlstarsId"
         class="mt-4"
-      ></brawler-trends-card>
+      ></lazy-brawler-trends-card>
     </b-page-section>
 
     <b-page-section
@@ -166,11 +160,10 @@
         callback: makeVisibilityCallback('trophy-graphs'),
         once: true,
       }"
-      lazy
     >
-      <brawler-trophy-graphs
+      <lazy-brawler-trophy-graphs
         :brawler-brawlstars-id="brawlerMetadata?.brawlstarsId"
-      ></brawler-trophy-graphs>
+      ></lazy-brawler-trophy-graphs>
 
       <p class="mt-4 prose dark:prose-invert text-text/75">
         {{ $t('brawler.disclaimer') }}
@@ -192,14 +185,13 @@
         callback: makeVisibilityCallback('skins'),
         once: true,
       }"
-      lazy
     >
-      <brawler-skins
+      <lazy-brawler-skins
         :scraped-data="scrapedData"
-      ></brawler-skins>
+      ></lazy-brawler-skins>
     </b-page-section>
 
-    <b-page-section lazy>
+    <b-page-section>
       <affiliate-card></affiliate-card>
     </b-page-section>
 
@@ -212,11 +204,10 @@
         callback: makeVisibilityCallback('pins'),
         once: true,
       }"
-      lazy
     >
-      <brawler-pins
+      <lazy-brawler-pins
         :scraped-data="scrapedData"
-      ></brawler-pins>
+      ></lazy-brawler-pins>
     </b-page-section>
 
     <b-page-section
@@ -228,11 +219,10 @@
         callback: makeVisibilityCallback('voicelines'),
         once: true,
       }"
-      lazy
     >
-      <brawler-voicelines
+      <lazy-brawler-voicelines
         :scraped-data="scrapedData"
-      ></brawler-voicelines>
+      ></lazy-brawler-voicelines>
     </b-page-section>
 
     <ad></ad>
@@ -246,11 +236,10 @@
         callback: makeVisibilityCallback('balance-changes'),
         once: true,
       }"
-      lazy
     >
-      <brawler-history
+      <lazy-brawler-history
         :scraped-data="scrapedData"
-      ></brawler-history>
+      ></lazy-brawler-history>
     </b-page-section>
 
     <b-page-section
@@ -259,17 +248,16 @@
         callback: makeVisibilityCallback('attribution'),
         once: true,
       }"
-      lazy
     >
-      <brawler-attribution
+      <lazy-brawler-attribution
         :scraped-data="scrapedData"
-      ></brawler-attribution>
+      ></lazy-brawler-attribution>
     </b-page-section>
   </split-page>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useTemplateRef } from 'vue'
+import { computed, defineComponent, useTemplateRef, defineAsyncComponent, hydrateOnVisible } from 'vue'
 import { useAsync, useCacheHeaders, useConfig, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { BPageSection } from '@schneefux/klicker/components'
@@ -285,6 +273,54 @@ export default defineComponent({
   },
   components: {
     BPageSection,
+    LazyBrawlerAccessories: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-accessories.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBrawlerAccessoriesStats: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-accessories-stats.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBrawlerSynergies: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-synergies.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBrawlerActiveEvents: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-active-events.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBrawlerModesStats: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-modes-stats.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBrawlerTrendsCard: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-trends-card.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBrawlerTrophyGraphs: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-trophy-graphs.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBrawlerSkins: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-skins.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBrawlerPins: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-pins.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBrawlerVoicelines: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-voicelines.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBrawlerHistory: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-history.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyBrawlerAttribution: defineAsyncComponent({
+      loader: () => import('~/components/brawler/brawler-attribution.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
   },
   setup() {
     const i18n = useI18n()

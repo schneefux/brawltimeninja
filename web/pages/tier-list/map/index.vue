@@ -32,7 +32,6 @@
         callback: makeVisibilityCallback('ranked_events'),
         once: true,
       }"
-      lazy
     >
       <b-button
         :to="localePath('/tier-list/ranked')"
@@ -54,12 +53,11 @@
         callback: makeVisibilityCallback('upcoming_events'),
         once: true,
       }"
-      lazy
     >
-      <events-roll
+      <lazy-events-roll
         :events="upcoming"
         with-data
-      ></events-roll>
+      ></lazy-events-roll>
     </b-page-section>
 
     <ad></ad>
@@ -72,17 +70,16 @@
         callback: makeVisibilityCallback('maps'),
         once: true,
       }"
-      lazy
     >
-      <events-roll
+      <lazy-events-roll
         :events="allEvents"
-      ></events-roll>
+      ></lazy-events-roll>
     </b-page-section>
   </split-page>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useTemplateRef } from 'vue'
+import { computed, defineComponent, useTemplateRef, defineAsyncComponent, hydrateOnVisible } from 'vue'
 import { useCacheHeaders, useMeta } from '~/composables/compat'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { unformatMode } from '~/lib/util'
@@ -98,6 +95,10 @@ export default defineComponent({
   },
   components: {
     BPageSection,
+    LazyEventsRoll: defineAsyncComponent({
+      loader: () => import('~/components/events-roll.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
   },
   setup() {
     const i18n = useI18n()

@@ -50,15 +50,14 @@
         once: true,
       }"
       :title="$t('club.common-battle-log')"
-      lazy
     >
-      <battles-list
+      <lazy-battles-list
         v-if="commonBattles.length > 0"
         :battles="commonBattles"
         :highlight-tags="memberTags"
         class="mt-8"
         @interact="trackInteraction('battles')"
-      ></battles-list>
+      ></lazy-battles-list>
       <b-shimmer
         v-else-if="loading"
         height-px="318"
@@ -89,13 +88,12 @@
         once: true,
       }"
       :title="$t('club.retention.title')"
-      lazy
     >
-      <club-retention-graph
+      <lazy-club-retention-graph
         :loading="loading"
         :club-activity-statistics="clubActivityStatistics"
         class="max-w-md"
-      ></club-retention-graph>
+      ></lazy-club-retention-graph>
     </b-page-section>
 
     <ad></ad>
@@ -117,7 +115,7 @@
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { useApi, useBlockingAsync, useCacheHeaders, useMeta, useSentry } from '~/composables/compat'
 import { tagPattern } from '~/lib/util'
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, defineAsyncComponent, hydrateOnVisible } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { TRPCClientError } from '@trpc/client'
 import { BPageSection, BCard, BShimmer } from '@schneefux/klicker/components'
@@ -133,6 +131,14 @@ export default defineComponent({
     BPageSection,
     BShimmer,
     BCard,
+    LazyBattlesList: defineAsyncComponent({
+      loader: () => import('~/components/battles-list.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
+    LazyClubRetentionGraph: defineAsyncComponent({
+      loader: () => import('~/components/club/club-retention-graph.vue'),
+      hydrate: hydrateOnVisible(),
+    }),
   },
   async setup() {
     const i18n = useI18n()

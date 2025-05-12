@@ -36,14 +36,14 @@
           ></map-best-brawlers-table>
         </expand>
         <expand size="h-72">
-          <survey-tier-list
+          <async-survey-tier-list
             ref="tierlistSection"
             v-observe-visibility="{
               callback: makeVisibilityCallback('tierlist'),
               once: true,
             }"
             :mode="mode"
-          ></survey-tier-list>
+          ></async-survey-tier-list>
         </expand>
       </div>
     </b-page-section>
@@ -90,7 +90,7 @@
 import { camelToKebab, kebabToCamel } from '~/lib/util'
 import { BDashboardCell, BPageSection } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
-import { defineComponent, computed, useTemplateRef } from 'vue'
+import { defineComponent, computed, useTemplateRef, defineAsyncComponent, hydrateOnInteraction } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
 import { useMeta, useCacheHeaders } from '~/composables/compat'
 import { useActiveEvents } from '~/composables/dimension-values'
@@ -105,6 +105,10 @@ export default defineComponent({
   components: {
     BPageSection,
     BDashboardCell,
+    AsyncSurveyTierList: defineAsyncComponent({
+      loader: () => import('~/components/survey-tier-list.vue'),
+      hydrate: hydrateOnInteraction('click')
+    }),
   },
   setup() {
     const i18n = useI18n()
