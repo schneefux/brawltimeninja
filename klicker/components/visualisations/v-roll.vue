@@ -16,24 +16,15 @@
                 ref="heading"
                 class="font-normal text-sm text-left pt-2 pb-1 pr-3 border-r border-gray-600 whitespace-nowrap w-0"
               >{{ dimensionName }}</th>
-              <!-- allow to skip d-auto and provide the renderer directly for improved performance -->
-              <slot
-                name="heading"
+              <d-auto
                 v-for="title in headings.slice(page * pageSize, (page + 1) * pageSize)"
                 :key="title.id"
-                :set-item-ref="el => setItemRef(title.id, el as any)"
+                :ref="el => setItemRef(title.id, (el as any)?.$el)"
                 :response="response"
                 :row="title.entry"
-                clazz="text-center pt-2 pb-1 pl-3"
-              >
-                <d-auto
-                  :ref="el => setItemRef(title.id, (el as any)?.$el)"
-                  :response="response"
-                  :row="title.entry"
-                  tag="td"
-                  class="text-center pt-2 pb-1 pl-3"
-                ></d-auto>
-              </slot>
+                tag="td"
+                class="text-center pt-2 pb-1 pl-3"
+              ></d-auto>
             </tr>
 
             <tr

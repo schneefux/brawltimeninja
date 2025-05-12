@@ -4,17 +4,7 @@
       <v-roll
         v-bind="data"
         :card="card"
-      >
-        <!-- skip d-auto to improve performance -->
-        <template v-slot:heading="{ clazz, row, setItemRef }">
-          <td
-            :class="clazz"
-            :ref="setItemRef"
-          >
-            <md-brawler :row="row"></md-brawler>
-          </td>
-        </template>
-      </v-roll>
+      ></v-roll>
     </template>
   </c-query>
 </template>
