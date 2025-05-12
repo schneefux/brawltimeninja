@@ -68,11 +68,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<route>
-{
-  meta: {
-    topBannerType: 'instream',
-  },
-}
-</route>

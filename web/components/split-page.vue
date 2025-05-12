@@ -48,7 +48,6 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
 import { BSplitDashboard, BScrollSpy } from '@schneefux/klicker/components'
-import { useRoute } from 'vue-router'
 import { Section } from '@schneefux/klicker/components/ui/b-scroll-spy.vue'
 
 /**
@@ -79,13 +78,9 @@ export default defineComponent({
 
     const rightSidebarHasContent = computed(() => 'aside-right' in slots)
 
-    const route = useRoute()
-    const topBannerType = computed(() => route.meta.topBannerType as string ?? 'takeover')
-
     return {
       leftSidebarHasContent,
       rightSidebarHasContent,
-      topBannerType,
     }
   },
 })
