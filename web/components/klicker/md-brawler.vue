@@ -2,9 +2,10 @@
   <a
     :href="href"
     :title="title"
+    class="inline-flex items-center"
     @click.stop="navigate"
   >
-    <figure class="inline-flex items-center">
+    <figure class="contents">
       <span
         :class="['relative shrink-0', {
           'pr-3 md:pr-4': ally != undefined || starpowerId != undefined || gadgetId != undefined,

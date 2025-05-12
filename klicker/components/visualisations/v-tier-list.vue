@@ -4,29 +4,26 @@
     v-bind="vwrapper.props"
   >
     <template v-slot:content>
-      <ul class="space-y-2">
+      <ol class="leading-0">
         <li
           v-for="(entries, tier) in tiers"
           :key="tier"
-          class="flex"
+          class="flex border-t-2 first:border-t-0 border-contrast/10"
         >
           <div class="w-6 mr-3 flex justify-center items-center">
             <span class="text-2xl sm:text-2xl md:text-3xl font-bold">{{ tier }}</span>
           </div>
-          <ul class="w-full flex flex-wrap justify-start items-center">
-            <li
+          <ol class="flex-1 flex flex-wrap justify-start items-center">
+            <d-auto
               v-for="entry in entries"
               :key="entry.id"
-              class="my-px"
-            >
-              <d-auto
-                :response="response"
-                :row="entry"
-              ></d-auto>
-            </li>
-          </ul>
+              :response="response"
+              :row="entry"
+              tag="li"
+            ></d-auto>
+          </ol>
         </li>
-      </ul>
+      </ol>
     </template>
   </component>
 </template>
@@ -51,7 +48,7 @@ function groupTiers(entries: MetaGridEntry[], m: Metric): TierList {
 
   const scaledEntries = scaleEntriesIntoTiers(entries, m)
 
-  const tierMap = { S: [], A: [], B: [], C: [], D: [] } as Record<string, MetaGridEntry[]>
+  const tierMap: TierList = {}
   scaledEntries.forEach(e => e.tier in tierMap ? tierMap[e.tier].push(e) : tierMap[e.tier] = [e])
 
   return tierMap
