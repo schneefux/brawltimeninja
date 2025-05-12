@@ -16,7 +16,7 @@ export function useVenatus() {
   const placements = ref<Record<string, any>>({})
 
   const mountStickies = () => {
-    if (self.__VM_payload_stickies) {
+    if (Object.keys(self.__VM_payload_stickies).length > 0) {
       placements.value = self.__VM_payload_stickies
       self.__VM_payload_stickies = {}
       // rendered by page load script, skip
