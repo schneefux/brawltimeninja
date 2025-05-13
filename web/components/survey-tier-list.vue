@@ -1,5 +1,5 @@
 <template>
-  <b-card :title="$t('tier-list.mode.title', { mode: $t('mode.' + mode) })">
+  <b-card :title="$t('tier-list.mode.tier-list', { mode: $t('mode.' + mode) })">
     <template v-slot:content>
       <c-query :query="query">
         <template v-slot="data">
