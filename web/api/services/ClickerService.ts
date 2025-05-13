@@ -313,7 +313,7 @@ export default class ClickerService {
       await this.ch.insert({
         table: 'brawltime.survey_vote',
         values: [{
-          timestamp: formatClickhouseDate(new Date()),
+          timestamp: formatClickhouse(new Date()),
           fingerprint: entry.fingerprint,
           player_id: tagToId(entry.tag),
           player_tag: entry.tag,
