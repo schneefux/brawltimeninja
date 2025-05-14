@@ -1,4 +1,4 @@
-import { computed, ref, MaybeRef, unref, watch, onMounted } from 'vue'
+import { computed, ref, MaybeRef, unref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { LocaleIso } from '~/locales'
 import { Locale, format, formatDistanceToNow } from 'date-fns'
@@ -59,8 +59,9 @@ export const useFormattedDistanceToNow = (timestamp: MaybeRef<Date|undefined>, {
       })
     }
   }
-  watch(() => unref(timestamp), updateFormatted)
-  onMounted(updateFormatted)
+  watch(() => [timestamp, locale], updateFormatted, {
+    immediate: true,
+  })
 
   return formatted
 }
@@ -77,8 +78,9 @@ export const useFormattedDate = (timestamp: MaybeRef<Date>, formatStr: MaybeRef<
       locale: locale.value,
     })
   }
-  watch(() => unref(timestamp), updateFormatted)
-  onMounted(updateFormatted)
+  watch(() => [timestamp, locale], updateFormatted, {
+    immediate: true,
+  })
 
   return formatted
 }
