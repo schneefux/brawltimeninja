@@ -110,7 +110,9 @@ export default defineComponent({
 
     useCacheHeaders()
     useMeta(() => ({
-      title: i18n.t('page.tier-list.brawlers.meta-title'),
+      title: i18n.t('page.tier-list.brawlers.meta-title', {
+        date: date.value,
+      }),
       meta: [
         { hid: 'description', name: 'description', content: i18n.t('page.tier-list.brawlers.meta-description') },
       ]
@@ -125,7 +127,6 @@ export default defineComponent({
       dashboardSection: useTemplateRef<InstanceType<typeof BPageSection>>('dashboardSection'),
     }
 
-    // TODO i18n keys überarbeiten und Texte schreiben und übersetzen
     const sections = computed(() => [{
       id: 'best-brawlers',
       title: i18n.t('component.best-brawlers.long'),

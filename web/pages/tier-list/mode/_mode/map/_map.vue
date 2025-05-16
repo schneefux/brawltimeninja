@@ -1,5 +1,9 @@
 <template>
-  <split-page :title="$t('tier-list.map.title', { map: mapName })">
+  <split-page :title="$t('page.tier-list.map.title', {
+      map: mapName,
+      date,
+    })"
+  >
     <template v-slot:aside-left>
       <b-shimmer
         v-if="event == undefined"
@@ -64,7 +68,10 @@
         id="description"
         class="prose dark:prose-invert"
       >
-        {{ $t('tier-list.map.description', { map: mapName, mode: $t('mode.' + event.mode) }) }}
+        {{ $t('page.tier-list.map.intro', {
+          map: mapName,
+          mode: $t('mode.' + event.mode),
+        }) }}
       </p>
     </b-page-section>
 
@@ -85,7 +92,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
-import { deslugify, kebabToCamel } from '~/lib/util'
+import { deslugify, formatClickhouseDate, getMonthSeasonEnd, kebabToCamel } from '~/lib/util'
 import { BShimmer, BLightbox, BPageSection, Fa } from '@schneefux/klicker/components'
 import { useMapName } from '~/composables/map'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
@@ -96,6 +103,7 @@ import { useRouteParams } from '~/composables/route-params'
 import { useTrackScroll } from '~/composables/gtag'
 import { getMapName } from '~/composables/map'
 import { injectHead } from '@unhead/vue'
+import { useFormattedDate } from '~/composables/date-fns'
 
 interface Map {
   id: string
@@ -116,6 +124,7 @@ export default defineComponent({
     const i18n = useI18n()
     const routeParams = useRouteParams()
     const { trackInteraction } = useTrackScroll('map')
+    const date = useFormattedDate(new Date(), 'MMMM yyyy')
     const head = injectHead()
 
     useCacheHeaders()
@@ -167,12 +176,15 @@ export default defineComponent({
       }
 
       const map = getMapName(i18n, event.value.id, event.value.map)
-      const description = i18n.t('tier-list.map.meta.description', {
+      const description = i18n.t('page.tier-list.map.meta-description', {
         map,
         mode: i18n.t('mode.' + event.value.mode),
       })
       return {
-        title: i18n.t('tier-list.map.meta.title', { map }),
+        title: i18n.t('page.tier-list.map.meta-title', {
+          map,
+          date: date.value,
+        }),
         meta: [
           { hid: 'description', name: 'description', content: description },
           ...(event.value.id != undefined && event.value.id != '0' ? [{ hid: 'og:image', property: 'og:image', content: $config.mediaUrl + '/maps/' + event.value.id + '.png' }] : []),
@@ -181,6 +193,7 @@ export default defineComponent({
     }, head)
 
     return {
+      date,
       event,
       mapName,
       faExpand,
