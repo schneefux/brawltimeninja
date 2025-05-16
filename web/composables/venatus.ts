@@ -13,18 +13,55 @@ export function useVenatus() {
     } ],
   }))
 
+  useMeta(() => {
+    return {
+      script: [
+        {
+          innerHTML:
+`self.__VM = self.__VM || [];
+
+self.__VM_payload_stickies = self.__VM_payload || {};
+self.__VM.push(function (admanager, scope) {
+  for (const placementName of ["vertical_sticky", "horizontal_sticky", "mobile_horizontal_sticky"]) {
+    console.log("[PROSPER] add", placementName, "(page load)");
+    if (placementName === "vertical_sticky") {
+      self.__VM_payload_stickies[placementName] = scope.Config.verticalSticky();
+    } else {
+      self.__VM_payload_stickies[placementName] = scope.Config.get(placementName).displayBody();
+    }
+  }
+
+  scope.Instances.pageManager.on('navigated', () => {
+    scope.Instances.pageManager.newPageSession(false);
+  }, false);
+});
+
+self.__VM_payload = self.__VM_payload || {};
+function earlyRenderPlacement(id, desktopPlacement, mobilePlacement) {
+  self.__VM.push(function (admanager, scope) {
+    const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
+    const placementName = isDesktop ? desktopPlacement : mobilePlacement;
+    console.log("[PROSPER] add", placementName, id, "(page load)");
+    self.__VM_payload[id] = scope.Config.get(placementName).display(id);
+  });
+}`,
+        }
+      ]
+    }
+  })
+
   const placements = ref<Record<string, any>>({})
 
   const mountSticky = (name: string) => {
-    if (self.__VM_payload_stickies[name]) {
-      placements.value[name] = self.__VM_payload_stickies[name]
-      delete self.__VM_payload_stickies[name]
-      // rendered by page load script, skip
-      return
-    }
-
     self.__VM = self.__VM || []
     self.__VM.push(function (admanager: any, scope: any) {
+      if (self.__VM_payload_stickies[name]) {
+        placements.value[name] = self.__VM_payload_stickies[name]
+        delete self.__VM_payload_stickies[name]
+        // rendered by page load script, skip
+        return
+      }
+
       let instance = placements.value[name]
       if (instance) {
         console.log("[PROSPER] remove", name)
@@ -77,34 +114,6 @@ export function useVenatus() {
   // request by Venatus: ads should be refreshed on page navigation
   const route = useRoute()
   watch(route, () => mountStickies())
-
-  useMeta(() => {
-    if (!import.meta.env.SSR) {
-      return {}
-    }
-
-    return {
-      script: [ {
-        innerHTML:
-`self.__VM = self.__VM || [];
-self.__VM_payload_stickies = self.__VM_payload || {};
-self.__VM.push(function (admanager, scope) {
-  for (const placementName of ["vertical_sticky", "horizontal_sticky", "mobile_horizontal_sticky"]) {
-    console.log("[PROSPER] add", placementName, "(page load)");
-    if (placementName === "vertical_sticky") {
-      self.__VM_payload_stickies[placementName] = scope.Config.verticalSticky();
-    } else {
-      self.__VM_payload_stickies[placementName] = scope.Config.get(placementName).displayBody();
-    }
-  }
-
-  scope.Instances.pageManager.on('navigated', () => {
-    scope.Instances.pageManager.newPageSession(false);
-  }, false);
-});`,
-      } ],
-    }
-  })
 }
 
 type PlacementName = 'billboard'|'leaderboard'|'double_mpu'|'mpu'|'mobile_banner'|'mobile_mpu'|'skyscraper'|'video'|'desktop_takeover'|'mobile_takeover'|'video_slider'|'vertical_sticky'|'mobile_horizontal_sticky'|'horizontal_sticky'|'interstitial'
@@ -113,15 +122,15 @@ function usePlacementRef(idRef: Ref<string>, placementRef: Ref<HTMLElement|null>
 
   // log statements were requested by Venatus
   const addPlacement = (element: HTMLElement, placementName: string) => {
-    if (self.__VM_payload[idRef.value]) {
-      instance.value = self.__VM_payload[idRef.value]
-      delete self.__VM_payload[idRef.value]
-      // rendered by page load script, skip
-      return
-    }
-
     self.__VM = self.__VM || []
     self.__VM.push(function (admanager: any, scope: any) {
+      if (self.__VM_payload[idRef.value]) {
+        instance.value = self.__VM_payload[idRef.value]
+        delete self.__VM_payload[idRef.value]
+        // rendered by page load script, skip
+        return
+      }
+
       if (instance.value) {
         console.log("[PROSPER] remove", `#${idRef.value}`)
         instance.value.remove()
@@ -190,15 +199,7 @@ export const usePlacement = (
       script: [
         {
           // request by Venatus: mobile_takeover should be rendered on initial page load
-          innerHTML:
-`self.__VM = self.__VM || [];
-self.__VM_payload = self.__VM_payload || {};
-self.__VM.push(function (admanager, scope) {
-  const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
-  const placementName = isDesktop ? "${placementNames.value.desktop}" : "${placementNames.value.mobile}";
-  console.log("[PROSPER] add", placementName, "${idRef.value}", "(page load)");
-  self.__VM_payload["${idRef.value}"] = scope.Config.get(placementName).display("${idRef.value}");
-});`,
+          innerHTML: `earlyRenderPlacement("${idRef.value}", "${placementNames.value.desktop}", "${placementNames.value.mobile}")`,
         }
       ]
     }
