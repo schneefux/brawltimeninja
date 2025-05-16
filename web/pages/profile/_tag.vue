@@ -521,6 +521,7 @@ export default defineComponent({
         return undefined
       }
 
+      /*
       // tag was entered manually
       if (!preferences.state.value.lastPlayers.some((p) => p.tag.substring(1) == playerTag.value)) {
         return undefined
@@ -537,6 +538,7 @@ export default defineComponent({
       if (player.value.trophies < 1000 && !Object.values(player.value.brawlers).some(brawler => brawler.power >= 9)) {
         return undefined
       }
+        */
 
       // return most frequently played mode
       const modeCounts = player.value.battles.reduce((acc, battle) => {

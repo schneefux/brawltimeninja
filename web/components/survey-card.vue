@@ -18,11 +18,12 @@
 
         <div class="flex justify-center gap-x-4 mt-3">
           <b-button
+            :to="localePath(`/tier-list/mode/${modeSlug}`)"
             light
-            href="https://discord.gg/uYfgznq"
-            tag="a"
             md
-          >Discord</b-button>
+          >{{ $t('component.tier-list.for.mode', {
+            mode: $t('mode.' + mode),
+          }) }}</b-button>
         </div>
       </div>
       <div
