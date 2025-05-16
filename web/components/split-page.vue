@@ -8,7 +8,7 @@
     <!-- desktop: title above ads, mobile: title below ads -->
     <h1
       v-if="title"
-      class="text-3xl md:hidden"
+      class="text-3xl md:hidden mb-4"
     >{{ title }}</h1>
 
     <b-split-dashboard class="vm-main-content">
@@ -18,14 +18,17 @@
           v-if="leftSidebarHasContent || sections.length > 0"
           class="bg-background lg:px-6 lg:py-4 lg:rounded-2xl xl:mr-4 empty:hidden"
         >
+          <slot name="aside-left"></slot>
           <b-scroll-spy
             v-if="sections.length > 0"
             id="sidenav"
             :sections="sections"
+            :class="{
+              'lg:mt-4': leftSidebarHasContent,
+            }"
             toc-class="hidden lg:block"
             nav-class="top-14"
           ></b-scroll-spy>
-          <slot name="aside-left"></slot>
         </div>
       </template>
 

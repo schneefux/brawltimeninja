@@ -1,19 +1,14 @@
 <template>
-  <div>
-    <!-- included only for SEO -->
-    <breadcrumbs
-      :links="links"
-      class="hidden"
-    ></breadcrumbs>
+  <!-- included only for SEO -->
+  <breadcrumbs
+    :links="links"
+    class="hidden"
+  ></breadcrumbs>
 
-    <div class="flex items-center gap-x-4">
-      <s-mode-map
-        :model-value="slices"
-        :on-input="jumpToModeMap"
-        class="mt-2 mb-4"
-      ></s-mode-map>
-    </div>
-  </div>
+  <s-mode-map
+    :model-value="slices"
+    :on-input="jumpToModeMap"
+  ></s-mode-map>
 </template>
 
 <script lang="ts">

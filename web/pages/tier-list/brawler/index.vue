@@ -5,9 +5,9 @@
     })"
     :sections="sections"
   >
-    <mode-map-jumper
-      class="mt-4"
-    ></mode-map-jumper>
+    <template v-slot:aside-left>
+      <mode-map-jumper></mode-map-jumper>
+    </template>
 
     <p class="mt-4 prose dark:prose-invert">
       {{ $t('page.tier-list.brawlers.intro') }}

@@ -42,7 +42,7 @@
           :mode="event.mode"
           :map="event.map"
           :event-id="event.id"
-          class="relative max-w-sm"
+          class="mt-4 relative max-w-sm"
           @click.capture.prevent="lightboxOpen = true"
         >
           <fa
