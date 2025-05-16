@@ -1,5 +1,5 @@
 <template>
-  <b-card :title="$t('tier-list.mode.tier-list', { mode: $t('mode.' + mode) })">
+  <b-card :title="title">
     <template v-slot:content>
       <c-query :query="query">
         <template v-slot="data">
@@ -21,32 +21,35 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
-import { BCard, CQuery, VTierList } from '@schneefux/klicker/components'
+import { defineComponent, computed, toRefs } from 'vue'
+import { CQuery, VTierList } from '@schneefux/klicker/components'
 import { CubeQuery } from '@schneefux/klicker/types'
-import { formatClickhouseDate, getMonthSeasonEnd } from '~/lib/util'
+import useTopNTitle from '~/composables/top-n-title'
 
 export default defineComponent({
   components: {
-    BCard,
     CQuery,
     VTierList,
   },
   props: {
-    mode: {
-      type: String,
-      required: false,
+    eventId: {
+      type: [Number, String],
+      default: () => undefined
+    },
+    slices: {
+      type: Object,
+      default: () => ({}),
     },
   },
   setup(props) {
+    const { eventId, slices } = toRefs(props)
+    const title = useTopNTitle('component.best-brawlers', slices, eventId)
+
     const query = computed<CubeQuery>(() => ({
       cubeId: 'survey',
       dimensionsIds: ['brawler'],
       metricsIds: ['picks'],
-      slices: {
-        mode: props.mode ? [props.mode] : [],
-        season: [formatClickhouseDate(getMonthSeasonEnd())],
-      },
+      slices: slices.value,
       sortId: 'picks',
     }))
 
@@ -54,16 +57,14 @@ export default defineComponent({
       cubeId: 'survey',
       dimensionsIds: [],
       metricsIds: ['picks', 'timestamp'],
-      slices: {
-        mode: props.mode ? [props.mode] : [],
-        season: [formatClickhouseDate(getMonthSeasonEnd())],
-      },
+      slices: slices.value,
       sortId: 'picks',
     }))
 
     return {
       query,
       totalsQuery,
+      title
     }
   },
 })

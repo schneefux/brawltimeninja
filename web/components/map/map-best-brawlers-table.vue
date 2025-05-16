@@ -37,7 +37,7 @@ export default defineComponent({
   },
   setup(props) {
     const { eventId, slices, limit } = toRefs(props)
-    const title = useTopNTitle('best.brawlers', slices, eventId)
+    const title = useTopNTitle('component.best-brawlers', slices, eventId)
 
     const query = computed<CubeQuery>(() => ({
         cubeId: 'map',

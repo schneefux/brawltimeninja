@@ -1,19 +1,18 @@
 <template>
   <split-page
-    :title="$t('tier-list.mode.title', {
+    :title="$t('page.tier-list.mode.title', {
       mode: $t('mode.' + mode),
       date,
     })"
     :sections="sections"
   >
     <mode-map-jumper
-      id="mode-map-jumper"
       :mode="mode"
       class="mt-4"
     ></mode-map-jumper>
 
-    <p id="description" class="mt-4 prose dark:prose-invert">
-      {{ $t('tier-list.mode.description', { mode: $t('mode.' + mode) }) }}
+    <p class="mt-4 prose dark:prose-invert">
+      {{ $t('page.tier-list.mode.intro', { mode: $t('mode.' + mode) }) }}
     </p>
 
     <ad kind="first"></ad>
@@ -26,6 +25,7 @@
           @expand="scrollToDashboard"
         >
           <map-best-brawlers-table
+            id="brawlers"
             ref="bestBrawlersSection"
             v-observe-visibility="{
               callback: makeVisibilityCallback('best_brawlers'),
@@ -37,12 +37,13 @@
         </expand>
         <expand size="h-72">
           <async-survey-tier-list
+            id="tierlist"
             ref="tierlistSection"
             v-observe-visibility="{
               callback: makeVisibilityCallback('tierlist'),
               once: true,
             }"
-            :mode="mode"
+            :slices="slices"
           ></async-survey-tier-list>
         </expand>
       </div>
@@ -54,7 +55,9 @@
       id="maps"
       ref="mapsSection"
       v-if="events != undefined && events.length > 0"
-      :title="$t('tier-list.maps.title')"
+      :title="$t('page.tier-list.mode.maps-title', {
+        mode: $t('mode.' + mode),
+      })"
       v-observe-visibility="{
         callback: makeVisibilityCallback('maps'),
         once: true,
@@ -62,7 +65,9 @@
     >
       <template v-slot:description>
         <p class="mt-4 prose dark:prose-invert">
-          {{ $t('tier-list.open-map') }}
+          {{ $t('page.tier-list.mode.maps-description', {
+            mode: $t('mode.' + mode),
+          }) }}
         </p>
       </template>
 
@@ -72,7 +77,7 @@
     <ad></ad>
 
     <b-page-section
-      :title="$t('tier-list.mode.dashboard', {
+      :title="$t('component.dashboard.for.mode', {
         mode: $t('mode.' + mode),
       })"
       id="dashboard"
@@ -87,8 +92,8 @@
 </template>
 
 <script lang="ts">
-import { camelToKebab, kebabToCamel } from '~/lib/util'
-import { BDashboardCell, BPageSection } from '@schneefux/klicker/components'
+import { camelToKebab, formatClickhouseDate, getMonthSeasonEnd, kebabToCamel } from '~/lib/util'
+import { BPageSection, BCard } from '@schneefux/klicker/components'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import { defineComponent, computed, useTemplateRef, defineAsyncComponent, hydrateOnInteraction } from 'vue'
 import { useTrackScroll } from '~/composables/gtag'
@@ -103,8 +108,8 @@ export default defineComponent({
     ObserveVisibility,
   },
   components: {
+    BCard,
     BPageSection,
-    BDashboardCell,
     AsyncSurveyTierList: defineAsyncComponent({
       loader: () => import('~/components/survey-tier-list.vue'),
       hydrate: hydrateOnInteraction('click')
@@ -124,13 +129,19 @@ export default defineComponent({
 
     useCacheHeaders()
     useMeta(() => ({
-      title: i18n.t('tier-list.mode.meta.title', {
+      title: i18n.t('page.tier-list.mode.meta-title', {
         mode: i18n.t('mode.' + mode.value),
         date: date.value,
       }),
       meta: [
-        { hid: 'description', name: 'description', content: i18n.t('tier-list.mode.meta.description', { mode: i18n.t('mode.' + mode.value) }) },
-      ]
+        {
+          hid: 'description',
+          name: 'description',
+          content: i18n.t('page.tier-list.mode.meta-description', {
+            mode: i18n.t('mode.' + mode.value),
+          }),
+        },
+      ],
     }))
 
     const { makeVisibilityCallback } = useTrackScroll('mode_meta')
@@ -144,31 +155,29 @@ export default defineComponent({
 
     const sections = computed(() => [{
       id: 'brawlers',
-      title: i18n.t('best.brawlers.for.mode', {
+      title: i18n.t('component.best-brawlers.for.mode', {
         mode: i18n.t('mode.' + mode.value),
       }),
       element: sectionRefs.bestBrawlersSection.value?.$el,
     }, {
       id: 'tierlist',
-      title: i18n.t('tier-list.mode.tier-list', {
+      title: i18n.t('component.tier-list.for.mode', {
         mode: i18n.t('mode.' + mode.value),
       }),
       element: sectionRefs.tierlistSection.value?.$el,
     }, {
       id: 'maps',
-      title: i18n.t('tier-list.maps.title'),
+      title: i18n.t('page.tier-list.mode.maps-title', {
+        mode: i18n.t('mode.' + mode.value),
+      }),
       element: sectionRefs.mapsSection.value?.$el,
     }, {
       id: 'dashboard',
-      title: i18n.t('tier-list.mode.dashboard', {
+      title: i18n.t('component.dashboard.for.mode', {
         mode: i18n.t('mode.' + mode.value),
       }),
       element: sectionRefs.dashboardSection.value?.$el,
     }])
-
-    const slices = computed(() => ({
-      mode: [mode.value],
-    }))
 
     const scrollToDashboard = () => {
       const dashboardSection = sectionRefs.dashboardSection.value
@@ -176,6 +185,11 @@ export default defineComponent({
         dashboardSection.$el.scrollIntoView({ behavior: 'smooth' })
       }
     }
+
+    const slices = computed(() => ({
+      mode: [mode.value],
+      season: [formatClickhouseDate(getMonthSeasonEnd())],
+    }))
 
     return {
       events,
