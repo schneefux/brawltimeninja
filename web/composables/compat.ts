@@ -241,9 +241,22 @@ export function useSelfOrigin() {
 
 /** replace locale in path */
 export function getPathWithLocale(fullPath: string, locale: Locale, fallbackLocale: Locale) {
-  const urlPaths = fullPath.split('/')
+  const urlPaths = fullPath == '/' ? [''] : fullPath.split('/')
   const firstPath = urlPaths[1] as LocaleCode
   const validCodes = locales.map(l => l.code)
-  const urlWithoutLocale = validCodes.includes(firstPath) ? '/' + urlPaths.slice(2).join('/') : fullPath
-  return `${locale.iso == fallbackLocale.iso ? '' : '/' + locale.code}` + urlWithoutLocale
+  if (validCodes.includes(firstPath)) {
+    // on non-en locale
+    if (locale.iso == fallbackLocale.iso) {
+      // go to en, so remove
+      urlPaths.splice(1, 1)
+    } else {
+      // go to other, so replace
+      urlPaths[1] = locale.code
+    }
+  } else if (locale.iso != fallbackLocale.iso) {
+    // on en locale
+    // go to other, so insert
+    urlPaths.splice(1, 0, locale.code)
+  }
+  return urlPaths.join('/')
 }

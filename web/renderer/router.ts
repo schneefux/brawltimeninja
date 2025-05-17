@@ -23,7 +23,7 @@ function createRouter(i18n: AppI18n, pageContext: PageContext, head: VueHeadClie
       link: [
         {
           rel: 'canonical',
-          href: origin + to.path, // without queries and hash
+          href: origin + (to.path == '/' ? '' : to.path), // without queries and hash
         },
         {
           rel: 'alternate',
