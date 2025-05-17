@@ -1,6 +1,6 @@
 <template>
   <b-card
-    :title="$t('best-brawlers.all')"
+    :title="$t('component.best-brawlers.long')"
     :elevation="elevation"
   >
     <template v-slot:actions>
