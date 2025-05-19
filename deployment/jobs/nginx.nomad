@@ -99,6 +99,14 @@ job "nginx" {
           "local/nginx.conf:/etc/nginx/nginx.conf:ro",
         ]
 
+        # to generate a goaccess report:
+        /*
+cat *.stdout.* | fgrep -v "^10.0.0." | LANG="en_US.UTF-8" goaccess - \
+  --time-format='%H:%M:%S' \
+  --date-format='%d/%b/%Y' \
+  --log-format='%h %^ %e [%d:%t %z] "%r" %s %b "%R" "%u" %C' -o report.html
+        */
+
         ports = ["nginx_http", "nginx_https", "status"]
 
         labels = {

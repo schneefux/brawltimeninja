@@ -84,8 +84,11 @@ job "brawltime-web" {
 
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.brawltime-web.rule=Host(`${var.domain}`)",
-        "traefik.http.routers.brawltime-web-www.rule=Host(`www.${var.domain}`)",
+        "traefik.http.routers.brawltime-web.rule=Host(`${var.domain}`) || Host(`www.${var.domain}`)",
+        "traefik.http.middlewares.wwwredirect.redirectregex.regex=^http://www\\.(.*)", # note: behind nginx, all traffic is http
+        "traefik.http.middlewares.wwwredirect.redirectregex.replacement=http://$${1}",
+        "traefik.http.middlewares.wwwredirect.redirectregex.permanent=true",
+        "traefik.http.routers.brawltime-web.middlewares=wwwredirect",
       ]
       canary_tags = [
         # do not route via traefik
