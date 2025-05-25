@@ -3,8 +3,9 @@ import { Cache } from "~/lib/cache"
 
 const LOCALE_CACHE_MINUTES = 60
 
+// currently in Traduora: 'bg' | 'de' | 'en' | 'es' | 'hi' | 'it' | 'nl_NL' | 'pl' | 'pt' | 'ru' | 'uk_UA'
 export type LocaleCode = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl' | 'bn' | 'br' | 'cn' | 'cz' | 'fi' | 'fr' | 'hi' | 'jp' | 'kr' | 'lt' | 'nl' | 'pt' | 'sk' | 'sv' | 'tr' | 'vi' | 'zh'
-export type LocaleIso = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl' | 'bn' | 'br' | 'cn' | 'cz' | 'fi' | 'fr' | 'hi' | 'jp' | 'kr' | 'lt' | 'nl' | 'pt' | 'sk' | 'sv' | 'tr' | 'vi' | 'zh'
+export type LocaleIso = 'en' | 'de' | 'es' | 'uk' | 'it' | 'ru' | 'pl' | 'bn' | 'br' | 'cn' | 'cs' | 'fi' | 'fr' | 'hi' | 'ja' | 'ko' | 'lt' | 'nl' | 'pt' | 'sk' | 'sv' | 'tr' | 'vi' | 'zh'
 
 export interface Locale {
   code: LocaleCode // traduora code
@@ -70,13 +71,13 @@ export const locales: Locale[] = [{
   supported: true,
 }, {
   code: 'cn',
-  iso: 'cn',
+  iso: 'zh',
   emoji: '🇨🇳',
   show: true,
   supported: true,
 }, {
   code: 'cz',
-  iso: 'cz',
+  iso: 'cs',
   emoji: '🇨🇿',
   show: true,
   supported: true,
@@ -100,13 +101,13 @@ export const locales: Locale[] = [{
   supported: true,
 }, {
   code: 'jp',
-  iso: 'jp',
+  iso: 'ja',
   emoji: '🇯🇵',
   show: true,
   supported: true,
 }, {
   code: 'kr',
-  iso: 'kr',
+  iso: 'ko',
   emoji: '🇰🇷',
   show: true,
   supported: true,
