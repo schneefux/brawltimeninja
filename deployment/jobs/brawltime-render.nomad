@@ -73,30 +73,30 @@ job "brawltime-render" {
       port "http" {}
     }
 
-    service {
-      name = "brawltime-render"
-      provider = "nomad"
-      port = "http"
-
-      tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.brawltime-render.rule=Host(`render.${var.domain}`)",
-      ]
-
-      check {
-        type = "http"
-        path = "/status"
-        interval = "10s"
-        timeout = "2s"
-
-        check_restart {
-          limit = 6
-        }
-      }
-    }
-
     task "render" {
       driver = "docker"
+
+      service {
+        name = "brawltime-render"
+        provider = "nomad"
+        port = "http"
+
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.brawltime-render.rule=Host(`render.${var.domain}`)",
+        ]
+
+        check {
+          type = "http"
+          path = "/status"
+          interval = "10s"
+          timeout = "2s"
+
+          check_restart {
+            limit = 6
+          }
+        }
+      }
 
       env {
         PORT = "${NOMAD_PORT_http}"

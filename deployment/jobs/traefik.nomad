@@ -28,50 +28,50 @@ job "traefik" {
       }
     }
 
-    restart {
-      mode = "delay"
-      interval = "30s"
-    }
-
-    service {
-      name = "traefik"
-      provider = "nomad"
-      port = "traefik_http"
-
-      check {
-        type = "tcp"
-        interval = "5s"
-        timeout = "2s"
-
-        check_restart {
-          limit = 12
-        }
-      }
-
-      # 4646: default Nomad port
-      tags = [
-        "traefik.enable=true",
-        "traefik.http.middlewares.auth.basicauth.users=${var.basic_auth}",
-
-        "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.${var.domain}`)",
-        "traefik.http.routers.traefik-dashboard.service=api@internal",
-        "traefik.http.routers.traefik-dashboard.middlewares=auth",
-
-        "traefik.http.services.nomad-dashboard.loadbalancer.server.port=4646",
-        "traefik.http.routers.nomad-dashboard.rule=Host(`nomad.${var.domain}`)",
-        "traefik.http.routers.nomad-dashboard.service=nomad-dashboard",
-        "traefik.http.routers.nomad-dashboard.middlewares=auth",
-
-        # default to 503
-        "traefik.http.services.unavailable.loadbalancer.server.port=0",
-        "traefik.http.routers.catchall.rule=PathPrefix(`/`)",
-        "traefik.http.routers.catchall.service=unavailable",
-        "traefik.http.routers.catchall.priority=1",
-      ]
-    }
-
     task "traefik" {
       driver = "docker"
+
+      restart {
+        mode = "delay"
+        interval = "30s"
+      }
+
+      service {
+        name = "traefik"
+        provider = "nomad"
+        port = "traefik_http"
+
+        check {
+          type = "tcp"
+          interval = "5s"
+          timeout = "2s"
+
+          check_restart {
+            limit = 12
+          }
+        }
+
+        # 4646: default Nomad port
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.middlewares.auth.basicauth.users=${var.basic_auth}",
+
+          "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.${var.domain}`)",
+          "traefik.http.routers.traefik-dashboard.service=api@internal",
+          "traefik.http.routers.traefik-dashboard.middlewares=auth",
+
+          "traefik.http.services.nomad-dashboard.loadbalancer.server.port=4646",
+          "traefik.http.routers.nomad-dashboard.rule=Host(`nomad.${var.domain}`)",
+          "traefik.http.routers.nomad-dashboard.service=nomad-dashboard",
+          "traefik.http.routers.nomad-dashboard.middlewares=auth",
+
+          # default to 503
+          "traefik.http.services.unavailable.loadbalancer.server.port=0",
+          "traefik.http.routers.catchall.rule=PathPrefix(`/`)",
+          "traefik.http.routers.catchall.service=unavailable",
+          "traefik.http.routers.catchall.priority=1",
+        ]
+      }
 
       # TODO datadog does not receive anything?
       env {

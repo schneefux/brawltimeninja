@@ -15,22 +15,6 @@ job "redis" {
       }
     }
 
-    service {
-      name = "redis"
-      provider = "nomad"
-      port = "db"
-
-      check {
-        type = "tcp"
-        interval = "10s"
-        timeout = "2s"
-      }
-
-      check_restart {
-        limit = 5
-      }
-    }
-
     ephemeral_disk {
       migrate = true
       size = 2048
@@ -38,6 +22,22 @@ job "redis" {
 
     task "redis" {
       driver = "docker"
+
+      service {
+        name = "redis"
+        provider = "nomad"
+        port = "db"
+
+        check {
+          type = "tcp"
+          interval = "10s"
+          timeout = "2s"
+        }
+
+        check_restart {
+          limit = 5
+        }
+      }
 
       config {
         image = "redis:7.4-alpine"

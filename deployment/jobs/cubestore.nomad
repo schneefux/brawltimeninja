@@ -19,26 +19,26 @@ job "cubestore" {
       port "status" {}
     }
 
-    service {
-      name = "cubestore"
-      provider = "nomad"
-      port = "http"
-
-      check {
-        type = "http"
-        port = "status"
-        path = "/readyz"
-        interval = "10s"
-        timeout = "2s"
-
-        check_restart {
-          limit = 6
-        }
-      }
-    }
-
     task "router" {
       driver = "docker"
+
+      service {
+        name = "cubestore"
+        provider = "nomad"
+        port = "http"
+
+        check {
+          type = "http"
+          port = "status"
+          path = "/readyz"
+          interval = "10s"
+          timeout = "2s"
+
+          check_restart {
+            limit = 6
+          }
+        }
+      }
 
       env {
         IMAGE = "${IMAGE}"

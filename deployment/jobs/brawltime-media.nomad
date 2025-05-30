@@ -92,30 +92,30 @@ job "brawltime-media" {
       access_mode = "single-node-writer"
     }
 
-    service {
-      name = "brawltime-media"
-      provider = "nomad"
-      port = "http"
-
-      tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.brawltime-media.rule=Host(`media.${var.domain}`)",
-      ]
-
-      check {
-        type = "http"
-        path = "/status"
-        interval = "10s"
-        timeout = "2s"
-
-        check_restart {
-          limit = 6
-        }
-      }
-    }
-
     task "media" {
       driver = "docker"
+
+      service {
+        name = "brawltime-media"
+        provider = "nomad"
+        port = "http"
+
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.brawltime-media.rule=Host(`media.${var.domain}`)",
+        ]
+
+        check {
+          type = "http"
+          path = "/status"
+          interval = "10s"
+          timeout = "2s"
+
+          check_restart {
+            limit = 6
+          }
+        }
+      }
 
       volume_mount {
         volume = "brawltime-assets-volume"
@@ -171,32 +171,32 @@ job "brawltime-media" {
       }
     }
 
-    service {
-      name = "brawltime-media-sftp"
-      provider = "nomad"
-      port = "ssh"
-
-      tags = [
-        "traefik.enable=true",
-        "traefik.tcp.routers.brawltime-media.entrypoints=ssh",
-        "traefik.tcp.routers.brawltime-media.rule=HostSNI(`*`)",
-        "traefik.tcp.routers.brawltime-media.service=brawltime-media-sftp",
-        "traefik.tcp.services.brawltime-media-sftp.loadbalancer.server.port=${NOMAD_HOST_PORT_ssh}",
-      ]
-
-      check {
-        type = "tcp"
-        interval = "10s"
-        timeout = "2s"
-
-        check_restart {
-          limit = 5
-        }
-      }
-    }
-
     task "sftp" {
       driver = "docker"
+
+      service {
+        name = "brawltime-media-sftp"
+        provider = "nomad"
+        port = "ssh"
+
+        tags = [
+          "traefik.enable=true",
+          "traefik.tcp.routers.brawltime-media.entrypoints=ssh",
+          "traefik.tcp.routers.brawltime-media.rule=HostSNI(`*`)",
+          "traefik.tcp.routers.brawltime-media.service=brawltime-media-sftp",
+          "traefik.tcp.services.brawltime-media-sftp.loadbalancer.server.port=${NOMAD_HOST_PORT_ssh}",
+        ]
+
+        check {
+          type = "tcp"
+          interval = "10s"
+          timeout = "2s"
+
+          check_restart {
+            limit = 5
+          }
+        }
+      }
 
       volume_mount {
         volume = "brawltime-assets-volume"

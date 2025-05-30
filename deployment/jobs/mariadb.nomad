@@ -24,24 +24,24 @@ job "mariadb" {
       access_mode = "single-node-writer"
     }
 
-    service {
-      name = "mariadb"
-      provider = "nomad"
-      port = "db"
-
-      check {
-        type = "tcp"
-        interval = "10s"
-        timeout = "2s"
-      }
-
-      check_restart {
-        limit = 6
-      }
-    }
-
     task "mariadb" {
       driver = "docker"
+
+      service {
+        name = "mariadb"
+        provider = "nomad"
+        port = "db"
+
+        check {
+          type = "tcp"
+          interval = "10s"
+          timeout = "2s"
+        }
+
+        check_restart {
+          limit = 6
+        }
+      }
 
       volume_mount {
         volume = "mariadb-volume"

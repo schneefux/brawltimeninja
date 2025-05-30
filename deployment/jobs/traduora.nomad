@@ -17,35 +17,36 @@ job "traduora" {
       port "http" {}
     }
 
-    restart {
-      mode = "delay"
-      interval = "5m"
-    }
-
-    service {
-      name = "traduora"
-      provider = "nomad"
-      port = "http"
-
-      tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.traduora.rule=Host(`translate.brawltime.ninja`)",
-      ]
-
-      check {
-        type = "http"
-        path = "/health"
-        interval = "10s"
-        timeout = "2s"
-
-        check_restart {
-          limit = 6
-        }
-      }
-    }
-
     task "traduora" {
       driver = "docker"
+
+      restart {
+        mode = "delay"
+        interval = "5m"
+      }
+
+      service {
+        name = "traduora"
+        provider = "nomad"
+        port = "http"
+
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.traduora.rule=Host(`translate.brawltime.ninja`)",
+        ]
+
+        check {
+          type = "http"
+          path = "/health"
+          interval = "10s"
+          timeout = "2s"
+
+          check_restart {
+            limit = 6
+          }
+        }
+      }
+
 
       env {
         NODE_ENV = "production"

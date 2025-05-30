@@ -45,31 +45,31 @@ job "clickhouse" {
       access_mode = "single-node-writer"
     }
 
-    service {
-      name = "clickhouse"
-      provider = "nomad"
-      port = "http"
-
-      check {
-        type = "http"
-        path = "/ping"
-        interval = "10s"
-        timeout = "2s"
-
-        check_restart {
-          limit = 6
-        }
-      }
-    }
-
-    service {
-      name = "clickhouse-native"
-      provider = "nomad"
-      port = "tcp"
-    }
-
     task "clickhouse" {
       driver = "docker"
+
+      service {
+        name = "clickhouse"
+        provider = "nomad"
+        port = "http"
+
+        check {
+          type = "http"
+          path = "/ping"
+          interval = "10s"
+          timeout = "2s"
+
+          check_restart {
+            limit = 6
+          }
+        }
+      }
+
+      service {
+        name = "clickhouse-native"
+        provider = "nomad"
+        port = "tcp"
+      }
 
       env {
         DATA_PATH = "/srv/clickhouse/"
@@ -82,7 +82,7 @@ job "clickhouse" {
       }
 
       config {
-        image = "clickhouse/clickhouse-server:25.4-alpine"
+        image = "clickhouse/clickhouse-server:25.5-alpine"
         network_mode = "host"
 
         volumes = [

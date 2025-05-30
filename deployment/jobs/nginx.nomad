@@ -1,5 +1,8 @@
 variable "brawlstars_token1" {}
 variable "brawlstars_token2" {}
+variable "domain" {
+  default = "brawltime.ninja"
+}
 
 job "nginx" {
   datacenters = ["dc1"]
@@ -25,44 +28,13 @@ job "nginx" {
       }
 
       port "status" {}
+
+      port "goaccess" {}
     }
 
     ephemeral_disk {
       migrate = true
       size = 16000 # MB for logs and nginx cache
-    }
-
-    restart {
-      mode = "delay"
-      interval = "30s"
-    }
-
-    service {
-      name = "nginx"
-      provider = "nomad"
-      port = "nginx_http"
-
-      check {
-        type = "tcp"
-        interval = "5s"
-        timeout = "2s"
-      }
-
-      check_restart {
-        limit = 12
-      }
-    }
-
-    service {
-      name = "nginx-ssl"
-      provider = "nomad"
-      port = "nginx_https"
-
-      check {
-        type = "tcp"
-        interval = "5s"
-        timeout = "2s"
-      }
     }
 
     volume "certs" {
@@ -78,6 +50,39 @@ job "nginx" {
         SSL_PATH = "/etc/letsencrypt/live/brawltime.ninja"
         BRAWLSTARS_TOKEN1="${var.brawlstars_token1}"
         BRAWLSTARS_TOKEN2="${var.brawlstars_token2}"
+      }
+
+      restart {
+        mode = "delay"
+        interval = "30s"
+      }
+
+      service {
+        name = "nginx"
+        provider = "nomad"
+        port = "nginx_http"
+
+        check {
+          type = "tcp"
+          interval = "5s"
+          timeout = "2s"
+        }
+
+        check_restart {
+          limit = 12
+        }
+      }
+
+      service {
+        name = "nginx-ssl"
+        provider = "nomad"
+        port = "nginx_https"
+
+        check {
+          type = "tcp"
+          interval = "5s"
+          timeout = "2s"
+        }
       }
 
       logs {
@@ -98,14 +103,6 @@ job "nginx" {
         volumes = [
           "local/nginx.conf:/etc/nginx/nginx.conf:ro",
         ]
-
-        # to generate a goaccess report:
-        /*
-cat *.stdout.* | fgrep -v "^10.0.0." | LANG="en_US.UTF-8" goaccess - \
-  --time-format='%H:%M:%S' \
-  --date-format='%d/%b/%Y' \
-  --log-format='%h %^ %e [%d:%t %z] "%r" %s %b "%R" "%u" %C' -o report.html
-        */
 
         ports = ["nginx_http", "nginx_https", "status"]
 
@@ -146,5 +143,64 @@ cat *.stdout.* | fgrep -v "^10.0.0." | LANG="en_US.UTF-8" goaccess - \
         memory_max = 1280
       }
     }
+
+# TODO:
+#   - implement a loop because the script will only process logs present at time of execution
+#   - serve the index html
+/*
+    task "goaccess" {
+      driver = "docker"
+
+      service {
+        name = "goaccess"
+        provider = "nomad"
+        port = "goaccess"
+
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.brawltime-cube.rule=Host(`access.${var.domain}`)",
+          "traefik.http.routers.traefik-dashboard.middlewares=auth",
+        ]
+
+        check {
+          type = "tcp"
+          interval = "5s"
+          timeout = "2s"
+        }
+      }
+
+      config {
+        image = "allinurl/goaccess:1.9"
+        entrypoint = ["/bin/sh", "-c"]
+        command = "$NOMAD_TASK_DIR/report.sh"
+        ports = ["goaccess"]
+      }
+
+      # note: will fail on first start because there are no log files yet
+      template {
+        data = <<-EOF
+          LANG="en_US.UTF-8" goaccess "${NOMAD_ALLOC_DIR}/logs/nginx.stdout.*" \
+            --time-format='%H:%M:%S' \
+            --date-format='%d/%b/%Y' \
+            --log-format='%h %^ %e [%d:%t %z] "%r" %s %b "%R" "%u" %C' \
+            --exclude-ip="10.0.0.0-10.0.0.255" \
+            --port=${NOMAD_PORT_goaccess} \
+            --ws-url="access.${var.domain}" \
+            --restore \
+            --persist \
+            --real-time-html \
+            --output=index.html || true # never fail, to not kill nginx with this task
+        EOF
+        destination = "local/report.sh"
+        perms = "0755"
+      }
+
+      resources {
+        cpu = 64
+        memory = 64
+        memory_max = 256
+      }
+    }
+*/
   }
 }

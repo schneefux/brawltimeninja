@@ -31,35 +31,35 @@ job "brawltime-testing" {
       port "http" {}
     }
 
-    restart {
-      mode = "delay"
-      interval = "5m"
-    }
-
-    service {
-      name = "brawltime-testing"
-      provider = "nomad"
-      port = "http"
-
-      tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.brawltime-testing.rule=Host(`testing.${var.domain}`)",
-      ]
-
-      check {
-        type = "http"
-        path = "/"
-        interval = "10s"
-        timeout = "10s"
-
-        check_restart {
-          limit = 6
-        }
-      }
-    }
-
     task "web" {
       driver = "docker"
+
+      restart {
+        mode = "delay"
+        interval = "5m"
+      }
+
+      service {
+        name = "brawltime-testing"
+        provider = "nomad"
+        port = "http"
+
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.brawltime-testing.rule=Host(`testing.${var.domain}`)",
+        ]
+
+        check {
+          type = "http"
+          path = "/"
+          interval = "10s"
+          timeout = "10s"
+
+          check_restart {
+            limit = 6
+          }
+        }
+      }
 
       env {
         HOST = "0.0.0.0"

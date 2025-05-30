@@ -28,11 +28,6 @@ job "brawltime-cube" {
   group "cube" {
     count = 3
 
-    restart {
-      mode = "delay"
-      interval = "5m"
-    }
-
     scaling {
       enabled = true
       min = 3
@@ -79,36 +74,41 @@ job "brawltime-cube" {
       port "http" {}
     }
 
-    service {
-      name = "brawltime-cube"
-      provider = "nomad"
-      port = "http"
-
-      tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.brawltime-cube.rule=Host(`cube.${var.domain}`)",
-        # prevent thundering herd by limiting the total number of in flight requests to approx. clickhouse's concurrent query limit
-        "traefik.http.middlewares.brawltime-cube-inflightreq.inflightreq.amount=128"
-      ]
-      canary_tags = [
-        # do not route via traefik
-        "canary=true",
-      ]
-
-      check {
-        type = "http"
-        path = "/readyz"
-        interval = "10s"
-        timeout = "2s"
-
-        check_restart {
-          limit = 6
-        }
-      }
-    }
-
     task "cube" {
       driver = "docker"
+
+      restart {
+        mode = "delay"
+        interval = "5m"
+      }
+
+      service {
+        name = "brawltime-cube"
+        provider = "nomad"
+        port = "http"
+
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.brawltime-cube.rule=Host(`cube.${var.domain}`)",
+          # prevent thundering herd by limiting the total number of in flight requests to approx. clickhouse's concurrent query limit
+          "traefik.http.middlewares.brawltime-cube-inflightreq.inflightreq.amount=128"
+        ]
+        canary_tags = [
+          # do not route via traefik
+          "canary=true",
+        ]
+
+        check {
+          type = "http"
+          path = "/readyz"
+          interval = "10s"
+          timeout = "2s"
+
+          check_restart {
+            limit = 6
+          }
+        }
+      }
 
       env {
         PORT = "${NOMAD_PORT_http}"
@@ -174,13 +174,13 @@ job "brawltime-cube" {
       value = "worker"
     }
 
-    restart {
-      mode = "delay"
-      interval = "5m"
-    }
-
     task "refresh" {
       driver = "docker"
+
+      restart {
+        mode = "delay"
+        interval = "5m"
+      }
 
       env {
         CUBEJS_REFRESH_WORKER = true

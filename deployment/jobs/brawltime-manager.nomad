@@ -29,11 +29,6 @@ job "brawltime-manager" {
   group "manager" {
     count = 2
 
-    restart {
-      mode = "delay"
-      interval = "5m"
-    }
-
     scaling {
       enabled = true
       min = 1
@@ -74,30 +69,35 @@ job "brawltime-manager" {
       port "http" {}
     }
 
-    service {
-      name = "brawltime-manager"
-      provider = "nomad"
-      port = "http"
-
-      tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.brawltime-manager.rule=Host(`manager.${var.domain}`)",
-      ]
-
-      check {
-        type = "http"
-        path = "/users"
-        interval = "10s"
-        timeout = "2s"
-
-        check_restart {
-          limit = 6
-        }
-      }
-    }
-
     task "manager" {
       driver = "docker"
+
+      service {
+        name = "brawltime-manager"
+        provider = "nomad"
+        port = "http"
+
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.brawltime-manager.rule=Host(`manager.${var.domain}`)",
+        ]
+
+        check {
+          type = "http"
+          path = "/users"
+          interval = "10s"
+          timeout = "2s"
+
+          check_restart {
+            limit = 6
+          }
+        }
+      }
+
+      restart {
+        mode = "delay"
+        interval = "5m"
+      }
 
       env {
         NODE_CONFIG_DIR = "/secrets/config"

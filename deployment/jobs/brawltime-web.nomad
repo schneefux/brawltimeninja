@@ -77,38 +77,38 @@ job "brawltime-web" {
       port "http" {}
     }
 
-    service {
-      name = "brawltime-web"
-      provider = "nomad"
-      port = "http"
-
-      tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.brawltime-web.rule=Host(`${var.domain}`) || Host(`www.${var.domain}`)",
-        "traefik.http.middlewares.wwwredirect.redirectregex.regex=^http://www\\.(.*)", # note: behind nginx, all traffic is http
-        "traefik.http.middlewares.wwwredirect.redirectregex.replacement=http://$${1}",
-        "traefik.http.middlewares.wwwredirect.redirectregex.permanent=true",
-        "traefik.http.routers.brawltime-web.middlewares=wwwredirect",
-      ]
-      canary_tags = [
-        # do not route via traefik
-        "canary=true",
-      ]
-
-      check {
-        type = "http"
-        path = "/health"
-        interval = "10s"
-        timeout = "10s"
-
-        check_restart {
-          limit = 6
-        }
-      }
-    }
-
     task "web" {
       driver = "docker"
+
+      service {
+        name = "brawltime-web"
+        provider = "nomad"
+        port = "http"
+
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.brawltime-web.rule=Host(`${var.domain}`) || Host(`www.${var.domain}`)",
+          "traefik.http.middlewares.wwwredirect.redirectregex.regex=^http://www\\.(.*)", # note: behind nginx, all traffic is http
+          "traefik.http.middlewares.wwwredirect.redirectregex.replacement=http://$${1}",
+          "traefik.http.middlewares.wwwredirect.redirectregex.permanent=true",
+          "traefik.http.routers.brawltime-web.middlewares=wwwredirect",
+        ]
+        canary_tags = [
+          # do not route via traefik
+          "canary=true",
+        ]
+
+        check {
+          type = "http"
+          path = "/health"
+          interval = "10s"
+          timeout = "10s"
+
+          check_restart {
+            limit = 6
+          }
+        }
+      }
 
       env {
         HOST = "0.0.0.0"

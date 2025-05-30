@@ -90,7 +90,7 @@ job "autoscaler" {
         data = <<-EOF
           scaling "hetzner-workers" {
             enabled = true
-            min = 1
+            min = 5
             max = 18
 
             policy {
