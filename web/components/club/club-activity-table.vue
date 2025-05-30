@@ -68,7 +68,8 @@ export default defineComponent({
       required: false
     },
   },
-  async setup(props) {
+  setup(props) {
+    console.log(props.clubActivityStatistics)
     const rows = computed(() => props.club.members.map(m => ({
       tag: m.tag,
       name: m.name,

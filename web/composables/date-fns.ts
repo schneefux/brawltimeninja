@@ -1,4 +1,4 @@
-import { computed, ref, MaybeRef, unref, watch } from 'vue'
+import { computed, MaybeRef, unref, watch, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { LocaleIso } from '~/locales'
 import { Locale, format, formatDistanceToNow } from 'date-fns'
@@ -46,8 +46,9 @@ export const useDateFnLocale = () => {
 /** SSR-friendly relative date formatting */
 export const useFormattedDistanceToNow = (timestamp: MaybeRef<Date|undefined>, { addSuffix }: { addSuffix: MaybeRef<boolean> }) => {
   const { locale } = useDateFnLocale()
+  const id = useId()
 
-  const formatted = ssrRef('…', computed(() => `timediff-${unref(timestamp)}`))
+  const formatted = ssrRef('…', `timediff-${id}`)
 
   const updateFormatted = () => {
     const ts = unref(timestamp)
@@ -60,7 +61,7 @@ export const useFormattedDistanceToNow = (timestamp: MaybeRef<Date|undefined>, {
       })
     }
   }
-  watch(() => [timestamp, locale], updateFormatted, {
+  watch(() => [unref(timestamp), unref(locale)], updateFormatted, {
     immediate: true,
   })
 
@@ -71,15 +72,16 @@ export const useFormattedDistanceToNow = (timestamp: MaybeRef<Date|undefined>, {
 /** SSR-friendly date formatting */
 export const useFormattedDate = (timestamp: MaybeRef<Date>, formatStr: MaybeRef<string>) => {
   const { locale } = useDateFnLocale()
+  const id = useId()
 
-  const formatted = ssrRef('…', computed(() => `timestamp-${unref(timestamp)}-${unref(formatStr)}`))
+  const formatted = ssrRef('…', `timestamp-${id}`)
 
   const updateFormatted = () => {
     formatted.value = format(unref(timestamp), unref(formatStr), {
       locale: locale.value,
     })
   }
-  watch(() => [timestamp, formatStr, locale], updateFormatted, {
+  watch(() => [unref(timestamp), unref(formatStr), unref(locale)], updateFormatted, {
     immediate: true,
   })
 
