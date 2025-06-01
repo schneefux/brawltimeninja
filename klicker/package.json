@@ -28,7 +28,7 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
-    "@cubejs-client/core": "^1.2.29",
+    "@cubejs-client/core": "^0.35.23",
     "@feathersjs/authentication-client": "5.0.33",
     "@feathersjs/feathers": "5.0.33",
     "@feathersjs/rest-client": "5.0.33",
