@@ -7,7 +7,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
 async function translateChunk(chunk, targetLanguage) {
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-2024-11-20', // about 0.12€ per language
+    model: 'gpt-4.1-2025-04-14', // about 0.12€ per language
     temperature: 0.2,
     messages: [
       {
@@ -37,8 +37,7 @@ async function translate(lang) {
 
   await writeFile(targetYamlPath, '', 'utf-8')
 
-  // output is limited to 4096 tokens
-  const chunkSize = 200 // chunk of 100: ~1.5k prompt tokens, ~2k completion tokens
+  const chunkSize = 1000 // chunk of 100: ~1.5k prompt tokens, ~2k completion tokens
   const allKeys = Object.keys(enJson)
   for (let i = 0; i < allKeys.length; i += chunkSize) {
     const enChunk = yaml.dump(Object.fromEntries(Object.entries(enJson).slice(i, i + chunkSize)), { forceQuotes: true })
@@ -55,7 +54,7 @@ async function main() {
   const args = process.argv.slice(2)
   const langs = args.length > 0 ? args : allLangs
 
-  await mkdir('./auto-translations', { recursive: true })
+  await mkdir('./translations/auto', { recursive: true })
   for (const lang of langs) {
     try {
       await readFile(`./translations/auto/${lang}.yaml`, 'utf8')
