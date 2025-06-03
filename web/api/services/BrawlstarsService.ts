@@ -42,11 +42,11 @@ function getApiUrl(tag: string) {
 }
 */
 
-const BRAWLIFY_CACHE_MINUTES = 60 * 24
-
 export default class BrawlstarsService {
   private readonly clicker?: ClickerService;
-  private brawlifyCache = new Cache<string, Record<number, string>>(BRAWLIFY_CACHE_MINUTES)
+  // TODO move caches to mariadb
+  private brawlifyBrawlersCache = new Cache<string, Record<number, string>>(60 * 24)
+  private brawlifyEventsCache = new Cache<string, { current: ActiveEvent[], upcoming: ActiveEvent[] }>(10)
 
   constructor() {
     if (clickhouseUrl != undefined) {
@@ -65,27 +65,30 @@ export default class BrawlstarsService {
   }
 
   // TODO official API does not show all future events as of 2022-01-07
-  public async getActiveEvents() {
-    const response = await request<{ active: StarlistEvent[], upcoming: StarlistEvent[] }>(
-      'events',
-      brawlapiUrl,
-      'fetch_events',
-      { },
-      { 'Authorization': 'Bearer ' + brawlapiToken },
-      1000,
-    );
+  public async getActiveEvents(): Promise<{ current: ActiveEvent[], upcoming: ActiveEvent[] }> {
+    return this.brawlifyEventsCache.getOrUpdate('events', async () => {
+      const response = await request<{ active: StarlistEvent[], upcoming: StarlistEvent[] }>(
+        'events',
+        brawlapiUrl,
+        'fetch_events',
+        { },
+        { 'Authorization': 'Bearer ' + brawlapiToken },
+        1000,
+      );
 
-    const mapper = (events: StarlistEvent[]) => events.map((event) => ({
-      id: event.map.id.toString(),
-      map: event.map.name,
-      mode: unformatMode(event.map.gameMode.name),
-      start: event.startTime,
-      end: event.endTime,
-    }) as ActiveEvent);
-    return {
-      current: mapper(response.active),
-      upcoming: mapper(response.upcoming),
-    }
+      const mapper = (events: StarlistEvent[]) => events.map((event) => ({
+        id: event.map.id.toString(),
+        map: event.map.name,
+        mode: unformatMode(event.map.gameMode.name),
+        start: event.startTime,
+        end: event.endTime,
+      }) satisfies ActiveEvent);
+
+      return {
+        current: mapper(response.active),
+        upcoming: mapper(response.upcoming),
+      }
+    })
   }
 
   public async getPlayerRanking(countryCode: string) {
@@ -150,9 +153,7 @@ export default class BrawlstarsService {
   }
 
   private async getBrawlerMeta(): Promise<Record<number, string>> {
-    // TODO move caches to mariadb
-
-    return this.brawlifyCache.getOrUpdate('brawlers', async () => {
+    return this.brawlifyBrawlersCache.getOrUpdate('brawlers', async () => {
       const response = await request<{ list: StarlistBrawler[] }>(
         'brawlers',
         brawlapiUrl,
