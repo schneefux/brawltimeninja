@@ -102,7 +102,7 @@ variable "servers" {
   type = map
   default = {
     barley = {
-      server_type = "cpx11"
+      server_type = "cx22"
       class = "ingress"
       location = "nbg1"
     }
