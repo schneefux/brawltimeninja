@@ -14,12 +14,20 @@ http {
   default_type application/octet-stream;
 
   # combined + cache status
-  log_format combined_cache '$remote_addr - $remote_user [$time_local] '
-                            '"$request" $status $body_bytes_sent '
-                            '"$http_referer" "$http_user_agent" '
-                            '$upstream_cache_status';
+  log_format combined_cache_json escape=json
+    '{'
+      '"ip":"$remote_addr",'
+      '"user":"$remote_user",'
+      '"time":"$time_local",'
+      '"request":"$request",'
+      '"status":$status,'
+      '"bytes":$body_bytes_sent,'
+      '"referer":"$http_referer",'
+      '"user_agent":"$http_user_agent",'
+      '"cache_status":"$upstream_cache_status"'
+    '}';
   error_log stderr;
-  access_log /dev/stdout combined_cache;
+  access_log /dev/stdout combined_cache_json;
 
   # NixOS defaults
   # optimisation

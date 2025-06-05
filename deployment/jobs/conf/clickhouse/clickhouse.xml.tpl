@@ -83,7 +83,7 @@
       However, if you comment out all the tags under <names>, the program will print default values for as
       below.
       -->
-      <!-- <formatting>
+      <formatting>
           <type>json</type>
           <names>
               <date_time>date_time</date_time>
@@ -96,7 +96,7 @@
               <source_file>source_file</source_file>
               <source_line>source_line</source_line>
           </names>
-      </formatting> -->
+      </formatting>
   </logger>
 
   <url_scheme_mappers>

@@ -95,9 +95,7 @@ job "clickhouse" {
         ulimit {
           nofile = "262144:262144"
         }
-        # TODO allow these in the Nomad configuration
-        # https://www.nomadproject.io/docs/drivers/docker#allow_caps
-        #cap_add = ["sys_nice", "net_admin", "ipc_lock"]
+        cap_add = ["sys_nice", "net_admin", "ipc_lock"]
 
         labels = {
           "com.datadoghq.ad.check_names" = jsonencode(["clickhouse"])
