@@ -12,3 +12,7 @@ User-agent: BLEXBot
 Disallow: /
 User-Agent: Bytespider
 Disallow: /
+User-Agent: DataForSeoBot
+Disallow: /
+User-Agent: Barkrowler
+Disallow: /
