@@ -85,8 +85,8 @@ job "victorialogs" {
 
       resources {
         cpu = 256
-        memory = 512
-        memory_max = 2048
+        memory = 1024
+        memory_max = 1536
       }
     }
   }
