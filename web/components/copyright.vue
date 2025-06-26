@@ -23,6 +23,12 @@
           tag="a"
           xs
         >Twitter</b-button>
+        <b-button
+          :secondary="!light"
+          :light="light"
+          xs
+          @click="manageConsent()"
+        >{{ $t('action.manage-consent') }}</b-button>
       </div>
     </div>
     <p>
@@ -52,7 +58,12 @@ export default defineComponent({
   setup() {
     const feedbackModalOpen = ref(false)
 
+    const manageConsent = () => googlefc.callbackQueue.push({
+      'CONSENT_DATA_READY': () => googlefc.showRevocationMessage()
+    })
+
     return {
+      manageConsent,
       feedbackModalOpen,
       releaseVersion: import.meta.env.VITE_GIT_REV.substring(0, 7)
     }

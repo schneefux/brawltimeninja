@@ -45,7 +45,7 @@
         <h1>Privacy Policy</h1>
 
         <p>
-          With your consent, this site shares visitor data with some partners. You can withdraw consent by deleting this site's settings in your browser or by clicking <a href="javascript:googlefc.callbackQueue.push(googlefc.showRevocationMessage)">here</a>.
+          With your consent, this site shares visitor data with some partners. You can withdraw consent by deleting this site's settings in your browser or by clicking <a @click="manageConsent()">here</a>.
         </p>
 
         <p>If you choose to use our Service, then you agree to the collection and use of information in relation with this policy. The Personal Information that we collect are used for providing and improving the Service. We will not use or share your information with anyone except as described in this Privacy Policy.</p>
@@ -101,6 +101,10 @@ export default defineComponent({
       return ''
     })
 
+    const manageConsent = () => googlefc.callbackQueue.push({
+      'CONSENT_DATA_READY': () => googlefc.showRevocationMessage()
+    })
+
     useCacheHeaders()
     useMeta(() => ({
       title: 'Privacy',
@@ -108,6 +112,7 @@ export default defineComponent({
 
     return {
       domain,
+      manageConsent,
     }
   },
 })

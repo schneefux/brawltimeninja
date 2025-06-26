@@ -675,5 +675,6 @@
     "component.tier-list.long": "Brawl Stars Tier List",
     "component.dashboard.for.map": "{mode} - {map} Dashboard",
     "component.dashboard.for.mode": "{mode} Dashboard",
-    "component.dashboard.long": "Brawl Stars Dashboard"
+    "component.dashboard.long": "Brawl Stars Dashboard",
+    "action.manage-consent": "Manage Consent"
 }
