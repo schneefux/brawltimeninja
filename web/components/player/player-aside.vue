@@ -12,7 +12,7 @@
       </span>
     </template>
     <template
-      v-if="player.tag == '#8JVV9GVRQ'"
+      v-if="player.tag == '#8JVV9GVRQ' || player.tag == '#PY8J8L9JY'"
       v-slot:preview
     >
       <span class="text-transparent border-2 border-primary-400 rounded-full px-2 -my-1 bg-linear-to-r from-primary-400 to-secondary-400 transition duration-300 ease-in-out bg-clip-text">
