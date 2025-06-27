@@ -10,7 +10,6 @@
         <ul>
           <li>Official Brawl Stars API (<a href="https://developer.brawlstars.com" rel="nofollow">homepage</a>)</li>
           <li>BrawlAPI by Henry (<a href="https://brawlapi.com/" rel="nofollow">homepage</a>)</li>
-          <li>meowAPI by hpdevfox (<a href="https://api.hpdevfox.ru/docs" rel="nofollow">documentation</a>)</li>
           <li>BrawlAPI by RemoteAccess (<a href="https://api.rnt.dev/discord" rel="nofollow">Discord</a>)</li>
           <li>Brawl Stars Fandom's API (<a href="https://brawlstars.fandom.com/" rel="nofollow">homepage</a>)</li>
         </ul>

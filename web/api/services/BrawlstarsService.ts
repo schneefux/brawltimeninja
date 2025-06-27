@@ -362,7 +362,14 @@ export default class BrawlstarsService {
     };
   }
 
-  private createPlayerExtra(rankPoints: number, highestRankPoints: number, accountCreationYear: number, brawlers: Record<string, BrawlerExtra>): PlayerExtra {
+  private createPlayerExtra(
+    rankPoints: number,
+    highestRankPoints: number,
+    accountCreationYear: number,
+    recordPoints: number,
+    recordLevel: number,
+    brawlers: Record<string, BrawlerExtra>,
+  ): PlayerExtra {
     return {
       rank: {
         points: rankPoints,
@@ -373,6 +380,8 @@ export default class BrawlstarsService {
         ...formatLeagueRanks(Math.floor(highestRankPoints / 500 + 1)),
       },
       accountCreationYear,
+      recordPoints,
+      recordLevel,
       brawlers,
     }
   }
@@ -380,9 +389,8 @@ export default class BrawlstarsService {
   public async getPlayerExtraStatistics(tag: string): Promise<PlayerExtra|undefined> {
     const brawlerMap = await this.getBrawlerMeta()
 
-    if (rntUrl) { // promises to be fastest and most stable
+    if (rntUrl) {
       const rntResponse = await this.getPlayerRnt(tag)
-      // note: error message for timeout and not found is the same
 
       const brawlers = Object.fromEntries(
         rntResponse.result.brawlers.map(b => [
@@ -392,53 +400,13 @@ export default class BrawlstarsService {
       )
 
       const stats = rntResponse.result.stats
-      const rankPoints = stats.find(s => s.stat_id == 24)!.value
-      const highestRankPoints = stats.find(s => s.stat_id == 25)!.value
-      const accountCreationYear = stats.find(s => s.stat_id == 27)!.value
+      const rankPoints = stats.find(s => s.id == 24)!.value
+      const highestRankPoints = stats.find(s => s.id == 25)!.value
+      const accountCreationYear = stats.find(s => s.id == 27)!.value
+      const recordPoints = stats.find(s => s.id == 31)!.value
+      const recordLevel = stats.find(s => s.id == 32)!.value
 
-      return this.createPlayerExtra(rankPoints, highestRankPoints, accountCreationYear, brawlers)
-    }
-
-    if (devfoxUrl2) { // new iteration of devfox API
-      const devfoxResponse = await this.getPlayerDevfox2(tag)
-      const brawlers = Object.fromEntries(
-        devfoxResponse.Profile.Heroes.map(b => [
-          brawlerId({ name: brawlerMap[b.Character.m_globalId] }),
-          { masteryPoints: b.MasteryPoints }
-        ])
-      )
-
-      const stats = devfoxResponse.Profile.Stats
-      const rankPoints = stats.find(s => s.X == 24)!.Y
-      const highestRankPoints = stats.find(s => s.X == 25)!.Y
-      const accountCreationYear = stats.find(s => s.X == 27)!.Y
-
-      return this.createPlayerExtra(rankPoints, highestRankPoints, accountCreationYear, brawlers)
-    }
-
-    if (devfoxUrl && devfoxToken) { // frequent outages and timeouts
-      const devfoxResponse = await this.getPlayerDevfox1(tag)
-
-      if (devfoxResponse.state != 0) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Error from devfox API',
-        })
-      }
-
-      const brawlers = Object.fromEntries(
-        devfoxResponse.response.Heroes.map(b => [
-          brawlerId({ name: brawlerMap[b.Character] }),
-          { masteryPoints: b.Mastery }
-        ])
-      )
-
-      const stats = devfoxResponse.response.Stats
-      const rankPoints = stats[24]
-      const highestRankPoints = stats[25]
-      const accountCreationYear = stats[27]
-
-      return this.createPlayerExtra(rankPoints, highestRankPoints, accountCreationYear, brawlers)
+      return this.createPlayerExtra(rankPoints, highestRankPoints, accountCreationYear, recordPoints, recordLevel, brawlers)
     }
 
     return undefined

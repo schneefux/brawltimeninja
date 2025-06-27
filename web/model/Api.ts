@@ -64,9 +64,12 @@ export interface PlayerExtra {
   highestRank: LeagueRankWithPoints
   accountCreationYear: number
   brawlers: Record<string, BrawlerExtra>
+  recordPoints: number
+  recordLevel: number
 }
 
 export interface BrawlerExtra {
+  /** @deprecated */
   masteryPoints: number
 }
 

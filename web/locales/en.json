@@ -676,5 +676,7 @@
     "component.dashboard.for.map": "{mode} - {map} Dashboard",
     "component.dashboard.for.mode": "{mode} Dashboard",
     "component.dashboard.long": "Brawl Stars Dashboard",
-    "action.manage-consent": "Manage Consent"
+    "action.manage-consent": "Manage Consent",
+    "metric.record-points": "Record Points",
+    "metric.record-level": "Record Level"
 }

@@ -242,8 +242,9 @@ export interface RntPlayerResponse {
       mastery: number
     }[]
     stats: [{
-      stat_id: number // see above
+      id: number // see above
       value: number
+      name: string
     }]
     brawlpass: number // -1: none
     max_winstreak: number

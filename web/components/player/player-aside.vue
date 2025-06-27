@@ -97,6 +97,24 @@
             {{ value.leagueSub }} ({{ value.points }})
           </template>
 
+          <template v-slot:recordLevel="{ value }: { value: number }">
+            <img
+              :src="recordLevelIcon"
+              alt="Record Level"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
+
+          <template v-slot:recordPoints="{ value }: { value: number }">
+            <img
+              :src="recordPointIcon"
+              alt="Record Points"
+              class="inline h-4 mr-1"
+            >
+            {{ value }}
+          </template>
+
           <template v-slot:expLevel="{ value }: { value: number }">
             <img
               :src="levelIcon"
@@ -161,6 +179,8 @@ import trophyIcon from '~/assets/images/icon/trophy_optimized.png'
 import victoryIcon from '~/assets/images/icon/victories.png'
 import levelIcon from '~/assets/images/icon/level.png'
 import calendarIcon from '~/assets/images/icon/icons8-calendar-100.png'
+import recordLevelIcon from '~/assets/images/icon/record-level.png'
+import recordPointIcon from '~/assets/images/icon/record-point.png'
 import { useI18n } from 'vue-i18n'
 import { ProfileTrackingStatus } from '~/api/services/ProfileUpdaterService'
 import { usePreferences } from '~/stores/preferences'
@@ -298,6 +318,22 @@ export default defineComponent({
         })
       }
 
+      if (props.playerExtra?.recordLevel) {
+        rows.push({
+          slot: 'recordLevel',
+          key: 'recordLevel',
+          title: i18n.t('metric.record-level'),
+        })
+      }
+
+      if (props.playerExtra?.recordPoints) {
+        rows.push({
+          slot: 'recordPoints',
+          key: 'recordPoints',
+          title: i18n.t('metric.record-points'),
+        })
+      }
+
       rows.push({
         slot: 'expLevel',
         key: 'expLevel',
@@ -353,6 +389,8 @@ export default defineComponent({
       victoryIcon,
       levelIcon,
       calendarIcon,
+      recordLevelIcon,
+      recordPointIcon,
       rankIcons,
     }
   },
