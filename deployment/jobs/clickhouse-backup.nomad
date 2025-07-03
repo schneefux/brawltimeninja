@@ -71,7 +71,7 @@ job "clickhouse-backup" {
       }
 
       config {
-        image = "clickhouse/clickhouse-server:25.4-alpine"
+        image = "clickhouse/clickhouse-server:25.6-alpine"
         entrypoint = ["/bin/sh", "-c"]
         command = "$NOMAD_TASK_DIR/backup.sh"
       }
