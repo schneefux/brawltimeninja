@@ -11,8 +11,9 @@ job "hcloud-csi-node" {
       driver = "docker"
 
       config {
-        image = "hetznercloud/hcloud-csi-driver:v2.11.0"
-        command = "bin/hcloud-csi-driver-node"
+        image = "hetznercloud/hcloud-csi-driver:v2.16.0"
+        entrypoint = [ "/bin/sh", "-c" ]
+        command = "/bin/hcloud-csi-driver -node"
         privileged = true
       }
 
